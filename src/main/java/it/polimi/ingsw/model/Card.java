@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model;
 
+/**
+ * Represents a God card with strategies to be used by the worker
+ */
 public class Card {
     private String name;
     private MoveStrategy moveStrategy;
@@ -8,6 +11,15 @@ public class Card {
     private BlockStrategy blockStrategy;
     private OpponentStrategy opponentStrategy;
 
+    /**
+     *
+     * @param name Name of the God
+     * @param moveStrategy  Name of the strategy for movement
+     * @param buildStrategy Name of the strategy for building
+     * @param winStrategy Name of the strategy for winning
+     * @param blockStrategy Name of the strategy for blocking next player's movement
+     * @param opponentStrategy Name of the strategy for opponents that occupy the desired cell
+     */
     public Card(String name, String moveStrategy, String buildStrategy, String winStrategy, String blockStrategy, String opponentStrategy){
 
         this.name=name;
@@ -76,7 +88,7 @@ public class Card {
         }
     }
 
-    public void setWinStrategy(String winStrategy) {
+    private void setWinStrategy(String winStrategy) {
         if (winStrategy.contentEquals("Default")){
             this.winStrategy = new DefaultWin();
         }
@@ -85,7 +97,7 @@ public class Card {
         }
     }
 
-    public void setBlockStrategy(String blockStrategy) {
+    private void setBlockStrategy(String blockStrategy) {
         if (blockStrategy.contentEquals("Default")){
             this.blockStrategy = new DefaultBlock();
         }
@@ -94,7 +106,7 @@ public class Card {
         }
     }
 
-    public void setOpponentStrategy(String opponentStrategy) {
+    private void setOpponentStrategy(String opponentStrategy) {
 
         if (opponentStrategy.contentEquals("Default")){
             this.opponentStrategy = new DefaultOpponent();
