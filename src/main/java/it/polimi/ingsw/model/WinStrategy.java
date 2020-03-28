@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
 public interface WinStrategy {
-    boolean isWinningMove(BoardCell cell);
-    boolean isWinningBuild(BoardCell cell);
+    boolean isWinningMove(Worker worker, BoardCell cell);
+    boolean isWinningBuild(Worker worker, BoardCell cell);
 }

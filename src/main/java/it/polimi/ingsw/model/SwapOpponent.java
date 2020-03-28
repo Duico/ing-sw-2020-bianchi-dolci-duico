@@ -1,7 +1,18 @@
 package it.polimi.ingsw.model;
 
 public class SwapOpponent implements OpponentStrategy {
-    public boolean pushOpponent(BoardCell cell1, BoardCell cell2) {
+    @Override
+    public boolean isValidPush(Worker worker, BoardCell cell) {
         return false;
+    }
+
+    @Override
+    public void pushOpponent(Worker worker, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException {
+
+    }
+
+    @Override
+    public Position destinationPosition(BoardCell startCell, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException {
+        return null;
     }
 }

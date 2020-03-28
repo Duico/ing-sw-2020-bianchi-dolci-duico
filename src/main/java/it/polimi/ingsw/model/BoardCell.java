@@ -12,6 +12,10 @@ public class BoardCell {
         this.position = position;
         this.worker = null;
     }
+    private void updateLevel(Level level, boolean hasDome){
+        this.setLevel(level);
+        this.setHasDome(hasDome);
+    }
 
     public Level getLevel() {
         return level;
