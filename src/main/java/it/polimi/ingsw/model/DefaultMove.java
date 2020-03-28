@@ -1,18 +1,19 @@
 package it.polimi.ingsw.model;
 
 public class DefaultMove implements MoveStrategy { //inherit functions from Interface
-    public boolean isValidMove(BoardCell cell){
 
+    @Override
+    public boolean isValidMove(Worker worker, BoardCell cell) {
         return false;
     }
 
-    public boolean isAllowedToMove() {
+    @Override
+    public boolean isAllowedToMove(Worker worker) {
         return false;
     }
 
-    public boolean isRequiredToMove() {
+    @Override
+    public boolean isRequiredToMove(Worker worker) {
         return false;
     }
-
-
 }

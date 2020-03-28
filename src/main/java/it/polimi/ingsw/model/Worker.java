@@ -7,7 +7,7 @@ public class Worker {
     /**
      * Current position of the player
      */
-    private BoardCell position;
+    private BoardCell cell;
     /**
      * Owner of this worker
      */
@@ -41,7 +41,7 @@ public class Worker {
         if(cell.getWorker() != null) throw new OccupiedCellException();
         else{
             cell.setWorker(this);
-            this.position = cell;
+            this.cell = cell;
         }
     }
 
@@ -50,16 +50,16 @@ public class Worker {
      * @param cell Cell to move to
      */
     private void updatePosition(BoardCell cell){
-        this.setPosition(cell);
-        this.position.setWorker(this);
+        this.setCell(cell);
+        this.cell.setWorker(this);
     }
 
-    public BoardCell getPosition() {
-        return position;
+    public BoardCell getCell() {
+        return cell;
     }
 
-    private void setPosition(BoardCell cell) {
-        this.position = cell;
+    public void setCell(BoardCell cell) {
+        this.cell = cell;
     }
 
     public Player getPlayer() {
@@ -82,46 +82,69 @@ public class Worker {
         this.card = this.player.getCard();
     }
 
-    public void play(){
-        MoveStrategy moveStrategy = card.getMoveStrategy();
-        BuildStrategy buildStrategy = card.getBuildStrategy();
-        boolean isRequiredToMove = moveStrategy.isRequiredToMove(this);
-        boolean isRequiredToBuild = buildStrategy.isRequiredToBuild(this);
-
-
-
-        while(isRequiredToMove || isRequiredToBuild){
-            //make a choice between move and build
-
-            if(isAllowedToMove && isAllowedToBuild){
-                //can use both cursors
-            }else if(isAllowedToMove){
-                //change cursor to move
-            }else if(isAllowedToBuild){
-                //changr cursor to build
-            }
-
-            if(choice == 'move')
-                if( moveStrategy.isAllowedToMove(this) )
-                    this.move();
-            else if(choice == 'build')
-                if( buildStrategy.isAllowedToBuild(this) )
-                    this.build();
-        }
-
-
-
-    }
+//    public List<Operation> play() {
+//        MoveStrategy moveStrategy = card.getMoveStrategy();
+//        BuildStrategy buildStrategy = card.getBuildStrategy();
+//        boolean isRequiredToMove = moveStrategy.isRequiredToMove(this);
+//        boolean isRequiredToBuild = buildStrategy.isRequiredToBuild(this);
+//        boolean isAllowedToMove = moveStrategy.isAllowedToMove(this);
+//        boolean isAllowedToBuild = buildStrategy.isAllowedToBuild(this);
+//
+//
+//        while (isRequiredToMove || isRequiredToBuild) {
+//            //make a choice between move and build
+//
+//            if (isAllowedToMove && isAllowedToBuild) {
+//                //can use both cursors
+//
+//            } else if (isAllowedToMove) {
+//                //change cursor to move
+//
+//            } else if (isAllowedToBuild) {
+//                //change cursor to build
+//
+//            } else {
+//                //undo or lose game
+//            }
+//
+//        }
+//
+//        while (isAllowedToMove || isAllowedToBuild) {
+//            //user is able to skip to next turn
+//
+//            if (isAllowedToMove && isAllowedToBuild) {
+//                //can use both cursors
+//            } else if (isAllowedToMove) {
+//                //change cursor to move
+//
+//            } else if (isAllowedToBuild) {
+//                //change cursor to build
+//
+//            } else {
+//                //next turn
+//            }
+//        }
+//
+//
+//
+//    }
 
     public void move(BoardCell cell) throws BlockedMoveException, NotAllowedMoveException, NotValidMoveException{
         BlockStrategy blockStrategy = this.player.getGame().getPreviousTurn().getCurrentPlayer().getCard().getBlockStrategy();
         MoveStrategy moveStrategy = card.getMoveStrategy();
+        OpponentStrategy opponentStrategy = card.getOpponentStrategy();
+        boolean isValidMove = moveStrategy.isValidMove(this, cell);
+        boolean isValidPush = opponentStrategy.isValidPush(this, cell);
 
         if( !blockStrategy.isValidMoveForNextPlayer(this, cell)) throw new BlockedMoveException();
         else if( !moveStrategy.isAllowedToMove(this) ) throw new NotAllowedMoveException();
-        else if ( !moveStrategy.isValidMove(this, cell) ) throw new NotValidMoveException();
-        else {
-            //move
+        else if ( !isValidMove || !isValidPush ) {
+            throw new NotValidMoveException();
+        }else {
+                /*
+                    pushOpponent
+                    move
+                 */
         }
     }
 

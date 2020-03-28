@@ -3,13 +3,16 @@ package it.polimi.ingsw.model;
 public class Position {
     private int x;
     private int y;
+    static int width = 5;
+    static int height = 5;
 
-    public Position(int x, int y){
+    public Position(int x, int y) throws PositionOutOfBoundsException {
+        if( x < 0 || y < 0 || x >= width || y >= height ) throw new PositionOutOfBoundsException();
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public int getX(){
         return x;
     }
 

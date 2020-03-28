@@ -1,19 +1,24 @@
 package it.polimi.ingsw.model;
 
 public class MultipleBuild implements BuildStrategy {
-    public boolean isValidBuild(BoardCell cell) {
+
+    @Override
+    public boolean isValidBuild(Worker worker, BoardCell cell) {
         return false;
     }
 
-    public boolean isAllowedToBuildDome(BoardCell cell) {
+    @Override
+    public boolean isAllowedToBuildDome(Worker worker, BoardCell cell) {
         return false;
     }
 
-    public boolean isAllowedToBuild() {
+    @Override
+    public boolean isAllowedToBuild(Worker worker) {
         return false;
     }
 
-    public boolean isRequiredToBuild() {
+    @Override
+    public boolean isRequiredToBuild(Worker worker) {
         return false;
     }
 }

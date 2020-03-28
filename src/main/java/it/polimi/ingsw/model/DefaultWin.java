@@ -1,13 +1,14 @@
 package it.polimi.ingsw.model;
 
 public class DefaultWin implements WinStrategy {
+
     @Override
-    public boolean isWinningMove(BoardCell cell) {
+    public boolean isWinningMove(Worker worker, BoardCell cell) {
         return false;
     }
 
     @Override
-    public boolean isWinningBuild(BoardCell cell) {
+    public boolean isWinningBuild(Worker worker, BoardCell cell) {
         return false;
     }
 }

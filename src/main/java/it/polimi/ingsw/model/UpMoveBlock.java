@@ -1,7 +1,8 @@
 package it.polimi.ingsw.model;
 
 public class UpMoveBlock implements BlockStrategy {
-    public boolean isValidMoveForNextPlayer(BoardCell cell) {
+    @Override
+    public boolean isValidMoveForNextPlayer(Worker worker, BoardCell cell) {
         return false;
     }
 }

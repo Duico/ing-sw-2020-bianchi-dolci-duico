@@ -2,19 +2,19 @@ package it.polimi.ingsw.model;
 
 public class BoardCell {
     private Level level;
-    private boolean hasDome;
+    private boolean dome;
     private Position position;
     private Worker worker;
 
     public BoardCell(Position position){
         this.level = Level.EMPTY;
-        this.hasDome = false;
+        this.dome = false;
         this.position = position;
         this.worker = null;
     }
     private void updateLevel(Level level, boolean hasDome){
         this.setLevel(level);
-        this.setHasDome(hasDome);
+        this.setDome(hasDome);
     }
 
     public Level getLevel() {
@@ -25,12 +25,12 @@ public class BoardCell {
         this.level = level;
     }
 
-    public boolean isHasDome() {
-        return hasDome;
+    public void setDome(boolean hasDome) {
+        this.dome = hasDome;
     }
 
-    public void setHasDome(boolean hasDome) {
-        this.hasDome = hasDome;
+    public boolean hasDome() {
+        return dome;
     }
 
     public Position getPosition() {
