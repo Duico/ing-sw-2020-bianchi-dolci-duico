@@ -138,13 +138,10 @@ public class Worker {
 
         if( !blockStrategy.isValidMoveForNextPlayer(this, cell)) throw new BlockedMoveException();
         else if( !moveStrategy.isAllowedToMove(this) ) throw new NotAllowedMoveException();
-        else if ( !isValidMove || !isValidPush ) {
-            throw new NotValidMoveException();
-        }else {
-                /*
-                    pushOpponent
-                    move
-                 */
+        else if ( !isValidMove || !isValidPush ) throw new NotValidMoveException();
+            else {
+                    opponentStrategy.pushOpponent(this, cell);
+                    this.updatePosition(cell);
         }
     }
 

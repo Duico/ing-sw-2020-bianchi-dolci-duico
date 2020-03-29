@@ -17,7 +17,7 @@ public interface OpponentStrategy {
      * @throws InvalidPushCell
      * @throws PositionOutOfBoundsException
      */
-    void pushOpponent(Worker worker, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException;
+    void pushOpponent(Worker worker, BoardCell cell);
 
     Position destinationPosition(BoardCell startCell, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException;
 

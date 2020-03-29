@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+
+
 public class BuildAtFirstBuild implements BuildStrategy {
 
     @Override

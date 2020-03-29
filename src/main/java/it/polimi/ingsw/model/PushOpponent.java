@@ -1,6 +1,16 @@
 package it.polimi.ingsw.model;
 
+/**
+ * Class that implements the power to move in a occupied cell and push the opponent worker
+ */
+
 public class PushOpponent implements OpponentStrategy {
+    /**
+     * return if that worker can push the opponent worker
+     * @param worker Current worker
+     * @param cell   Destination cell for current worker
+     * @return
+     */
     @Override
     public boolean isValidPush(Worker worker, BoardCell cell){
         BoardCell startCell = worker.getCell();
@@ -30,25 +40,45 @@ public class PushOpponent implements OpponentStrategy {
         }
     }
 
+    /**
+     * push the opponent worker in the correct destination cell based of the correct power of the card
+     * @param worker Current worker
+     * @param cell Destination cell for current worker
+     * @throws InvalidPushCell
+     * @throws PositionOutOfBoundsException
+     */
     @Override
-    public void pushOpponent(Worker worker, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException{
+    public void pushOpponent(Worker worker, BoardCell cell){
         //if( this.isValidPush(worker, cell) )
 
         BoardCell startCell = worker.getCell();
         Worker opponentWorker = cell.getWorker();
 
         if(opponentWorker == null) return;
+        try {
+            Position destPosition = this.destinationPosition(startCell, cell);
+            BoardCell destCell = worker.getTurn().getBoard().getBoardCell(destPosition);
+            destCell.setWorker(opponentWorker);
+            opponentWorker.setCell(destCell);
+            cell.setWorker(null);
 
-        Position destPosition = this.destinationPosition(startCell, cell);
-        BoardCell destCell = worker.getTurn().getBoard().getBoardCell(destPosition);
-
-        destCell.setWorker(opponentWorker);
-        opponentWorker.setCell(destCell);
-        cell.setWorker(null);
-
-
+        }catch (PositionOutOfBoundsException e){
+            return;
+        }catch (InvalidPushCell e){
+            return;
+            //TODO consider throwing exception
+        }
 
     }
+
+    /**
+     * Calculate the right Destination position of the opponent worker
+     * @param startCell
+     * @param cell
+     * @return
+     * @throws InvalidPushCell
+     * @throws PositionOutOfBoundsException
+     */
     @Override
     public Position destinationPosition(BoardCell startCell, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException{
         Position pushPosition;

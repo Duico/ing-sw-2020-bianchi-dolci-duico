@@ -61,9 +61,6 @@ public class Card {
         else if(moveStrategy.contentEquals("Multiple")){
             this.moveStrategy = new MultipleMove();
         }
-        else if(moveStrategy.contentEquals("Swap")){
-            this.moveStrategy = new SwapMove();
-        }
         else if(moveStrategy.contentEquals("Push")){
             this.moveStrategy = new PushMove();
         }

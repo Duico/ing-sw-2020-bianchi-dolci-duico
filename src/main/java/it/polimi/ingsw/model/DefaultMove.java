@@ -1,19 +1,23 @@
 package it.polimi.ingsw.model;
 
-public class DefaultMove implements MoveStrategy { //inherit functions from Interface
+/**
+ * Class that implements the default strategy of the MoveStrategy
+ */
 
+public class DefaultMove implements MoveStrategy { //inherit functions from Interface
+    /**
+     * Control if the movement is correct based on the default game's rules of movements
+     * @param worker Current worker
+     * @param cell Destination cell
+     * @return
+     */
     @Override
     public boolean isValidMove(Worker worker, BoardCell cell) {
-        return false;
+
+        MoveStrategy pushStrategy = new PushMove();
+        return pushStrategy.isValidMove(worker, cell) && (cell.getWorker() == null);
+        // possibility of exception?
     }
 
-    @Override
-    public boolean isAllowedToMove(Worker worker) {
-        return false;
-    }
 
-    @Override
-    public boolean isRequiredToMove(Worker worker) {
-        return false;
-    }
 }

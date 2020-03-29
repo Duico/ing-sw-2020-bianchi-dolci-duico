@@ -1,14 +1,22 @@
 package it.polimi.ingsw.model;
 
+/**
+ * Class that implements the OpponentStrategy interface. Describe the default opponent worker strategy
+ */
+
 public class DefaultOpponent implements OpponentStrategy {
 
     @Override
     public boolean isValidPush(Worker worker, BoardCell cell) {
-        return false;
+        if(cell.getWorker() != null)
+            return false;
+        else
+            return true;
     }
 
+
     @Override
-    public void pushOpponent(Worker worker, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException {
+    public void pushOpponent(Worker worker, BoardCell cell) {
 
     }
 

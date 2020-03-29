@@ -1,15 +1,32 @@
 package it.polimi.ingsw.model;
 
+/**
+ * Class that implements the power to move in a occupied cell and swap the opponent worker
+ */
+
 public class SwapOpponent implements OpponentStrategy {
+
     @Override
     public boolean isValidPush(Worker worker, BoardCell cell) {
-        return false;
+        return true;
     }
+
 
     @Override
-    public void pushOpponent(Worker worker, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException {
+    public void pushOpponent(Worker worker, BoardCell cell) {
 
+        try {
+            Worker opponentWorker = cell.getWorker();  // worker that would be swap
+            if (opponentWorker == null) return;
+            BoardCell startCell = worker.getCell(); //cell of the start worker
+            startCell.setWorker(opponentWorker);  //set the swap worker in the start cell
+            opponentWorker.setCell(startCell);   // set in the swap worker the start cell
+            cell.setWorker(null);   //set the destination cell to null
+        }catch (NullPointerException e){
+            throw new NullPointerException();
+        }
     }
+
 
     @Override
     public Position destinationPosition(BoardCell startCell, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException {
