@@ -70,7 +70,7 @@ public class Worker {
         return turn;
     }
 
-    public void setTurn(Turn turn) {
+    public void setTurn() {
         this.turn = this.player.getGame().getTurn();
     }
 

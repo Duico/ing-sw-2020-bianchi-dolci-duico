@@ -5,11 +5,19 @@ import java.util.List;
 
 public class Turn {
     private Player currentPlayer;
-    private List<BoardCell> moves = new ArrayList<>();
-    private List<BoardCell> builds = new ArrayList<>();
-    private List<Operation> operations = new ArrayList<>();
+    private Worker currentWorker;
+    private ArrayList<BoardCell> moves;
+    private ArrayList<BoardCell> builds;
+    private ArrayList<Operation> operations;
     private BoardCell initialCell;
-    Board board;
+    Board board; // ask if is useful
+
+    public Turn(Player currentPlayer){
+        this.currentPlayer = currentPlayer;
+        moves = new ArrayList<>();
+        builds = new ArrayList<>();
+        operations = new ArrayList<>();
+    }
 
     public Player getCurrentPlayer() {
         return currentPlayer;
@@ -37,7 +45,7 @@ public class Turn {
         return moves;
     }
 
-    public void setMoves(List<BoardCell> moves) {
+    public void setMoves(ArrayList<BoardCell> moves) {
         this.moves = moves;
     }
 
@@ -45,7 +53,7 @@ public class Turn {
         return builds;
     }
 
-    public void setBuilds(List<BoardCell> builds) {
+    public void setBuilds(ArrayList<BoardCell> builds) {
         this.builds = builds;
     }
 
@@ -53,7 +61,7 @@ public class Turn {
         return operations;
     }
 
-    public void setOperations(List<Operation> operations) {
+    public void setOperations(ArrayList<Operation> operations) {
         this.operations = operations;
     }
 
