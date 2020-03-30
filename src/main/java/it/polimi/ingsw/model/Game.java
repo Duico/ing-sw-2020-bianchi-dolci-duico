@@ -1,8 +1,29 @@
 package it.polimi.ingsw.model;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class Game {
     private Turn turn;
     private Turn previousTurn;
+    private ArrayList<Player> players;
+    final boolean useCards;
+
+    public Game(ArrayList<String> nicknames, boolean useCards){
+        this.useCards = useCards;
+        //FIX numWorkers hard-coded
+        int numWorkers = 2;
+        for( int n = 0; n<nicknames.size(); n++ ){
+            players.add( new Player(nicknames.get(n), numWorkers) );
+        }
+        if(this.useCards){
+            dealCards();
+        }
+    }
+
+    public void dealCards(){
+        //TODO
+    }
 
     public Turn getTurn() {
         return turn;
@@ -16,8 +37,9 @@ public class Game {
         return previousTurn;
     }
 
-    public void setPreviousTurn(Turn previousTurn) {
-        this.previousTurn = previousTurn;
+    public void nextTurn(){
+        //TODO
+        //save current turn in previousTurn and make a new playable turn
     }
 
 }
