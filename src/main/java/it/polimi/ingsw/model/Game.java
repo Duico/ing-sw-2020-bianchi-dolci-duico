@@ -14,7 +14,7 @@ public class Game {
         //FIX numWorkers hard-coded
         int numWorkers = 2;
         for( int n = 0; n<nicknames.size(); n++ ){
-            players.add( new Player(nicknames.get(n), numWorkers) );
+            players.add( new Player(this, nicknames.get(n), numWorkers) );
         }
         if(this.useCards){
             dealCards();
@@ -22,7 +22,7 @@ public class Game {
     }
 
     public void dealCards(){
-        //TODO
+
     }
 
     public Turn getTurn() {
@@ -42,4 +42,7 @@ public class Game {
         //save current turn in previousTurn and make a new playable turn
     }
 
+    public Player getPlayer(int n){
+        return players.get(n);
+    }
 }
