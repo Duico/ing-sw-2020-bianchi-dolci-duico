@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Player {
     private final String nickName;
@@ -9,12 +8,25 @@ public class Player {
     private Game game;
     private ArrayList<Worker> workers;
 
-    public Player(Game game, String nickName, int numWorkers){
+    private Player(Game game, String nickName){
         this.game = game;
         this.nickName = nickName;
-        for(int i=0; i < numWorkers; i++)
-            workers.add(new Worker(this));
+        workers = new ArrayList<>();
+    }
 
+    public static Player createPlayer(Game game, String nickname){
+        //FIX hardcoded number
+        int numWorkers = 2;
+
+        Player player = new Player(game, nickname);
+        player.initWorkers(numWorkers);
+        return player;
+    }
+
+    private void initWorkers(int numWorkers){
+        for(int i=0; i < numWorkers; i++){
+            workers.add(new Worker(this));
+        }
     }
 
     public Card getCard() {
@@ -31,4 +43,12 @@ public class Player {
         return game;
     }
 
+    public Worker getWorker(int i){
+        return workers.get(i);
+    }
+
+    public String getNickName()
+    {
+        return nickName;
+    }
 }

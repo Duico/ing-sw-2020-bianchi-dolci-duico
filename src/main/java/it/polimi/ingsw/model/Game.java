@@ -1,28 +1,58 @@
 package it.polimi.ingsw.model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Game {
     private Turn turn;
     private Turn previousTurn;
-    private ArrayList<Player> players;
-    final boolean useCards;
+    private ArrayList<Player> players = new ArrayList<>();
+    boolean useCards = false;
+    CardDeck cardDeck;
 
-    public Game(ArrayList<String> nicknames, boolean useCards){
-        this.useCards = useCards;
+    private Game(){
+    }
+
+    /**
+     * Create a new Game with chosen nicknames for the players
+     * @param nicknames Array of the players nicknames, in display order
+     * @param useCards True if the game will be using cards
+     * @return
+     */
+    public static Game createGame(ArrayList<String> nicknames, boolean useCards) {
+        Game game = new Game();
+
+        game.useCards = useCards;
         //FIX numWorkers hard-coded
         int numWorkers = 2;
+
         for( int n = 0; n<nicknames.size(); n++ ){
-            players.add( new Player(this, nicknames.get(n), numWorkers) );
+            Player newPlayer = Player.createPlayer( game, nicknames.get(n) );
+            game.players.add(newPlayer);
         }
-        if(this.useCards){
-            dealCards();
+
+        if(game.useCards){
+            //createCardDeck();  TO FIX
+            //dealCards();
+        }else{
+            //assign default Card to each player
+        }
+        return game;
+    }
+
+    private void createCardDeck(){
+        try {
+            this.cardDeck = new CardDeck();
+        }catch (Exception e){
+            System.err.println("Error reading XML configuration file");
         }
     }
 
     public void dealCards(){
-
+        ArrayList<Card> randomDeck = cardDeck.pickRandom(players.size());
+        for(int i=0; i<players.size(); i++){
+            Card randomCard = randomDeck.get(i);
+            players.get(i).setCard(randomCard);
+        }
     }
 
     public Turn getTurn() {
@@ -44,5 +74,10 @@ public class Game {
 
     public Player getPlayer(int n){
         return players.get(n);
+    }
+
+    public ArrayList<Player> getPlayers()
+    {
+        return this.players;
     }
 }

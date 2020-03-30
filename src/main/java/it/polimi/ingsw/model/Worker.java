@@ -14,10 +14,6 @@ public class Worker {
     private final Player player;
 
     /**
-     * Card assigned to the player, which contains strategies to be used by the worker
-     */
-    private Card card;
-    /**
      * Current turn of the player
      */
     private Turn turn;
@@ -28,7 +24,7 @@ public class Worker {
      */
     public Worker(Player player){
         this.player = player;
-        this.card = player.getCard();
+        // in past we had the attribute Card this.card = player.getCard();
     }
 
     /**
@@ -75,12 +71,9 @@ public class Worker {
     }
 
     public Card getCard() {
-        return card;
+        return player.getCard();
     }
 
-    public void setCard(Card card) {
-        this.card = this.player.getCard();
-    }
 
 //    public List<Operation> play() {
 //        MoveStrategy moveStrategy = card.getMoveStrategy();
@@ -130,6 +123,7 @@ public class Worker {
 //    }
 
     public void move(BoardCell cell) throws BlockedMoveException, NotAllowedMoveException, NotValidMoveException{
+        Card card = player.getCard();
         BlockStrategy blockStrategy = this.player.getGame().getPreviousTurn().getCurrentPlayer().getCard().getBlockStrategy();
         MoveStrategy moveStrategy = card.getMoveStrategy();
         OpponentStrategy opponentStrategy = card.getOpponentStrategy();

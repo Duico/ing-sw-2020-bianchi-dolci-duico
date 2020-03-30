@@ -57,10 +57,14 @@ public class CardDeck {
         return cardDeck.get(i);
     }
 
-    public ArrayList<Card> pickRandom(int numPlayers)
-    {
+    /**
+     * Picks [numPlayers] random cards to be assigned to all players in the game
+     * @param numPlayers Number of cards to extract,should be equal to the number of players
+     * @return Deck of [numPlayers] cards
+     */
+    public ArrayList<Card> pickRandom(int numPlayers) {
         int rand;
-        ArrayList<Card> deck = new ArrayList<>();
+        ArrayList<Card> randomDeck = new ArrayList<>();
         int i = 0;
         while(i < numPlayers)
         {
@@ -69,11 +73,11 @@ public class CardDeck {
                 rand = (int) (Math.random() * (cardDeck.size() + 1));
                 randCard=cardDeck.get(rand);
             }
-            while(deck.contains(randCard));
-            deck.add(randCard);
+            while(randomDeck.contains(randCard));
+            randomDeck.add(randCard);
             i++;
         }
-        return deck;
+        return randomDeck;
     }
 }
 

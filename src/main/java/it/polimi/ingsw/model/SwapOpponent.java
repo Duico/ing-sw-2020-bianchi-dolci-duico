@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
 /**
- * Class that implements the power to move in a occupied cell and swap the opponent worker
+ * Class that implements the power to move in an occupied cell and swap the opponent worker
  */
 
 public class SwapOpponent implements OpponentStrategy {
