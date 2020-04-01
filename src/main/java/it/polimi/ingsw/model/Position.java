@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-public class Position {
+public class Position implements Cloneable{
     private int x;
     private int y;
     static int width;
@@ -32,5 +32,10 @@ public class Position {
         Position.width = width;
         Position.height = height;
 
+    }
+
+    @Override
+    protected Position clone() throws CloneNotSupportedException {
+        return (Position) super.clone();
     }
 }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Single worker assigned to a player
  */
-public class Worker {
+public class Worker implements Cloneable{
 
     private Position currentPosition;
     private ArrayList<Position> moves; // initial positoin here
@@ -114,5 +114,9 @@ public class Worker {
 
     public void setCurrentPosition(Position position) {
         this.currentPosition = position;
+    }
+    @Override
+    public Worker clone() throws CloneNotSupportedException {
+        return (Worker) super.clone();
     }
 }

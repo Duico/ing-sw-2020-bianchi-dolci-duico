@@ -1,12 +1,17 @@
 package it.polimi.ingsw.model;
 
-public class Board {
+
+import java.util.Iterator;
+
+public class Board implements Cloneable{
     BoardCell[][] grid;
 
-    public Board(int width, int height) throws PositionOutOfBoundsException { //decide if throws exception or not
+    public Board() throws PositionOutOfBoundsException { //decide if throws exception or not
+        int width = Position.width;
+        int height = Position.height;
         grid = new BoardCell[width][height];
-        for(int i=0;i<width;i++){
-            for(int j=0; j<height; j++){
+        for(int i=0;i<height;i++){
+            for(int j=0; j<width; j++){
                 Position initialPosition = new Position(i, j);
                 grid[i][j]= new BoardCell(initialPosition);
             }
@@ -19,12 +24,12 @@ public class Board {
         boolean isValidMove = moveStrategy.isValidMove(startPosition, destinationPosition, this.grid);
         boolean isValidPush = opponentStrategy.isValidPush(startPosition, destinationPosition, this.grid);
 
-        if( isValidMove == true && isValidPush==true ) {
-            return true;
-        }else{
-            return false;
-        }
-    }
+    public boolean validMove(Position startPosition, Position destinationPosition){
+        BoardCell startCell = getBoardCell(startPosition);
+        BoardCell destinationCell = getBoardCell(destinationPosition);
+        BlockStrategy blockStrategy = startCell.getWorker().getCard().getBlockStrategy();
+        MoveStrategy moveStrategy = startCell.getWorker().getCard().getMoveStrategy();
+        OpponentStrategy opponentStrategy = startCell.getWorker().getCard().getOpponentStrategy();
 
     public boolean isBlockMove(Position startPosition, Position destinationPosition, Card card){
         MoveStrategy moveStrategy = card.getMoveStrategy();
@@ -65,8 +70,24 @@ public class Board {
         this.getBoardCellReference(destinationPosition).setWorker(temp);
         this.getBoardCellReference(destinationPosition).getWorker().addMoves(startPosition);
         this.getBoardCellReference(pushDestPosition).getWorker().setCurrentPosition(startPosition);
-        
+
     }
 
+    @Override
+    protected Board clone() throws CloneNotSupportedException {
+        int width = Position.width;
+        int height = Position.height;
 
+        BoardCell[][] newGrid = new BoardCell[width][height];
+
+        //DEEP cloning for each BoardCell in grid
+        for(int i=0; i<height; i++){
+            for(int j=0; j<width; j++){
+                newGrid[i][j] = (BoardCell) this.grid[i][j].clone();
+            }
+        }
+        Board board = (Board) super.clone();
+        board.grid = newGrid;
+        return board;
+    }
 }

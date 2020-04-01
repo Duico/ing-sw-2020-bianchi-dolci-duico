@@ -17,12 +17,6 @@ public class BoardCell implements Cloneable{
         this.setDome(hasDome);
     }
 
-    public Object clone() throws
-            CloneNotSupportedException
-    {
-        return super.clone();
-    }
-
     public Level getLevel() {
         return level;
     }
@@ -53,5 +47,12 @@ public class BoardCell implements Cloneable{
 
     public void setWorker(Worker worker) {
         this.worker = worker;
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        BoardCell boardCell = (BoardCell) super.clone();
+        boardCell.position =  (Position) this.position.clone();
+        boardCell.worker= (Worker) this.worker.clone();
+        return boardCell;
     }
 }
