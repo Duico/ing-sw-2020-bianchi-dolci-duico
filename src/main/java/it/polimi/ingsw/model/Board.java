@@ -8,7 +8,7 @@ public class Board {
         grid = new BoardCell[width][height];
         for(int i=0;i<width;i++){
             for(int j=0; j<height; j++){
-                Position initialPosition = new Position(width, height, i, j);
+                Position initialPosition = new Position(i, j);
                 grid[i][j]= new BoardCell(initialPosition);
             }
         }
@@ -16,11 +16,13 @@ public class Board {
 
 
     public boolean validMove(Position startPosition, Position destinationPosition){
-        BoardCell startCell = getCellOfThePosition(startPosition);
-        BoardCell destinationCell = getCellOfThePosition(destinationPosition);
+        BoardCell startCell = getBoardCell(startPosition);
+        BoardCell destinationCell = getBoardCell(destinationPosition);
         BlockStrategy blockStrategy = startCell.getWorker().getCard().getBlockStrategy();
         MoveStrategy moveStrategy = startCell.getWorker().getCard().getMoveStrategy();
         OpponentStrategy opponentStrategy = startCell.getWorker().getCard().getOpponentStrategy();
+
+
         boolean isValidMove = moveStrategy.isValidMove(startCell, destinationCell);
         boolean isValidPush = opponentStrategy.isValidPush(this, destinationCell);
 

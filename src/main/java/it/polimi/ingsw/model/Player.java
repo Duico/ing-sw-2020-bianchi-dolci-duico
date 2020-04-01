@@ -7,6 +7,7 @@ public class Player {
     private Card card;
     private Game game;
     private ArrayList<Worker> workers;
+    static int numWorkers;
 
     private Player(Game game, String nickName){
         this.game = game;
@@ -15,9 +16,6 @@ public class Player {
     }
 
     public static Player createPlayer(Game game, String nickname){
-        //FIX hardcoded number
-        int numWorkers = 2;
-
         Player player = new Player(game, nickname);
         player.initWorkers(numWorkers);
         return player;
@@ -25,7 +23,7 @@ public class Player {
 
     private void initWorkers(int numWorkers){
         for(int i=0; i < numWorkers; i++){
-            workers.add(new Worker(this));
+            workers.add(new Worker());
         }
     }
 
@@ -50,5 +48,9 @@ public class Player {
     public String getNickName()
     {
         return nickName;
+    }
+
+    public static void setNumWorkers(int numWorkers){
+        Player.numWorkers = numWorkers;
     }
 }

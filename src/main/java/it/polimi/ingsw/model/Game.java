@@ -10,6 +10,10 @@ public class Game {
     CardDeck cardDeck;
 
     private Game(){
+
+    }
+    private Game(int width, int height, int numWorkers){
+        Position.setSize(width, height);
     }
 
     /**

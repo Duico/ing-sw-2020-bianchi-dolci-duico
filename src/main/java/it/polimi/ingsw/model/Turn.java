@@ -18,7 +18,7 @@ public class Turn {
     public boolean move (Position startPosition, Position destinationPosition){
         boolean isRequiredToMove = currentWorker.getCard().getMoveStrategy().isRequiredToMove(moves, builds);
         boolean isAllowedToMove = currentWorker.getCard().getMoveStrategy().isAllowedToMove(moves, builds);
-        BoardCell startCell = board.getCell()
+        BoardCell startCell = board.getBoardCell(startPosition);
         boolean validMove = board.validMove(startPosition,destinationPosition);
 
         if (isRequiredToMove == false && isAllowedToMove == false) return false;

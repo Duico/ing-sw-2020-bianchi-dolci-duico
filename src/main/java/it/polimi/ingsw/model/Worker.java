@@ -7,9 +7,9 @@ import java.util.ArrayList;
  */
 public class Worker {
 
-    private ArrayList<Position> moves;
-    private ArrayList<Position> builds;
-    private Position initialPosition;
+    private ArrayList<Position> moves; // initial positoin here
+    private ArrayList<Position> builds; //initial position here
+    private ArrayList<Operation> operations;
     private Card card;
 
     public Worker(Card card){

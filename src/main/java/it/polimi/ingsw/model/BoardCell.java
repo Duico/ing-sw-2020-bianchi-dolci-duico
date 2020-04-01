@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-public class BoardCell {
+public class BoardCell implements Cloneable{
     private Level level;
     private boolean dome;
     private Position position;
