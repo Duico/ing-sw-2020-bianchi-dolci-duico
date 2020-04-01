@@ -4,19 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Turn {
-    private Player currentPlayer;
+    private final Player currentPlayer;
     private Worker currentWorker;
-    private ArrayList<BoardCell> moves;
-    private ArrayList<BoardCell> builds;
-    private ArrayList<Operation> operations;
-    private BoardCell initialCell;
-    Board board; // ask if is useful
+    private ArrayList<Position> moves;  //the initial position is setted by the game based the start position
+    private ArrayList<Position> builds;  //the initial position is setted by the game based the start position
+    private Turn previousTurn;
+    private Board board;
 
     public Turn(Player currentPlayer){
         this.currentPlayer = currentPlayer;
-        moves = new ArrayList<>();
-        builds = new ArrayList<>();
-        operations = new ArrayList<>();
+    }
+
+    public boolean move (Position startPosition, Position destinationPosition){
+        boolean isRequiredToMove = currentWorker.getCard().getMoveStrategy().isRequiredToMove(moves, builds);
+        boolean isAllowedToMove = currentWorker.getCard().getMoveStrategy().isAllowedToMove(moves, builds);
+        BoardCell startCell = board.getCell()
+        boolean validMove = board.validMove(startPosition,destinationPosition);
+
+        if (isRequiredToMove == false && isAllowedToMove == false) return false;
+        else if( validMove == true){
+            board.setWorkerInTheCell(startPosition, destinationPosition);
+            moves.add(destinationPosition);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean build (Position startPosition, Position destinationPosition){
+        return false;
     }
 
     public Player getCurrentPlayer() {
@@ -27,61 +43,5 @@ public class Turn {
         this.currentPlayer = currentPlayer;
     }
 
-    protected Board getBoard() {
-        return this.board;
-    }
 
-    public void addMovePosition(BoardCell cell){
-        moves.add(cell);
-        operations.add(Operation.MOVE);
-    }
-
-    public void addBuildCell(BoardCell cell) {
-        builds.add(cell);
-        operations.add(Operation.BUILD);
-    }
-
-    public List<BoardCell> getMoves() {
-        return moves;
-    }
-
-    public void setMoves(ArrayList<BoardCell> moves) {
-        this.moves = moves;
-    }
-
-    public List<BoardCell> getBuilds() {
-        return builds;
-    }
-
-    public void setBuilds(ArrayList<BoardCell> builds) {
-        this.builds = builds;
-    }
-
-    public List<Operation> getOperations() {
-        return operations;
-    }
-
-    public void setOperations(ArrayList<Operation> operations) {
-        this.operations = operations;
-    }
-
-    public BoardCell getInitialCell() {
-        return initialCell;
-    }
-
-    public void setInitialCell(BoardCell initialCell) {
-        this.initialCell = initialCell;
-    }
-
-    public int getNumMoves(){
-        return this.moves.size();
-    }
-
-    public int getNumBuilds(){
-        return this.builds.size();
-    }
-
-    public BoardCell getLastMove(){
-        return moves.get(moves.size()-1);
-    }
 }

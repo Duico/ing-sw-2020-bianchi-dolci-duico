@@ -1,30 +1,19 @@
 package it.polimi.ingsw.model;
 
+import java.util.ArrayList;
+
 /**
  * Single worker assigned to a player
  */
 public class Worker {
-    /**
-     * Current position of the player
-     */
-    private BoardCell cell;
-    /**
-     * Owner of this worker
-     */
-    private final Player player;
 
-    /**
-     * Current turn of the player
-     */
-    private Turn turn;
+    private ArrayList<Position> moves;
+    private ArrayList<Position> builds;
+    private Position initialPosition;
+    private Card card;
 
-    /**
-     * Creates a new worker assigned to the desired player
-     * @param player Player who owns the worker
-     */
-    public Worker(Player player){
-        this.player = player;
-        // in past we had the attribute Card this.card = player.getCard();
+    public Worker(Card card){
+        this.card = card;
     }
 
     /**
@@ -50,25 +39,6 @@ public class Worker {
         this.cell.setWorker(this);
     }
 
-    public BoardCell getCell() {
-        return cell;
-    }
-
-    public void setCell(BoardCell cell) {
-        this.cell = cell;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Turn getTurn() {
-        return turn;
-    }
-
-    public void setTurn() {
-        this.turn = this.player.getGame().getTurn();
-    }
 
     public Card getCard() {
         return player.getCard();

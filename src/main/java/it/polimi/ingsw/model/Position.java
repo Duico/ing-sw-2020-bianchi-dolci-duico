@@ -3,10 +3,12 @@ package it.polimi.ingsw.model;
 public class Position {
     private int x;
     private int y;
-    static int width = 5;
-    static int height = 5;
+    private int width;  // decide how to set: Configuration file of the game and set this with static attribute?
+    private int height;
 
-    public Position(int x, int y) throws PositionOutOfBoundsException {
+    public Position(int width, int height, int x, int y) throws PositionOutOfBoundsException {
+        this.width = width;
+        this.height = height;
         if( x < 0 || y < 0 || x >= width || y >= height ) throw new PositionOutOfBoundsException();
         this.x = x;
         this.y = y;

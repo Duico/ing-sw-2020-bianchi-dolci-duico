@@ -17,6 +17,12 @@ public class BoardCell {
         this.setDome(hasDome);
     }
 
+    public Object clone() throws
+            CloneNotSupportedException
+    {
+        return super.clone();
+    }
+
     public Level getLevel() {
         return level;
     }
