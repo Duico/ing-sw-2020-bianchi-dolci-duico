@@ -18,18 +18,20 @@ public class Board implements Cloneable{
         }
     }
 
-    public boolean canMove(Position startPosition, Position destinationPosition, Card card){
+    public boolean canMove(Position startPosition, Position destinationPosition, Card card) {
         MoveStrategy moveStrategy = card.getMoveStrategy();
         OpponentStrategy opponentStrategy = card.getOpponentStrategy();
         boolean isValidMove = moveStrategy.isValidMove(startPosition, destinationPosition, this.grid);
         boolean isValidPush = opponentStrategy.isValidPush(startPosition, destinationPosition, this.grid);
+    }
 
-    public boolean validMove(Position startPosition, Position destinationPosition){
+    public boolean validMove(Position startPosition, Position destinationPosition) {
         BoardCell startCell = getBoardCell(startPosition);
         BoardCell destinationCell = getBoardCell(destinationPosition);
         BlockStrategy blockStrategy = startCell.getWorker().getCard().getBlockStrategy();
         MoveStrategy moveStrategy = startCell.getWorker().getCard().getMoveStrategy();
         OpponentStrategy opponentStrategy = startCell.getWorker().getCard().getOpponentStrategy();
+    }
 
     public boolean isBlockMove(Position startPosition, Position destinationPosition, Card card){
         MoveStrategy moveStrategy = card.getMoveStrategy();
@@ -48,7 +50,7 @@ public class Board implements Cloneable{
         return true;
     }
 
-    public BoardCell getBoardCell(Position position) throws CloneNotSupportedException {
+    private BoardCell getBoardCell(Position position) throws CloneNotSupportedException {
         BoardCell cell = (BoardCell) grid[position.getX()][position.getY()].clone();
         return cell;
     }
