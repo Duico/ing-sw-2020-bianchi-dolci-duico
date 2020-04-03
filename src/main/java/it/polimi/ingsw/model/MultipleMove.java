@@ -29,6 +29,7 @@ public class MultipleMove implements MoveStrategy {
      */
     @Override
     public boolean isValidMove(Worker worker, BoardCell cell) {
+        //FIX getTurn() not existent
         int moveCount = worker.getTurn().getNumMoves();
         if (moveCount==0 && worker.getTurn().getInitialCell() == cell) {
             return false;

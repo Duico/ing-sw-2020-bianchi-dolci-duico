@@ -20,6 +20,7 @@ public class BuildAtFirstMove implements MoveStrategy {
                 return false;
             else if(cell.hasDome() == true)
                 return false;
+            //FIX
             else if (worker.getTurn().getNumBuilds() == 0) {
                 if ((startCell.getLevel().ordinal() + 1) >= cell.getLevel().ordinal())
                     return true;

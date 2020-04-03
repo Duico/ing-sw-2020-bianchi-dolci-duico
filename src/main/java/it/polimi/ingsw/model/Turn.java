@@ -14,7 +14,7 @@ public class Turn {
         this.currentWorkerId = currentWorkerId;
     }
 
-    public boolean move(int workerId, Position destinationPosition) throws CloneNotSupportedException, InvalidPushCell, PositionOutOfBoundsException {
+    public boolean move (int workerId, Position destinationPosition) throws CloneNotSupportedException, InvalidPushCell, PositionOutOfBoundsException {
 
         Worker currentWorker = currentPlayer.getWorker(workerId);
         try {

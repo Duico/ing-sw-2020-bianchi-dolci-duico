@@ -7,11 +7,9 @@ import java.util.ArrayList;
  */
 public class Worker implements Cloneable{
 
-    private Position currentPosition;
     private ArrayList<Position> moves; // initial positoin here
     private ArrayList<Position> builds; //initial position here
     private ArrayList<Operation> operations;
-    private Card card;
 
     public Worker(){
         this.moves = new ArrayList<Position>();
@@ -28,9 +26,16 @@ public class Worker implements Cloneable{
     }
 
     public Position getCurrentPosition(){
-        return this.currentPosition;
+        return this.moves.get( this.moves.size()-1 );
     }
 
+    public ArrayList<Position> getMoves() {
+        return moves;
+    }
+
+    public ArrayList<Position> getBuilds() {
+        return builds;
+    }
 
 //    public List<Operation> play() {
 //        MoveStrategy moveStrategy = card.getMoveStrategy();
@@ -108,15 +113,36 @@ public class Worker implements Cloneable{
 
      */
 
-    public void addMoves(Position position) {
+    public void addMove(Position position) {
         moves.add(position);
     }
 
-    public void setCurrentPosition(Position position) {
-        this.currentPosition = position;
-    }
+//    public void setCurrentPosition(Position position) {
+//        moves.add(position);
+//    }
+
     @Override
     public Worker clone() throws CloneNotSupportedException {
-        return (Worker) super.clone();
+        Worker newWorker = (Worker) super.clone();
+        //clone moves
+        ArrayList<Position> newMoves = new ArrayList<>();
+        for(Position move: this.moves){
+            newMoves.add(move);
+        }
+        newWorker.moves = newMoves;
+        //clone builds
+        ArrayList<Position> newBuilds = new ArrayList<>();
+        for(Position build: this.builds){
+            newBuilds.add(build);
+        }
+        newWorker.builds = newBuilds;
+        //clone operations
+        ArrayList<Operation> newOperations = new ArrayList<>();
+        for(Operation operation : this.operations){
+            newOperations.add(operation);
+        }
+        newWorker.operations = newOperations;
+
+        return newWorker;
     }
 }

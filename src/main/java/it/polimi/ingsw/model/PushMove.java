@@ -6,7 +6,7 @@ public class PushMove implements MoveStrategy {
     public boolean isValidMove(Worker worker, BoardCell cell) {
 
         try {
-            BoardCell startCell = worker.getCell();
+            BoardCell startCell = worker.getCell(); //FIX
             int dx = cell.getPosition().getX() - startCell.getPosition().getX();
             int dy = cell.getPosition().getY() - startCell.getPosition().getY();
             if(dx==0 && dy==0)

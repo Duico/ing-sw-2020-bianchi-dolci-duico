@@ -8,16 +8,10 @@ public class Player {
     private ArrayList<Worker> workers;
     static int numWorkers;
 
-    private Player(String nickName){
-        this.game = game;
+    public Player(String nickName){
         this.nickName = nickName;
         workers = new ArrayList<>();
-    }
-
-    public static Player createPlayer(Game game, String nickname){
-        Player player = new Player(game, nickname);
-        player.initWorkers(numWorkers);
-        return player;
+        this.initWorkers(numWorkers);
     }
 
     private void initWorkers(int numWorkers){

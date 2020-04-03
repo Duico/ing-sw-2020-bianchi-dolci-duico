@@ -20,7 +20,6 @@ class GameTest {
     void checkNumPlayers()
     {
         ArrayList<String> nickNames = new ArrayList<String>();
-        //ArrayList<String> checkNickNames = new ArrayList<String>();
         nickNames.add("Player1");
         nickNames.add("Player2");
         nickNames.add("Player3");
@@ -28,4 +27,5 @@ class GameTest {
         assertTrue(partita.getPlayers().size()==3);
 
     }
+
 }
