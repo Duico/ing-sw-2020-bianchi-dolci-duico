@@ -6,7 +6,7 @@ package it.polimi.ingsw.model;
 
 public class MultipleMove implements MoveStrategy {
 
-    private int numMoves;
+    private int numMovesAllowed;
 
     public int getNumMoves() {
         return numMoves;
@@ -49,8 +49,8 @@ public class MultipleMove implements MoveStrategy {
      * @return
      */
     @Override
-    public boolean isAllowedToMove(Worker worker) {
-        if (worker.getTurn().getNumMoves() >= numMoves) {
+    public boolean isAllowedToMove(int numMoves) {
+        if (numMoves >= numMovesAllowed) {
             return false;
         } else {
             return true;

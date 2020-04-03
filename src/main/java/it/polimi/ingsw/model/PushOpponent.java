@@ -12,31 +12,32 @@ public class PushOpponent implements OpponentStrategy {
      * @return
      */
     @Override
-    public boolean isValidPush(Worker worker, BoardCell cell){
-        BoardCell startCell = worker.getCell();
-        Worker opponentWorker = cell.getWorker();
+    public boolean isValidPush(Position startPosition, Position destPosition, BoardCell[][] grid){  //domandare come passare matrice
+
+        Worker opponentWorker = grid[destPosition.getX()][destPosition.getY()].getWorker();
         boolean isFree = opponentWorker == null;
 
         if(isFree) return true;
-        else {
 
-            Position destPosition;
-            try {
-                destPosition = this.destinationPosition(startCell, cell);
+        else {
+            try{
+            Position pushDestPosition;
+            //fare le variabili
+            pushDestPosition = this.destinationPosition(startPosition, destPosition);
+                if( grid[pushDestPosition.getX()][pushDestPosition.getY()].getWorker() != null ) return false;
+                    //destCell has dome on top
+                else if( grid[pushDestPosition.getX()][pushDestPosition.getY()].hasDome()) return false;
+                else{
+                    return true;
+                }
             }catch (PositionOutOfBoundsException e){
                 return false;
             }catch (InvalidPushCell e){
                 //TODO consider throwing exception
                 return false;
             }
-            BoardCell destCell = worker.getTurn().getBoard().getBoardCell(destPosition);
-            //destCell occupied by another worker
-            if( destCell.getWorker() != null ) return false;
-            //destCell has dome on top
-            else if(destCell.hasDome()) return false;
-            else{
-                return true;
-            }
+
+
         }
     }
 
@@ -47,6 +48,8 @@ public class PushOpponent implements OpponentStrategy {
      * @throws InvalidPushCell
      * @throws PositionOutOfBoundsException
      */
+
+    // non serve più ora
     @Override
     public void pushOpponent(Worker worker, BoardCell cell){
         //if( this.isValidPush(worker, cell) )
@@ -80,19 +83,14 @@ public class PushOpponent implements OpponentStrategy {
      * @throws PositionOutOfBoundsException
      */
     @Override
-    public Position destinationPosition(BoardCell startCell, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException{
-        Position pushPosition;
-        int width = 5;
-        int height = 5;
-        // (cellX - startX)
-        int dx = cell.getPosition().getX() - startCell.getPosition().getX();
-        int dy = cell.getPosition().getY() - startCell.getPosition().getY();
+    public Position destinationPosition(Position startPosition, Position destPosition) throws InvalidPushCell, PositionOutOfBoundsException{
+        int dx = destPosition.getX() - startPosition.getX();
+        int dy = destPosition.getY() - startPosition.getY();
         if(dx > 1 || dy > 1) throw new InvalidPushCell();
 
-        int x = cell.getPosition().getX() + dx;
-        int y = cell.getPosition().getY() + dy;
+        int x = destPosition.getX() + dx;
+        int y = destPosition.getY() + dy;
 
-        Position destPosition;
         return new Position(x,y);
     }
 }

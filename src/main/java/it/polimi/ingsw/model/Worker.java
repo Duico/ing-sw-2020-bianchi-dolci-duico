@@ -7,41 +7,28 @@ import java.util.ArrayList;
  */
 public class Worker {
 
+    private Position currentPosition;
     private ArrayList<Position> moves; // initial positoin here
     private ArrayList<Position> builds; //initial position here
     private ArrayList<Operation> operations;
     private Card card;
 
-    public Worker(Card card){
-        this.card = card;
+    public Worker(){
+        this.moves = new ArrayList<Position>();
+        this.builds = new ArrayList<Position>();
+        this.operations = new ArrayList<Operation>();
     }
 
-    /**
-     * Places the worker in the initial cell<br/>
-     * Doesn't update reference to a worker of the previous cell
-     * @param cell Cell to move into
-     * @throws OccupiedCellException If cell is already occupied
-     */
-    public void placeWorker(BoardCell cell) throws OccupiedCellException{
-        if(cell.getWorker() != null) throw new OccupiedCellException();
-        else{
-            cell.setWorker(this);
-            this.cell = cell;
-        }
+    public int getNumMoves(){
+        return moves.size();
     }
 
-    /**
-     * Set player position and updates worker in the new cell, <b>without</b> changing references in the previous cell
-     * @param cell Cell to move to
-     */
-    private void updatePosition(BoardCell cell){
-        this.setCell(cell);
-        this.cell.setWorker(this);
+    public int getNumBuilds(){
+        return builds.size();
     }
 
-
-    public Card getCard() {
-        return player.getCard();
+    public Position getCurrentPosition(){
+        return this.currentPosition;
     }
 
 
@@ -92,6 +79,8 @@ public class Worker {
 //
 //    }
 
+    //to delete
+    /*
     public void move(BoardCell cell) throws BlockedMoveException, NotAllowedMoveException, NotValidMoveException{
         Card card = player.getCard();
         BlockStrategy blockStrategy = this.player.getGame().getPreviousTurn().getCurrentPlayer().getCard().getBlockStrategy();
@@ -115,5 +104,15 @@ public class Worker {
 
     public void forceMove(BoardCell cell){
 
+    }
+
+     */
+
+    public void addMoves(Position position) {
+        moves.add(position);
+    }
+
+    public void setCurrentPosition(Position position) {
+        this.currentPosition = position;
     }
 }

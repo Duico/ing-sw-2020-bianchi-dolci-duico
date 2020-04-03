@@ -5,11 +5,10 @@ import java.util.ArrayList;
 public class Player {
     private final String nickName;
     private Card card;
-    private Game game;
     private ArrayList<Worker> workers;
     static int numWorkers;
 
-    private Player(Game game, String nickName){
+    private Player(String nickName){
         this.game = game;
         this.nickName = nickName;
         workers = new ArrayList<>();
@@ -36,10 +35,6 @@ public class Player {
         this.card = card;
     }
 
-    public Game getGame() {
-
-        return game;
-    }
 
     public Worker getWorker(int i){
         return workers.get(i);

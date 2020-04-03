@@ -5,26 +5,36 @@ import java.util.List;
 
 public class Turn {
     private final Player currentPlayer;
-    private Worker currentWorker;
-    private ArrayList<Position> moves;  //the initial position is setted by the game based the start position
-    private ArrayList<Position> builds;  //the initial position is setted by the game based the start position
+    private int currentWorker;
     private Turn previousTurn;
     private Board board;
 
     public Turn(Player currentPlayer){
         this.currentPlayer = currentPlayer;
+        this.currentWorker = currentWorker;
     }
 
-    public boolean move (Position startPosition, Position destinationPosition){
-        boolean isRequiredToMove = currentWorker.getCard().getMoveStrategy().isRequiredToMove(moves, builds);
-        boolean isAllowedToMove = currentWorker.getCard().getMoveStrategy().isAllowedToMove(moves, builds);
-        BoardCell startCell = board.getBoardCell(startPosition);
-        boolean validMove = board.validMove(startPosition,destinationPosition);
+    public boolean move (Position destinationPosition) throws CloneNotSupportedException, InvalidPushCell, PositionOutOfBoundsException {
+
+        Card card = currentPlayer.getCard();
+        Card previousCard = previousTurn.getCurrentPlayer().getCard();
+        Position startPosition = currentPlayer.getWorker(currentWorker).getCurrentPosition();
+        int numMoves = currentPlayer.getWorker(currentWorker).getNumMoves();   // spostare nel player metodo che restiuisce numMoves
+        int numBuilds = currentPlayer.getWorker(currentWorker).getNumBuilds();
+        boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
+        boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(numMoves);
+        boolean canMove = board.canMove(startPosition, destinationPosition, card);
+        boolean isNotBlocked = board.isBlockMove(startPosition, destinationPosition, previousCard);
 
         if (isRequiredToMove == false && isAllowedToMove == false) return false;
-        else if( validMove == true){
-            board.setWorkerInTheCell(startPosition, destinationPosition);
-            moves.add(destinationPosition);
+        else if( canMove == true && ){
+            Position pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
+            if( pushDestPosition != null){
+                board.pushWorkersInTheCells(startPosition, destinationPosition, pushDestPosition);
+            }else {
+                board.setWorkerInTheCell(startPosition, destinationPosition);
+            }
+
             return true;
         }else{
             return false;
@@ -39,9 +49,11 @@ public class Turn {
         return currentPlayer;
     }
 
-    public void setCurrentPlayer(Player currentPlayer) {
-        this.currentPlayer = currentPlayer;
+    public int getCurrentWorker(){
+        return this.currentWorker;
     }
+
+
 
 
 }

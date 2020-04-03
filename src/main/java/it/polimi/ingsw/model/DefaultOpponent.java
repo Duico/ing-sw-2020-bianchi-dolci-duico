@@ -7,8 +7,8 @@ package it.polimi.ingsw.model;
 public class DefaultOpponent implements OpponentStrategy {
 
     @Override
-    public boolean isValidPush(Worker worker, BoardCell cell) {
-        if(cell.getWorker() != null)
+    public boolean isValidPush(Position startPosition, Position destPosition, BoardCell[][] grid) {
+        if(grid[destPosition.getX()][destPosition.getY()].getWorker() != null)
             return false;
         else
             return true;
@@ -21,7 +21,7 @@ public class DefaultOpponent implements OpponentStrategy {
     }
 
     @Override
-    public Position destinationPosition(BoardCell startCell, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException {
+    public Position destinationPosition(Position startPosition, Position destPosition) throws InvalidPushCell, PositionOutOfBoundsException {
         return null;
     }
 }

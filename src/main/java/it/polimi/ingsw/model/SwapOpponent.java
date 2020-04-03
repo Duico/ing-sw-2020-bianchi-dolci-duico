@@ -7,11 +7,12 @@ package it.polimi.ingsw.model;
 public class SwapOpponent implements OpponentStrategy {
 
     @Override
-    public boolean isValidPush(Worker worker, BoardCell cell) {
+    public boolean isValidPush(Position startPosition, Position destPosition, BoardCell[][] grid) {
+
         return true;
     }
 
-
+    //non serve più
     @Override
     public void pushOpponent(Worker worker, BoardCell cell) {
 
@@ -29,7 +30,7 @@ public class SwapOpponent implements OpponentStrategy {
 
 
     @Override
-    public Position destinationPosition(BoardCell startCell, BoardCell cell) throws InvalidPushCell, PositionOutOfBoundsException {
-        return null;
+    public Position destinationPosition(Position startPosition, Position destPosition) throws InvalidPushCell, PositionOutOfBoundsException {
+        return startPosition;
     }
 }
