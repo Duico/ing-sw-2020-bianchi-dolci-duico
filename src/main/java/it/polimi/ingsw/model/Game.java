@@ -1,8 +1,9 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Game {
+public class Game implements Serializable {
     private Turn turn;
     private Turn previousTurn;
     private ArrayList<Player> players = new ArrayList<>();
