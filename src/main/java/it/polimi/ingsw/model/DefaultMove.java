@@ -5,18 +5,15 @@ package it.polimi.ingsw.model;
  */
 
 public class DefaultMove implements MoveStrategy { //inherit functions from Interface
-    /**
-     * Control if the movement is correct based on the default game's rules of movements
-     * @param worker Current worker
-     * @param cell Destination cell
-     * @return
-     */
+
     @Override
-    public boolean isValidMove(Worker worker, BoardCell cell) {
+    public boolean isValidMove(Position startPosition, Position destPosition, BoardCell[][] grid) {
 
         MoveStrategy pushStrategy = new PushMove();
-        return pushStrategy.isValidMove(worker, cell) && (cell.getWorker() == null);
-        // possibility of exception?
+        BoardCell destCell = grid[destPosition.getX()][destPosition.getY()];
+        boolean isValidMove = pushStrategy.isValidMove(startPosition, destPosition, grid) && (destCell.getWorker() == null);
+        return isValidMove;
+
     }
 
 

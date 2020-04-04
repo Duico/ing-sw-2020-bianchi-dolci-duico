@@ -28,10 +28,18 @@ public class Position implements Cloneable{
         this.y = y;
     }
 
+
     public static final void setSize(int width, int height){
         Position.width = width;
         Position.height = height;
 
+    }
+
+    public boolean equals(Object object) {
+        if (!(object instanceof Position))
+            return false;
+        Position position= (Position) object;
+        return (this.x==position.x && this.y == position.y);
     }
 
     @Override

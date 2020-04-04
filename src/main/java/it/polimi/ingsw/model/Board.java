@@ -1,10 +1,6 @@
 package it.polimi.ingsw.model;
 
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 public class Board implements Cloneable{
     BoardCell[][] grid;
 
@@ -14,19 +10,19 @@ public class Board implements Cloneable{
         grid = new BoardCell[width][height];
         for(int i=0;i<height;i++){
             for(int j=0; j<width; j++){
-                Position initialPosition = new Position(i, j);
-                grid[i][j]= new BoardCell(initialPosition);
+                grid[i][j]= new BoardCell();
             }
         }
     }
 
-    public boolean canMove(Position startPosition, Position destinationPosition, ArrayList<Position> previousMoves,Card card, Card previousCard) throws BlockedMoveException {
 
-        boolean isNotBlocked = this.isNotBlocked(startPosition, destinationPosition, previousMoves, previousCard.getBlockStrategy() );
+    public boolean canMove(Position startPosition, Position destinationPosition, boolean isPreviousBlockMove, Card card, Card previousCard) throws BlockedMoveException {
 
-        if(isNotBlocked){
-            throw new BlockedMoveException();
-            return false;
+        if(isPreviousBlockMove == true) {
+            boolean isBlockedMove = this.isBlockedMove(startPosition, destinationPosition, previousCard.getBlockStrategy());
+            if (isBlockedMove) {
+                return false;
+            }
         }
 
         MoveStrategy moveStrategy = card.getMoveStrategy();
@@ -41,20 +37,20 @@ public class Board implements Cloneable{
         }
     }
 
-    /**
-     *
-     * @param startPosition
-     * @param destinationPosition
-     * @param card
-     * @return True if blocking effect is active
-     */
-    private boolean isNotBlocked(Position startPosition, Position destinationPosition, ArrayList<Position> previousMoves, BlockStrategy blockStrategy){
-        return blockStrategy.isValidMoveForNextPlayer(startPosition, destinationPosition, previousMoves, this.grid);
-    }
-
     public boolean canBuild(Position startPosition, Position destinationPosition, Card card){
         return true;
     }
+
+    private boolean isBlockedMove(Position startPosition, Position destinationPosition, BlockStrategy blockStrategy){
+        return blockStrategy.isBlockMove( startPosition, destinationPosition, this.grid);
+    }
+
+    public boolean blockNextPlayer(Position startPosition, Position destinationPosition, Card card) {
+        boolean willBlock = card.getBlockStrategy().blockNextPlayer(startPosition, destinationPosition, this.grid);
+        return willBlock;
+    }
+
+
 
     private BoardCell getBoardCell(Position position) throws CloneNotSupportedException {
         BoardCell cell = (BoardCell) grid[position.getX()][position.getY()].clone();
@@ -65,19 +61,19 @@ public class Board implements Cloneable{
         return grid[position.getX()][position.getY()];
     }
 
-    public void setWorkerInTheCell(Position startPosition, Position destinationPosition){
-        this.getBoardCellReference(destinationPosition).setWorker(this.getBoardCellReference(startPosition).getWorker());
-        this.getBoardCellReference(startPosition).setWorker(null);
-    }
 
-    public void pushWorkersInTheCells(Position startPosition, Position destinationPosition, Position pushDestPosition){
+    public void putWorkers(Position startPosition, Position destinationPosition, Position pushDestPosition){
         Worker temp = this.getBoardCellReference(startPosition).getWorker();
-        this.getBoardCellReference(pushDestPosition).setWorker(this.getBoardCellReference(startPosition).getWorker());
-        this.getBoardCellReference(pushDestPosition).getWorker().addMove(destinationPosition);
-        //this.getBoardCellReference(pushDestPosition).getWorker().setCurrentPosition(pushDestPosition);
-        this.getBoardCellReference(destinationPosition).setWorker(temp);
-        this.getBoardCellReference(destinationPosition).getWorker().addMove(startPosition);
-        //this.getBoardCellReference(pushDestPosition).getWorker().setCurrentPosition(startPosition);
+        this.getBoardCellReference(destinationPosition).setWorker(this.getBoardCellReference(startPosition).getWorker());
+        if(pushDestPosition == null){
+            this.getBoardCellReference(startPosition).setWorker(null);
+            this.getBoardCellReference(destinationPosition).getWorker().addMove(destinationPosition);
+        }else{
+            this.getBoardCellReference(pushDestPosition).getWorker().addMove(pushDestPosition);
+            this.getBoardCellReference(destinationPosition).setWorker(temp);
+            this.getBoardCellReference(startPosition).setWorker(null);
+            this.getBoardCellReference(destinationPosition).getWorker().addMove(destinationPosition);
+        }
 
     }
 
@@ -98,4 +94,6 @@ public class Board implements Cloneable{
         board.grid = newGrid;
         return board;
     }
+
+
 }

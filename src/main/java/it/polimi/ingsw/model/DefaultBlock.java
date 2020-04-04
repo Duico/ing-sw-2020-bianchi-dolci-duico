@@ -1,9 +1,13 @@
 package it.polimi.ingsw.model;
 
+import java.util.ArrayList;
+
 public class DefaultBlock implements BlockStrategy {
 
-    @Override
-    public boolean isValidMoveForNextPlayer(Worker worker, BoardCell cell) {
-        return true;
+    public boolean isBlockMove(Position startPosition, Position destinationPosition, BoardCell[][] grid) {
+        return false;
+    }
+    public boolean blockNextPlayer(Position startPosition, Position destinationPosition, BoardCell[][] grid){
+        return false;
     }
 }

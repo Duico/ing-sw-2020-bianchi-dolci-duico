@@ -22,12 +22,23 @@ public class MultipleBuild implements BuildStrategy {
     }
 
     @Override
-    public boolean isAllowedToBuild(int numBuilds, ArrayList<Operation> operations) {
-        return numBuilds <=1;
+    public boolean isAllowedToBuild(ArrayList<Operation> operations) {
+        if(operations.size() == 0)
+            return false;
+        else if(operations.size() == 1 && operations.get(0) == Operation.MOVE)
+            return true;
+        else if(operations.size() == 2 && operations.get(1) == Operation.BUILD && operations.get(0) == Operation.MOVE)
+            return true;
+        else return false;
     }
 
     @Override
-    public boolean isRequiredToBuild(int numBuilds, ArrayList<Operation> operations) {
-        return numBuilds == 0;
+    public boolean isRequiredToBuild(ArrayList<Operation> operations) {
+        if(operations.size() == 0)
+            return true;
+        else if(operations.size() == 1 && operations.get(0) == Operation.MOVE)
+            return true;
+        else
+            return false;
     }
 }

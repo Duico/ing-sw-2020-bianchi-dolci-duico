@@ -1,9 +1,8 @@
 package it.polimi.ingsw.model;
 
-import java.util.ArrayList;
-
 public class Turn {
     private final Player currentPlayer;
+    private boolean blockNextPlayer;
     private int currentWorkerId;
     private Worker currentWorker; //clone
     private Turn previousTurn;
@@ -12,6 +11,7 @@ public class Turn {
     public Turn(Player currentPlayer){
         this.currentPlayer = currentPlayer;
         this.currentWorkerId = currentWorkerId;
+        this.blockNextPlayer = false;
     }
 
     public boolean move (int workerId, Position destinationPosition) throws CloneNotSupportedException, InvalidPushCell, PositionOutOfBoundsException {
@@ -26,9 +26,8 @@ public class Turn {
         //check worker position
 
         Card card = currentPlayer.getCard();
-        Player previousPlayer = previousTurn.getCurrentPlayer();
-        Card previousCard = previousPlayer.getCard();
-        ArrayList<Position> previousMoves = previousTurn.getCurrentWorker().getMoves(); //TODO at the end of the turn Turn.currentWorker must be updated
+        Card previousCard = previousTurn.getCurrentPlayer().getCard();
+        boolean previousBlockNextPlayer = previousTurn.isBlockNextPlayer(); //TODO at the end of the turn Turn.currentWorker must be updated
         Position startPosition = currentWorker.getCurrentPosition();
         int numMoves = currentWorker.getNumMoves();   // spostare nel player metodo che restiuisce numMoves
         int numBuilds = currentWorker.getNumBuilds();
@@ -36,20 +35,26 @@ public class Turn {
         boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(numMoves);
         boolean canMove = false;
         try {
-            canMove = board.canMove(startPosition, destinationPosition, previousMoves, card, previousCard);
+            canMove = board.canMove(startPosition, destinationPosition, previousBlockNextPlayer, card, previousCard);
         } catch (BlockedMoveException e){
             return false;
         }
         if (isRequiredToMove == false && isAllowedToMove == false) return false;
         else if( canMove == true ){
+
+            if(blockNextPlayer == false) {
+                blockNextPlayer = board.blockNextPlayer(startPosition, destinationPosition, card);
+            }
+
             Position pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
             if( pushDestPosition != null){
-                board.pushWorkersInTheCells(startPosition, destinationPosition, pushDestPosition);
+                board.putWorkers(startPosition, destinationPosition, pushDestPosition);
             }else {
-                board.setWorkerInTheCell(startPosition, destinationPosition);
+                board.putWorkers(startPosition, destinationPosition, null);
             }
 
             return true;
+
         }else{
             return false;
         }
@@ -68,6 +73,10 @@ public class Turn {
         return this.currentWorkerId;
     }
 
+    public boolean isBlockNextPlayer() {
+        return blockNextPlayer;
+    }
+
     private void setCurrentWorker(Worker currentWorker) throws WorkerAlreadySetException {
         if(this.currentWorker == null){
             this.currentWorker = currentWorker;
@@ -75,8 +84,9 @@ public class Turn {
             throw new WorkerAlreadySetException();
         }
     }
-    private Worker getCurrentWorker() {
 
+    private Worker getCurrentWorker() {
+        return this.currentWorker;
     }
 
 }

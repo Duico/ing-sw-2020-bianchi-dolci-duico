@@ -2,8 +2,7 @@ package it.polimi.ingsw.model;
 
 public interface MoveStrategy { //implement DefaultMove functions here
 
-    boolean isValidMove(Worker worker, BoardCell cell);
-
+    boolean isValidMove(Position startPosition, Position destPosition, BoardCell[][] grid);
 
     default boolean isAllowedToMove(int numMoves){
         if(numMoves != 0){
@@ -12,7 +11,6 @@ public interface MoveStrategy { //implement DefaultMove functions here
             return true;
         }
     }
-
 
     default boolean isRequiredToMove(int numMoves){
         if(numMoves != 0){

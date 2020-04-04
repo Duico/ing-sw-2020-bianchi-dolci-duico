@@ -7,7 +7,6 @@ public class DomeBuild implements BuildStrategy {
     @Override
     public boolean isValidBuild(BoardCell [][] grid, Position startPosition, Position destinationPosition, Boolean isDome, ArrayList<Position> builds) {
         try {
-            BoardCell startCell = grid[startPosition.getX()][startPosition.getY()];
             BoardCell destinationCell = grid[destinationPosition.getX()][destinationPosition.getY()];
             int dx = startPosition.getX() - destinationPosition.getX();
             int dy = startPosition.getX() - destinationPosition.getY();

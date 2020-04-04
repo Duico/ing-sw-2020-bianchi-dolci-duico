@@ -3,19 +3,21 @@ package it.polimi.ingsw.model;
 //has now also taken the role of SwapMove
 public class PushMove implements MoveStrategy {
     @Override
-    public boolean isValidMove(Worker worker, BoardCell cell) {
+    public boolean isValidMove(Position startPosition, Position destPosition, BoardCell[][] grid) {
 
         try {
-            BoardCell startCell = worker.getCell(); //FIX
-            int dx = cell.getPosition().getX() - startCell.getPosition().getX();
-            int dy = cell.getPosition().getY() - startCell.getPosition().getY();
+
+            BoardCell startCell = grid[startPosition.getX()][startPosition.getY()];
+            BoardCell destCell = grid[destPosition.getY()][destPosition.getY()];
+            int dx = destPosition.getX() - startPosition.getX();
+            int dy = destPosition.getY() - startPosition.getY();
             if(dx==0 && dy==0)
                 return false;
             else if(dx < -1 || dx > 1 || dy < -1 || dy > 1)
                 return false;
-            else if(cell.hasDome() == true)
+            else if(destCell.hasDome() == true)
                 return false;
-            else if((startCell.getLevel().ordinal()+1) >= (cell.getLevel().ordinal()))
+            else if((startCell.getLevel().ordinal()+1) >= (destCell.getLevel().ordinal()))
                 return true;
             else
                 return false;

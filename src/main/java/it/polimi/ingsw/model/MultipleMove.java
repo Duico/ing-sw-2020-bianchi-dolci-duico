@@ -8,50 +8,31 @@ public class MultipleMove implements MoveStrategy {
 
     private int numMovesAllowed;
 
-    public int getNumMoves() {
-        return numMoves;
-    }
 
-    public MultipleMove(int numMoves){
-        this.numMoves = numMoves;
+    public MultipleMove(int numMovesAllowed){
+        this.numMovesAllowed = numMovesAllowed;
     }
 
     public MultipleMove(){
-        this.numMoves = 1;
+        this.numMovesAllowed = 1;
     }
 
-    /**
-     * Control if the movement is correct based on the multiple move power
-     *
-     * @param worker Current worker
-     * @param cell   destination cell
-     * @return
-     */
     @Override
-    public boolean isValidMove(Worker worker, BoardCell cell) {
-        //FIX getTurn() not existent
-        int moveCount = worker.getTurn().getNumMoves();
-        if (moveCount==0 && worker.getTurn().getInitialCell() == cell) {
-            return false;
-        }
-        else if(moveCount > 0 && worker.getTurn().getLastMove() == cell){
+    public boolean isValidMove(Position startPosition, Position destPosition, BoardCell[][] grid) {
+
+        BoardCell startCell = grid[startPosition.getX()][startPosition.getY()];
+        int numMoves = startCell.getWorker().getNumMoves();
+        if(numMoves > 1 && startCell.getWorker().getFirstMove().equals(destPosition)){
             return false;
         }else{
             MoveStrategy defaultStrategy = new DefaultMove();
-            return defaultStrategy.isValidMove(worker, cell);
-
+            return defaultStrategy.isValidMove(startPosition,destPosition,grid);
         }
     }
 
-    /**
-     * Control if the movement is allowed based on the multipleMove's rules
-     *
-     * @param worker Current worker
-     * @return
-     */
     @Override
     public boolean isAllowedToMove(int numMoves) {
-        if (numMoves >= numMovesAllowed) {
+        if (numMoves >= (numMovesAllowed)) {
             return false;
         } else {
             return true;

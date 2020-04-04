@@ -18,7 +18,7 @@ public class Worker implements Cloneable{
     }
 
     public int getNumMoves(){
-        return moves.size();
+        return moves.size()-1;
     }
 
     public int getNumBuilds(){
@@ -28,6 +28,8 @@ public class Worker implements Cloneable{
     public Position getCurrentPosition(){
         return this.moves.get( this.moves.size()-1 );
     }
+
+    public Position getFirstMove(){ return this.moves.get(0); }
 
     public ArrayList<Position> getMoves() {
         return moves;
@@ -84,34 +86,6 @@ public class Worker implements Cloneable{
 //
 //    }
 
-    //to delete
-    /*
-    public void move(BoardCell cell) throws BlockedMoveException, NotAllowedMoveException, NotValidMoveException{
-        Card card = player.getCard();
-        BlockStrategy blockStrategy = this.player.getGame().getPreviousTurn().getCurrentPlayer().getCard().getBlockStrategy();
-        MoveStrategy moveStrategy = card.getMoveStrategy();
-        OpponentStrategy opponentStrategy = card.getOpponentStrategy();
-        boolean isValidMove = moveStrategy.isValidMove(this, cell);
-        boolean isValidPush = opponentStrategy.isValidPush(this, cell);
-
-        if( !blockStrategy.isValidMoveForNextPlayer(this, cell)) throw new BlockedMoveException();
-        else if( !moveStrategy.isAllowedToMove(this) ) throw new NotAllowedMoveException();
-        else if ( !isValidMove || !isValidPush ) throw new NotValidMoveException();
-            else {
-                    opponentStrategy.pushOpponent(this, cell);
-                    this.updatePosition(cell);
-        }
-    }
-
-    public void build(BoardCell cell){
-
-    }
-
-    public void forceMove(BoardCell cell){
-
-    }
-
-     */
 
     public void addMove(Position position) {
         moves.add(position);
