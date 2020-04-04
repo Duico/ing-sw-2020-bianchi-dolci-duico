@@ -9,52 +9,60 @@ public class Game implements Serializable {
     private ArrayList<Player> players = new ArrayList<>();
     boolean useCards = false;
     CardDeck cardDeck;
+    private final String persistencyFilename = "./game.ser";
 
-    private Game(){
-
+    public Game() {
+        this(5, 5, 2);
     }
-    private Game(int width, int height, int numWorkers){
+
+    /**
+     * Create
+     *
+     * @param width
+     * @param height
+     * @param numWorkers
+     */
+    public Game(int width, int height, int numWorkers) {
         Position.setSize(width, height);
     }
 
     /**
-     * Create a new Game with chosen nicknames for the players
+     * Start this Game with chosen nicknames for the players
+     *
      * @param nicknames Array of the players nicknames, in display order
-     * @param useCards True if the game will be using cards
+     * @param useCards  True if the game will be using cards
      * @return
      */
-    public static Game createGame(ArrayList<String> nicknames, boolean useCards) {
-        Game game = new Game();
+    public void startGame(ArrayList<String> nicknames, boolean useCards) {
 
-        game.useCards = useCards;
+        this.useCards = useCards;
         //FIX numWorkers hard-coded
         int numWorkers = 2;
 
-        for( int n = 0; n<nicknames.size(); n++ ){
-            Player newPlayer = new Player ( nicknames.get(n) );
-            game.players.add(newPlayer);
+        for (int n = 0; n < nicknames.size(); n++) {
+            Player newPlayer = new Player(nicknames.get(n));
+            players.add(newPlayer);
         }
 
-        if(game.useCards){
+        if (this.useCards) {
             //createCardDeck();  TO FIX
             //dealCards();
-        }else{
+        } else {
             //assign default Card to each player
         }
-        return game;
     }
 
-    private void createCardDeck(){
+    private void createCardDeck() {
         try {
             this.cardDeck = new CardDeck();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println("Error reading XML configuration file");
         }
     }
 
-    public void dealCards(){
+    public void dealCards() {
         ArrayList<Card> randomDeck = cardDeck.pickRandom(players.size());
-        for(int i=0; i<players.size(); i++){
+        for (int i = 0; i < players.size(); i++) {
             Card randomCard = randomDeck.get(i);
             players.get(i).setCard(randomCard);
         }
@@ -72,17 +80,17 @@ public class Game implements Serializable {
         return previousTurn;
     }
 
-    public void nextTurn(){
+    public void nextTurn() {
         //TODO
         //save current turn in previousTurn and make a new playable turn
     }
 
-    public Player getPlayer(int n){
+    public Player getPlayer(int n) {
         return players.get(n);
     }
 
-    public ArrayList<Player> getPlayers()
-    {
+    public ArrayList<Player> getPlayers() {
         return this.players;
     }
+
 }
