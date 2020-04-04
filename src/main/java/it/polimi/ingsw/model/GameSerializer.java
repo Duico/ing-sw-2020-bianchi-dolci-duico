@@ -2,16 +2,9 @@ package it.polimi.ingsw.model;
 
 import java.io.*;
 
-/**
- * Manages writing and reading game state to file, to enable persistency
- */
 public class GameSerializer {
     private String filename;
 
-    /**
-     *
-     * @param filename Base name of the file to write to
-     */
     public GameSerializer(String filename){
         this.filename = filename;
     }
@@ -44,13 +37,11 @@ public class GameSerializer {
         return inputStream;
     }
 
-    public boolean writeGame(Game game){
-        boolean success = false;
+    public void writeGame(Game game){
         ObjectOutputStream out = null;
         try {
             out = initOutputStream();
             out.writeObject(game);
-            success = true;
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
@@ -62,7 +53,7 @@ public class GameSerializer {
                 }
             }
         }
-        return success;
+
     }
 
     public Game readGame(){
@@ -82,9 +73,6 @@ public class GameSerializer {
                 }
             }
         }
-        //FIX set static attributes
-        Position.height = 5;
-        Position.width = 5;
         return inputGame;
     }
 

@@ -26,13 +26,9 @@ public class CardDeck {
         DocumentBuilder builder = factory.newDocumentBuilder();
 
         Document document = builder.parse(new File("CardDeck.xml"));    //toDo
-
         document.getDocumentElement().normalize();
-
-        Element root = document.getDocumentElement();
-
+        //Element root = document.getDocumentElement();
         NodeList nList = document.getElementsByTagName("card");
-
 
         for (int temp = 0; temp < nList.getLength(); temp++)
         {

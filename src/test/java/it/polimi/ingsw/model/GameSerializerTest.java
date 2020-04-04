@@ -16,7 +16,9 @@ class GameSerializerTest {
     @Test
     void writeGame(){
         //new Game()
-
+    }
+    @Test
+    void readWriteGame() {
         GameSerializer serializer = new GameSerializer("./game.ser");
         serializer.writeGame(game);
         Game newGame = serializer.readGame();
