@@ -31,10 +31,14 @@ public class Player implements Serializable {
         this.card = card;
     }
 
-
-    public Worker getWorker(int i){
-        return workers.get(i);
+    public int getNumMovesWorker(int worker) {
+        return workers.get(worker).getNumMoves();
     }
+
+    public int getNumBuildsWorker(int worker) {
+        return workers.get(worker).getNumBuilds();
+    }
+
 
     public String getNickName()
     {
@@ -56,4 +60,8 @@ public class Player implements Serializable {
                 Objects.equals(workers, player.workers);
     }
 
+
+    public Position getCurrentPositionWorker(int currentWorkerId) {
+        return workers.get(currentWorkerId).getCurrentPosition();
+    }
 }

@@ -14,6 +14,7 @@ public class DefaultOpponent implements OpponentStrategy {
             return true;
     }
 
+
     @Override
     public Position destinationPosition(Position startPosition, Position destPosition) throws InvalidPushCell, PositionOutOfBoundsException {
         return null;

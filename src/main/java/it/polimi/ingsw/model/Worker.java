@@ -32,6 +32,8 @@ public class Worker implements Cloneable{
 
     public Position getFirstMove(){ return this.moves.get(0); }
 
+    public Position getFirstBuild(){ return this.builds.get(0); }
+
     public ArrayList<Position> getMoves() {
         return moves;
     }
@@ -92,9 +94,17 @@ public class Worker implements Cloneable{
         moves.add(position);
     }
 
-//    public void setCurrentPosition(Position position) {
-//        moves.add(position);
-//    }
+    public void addBuild(Position position){
+        builds.add(position);
+    }
+
+    public void deleteLastMove(){
+        moves.remove(moves.size()-1);
+    }
+
+    public void deleteLastBuild(){
+        builds.remove(builds.size()-1);
+    }
 
     @Override
     public Worker clone() throws CloneNotSupportedException {

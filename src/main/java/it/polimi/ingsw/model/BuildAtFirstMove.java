@@ -25,7 +25,7 @@ public class BuildAtFirstMove implements MoveStrategy {
             else if(destCell.hasDome() == true)
                 return false;
 
-            else if (destCell.getWorker().getNumBuilds() == 0) {
+            else if (startCell.getWorker().getNumBuilds() == 0) {
                 if ((startCell.getLevel().ordinal()+1) >= destCell.getLevel().ordinal())
                     return true;
                 else

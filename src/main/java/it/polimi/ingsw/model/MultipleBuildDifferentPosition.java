@@ -1,19 +1,18 @@
 package it.polimi.ingsw.model;
 
-import java.util.ArrayList;
-
 public class MultipleBuildDifferentPosition implements BuildStrategy {
 
     @Override
-    public boolean isValidBuild(BoardCell [][] grid, Position startPosition, Position destinationPosition, Boolean isDome, ArrayList<Position> builds) {
-        int numBuilds = grid[startPosition.getX()][startPosition.getY()].getWorker().getNumBuilds();
+    public boolean isValidBuild(BoardCell [][] grid, Position startPosition, Position destinationPosition, Boolean isDome) {
+        BoardCell startCell = grid[startPosition.getX()][startPosition.getY()];
+        int numBuilds = startCell.getWorker().getNumBuilds();
         BuildStrategy buildStrategy = new DefaultBuild();
         if(numBuilds == 0){
-            return buildStrategy.isValidBuild(grid, startPosition, destinationPosition, isDome, builds);
+            return buildStrategy.isValidBuild(grid, startPosition, destinationPosition, isDome);
         }
-        else if(numBuilds==1){
-            if(destinationPosition != builds.get(0))
-                return buildStrategy.isValidBuild(grid, startPosition, destinationPosition, isDome, builds);
+        else if(numBuilds == 1){
+            if(!destinationPosition.equals(startCell.getWorker().getFirstBuild()))
+                return buildStrategy.isValidBuild(grid, startPosition, destinationPosition, isDome);
             else
                 return false;
         }
@@ -22,14 +21,14 @@ public class MultipleBuildDifferentPosition implements BuildStrategy {
     }
 
     @Override
-    public boolean isAllowedToBuild(ArrayList<Operation> operations) {
+    public boolean isAllowedToBuild(int numMoves, int numBuilds, Operation lastOperation) {
        BuildStrategy MultipleBuildDifferentPosition = new MultipleBuild();
-       return MultipleBuildDifferentPosition.isAllowedToBuild(operations);
+       return MultipleBuildDifferentPosition.isAllowedToBuild(numMoves, numBuilds, lastOperation);
     }
 
     @Override
-    public boolean isRequiredToBuild(ArrayList<Operation> operations) {
+    public boolean isRequiredToBuild(int numMoves, int numBuilds, Operation lastOperation) {
         BuildStrategy MultipleBuildDifferentPosition = new MultipleBuild();
-        return MultipleBuildDifferentPosition.isRequiredToBuild(operations);
+        return MultipleBuildDifferentPosition.isRequiredToBuild(numMoves, numBuilds, lastOperation);
     }
 }

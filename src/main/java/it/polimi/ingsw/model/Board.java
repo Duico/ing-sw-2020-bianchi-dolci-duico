@@ -6,7 +6,7 @@ import java.io.Serializable;
 public class Board implements Cloneable, Serializable {
     BoardCell[][] grid;
 
-    public Board() throws PositionOutOfBoundsException { //decide if throws exception or not
+    public Board() { //decide if throws exception or not
         int width = Position.width;
         int height = Position.height;
         grid = new BoardCell[width][height];
@@ -53,7 +53,6 @@ public class Board implements Cloneable, Serializable {
     }
 
 
-
     private BoardCell getBoardCell(Position position) throws CloneNotSupportedException {
         BoardCell cell = (BoardCell) grid[position.getX()][position.getY()].clone();
         return cell;
@@ -76,6 +75,18 @@ public class Board implements Cloneable, Serializable {
 
     }
 
+    public void setWorkers(Worker worker, Position destPosition){
+        if( this.getBoardCellReference(destPosition).getWorker() == null){
+            this.getBoardCellReference(destPosition).setWorker(worker);
+            this.getBoardCellReference(destPosition).getWorker().addMove(destPosition);
+        }
+    }
+
+    public boolean isWinningMove(Position startPosition, Position destinationPosition, Card card){
+        WinStrategy winStrategy = card.getWinStrategy();
+        return winStrategy.isWinningMove(startPosition, destinationPosition, this.grid );
+    }
+
     @Override
     protected Board clone() throws CloneNotSupportedException {
         int width = Position.width;
@@ -94,5 +105,7 @@ public class Board implements Cloneable, Serializable {
         return board;
     }
 
-
+    public BoardCell[][] getGrid() {   //only for the test
+        return grid;
+    }  // to delete
 }

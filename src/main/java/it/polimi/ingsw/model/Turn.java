@@ -6,38 +6,38 @@ public class Turn implements Serializable {
     private final Player currentPlayer;
     private boolean blockNextPlayer;
     private int currentWorkerId;
-    private Worker currentWorker; //clone
-    private Turn previousTurn;
+    private Card previousTurnCard;
+    private boolean previousBlockNextPlayer;
     private Board board;
 
     public Turn(Player currentPlayer){
         this.currentPlayer = currentPlayer;
         this.currentWorkerId = currentWorkerId;
         this.blockNextPlayer = false;
+
     }
 
-    public boolean move (int workerId, Position destinationPosition) throws CloneNotSupportedException, InvalidPushCell, PositionOutOfBoundsException {
+    public Turn(Player currentPlayer, Card previousTurnCard, boolean previousBlockNextPlayer, Board board){
+        this.currentPlayer = currentPlayer;
+        this.currentWorkerId = currentWorkerId;
+        this.blockNextPlayer = false;
+        this.previousTurnCard = previousTurnCard;
+        this.previousBlockNextPlayer = previousBlockNextPlayer;
+        this.board = board;
 
-        Worker currentWorker = currentPlayer.getWorker(workerId);
-        try {
-            this.setCurrentWorker(currentWorker);
-        } catch (WorkerAlreadySetException e) {
-            //If he already moved or built STOP
-            //else ask to switch worker
-        }
-        //check worker position
+    }
+
+    public boolean move(int workerId, Position destinationPosition) throws CloneNotSupportedException, InvalidPushCell, PositionOutOfBoundsException {
 
         Card card = currentPlayer.getCard();
-        Card previousCard = previousTurn.getCurrentPlayer().getCard();
-        boolean previousBlockNextPlayer = previousTurn.isBlockNextPlayer(); //TODO at the end of the turn Turn.currentWorker must be updated
-        Position startPosition = currentWorker.getCurrentPosition();
-        int numMoves = currentWorker.getNumMoves();   // spostare nel player metodo che restiuisce numMoves
-        int numBuilds = currentWorker.getNumBuilds();
+        int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
+        int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
+        Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
         boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
         boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(numMoves);
         boolean canMove = false;
         try {
-            canMove = board.canMove(startPosition, destinationPosition, previousBlockNextPlayer, card, previousCard);
+            canMove = board.canMove(startPosition, destinationPosition, previousBlockNextPlayer, card, previousTurnCard);
         } catch (BlockedMoveException e){
             return false;
         }
@@ -67,6 +67,12 @@ public class Turn implements Serializable {
         return false;
     }
 
+    public boolean winMove(int workerId, Position destinationPosition){
+        Card card = currentPlayer.getCard();
+        Position startPosition = currentPlayer.getCurrentPositionWorker(workerId);
+        return board.isWinningMove(startPosition, destinationPosition, card);
+    }
+
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
@@ -79,16 +85,5 @@ public class Turn implements Serializable {
         return blockNextPlayer;
     }
 
-    private void setCurrentWorker(Worker currentWorker) throws WorkerAlreadySetException {
-        if(this.currentWorker == null){
-            this.currentWorker = currentWorker;
-        }else{
-            throw new WorkerAlreadySetException();
-        }
-    }
-
-    private Worker getCurrentWorker() {
-        return this.currentWorker;
-    }
 
 }

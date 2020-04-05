@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
-class DefaultMoveTest {
-
+class MultipleMoveTest {
     static Board board;
     static Game game;
     static Worker worker1;
     static Worker worker2;
-    static MoveStrategy defaultMove;
+    static MoveStrategy multipleMove;
+    static MoveStrategy multipleMove2;
 
     /**
      * Setup before all the test
@@ -25,7 +25,8 @@ class DefaultMoveTest {
             nickNames.add("Player1");
             nickNames.add("Player2");
             game = Game.createGame(nickNames, true);
-            defaultMove = new DefaultMove();
+            multipleMove = new MultipleMove(2);
+            multipleMove2 = new MultipleMove();
             board = new Board();
             worker1 = new Worker();
             worker2 = new Worker();
@@ -35,14 +36,10 @@ class DefaultMoveTest {
             board.setWorkers(worker2, startPositionPlayer2);
 
 
-
         }catch (Exception e){
             System.err.println("Errore");
         }
-
-
     }
-
 
     /**
      * Control if return true when the position of destination is right
@@ -53,7 +50,7 @@ class DefaultMoveTest {
         Position startPosition = new Position(2,2);
         Position destPosition = new Position(1, 1);
         BoardCell[][] grid = board.getGrid();
-        assertTrue(defaultMove.isValidMove(startPosition, destPosition, grid));
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, grid));
     }
 
 
@@ -66,7 +63,7 @@ class DefaultMoveTest {
         Position startPosition = new Position(2,2);
         Position destPosition = new Position(4, 4);
         BoardCell[][] grid = board.getGrid();
-        assertFalse(defaultMove.isValidMove(startPosition, destPosition, grid));
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
     }
 
 
@@ -80,7 +77,7 @@ class DefaultMoveTest {
         Position destPosition = new Position(1, 1);
         BoardCell[][] grid = board.getGrid();
         grid[destPosition.getX()][destPosition.getY()].setLevel(Level.BASE);
-        assertTrue(defaultMove.isValidMove(startPosition, destPosition, grid));
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, grid));
         grid[destPosition.getX()][destPosition.getY()].setLevel(Level.EMPTY);
     }
 
@@ -94,7 +91,7 @@ class DefaultMoveTest {
         Position destPosition = new Position(1, 1);
         BoardCell[][] grid = board.getGrid();
         grid[startPosition.getX()][startPosition.getY()].setLevel(Level.MID);
-        assertTrue(defaultMove.isValidMove(startPosition, destPosition, grid));
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, grid));
         grid[startPosition.getX()][startPosition.getY()].setLevel(Level.EMPTY);
     }
 
@@ -109,7 +106,7 @@ class DefaultMoveTest {
         Position destPosition = new Position(1, 1);
         BoardCell[][] grid = board.getGrid();
         grid[destPosition.getX()][destPosition.getY()].setLevel(Level.MID);
-        assertFalse(defaultMove.isValidMove(startPosition, destPosition, grid));
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
         grid[destPosition.getX()][destPosition.getY()].setLevel(Level.EMPTY);
     }
 
@@ -125,7 +122,7 @@ class DefaultMoveTest {
         BoardCell[][] grid = board.getGrid();
         grid[destPosition.getX()][destPosition.getY()].setLevel(Level.MID);
         grid[destPosition.getX()][destPosition.getY()].setDome(true);
-        assertFalse(defaultMove.isValidMove(startPosition, destPosition, grid));
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
         grid[destPosition.getX()][destPosition.getY()].setLevel(Level.EMPTY);
         grid[destPosition.getX()][destPosition.getY()].setDome(false);
     }
@@ -140,7 +137,7 @@ class DefaultMoveTest {
         Position startPosition = new Position(2,2);
         Position destPosition = new Position(2, 2);
         BoardCell[][] grid = board.getGrid();
-        assertFalse(defaultMove.isValidMove(startPosition, destPosition, grid));
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
     }
 
 
@@ -153,42 +150,96 @@ class DefaultMoveTest {
         Position startPosition = new Position(2,2);
         Position destPosition = new Position(3, 3);
         BoardCell[][] grid = board.getGrid();
-        assertFalse(defaultMove.isValidMove(startPosition, destPosition, grid));
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
+    }
+
+    /**
+     * Control if return true when the destination cell is not the startcell
+     */
+    @Test
+    void validBecauseNotStartCell() throws PositionOutOfBoundsException {
+        Position previousStartPosition = new Position (2,2);
+        Position startPosition = new Position(1,1);
+        Position destPosition = new Position(0, 0);
+        BoardCell[][] grid = board.getGrid();
+        board.setWorkers(worker1, startPosition);
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, grid));
+        worker1.deleteLastMove();
+        grid[startPosition.getX()][startPosition.getY()].setWorker(null);
+        board.setWorkers(worker1, previousStartPosition);
+
+    }
+
+    /**
+     * Control if return false when the destination cell is the startcell
+     * * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void notValidBecauseStartCell() throws PositionOutOfBoundsException {
+        Position previousStartPosition = new Position (2,2);
+        Position startPosition = new Position(1,1);
+        Position destPosition = new Position(2, 2);
+        BoardCell[][] grid = board.getGrid();
+        board.setWorkers(worker1, startPosition);
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
+        worker1.deleteLastMove();
+        grid[startPosition.getX()][startPosition.getY()].setWorker(null);
+        board.setWorkers(worker1, previousStartPosition);
     }
 
 
     /**
      * Control if return true when the worker can move
+     * @throws PositionOutOfBoundsException
      */
     @Test
-    void isAllowedToMove() {
+    void isAllowedToMove1() {
         int numMoves = worker1.getNumMoves();
-        assertTrue(defaultMove.isAllowedToMove(numMoves));
+        assertTrue(multipleMove.isAllowedToMove(numMoves));
     }
 
 
     /**
      * Control if return true when the worker must move
+     * @throws PositionOutOfBoundsException
      */
     @Test
     void isRequiredToMove() {
         int numMoves = worker1.getNumMoves();
-        assertTrue(defaultMove.isAllowedToMove(numMoves));
+        assertTrue(multipleMove.isAllowedToMove(numMoves));
     }
 
+
+    /**
+     * Control if return true when the worker can move
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void isAllowedToMove2() throws PositionOutOfBoundsException {
+        Position newPosition = new Position(1,1);
+        worker1.addMove(newPosition);
+        int numMoves = worker1.getNumMoves();
+        assertTrue(multipleMove.isAllowedToMove(numMoves));
+        worker1.deleteLastMove();
+    }
 
     /**
      * Control if return false when the worker can't move
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void isNotAllowedToMove() throws PositionOutOfBoundsException {
+    void isNotAllowedToMove2() throws PositionOutOfBoundsException {
         Position newPosition = new Position(1,1);
+        Position newPosition2 = new Position(0,0);
         worker1.addMove(newPosition);
+        worker1.addMove(newPosition2);
         int numMoves = worker1.getNumMoves();
-        assertFalse(defaultMove.isAllowedToMove(numMoves));
+        assertFalse(multipleMove.isAllowedToMove(numMoves));
+        worker1.deleteLastMove();
         worker1.deleteLastMove();
     }
+
+
 
 
     /**
@@ -200,9 +251,8 @@ class DefaultMoveTest {
         Position newPosition = new Position(1,1);
         worker1.addMove(newPosition);
         int numMoves = worker1.getNumMoves();
-        assertFalse(defaultMove.isRequiredToMove(numMoves));
+        assertFalse(multipleMove.isRequiredToMove(numMoves));
         worker1.deleteLastMove();
     }
-
 
 }

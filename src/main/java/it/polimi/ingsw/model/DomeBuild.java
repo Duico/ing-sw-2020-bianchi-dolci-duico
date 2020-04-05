@@ -1,15 +1,13 @@
 package it.polimi.ingsw.model;
 
-import java.util.ArrayList;
-
 public class DomeBuild implements BuildStrategy {
 
     @Override
-    public boolean isValidBuild(BoardCell [][] grid, Position startPosition, Position destinationPosition, Boolean isDome, ArrayList<Position> builds) {
+    public boolean isValidBuild(BoardCell [][] grid, Position startPosition, Position destinationPosition, Boolean isDome) {
         try {
             BoardCell destinationCell = grid[destinationPosition.getX()][destinationPosition.getY()];
             int dx = startPosition.getX() - destinationPosition.getX();
-            int dy = startPosition.getX() - destinationPosition.getY();
+            int dy = startPosition.getY() - destinationPosition.getY();
             if (dx == 0 && dy == 0)
                 return false;
             else if (dx < -1 || dx > 1 || dy < -1 || dy > 1)
@@ -18,6 +16,8 @@ public class DomeBuild implements BuildStrategy {
                 return false;
             else if (destinationCell.getWorker() != null)
                 return false;
+            else if(destinationCell.getLevel().ordinal() == 3 && !isDome)
+                return false;
             else
                 return true;
         }
@@ -25,12 +25,5 @@ public class DomeBuild implements BuildStrategy {
             throw new NullPointerException();
         }
     }
-
-    @Override
-    public boolean isAllowedToBuildDome(BoardCell [][] grid, Position buildPosition)
-    {
-        return true;
-    }
-
 
 }
