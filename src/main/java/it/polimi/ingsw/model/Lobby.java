@@ -1,18 +1,14 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.exception.NotEnoughPlayersException;
-
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 public class Lobby {
     String persistencyFilename = "./game.ser";
     Game game;
-    int numPlayers;
-    ArrayList<Player> players;//fix ArrayList<String> -> ArrayList<Player>
+    ArrayList<String> playerNames;
 
     public Lobby() {
-        players = new ArrayList<Player>();
+        playerNames = new ArrayList<>();
         this.game = new Game();
     }
 
@@ -20,72 +16,36 @@ public class Lobby {
         this.game = new Game(width, height,2);
     }
 
-    public boolean validateNickname(String nickname){
-        for(Player player: players){
-            if(player.getNickName() == nickname)
-                return false;
-        }
-        final Pattern pattern = Pattern.compile("^[A-Za-z0-9\\-_]{3,32}$");
-        if (!pattern.matcher(nickname).matches()) {
-            return false;
-        }
-        return true;
-    }
-
-    public Player addPlayer(String nickname){
-        if(!validateNickname(nickname)){
-            //todo
-            //notify view
-            return null;
-        }
-        Player newPlayer = new Player(nickname);
-        players.add(newPlayer);
-        return newPlayer;
-
-    }
-
-    public void removePlayerName(String nickname){
-        for(Player player: players) {
-            if (player.getNickName().equals(nickname)) {
-                players.remove(player);
-            }
-        }
-    }
-    public boolean isAdmin(Player player){
-        if(this.players==null){
-            return false;
-        }
-        return this.players.get(0).equals(player);
-    }
-
-    public void startGame() throws NotEnoughPlayersException {
-        if(players.size() < getNumPlayers()) {
-            throw new NotEnoughPlayersException();
-        } else if(players.size() > getNumPlayers()){
-            //ask to choose which players are going to play
-        }
-        game.startGame(players, true); //TODO when view pass useCards
-
-    }
-
-    public boolean persistencyLoadGame(){
-        GameSerializer gameSerializer = new GameSerializer(persistencyFilename);
-        Game readGame = gameSerializer.readGame();
-        if(Game.validateGame(readGame)){
-            this.game = readGame;
+    public boolean addPlayerName(String nickname){
+        if( !playerNames.contains(nickname) ){
+            playerNames.add(nickname);
             return true;
         }else{
             return false;
         }
+
     }
-    public boolean persistencySaveGame(){
+
+    public void removePlayerName(String nickname){
+        playerNames.remove(nickname);
+    }
+
+    public void startGame() throws NotEnoughPlayersException {
+        if(playerNames.size() < 2) {
+            throw new NotEnoughPlayersException();
+        } else if(playerNames.size() > 3){
+            //ask to choose which players are going to play
+        }
+        game.startGame(playerNames, true);
+
+    }
+
+    public void persistencyLoadGame(){
         GameSerializer gameSerializer = new GameSerializer(persistencyFilename);
-        return gameSerializer.writeGame(this.game);
+        this.game = gameSerializer.readGame();
     }
-
-    public int getNumPlayers(){
-        //if(numPlayers>=2 && numPlayers<=3){
-            return numPlayers;
-
+    public void persistencySaveGame(){
+        GameSerializer gameSerializer = new GameSerializer(persistencyFilename);
+        gameSerializer.writeGame(this.game);
     }
 }

@@ -7,13 +7,13 @@ package it.polimi.ingsw.model;
 public class PushOpponent implements OpponentStrategy {
 
     @Override
-    public boolean isValidPush(Position startPosition, Position destPosition, BoardCell[][] grid){  //domandare come passare matrice
+    public boolean isValidPush(Position startPosition, Position destPosition, boolean isOwnWorker, BoardCell[][] grid){  //domandare come passare matrice
+        if(isOwnWorker) return false;
 
         Worker opponentWorker = grid[destPosition.getX()][destPosition.getY()].getWorker();
         boolean isFree = opponentWorker == null;
 
         if(isFree == true) return true;
-
         else {
             try{
             Position pushDestPosition;

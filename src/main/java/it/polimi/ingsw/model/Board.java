@@ -18,7 +18,7 @@ public class Board implements Cloneable, Serializable {
     }
 
 
-    public boolean canMove(Position startPosition, Position destinationPosition, boolean isPreviousBlockMove, Card card, Card previousCard) throws BlockedMoveException {
+    public boolean canMove(Position startPosition, Position destinationPosition, boolean isPreviousBlockMove, boolean isOwnWorker, Card card, Card previousCard) throws BlockedMoveException {
 
         if(isPreviousBlockMove == true) {
             boolean isBlockedMove = this.isBlockedMove(startPosition, destinationPosition, previousCard.getBlockStrategy());
@@ -30,7 +30,7 @@ public class Board implements Cloneable, Serializable {
         MoveStrategy moveStrategy = card.getMoveStrategy();
         OpponentStrategy opponentStrategy = card.getOpponentStrategy();
         boolean isValidMove = moveStrategy.isValidMove(startPosition, destinationPosition, this.grid);
-        boolean isValidPush = opponentStrategy.isValidPush(startPosition, destinationPosition, this.grid);
+        boolean isValidPush = opponentStrategy.isValidPush(startPosition, destinationPosition, isOwnWorker, this.grid);
 
         if( isValidMove == true && isValidPush==true ) {
             return true;

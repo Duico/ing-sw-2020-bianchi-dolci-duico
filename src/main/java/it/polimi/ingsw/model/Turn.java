@@ -34,9 +34,14 @@ public class Turn implements Serializable {
         Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
         boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
         boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(numMoves);
+        boolean isOwnWorker = false;
+        for(int i=0; i<Player.numWorkers; i++) {
+            if(currentPlayer.getCurrentPositionWorker(i).equals(destinationPosition))
+                isOwnWorker = true;
+        }
         boolean canMove = false;
         try {
-            canMove = board.canMove(startPosition, destinationPosition, previousBlockNextPlayer, card, previousTurnCard);
+            canMove = board.canMove(startPosition, destinationPosition, previousBlockNextPlayer, isOwnWorker, card, previousTurnCard);
         } catch (BlockedMoveException e){
             return false;
         }

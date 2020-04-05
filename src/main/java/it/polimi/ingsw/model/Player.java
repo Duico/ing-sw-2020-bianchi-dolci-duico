@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Player implements Serializable {
     private final String nickName;
-    private Card card;
+    private Card card; //FIX add final when tests are over
     private ArrayList<Worker> workers;
     static int numWorkers;
 

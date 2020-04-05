@@ -14,7 +14,6 @@ public class Game implements Serializable{
     private ArrayList<Player> players = new ArrayList<>();
     boolean useCards = false;
     CardDeck cardDeck;
-    private final String persistencyFilename = "./game.ser";
 
     public Game() {
         this(5, 5, 2);
@@ -52,11 +51,8 @@ public class Game implements Serializable{
         } else {
             //assign default Card to each player
         }
-    }
-
-    public void loadSerializedGame(){
-        GameSerializer gameSerializer = new GameSerializer(persistencyFilename);
-
+        initTurn();
+        //make an exceptional first turn that calls setWorker
     }
 
     private void createCardDeck() {
@@ -87,9 +83,32 @@ public class Game implements Serializable{
         return previousTurn;
     }
 
+    public void initTurn() {
+        turn = new Turn( this.pickFirstPlayer() );
+    }
+
+
     public void nextTurn() {
         //TODO
-        //save current turn in previousTurn and make a new playable turn
+        previousTurn = turn;
+        turn = new Turn( this.getNextPlayer() );
+    }
+
+    private Player pickFirstPlayer() {
+            int rand = (int) Math.floor( Math.random() * (double) players.size() );
+            Player randPlayer=players.get(rand);
+            return randPlayer;
+    }
+
+    public Player getNextPlayer() {
+        Player currentPlayer = turn.getCurrentPlayer();
+        int index = players.indexOf(currentPlayer);
+        if (index>0) {
+            int size = players.size();
+            return players.get( (index + 1) % size );
+        }else {
+            throw new RuntimeException("Current player was not found in Game player List");
+        }
     }
 
     public Player getPlayer(int n) {

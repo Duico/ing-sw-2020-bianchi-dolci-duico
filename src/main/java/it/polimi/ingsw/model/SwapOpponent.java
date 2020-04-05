@@ -7,8 +7,9 @@ package it.polimi.ingsw.model;
 public class SwapOpponent implements OpponentStrategy {
 
     @Override
-    public boolean isValidPush(Position startPosition, Position destPosition, BoardCell[][] grid) {
-        return true;
+    public boolean isValidPush(Position startPosition, Position destPosition, boolean isOwnWorker, BoardCell[][] grid) {
+        if(isOwnWorker) return false;
+        else return true;
     }
 
 

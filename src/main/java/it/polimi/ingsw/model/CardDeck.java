@@ -67,7 +67,7 @@ public class CardDeck implements Serializable {
         {
             Card randCard ;
             do {
-                rand = (int) (Math.random() * cardDeck.size());
+                rand = (int) Math.floor( (Math.random() * (double) cardDeck.size()) );
                 randCard=cardDeck.get(rand);
             }
             while(randomDeck.contains(randCard));
