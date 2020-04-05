@@ -1,9 +1,12 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 /**
  * Represents a God card with strategies to be used by the worker
  */
-public class Card {
+public class Card implements Serializable {
     private String name;
     private MoveStrategy moveStrategy;
     private BuildStrategy buildStrategy;
@@ -20,7 +23,7 @@ public class Card {
      * @param blockStrategy Name of the strategy for blocking next player's movement
      * @param opponentStrategy Name of the strategy for opponents that occupy the desired cell
      */
-    public Card(String name, String moveStrategy, String buildStrategy, String winStrategy, String blockStrategy, String opponentStrategy){
+    public Card (String name, String moveStrategy, String buildStrategy, String winStrategy, String blockStrategy, String opponentStrategy) {
 
         this.name=name;
         setMoveStrategy(moveStrategy);
@@ -115,4 +118,14 @@ public class Card {
             this.opponentStrategy = new PushOpponent();
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return Objects.equals(getName(), card.getName());
+        //no need to check functions
+    }
+
 }

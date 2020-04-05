@@ -1,8 +1,10 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class Player {
+public class Player implements Serializable {
     private final String nickName;
     private Card card;
     private ArrayList<Worker> workers;
@@ -42,4 +44,16 @@ public class Player {
     public static void setNumWorkers(int numWorkers){
         Player.numWorkers = numWorkers;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return Objects.equals(getNickName(), player.getNickName()) &&
+                Objects.equals(getCard(), player.getCard()) &&
+                Objects.equals(workers, player.workers);
+    }
+
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Single worker assigned to a player
@@ -119,4 +120,15 @@ public class Worker implements Cloneable{
 
         return newWorker;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Worker worker = (Worker) o;
+        return Objects.equals(getMoves(), worker.getMoves()) &&
+                Objects.equals(getBuilds(), worker.getBuilds()) &&
+                Objects.equals(operations, worker.operations);
+    }
+
 }

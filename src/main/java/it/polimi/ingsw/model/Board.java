@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model;
 
 
-public class Board implements Cloneable{
+import java.io.Serializable;
+
+public class Board implements Cloneable, Serializable {
     BoardCell[][] grid;
 
     public Board() throws PositionOutOfBoundsException { //decide if throws exception or not
@@ -65,15 +67,12 @@ public class Board implements Cloneable{
     public void putWorkers(Position startPosition, Position destinationPosition, Position pushDestPosition){
         Worker temp = this.getBoardCellReference(startPosition).getWorker();
         this.getBoardCellReference(destinationPosition).setWorker(this.getBoardCellReference(startPosition).getWorker());
-        if(pushDestPosition == null){
-            this.getBoardCellReference(startPosition).setWorker(null);
-            this.getBoardCellReference(destinationPosition).getWorker().addMove(destinationPosition);
-        }else{
+        if(pushDestPosition != null){
             this.getBoardCellReference(pushDestPosition).getWorker().addMove(pushDestPosition);
             this.getBoardCellReference(destinationPosition).setWorker(temp);
-            this.getBoardCellReference(startPosition).setWorker(null);
-            this.getBoardCellReference(destinationPosition).getWorker().addMove(destinationPosition);
         }
+        this.getBoardCellReference(startPosition).setWorker(null);
+        this.getBoardCellReference(destinationPosition).getWorker().addMove(destinationPosition);
 
     }
 

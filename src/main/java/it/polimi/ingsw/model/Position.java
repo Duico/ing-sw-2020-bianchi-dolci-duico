@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import java.util.Objects;
+
 public class Position implements Cloneable{
     private int x;
     private int y;
@@ -40,10 +42,5 @@ public class Position implements Cloneable{
             return false;
         Position position= (Position) object;
         return (this.x==position.x && this.y == position.y);
-    }
-
-    @Override
-    protected Position clone() throws CloneNotSupportedException {
-        return (Position) super.clone();
     }
 }

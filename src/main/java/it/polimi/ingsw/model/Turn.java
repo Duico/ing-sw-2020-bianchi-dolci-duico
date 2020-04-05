@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model;
 
-public class Turn {
+import java.io.Serializable;
+
+public class Turn implements Serializable {
     private final Player currentPlayer;
     private boolean blockNextPlayer;
     private int currentWorkerId;

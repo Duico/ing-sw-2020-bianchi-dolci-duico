@@ -1,9 +1,14 @@
 package it.polimi.ingsw.model;
 
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class Game implements Serializable {
+/**
+ * Manages a game from start to end, handles the creation and advancement of turns
+ */
+public class Game implements Serializable{
     private Turn turn;
     private Turn previousTurn;
     private ArrayList<Player> players = new ArrayList<>();
@@ -16,19 +21,18 @@ public class Game implements Serializable {
     }
 
     /**
-     * Create
-     *
-     * @param width
-     * @param height
-     * @param numWorkers
+     * Create a new Game <b>without starting it</b>
+     * @param width Width of the board
+     * @param height Height of the board
+     * @param numWorkers Number of workers for each player
      */
     public Game(int width, int height, int numWorkers) {
         Position.setSize(width, height);
+        Player.setNumWorkers(numWorkers);
     }
 
     /**
      * Start this Game with chosen nicknames for the players
-     *
      * @param nicknames Array of the players nicknames, in display order
      * @param useCards  True if the game will be using cards
      * @return
@@ -36,8 +40,6 @@ public class Game implements Serializable {
     public void startGame(ArrayList<String> nicknames, boolean useCards) {
 
         this.useCards = useCards;
-        //FIX numWorkers hard-coded
-        int numWorkers = 2;
 
         for (int n = 0; n < nicknames.size(); n++) {
             Player newPlayer = new Player(nicknames.get(n));
@@ -50,6 +52,11 @@ public class Game implements Serializable {
         } else {
             //assign default Card to each player
         }
+    }
+
+    public void loadSerializedGame(){
+        GameSerializer gameSerializer = new GameSerializer(persistencyFilename);
+
     }
 
     private void createCardDeck() {
@@ -93,4 +100,21 @@ public class Game implements Serializable {
         return this.players;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+        boolean playersEquals = true;
+        //return useCards == game.useCards &&
+                //Objects.equals(getTurn(), game.getTurn()) &&
+                //Objects.equals(getPreviousTurn(), game.getPreviousTurn()) &&
+                //Objects.equals(getPlayers(), game.getPlayers()) &&
+                //Objects.equals(cardDeck, game.cardDeck);
+        for(int i=0; i<getPlayers().size(); i++){
+            playersEquals = playersEquals && getPlayer(i).getNickName().equals( game.getPlayer(i).getNickName() );
+        }
+        return useCards == game.useCards && playersEquals;
+
+    }
 }

@@ -11,9 +11,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CardDeck {
+public class CardDeck implements Serializable {
     private ArrayList<Card> cardDeck;
 
     public CardDeck() throws IOException, SAXException, ParserConfigurationException {
@@ -66,7 +67,7 @@ public class CardDeck {
         {
             Card randCard ;
             do {
-                rand = (int) (Math.random() * (cardDeck.size() + 1));
+                rand = (int) (Math.random() * cardDeck.size());
                 randCard=cardDeck.get(rand);
             }
             while(randomDeck.contains(randCard));
