@@ -23,14 +23,14 @@ public class Card implements Serializable {
      * @param blockStrategy Name of the strategy for blocking next player's movement
      * @param opponentStrategy Name of the strategy for opponents that occupy the desired cell
      */
-    public Card (String name, String moveStrategy, String buildStrategy, String winStrategy, String blockStrategy, String opponentStrategy) {
-
+    public Card (String name, String moveStrategy, String buildStrategy, String winStrategy, String blockStrategy, String opponentStrategy) throws StrategyNameNotFound {
         this.name=name;
         setMoveStrategy(moveStrategy);
         setBuildStrategy(buildStrategy);
         setBlockStrategy(blockStrategy);
         setOpponentStrategy(opponentStrategy);
         setWinStrategy(winStrategy);
+
     }
 
     public String getName() {
@@ -56,9 +56,9 @@ public class Card implements Serializable {
         this.name = name;
     }
 
-    private void setMoveStrategy(String moveStrategy) {
+    private void setMoveStrategy(String moveStrategy) throws StrategyNameNotFound {
 
-        if (moveStrategy.contentEquals("Default")){
+        if (moveStrategy.equals("Default")){
             this.moveStrategy = new DefaultMove();
         }
         else if(moveStrategy.contentEquals("Multiple")){
@@ -69,10 +69,12 @@ public class Card implements Serializable {
         }
         else if(moveStrategy.contentEquals("BuildAtFirst")){
             this.moveStrategy = new BuildAtFirstMove();
+        }else {
+            throw new StrategyNameNotFound();
         }
     }
 
-    private void setBuildStrategy(String buildStrategy) {
+    private void setBuildStrategy(String buildStrategy) throws StrategyNameNotFound {
 
         if (buildStrategy.contentEquals("Default")){
             this.buildStrategy = new DefaultBuild();
@@ -85,28 +87,34 @@ public class Card implements Serializable {
         }
         else if (buildStrategy.contentEquals("BuildAtFirst")){
             this.buildStrategy = new BuildAtFirstBuild();
+        }else {
+            throw new StrategyNameNotFound();
         }
     }
 
-    private void setWinStrategy(String winStrategy) {
+    private void setWinStrategy(String winStrategy) throws StrategyNameNotFound {
         if (winStrategy.contentEquals("Default")){
             this.winStrategy = new DefaultWin();
         }
         else if (winStrategy.contentEquals("DownMove")){
             this.winStrategy = new DownMoveWin();
+        }else {
+            throw new StrategyNameNotFound();
         }
     }
 
-    private void setBlockStrategy(String blockStrategy) {
+    private void setBlockStrategy(String blockStrategy) throws StrategyNameNotFound {
         if (blockStrategy.contentEquals("Default")){
             this.blockStrategy = new DefaultBlock();
         }
         else if (blockStrategy.contentEquals("UpMove")){
             this.blockStrategy = new UpMoveBlock();
+        }else {
+            throw new StrategyNameNotFound();
         }
     }
 
-    private void setOpponentStrategy(String opponentStrategy) {
+    private void setOpponentStrategy(String opponentStrategy) throws StrategyNameNotFound {
 
         if (opponentStrategy.contentEquals("Default")){
             this.opponentStrategy = new DefaultOpponent();
@@ -116,6 +124,8 @@ public class Card implements Serializable {
         }
         else if (opponentStrategy.contentEquals("Push")){
             this.opponentStrategy = new PushOpponent();
+        }else {
+            throw new StrategyNameNotFound();
         }
     }
 

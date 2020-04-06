@@ -17,18 +17,21 @@ import java.util.ArrayList;
 public class CardDeck implements Serializable {
     private ArrayList<Card> cardDeck;
 
-    public CardDeck() throws IOException, SAXException, ParserConfigurationException {
-        cardDeck = new ArrayList<>();
-        readConfigurationXML();
+    public CardDeck() throws IOException, SAXException, ParserConfigurationException, ReadConfigurationXMLException {
+        this("./card-config.xml");
     }
 
-    private void readConfigurationXML() throws ParserConfigurationException, IOException, SAXException {
+    public CardDeck(String pathname) throws IOException, SAXException, ParserConfigurationException, ReadConfigurationXMLException{
+        cardDeck = new ArrayList<>();
+        readConfigurationXML(pathname);
+    }
+
+    private void readConfigurationXML(String pathname) throws ReadConfigurationXMLException, ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
 
-        Document document = builder.parse(new File("CardDeck.xml"));    //toDo
+        Document document = builder.parse(new File(pathname));
         document.getDocumentElement().normalize();
-        //Element root = document.getDocumentElement();
         NodeList nList = document.getElementsByTagName("card");
 
         for (int temp = 0; temp < nList.getLength(); temp++)
@@ -44,9 +47,16 @@ public class CardDeck implements Serializable {
                 String blockStrategy = eElement.getElementsByTagName("blockStrategy").item(0).getTextContent();
                 String opponentStrategy = eElement.getElementsByTagName("opponentStrategy").item(0).getTextContent();
 
-                cardDeck.add(new Card(name, moveStrategy, buildStrategy, winStrategy, blockStrategy, opponentStrategy));
-
+                try {
+                    cardDeck.add(new Card(name, moveStrategy, buildStrategy, winStrategy, blockStrategy, opponentStrategy));
+                }catch (StrategyNameNotFound e){
+                    System.err.println("Strategy name not found. Check your XML file.");
+                    e.printStackTrace();
+                }
             }
+        }
+        if(cardDeck.size() < 3){ //FIX too vague
+            throw new ReadConfigurationXMLException();
         }
     }
 
