@@ -31,7 +31,6 @@ public class Turn implements Serializable {
 
         Card card = currentPlayer.getCard();
         int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
-        int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
         Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
         boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
         boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(numMoves);
@@ -49,11 +48,8 @@ public class Turn implements Serializable {
             }
 
             Position pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
-            if( pushDestPosition != null){
-                board.putWorkers(startPosition, destinationPosition, pushDestPosition);
-            }else {
-                board.putWorkers(startPosition, destinationPosition, null);
-            }
+            //pushDestPosition can safely be null
+            board.putWorkers(startPosition, destinationPosition, pushDestPosition);
 
             return true;
 
@@ -63,8 +59,21 @@ public class Turn implements Serializable {
     }
 
 
-    public boolean build (Position startPosition, Position destinationPosition){
-        return false;
+    public boolean build (int workerId, Position destinationPosition, boolean isDome) {
+        Card card = currentPlayer.getCard();
+        int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
+        int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
+        Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
+        boolean isRequiredToBuild = card.getBuildStrategy().isRequiredToBuild(numBuilds);
+        boolean isAllowedToBuild = card.getBuildStrategy().isAllowedToBuild(numBuilds, numMoves);
+        boolean canBuild = board.canBuild(startPosition, destinationPosition, card, isDome);
+
+        if (isRequiredToBuild == false && isAllowedToBuild == false) return false;
+        else if( canBuild == true ){
+            board.build(destinationPosition, isDome);
+            return true;
+        }
+
     }
 
     public boolean winMove(int workerId, Position destinationPosition){

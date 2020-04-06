@@ -39,17 +39,36 @@ public class Board implements Cloneable, Serializable {
         }
     }
 
-    public boolean canBuild(Position startPosition, Position destinationPosition, Card card){
-        return true;
-    }
-
-    private boolean isBlockedMove(Position startPosition, Position destinationPosition, BlockStrategy blockStrategy){
+     private boolean isBlockedMove(Position startPosition, Position destinationPosition, BlockStrategy blockStrategy){
         return blockStrategy.isBlockMove( startPosition, destinationPosition, this.grid);
     }
 
     public boolean blockNextPlayer(Position startPosition, Position destinationPosition, Card card) {
         boolean willBlock = card.getBlockStrategy().blockNextPlayer(startPosition, destinationPosition, this.grid);
         return willBlock;
+    }
+
+    public boolean canBuild(Position startPosition, Position destinationPosition, Card card, boolean isDome){
+        boolean isValidBuild = card.getBuildStrategy().isValidBuild();
+        boolean isAllowedToBuildDome = card.getBuildStrategy().isAllowedToBuildDome();
+        if (isDome == true){
+            if(isValidBuild == true && isAllowedToBuildDome==true)
+                return true;
+            else
+                return false;
+        }else{
+            return isValidBuild;
+        }
+        return true;
+    }
+
+    public void build(Position destinationPosition, boolean isDome) {
+        if(isDome){
+            this.grid[destinationPosition.getX()][destinationPosition.getY()].setDome(true);
+        }else{
+            int previousLevel = this.grid[destinationPosition.getX()][destinationPosition.getY()].getLevel().ordinal();
+            this.grid[destinationPosition.getX()][destinationPosition.getY()].setLevel(Level.values()[previousLevel+1]);
+        }
     }
 
 
@@ -75,7 +94,7 @@ public class Board implements Cloneable, Serializable {
 
     }
 
-    public void setWorkers(Worker worker, Position destPosition){
+    public void setWorker(Position destPosition, Worker worker){
         if( this.getBoardCellReference(destPosition).getWorker() == null){
             this.getBoardCellReference(destPosition).setWorker(worker);
             this.getBoardCellReference(destPosition).getWorker().addMove(destPosition);

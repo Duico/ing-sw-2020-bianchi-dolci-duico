@@ -141,4 +141,10 @@ public class Worker implements Cloneable{
                 Objects.equals(operations, worker.operations);
     }
 
+    public Operation getLastOperation() {
+        if ((operations.size()-1)<=0)
+            return null;
+        else
+            return operations.get(operations.size()-1);
+    }
 }
