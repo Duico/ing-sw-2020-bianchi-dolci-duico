@@ -1,5 +1,10 @@
 package it.polimi.ingsw.model;
 
+/**
+ * Class that implements the strategy that allows the Player's worker to build a second time but not
+ * in the same position of the first time
+ */
+
 public class MultipleBuildDifferentPosition implements BuildStrategy {
 
     @Override

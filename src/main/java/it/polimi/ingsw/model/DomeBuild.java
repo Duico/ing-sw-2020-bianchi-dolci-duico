@@ -1,5 +1,9 @@
 package it.polimi.ingsw.model;
 
+/**
+ * Class that implements the strategy that allows a Player's worker to build a dome at any level
+ */
+
 public class DomeBuild implements BuildStrategy {
 
     @Override

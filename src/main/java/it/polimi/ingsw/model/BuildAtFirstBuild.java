@@ -1,5 +1,9 @@
 package it.polimi.ingsw.model;
 
+/**
+ * Class that implements the strategy that allows a Player's worker to decide if 'Build' before 'Move'
+ * and then follow the sequence Build - Move - Build instead of the default sequence Move - Build
+ */
 
 public class BuildAtFirstBuild implements BuildStrategy {
 

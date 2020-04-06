@@ -1,5 +1,9 @@
 package it.polimi.ingsw.model;
 
+/**
+ * Class that implements the default strategy of the WinStrategy
+ */
+
 public class DefaultWin implements WinStrategy {
 
     @Override

@@ -1,5 +1,9 @@
 package it.polimi.ingsw.model;
 
+/**
+ * Class that implements the strategy that allows a Player to win the game if a worker moves down two or more levels
+ */
+
 public class DownMoveWin implements WinStrategy {
     @Override
     public boolean isWinningMove(Position startPosition, Position destinationPosition, BoardCell[][] grid){

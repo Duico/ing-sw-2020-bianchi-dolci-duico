@@ -1,5 +1,10 @@
 package it.polimi.ingsw.model;
 
+/**
+ * Class that implements the strategy that allows a Player's worker to build twice (not a dome)
+ * in the same position
+ */
+
 public class MultipleBuild implements BuildStrategy {
 
     @Override
