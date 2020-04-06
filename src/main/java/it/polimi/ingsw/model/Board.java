@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Board implements Cloneable, Serializable {
     BoardCell[][] grid;
@@ -49,27 +50,22 @@ public class Board implements Cloneable, Serializable {
     }
 
     public boolean canBuild(Position startPosition, Position destinationPosition, Card card, boolean isDome){
-        boolean isValidBuild = card.getBuildStrategy().isValidBuild();
-        boolean isAllowedToBuildDome = card.getBuildStrategy().isAllowedToBuildDome();
-        if (isDome == true){
-            if(isValidBuild == true && isAllowedToBuildDome==true)
-                return true;
-            else
-                return false;
-        }else{
-            return isValidBuild;
-        }
-        return true;
+        boolean isValidBuild = card.getBuildStrategy().isValidBuild(this.grid, startPosition, destinationPosition,isDome);
+        return isValidBuild;
+
     }
 
-    public void build(Position destinationPosition, boolean isDome) {
+    public void build(Position startPosition, Position destinationPosition, boolean isDome) {
         if(isDome){
             this.grid[destinationPosition.getX()][destinationPosition.getY()].setDome(true);
+            // aggiungo lo stesso addBuild?
         }else{
             int previousLevel = this.grid[destinationPosition.getX()][destinationPosition.getY()].getLevel().ordinal();
             this.grid[destinationPosition.getX()][destinationPosition.getY()].setLevel(Level.values()[previousLevel+1]);
+            this.grid[startPosition.getX()][destinationPosition.getY()].getWorker().addBuild(destinationPosition);
         }
     }
+
 
 
     private BoardCell getBoardCell(Position position) throws CloneNotSupportedException {
@@ -106,6 +102,37 @@ public class Board implements Cloneable, Serializable {
         return winStrategy.isWinningMove(startPosition, destinationPosition, this.grid );
     }
 
+    public boolean isLoseCondition(ArrayList<Position> currentPositions) {
+        boolean loseCondition = true;
+        for (int i=0; i<currentPositions.size(); i++){
+            int currentY = currentPositions.get(i).getY()-1;
+            for(int y=0; y<3; y++) {
+                if ((currentY + y) >= 0 && (currentY + y) < Position.height) {
+                    int currentX = currentPositions.get(i).getX() - 1;
+                    for (int x = 0; x < 3; x++) {
+                        if ((currentX + x) >= 0 && (currentX + x) < Position.width) {
+                            int positionX=currentX+x;
+                            int positionY=currentY+y;
+                            if(positionX!=currentPositions.get(i).getX() || positionY!=currentPositions.get(i).getY()) {
+                                int startLevel = grid[currentPositions.get(i).getX()][currentPositions.get(i).getY()].getLevel().ordinal();
+                                int aroundLevel = grid[positionX][positionY].getLevel().ordinal();
+                                boolean hasDome = grid[positionX][positionY].hasDome();
+                                if (startLevel >= aroundLevel && !hasDome) {  //se può scendere perchè around level più basso e non ha dome
+                                    loseCondition = false;
+                                    break;
+                                } else if (aroundLevel == (startLevel + 1) && !hasDome) {  // se può salire perchè around level più alto di uno e non ha dome
+                                    loseCondition = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return loseCondition;
+    }
+
     @Override
     protected Board clone() throws CloneNotSupportedException {
         int width = Position.width;
@@ -124,7 +151,4 @@ public class Board implements Cloneable, Serializable {
         return board;
     }
 
-    public BoardCell[][] getGrid() {   //only for the test
-        return grid;
-    }  // to delete
 }

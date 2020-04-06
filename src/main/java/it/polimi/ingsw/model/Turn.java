@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Turn implements Serializable {
     private final Player currentPlayer;
@@ -30,10 +31,11 @@ public class Turn implements Serializable {
     public boolean move(int workerId, Position destinationPosition) throws CloneNotSupportedException, InvalidPushCell, PositionOutOfBoundsException {
 
         Card card = currentPlayer.getCard();
+        int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
         int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
         Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
         boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
-        boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(numMoves);
+        boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(numMoves, numBuilds);
         boolean isOwnWorker = false;
         for(int i=0; i<Player.numWorkers; i++) {
             if(currentPlayer.getCurrentPositionWorker(i).equals(destinationPosition))
@@ -46,7 +48,7 @@ public class Turn implements Serializable {
             return false;
         }
         if (isRequiredToMove == false && isAllowedToMove == false) return false;
-        else if( canMove == true ){
+        else if( canMove == true ){   // to fix, da rivedere
 
             if(blockNextPlayer == false) {
                 blockNextPlayer = board.blockNextPlayer(startPosition, destinationPosition, card);
@@ -68,26 +70,37 @@ public class Turn implements Serializable {
         Card card = currentPlayer.getCard();
         int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
         int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
+        Operation lastOperation = currentPlayer.getLastOperationWorker(currentWorkerId);
         Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
-        //Operation lastOperation = currentPlayer.
-        //!!!!!!!!
-        //FIX commented for Tests
-        //boolean isRequiredToBuild = card.getBuildStrategy().isRequiredToBuild(numMoves, numBuilds, lastOperation);
-        //boolean isAllowedToBuild = card.getBuildStrategy().isAllowedToBuild(numBuilds, numMoves, lastOperation);
-//        boolean canBuild = board.canBuild(startPosition, destinationPosition, card, isDome);
-//
-//        if (isRequiredToBuild == false && isAllowedToBuild == false) return false;
-//        else if( canBuild == true ){
-//            board.build(destinationPosition, isDome);
-//            return true;
-//        }
+        boolean isRequiredToBuild = card.getBuildStrategy().isRequiredToBuild(numMoves, numBuilds, lastOperation);
+        boolean isAllowedToBuild = card.getBuildStrategy().isAllowedToBuild(numMoves, numBuilds, lastOperation);
+        boolean canBuild = board.canBuild(startPosition, destinationPosition, card, isDome);
+
+        if (isRequiredToBuild == false && isAllowedToBuild == false) {
+            return false;
+        }
+        else if( isAllowedToBuild == true && canBuild == true ){  //to fix, da rivedere
+            board.build(startPosition, destinationPosition, isDome);
             return true;
+        }else
+            return false;
+
     }
 
     public boolean winMove(int workerId, Position destinationPosition){
         Card card = currentPlayer.getCard();
         Position startPosition = currentPlayer.getCurrentPositionWorker(workerId);
         return board.isWinningMove(startPosition, destinationPosition, card);
+    }
+
+    public boolean loseCondition(){
+        ArrayList<Position> currentPositions = new ArrayList<Position>();
+        for (int i=0 ; i<Player.numWorkers; i++) {
+            Position positionWorker = currentPlayer.getCurrentPositionWorker(i);
+            currentPositions.add(positionWorker);
+        }
+        boolean isLoseCondition = board.isLoseCondition(currentPositions);
+        return isLoseCondition;
     }
 
     public Player getCurrentPlayer() {

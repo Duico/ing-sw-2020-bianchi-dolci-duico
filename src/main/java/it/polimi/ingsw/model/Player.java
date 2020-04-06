@@ -35,6 +35,10 @@ public class Player implements Serializable {
         return workers.get(worker).getNumMoves();
     }
 
+    public Operation getLastOperationWorker(int worker){
+        return workers.get(worker).getLastOperation();
+    }
+
     public int getNumBuildsWorker(int worker) {
         return workers.get(worker).getNumBuilds();
     }

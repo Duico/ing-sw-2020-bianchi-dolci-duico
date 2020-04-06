@@ -22,14 +22,6 @@ public class Position implements Cloneable{
         return y;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
 
     public static final void setSize(int width, int height){
         Position.width = width;

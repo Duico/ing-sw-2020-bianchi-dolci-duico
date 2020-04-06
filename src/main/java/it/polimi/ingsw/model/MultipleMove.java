@@ -31,8 +31,8 @@ public class MultipleMove implements MoveStrategy {
     }
 
     @Override
-    public boolean isAllowedToMove(int numMoves) {
-        if (numMoves >= (numMovesAllowed)) {
+    public boolean isAllowedToMove(int numMoves, int numBuilds) {
+        if (numMoves >= (numMovesAllowed) && numBuilds==0) {
             return false;
         } else {
             return true;
