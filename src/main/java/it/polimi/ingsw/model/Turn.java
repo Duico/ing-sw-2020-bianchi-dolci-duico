@@ -17,14 +17,15 @@ public class Turn implements Serializable {
 
     public Turn(Player currentPlayer){
         this.currentPlayer = currentPlayer;
-        this.currentWorkerId = currentWorkerId;
+        //this.currentWorkerId = currentWorkerId;
+        this.currentWorkerId = -1;
         this.blockNextPlayer = false;
 
     }
 
     public Turn(Player currentPlayer, Card previousTurnCard, boolean previousBlockNextPlayer, Board board){
         this.currentPlayer = currentPlayer;
-        this.currentWorkerId = currentWorkerId;
+        this.currentWorkerId = -1;
         this.blockNextPlayer = false;
         this.previousTurnCard = previousTurnCard;
         this.previousBlockNextPlayer = previousBlockNextPlayer;
@@ -32,16 +33,27 @@ public class Turn implements Serializable {
 
     }
 
-    public boolean move(int workerId, Position destinationPosition) throws CloneNotSupportedException, InvalidPushCell, PositionOutOfBoundsException {
-
+    public boolean isAllowedToMove(){
         Card card = currentPlayer.getCard();
         int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
         int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
-        Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
-        boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
         boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(numMoves, numBuilds);
+        return isAllowedToMove;
+    }
+
+    public boolean isRequiredToMove(){
+        Card card = currentPlayer.getCard();
+        int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
+        int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
+        boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
+        return isRequiredToMove;
+    }
+
+    public boolean move(Position destinationPosition){
+        Card card = currentPlayer.getCard();
+        Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
         boolean isOwnWorker = false;
-        for(int i=0; i<Player.numWorkers; i++) {
+        for(int i=0; i<currentPlayer.getNumWorkers(); i++) {
             if(currentPlayer.getCurrentPositionWorker(i).equals(destinationPosition))
                 isOwnWorker = true;
         }
@@ -51,16 +63,21 @@ public class Turn implements Serializable {
         } catch (BlockedMoveException e){
             return false;
         }
-        if (isRequiredToMove == false && isAllowedToMove == false) return false;
-        else if( canMove == true ){   // to fix, da rivedere
+        if( canMove == true ){
 
             if(blockNextPlayer == false) {
                 blockNextPlayer = board.blockNextPlayer(startPosition, destinationPosition, card);
             }
 
-            Position pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
+            try {
+                Position pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
+                board.putWorkers(startPosition, destinationPosition, pushDestPosition);
+            }catch (PositionOutOfBoundsException e){
+                return false;
+            }catch (InvalidPushCell e){
+                return false;
+            }
             //pushDestPosition can safely be null
-            board.putWorkers(startPosition, destinationPosition, pushDestPosition);
 
             return true;
 
@@ -69,8 +86,26 @@ public class Turn implements Serializable {
         }
     }
 
+    public boolean isAllowedToBuild(){
+        Card card = currentPlayer.getCard();
+        int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
+        int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
+        Operation lastOperation = currentPlayer.getLastOperationWorker(currentWorkerId);
+        boolean isAllowedToBuild = card.getBuildStrategy().isAllowedToBuild(numMoves, numBuilds, lastOperation);
+        return isAllowedToBuild;
+    }
 
-    public boolean build (int workerId, Position destinationPosition, boolean isDome) {
+    public boolean isRequiredToBuild(){
+        Card card = currentPlayer.getCard();
+        int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
+        int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
+        Operation lastOperation = currentPlayer.getLastOperationWorker(currentWorkerId);
+        boolean isRequiredToBuild = card.getBuildStrategy().isRequiredToBuild(numMoves, numBuilds, lastOperation);
+        return isRequiredToBuild;
+    }
+
+
+    public boolean build (Position destinationPosition, boolean isDome) {
         Card card = currentPlayer.getCard();
         int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
         int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
@@ -80,10 +115,7 @@ public class Turn implements Serializable {
         boolean isAllowedToBuild = card.getBuildStrategy().isAllowedToBuild(numMoves, numBuilds, lastOperation);
         boolean canBuild = board.canBuild(startPosition, destinationPosition, card, isDome);
 
-        if (isRequiredToBuild == false && isAllowedToBuild == false) {
-            return false;
-        }
-        else if( isAllowedToBuild == true && canBuild == true ){  //to fix, da rivedere
+        if( canBuild == true ){
             board.build(startPosition, destinationPosition, isDome);
             return true;
         }else
@@ -91,19 +123,20 @@ public class Turn implements Serializable {
 
     }
 
-    public boolean winMove(int workerId, Position destinationPosition){
+    public boolean winMove(Position destinationPosition){
         Card card = currentPlayer.getCard();
-        Position startPosition = currentPlayer.getCurrentPositionWorker(workerId);
+        Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
         return board.isWinningMove(startPosition, destinationPosition, card);
     }
 
-    public boolean loseCondition(){
+    public boolean checkLoseCondition() throws PositionOutOfBoundsException {
+        Card card = currentPlayer.getCard();
         ArrayList<Position> currentPositions = new ArrayList<Position>();
-        for (int i=0 ; i<Player.numWorkers; i++) {
+        for (int i=0 ; i<currentPlayer.getNumWorkers(); i++) {
             Position positionWorker = currentPlayer.getCurrentPositionWorker(i);
             currentPositions.add(positionWorker);
         }
-        boolean isLoseCondition = board.isLoseCondition(currentPositions);
+        boolean isLoseCondition = board.isLoseCondition(currentPositions, previousBlockNextPlayer, card, previousTurnCard);
         return isLoseCondition;
     }
 
@@ -117,6 +150,18 @@ public class Turn implements Serializable {
 
     public boolean isBlockNextPlayer() {
         return blockNextPlayer;
+    }
+
+    public boolean updateCurrentWorker(int currentWorkerId){
+        if(this.currentWorkerId<0){
+            setCurrentWorker(currentWorkerId);
+            return true;
+        }else
+            return false;
+    }
+
+    private void setCurrentWorker(int currentWorkerId){
+        this.currentWorkerId=currentWorkerId;
     }
 
 

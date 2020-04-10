@@ -1,11 +1,7 @@
 package it.polimi.ingsw.model;
 
-
-import it.polimi.ingsw.model.exception.BlockedMoveException;
-import it.polimi.ingsw.model.strategy.BlockStrategy;
-import it.polimi.ingsw.model.strategy.MoveStrategy;
-import it.polimi.ingsw.model.strategy.OpponentStrategy;
-import it.polimi.ingsw.model.strategy.WinStrategy;
+import it.polimi.ingsw.model.exception.*;
+import it.polimi.ingsw.model.strategy.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,7 +29,6 @@ public class Board implements Cloneable, Serializable {
                 return false;
             }
         }
-
         MoveStrategy moveStrategy = card.getMoveStrategy();
         OpponentStrategy opponentStrategy = card.getOpponentStrategy();
         boolean isValidMove = moveStrategy.isValidMove(startPosition, destinationPosition, this.grid);
@@ -108,28 +103,37 @@ public class Board implements Cloneable, Serializable {
         return winStrategy.isWinningMove(startPosition, destinationPosition, this.grid );
     }
 
-    public boolean isLoseCondition(ArrayList<Position> currentPositions) {
+    public boolean isLoseCondition(ArrayList<Position> currentPositions, boolean isPreviousBlockMove, Card card, Card previousCard) {
         boolean loseCondition = true;
         for (int i=0; i<currentPositions.size(); i++){
-            int currentY = currentPositions.get(i).getY()-1;
-            for(int y=0; y<3; y++) {
-                if ((currentY + y) >= 0 && (currentY + y) < Position.height) {
-                    int currentX = currentPositions.get(i).getX() - 1;
-                    for (int x = 0; x < 3; x++) {
-                        if ((currentX + x) >= 0 && (currentX + x) < Position.width) {
-                            int positionX=currentX+x;
-                            int positionY=currentY+y;
+            int currentY = currentPositions.get(i).getY();
+            for(int y= -1; y<=1; y++) {
+                int positionY=currentY+y;
+                if (positionY >= 0 && positionY < Position.height) {
+                    int currentX = currentPositions.get(i).getX();
+                    for (int x = -1; x <=1; x++) {
+                        int positionX=currentX+x;
+                        if (positionX >= 0 && positionX < Position.width) {
                             if(positionX!=currentPositions.get(i).getX() || positionY!=currentPositions.get(i).getY()) {
-                                int startLevel = grid[currentPositions.get(i).getX()][currentPositions.get(i).getY()].getLevel().ordinal();
-                                int aroundLevel = grid[positionX][positionY].getLevel().ordinal();
-                                boolean hasDome = grid[positionX][positionY].hasDome();
-                                if (startLevel >= aroundLevel && !hasDome) {  //se può scendere perchè around level più basso e non ha dome
-                                    loseCondition = false;
-                                    break;
-                                } else if (aroundLevel == (startLevel + 1) && !hasDome) {  // se può salire perchè around level più alto di uno e non ha dome
-                                    loseCondition = false;
-                                    break;
+                                try {
+                                    Position startPosition = currentPositions.get(i);
+                                    Position destPostion = new Position(positionX, positionY);
+                                    boolean isOwnWorker=false;
+                                    for(Position position: currentPositions){
+                                        if(position.equals(destPostion))
+                                            isOwnWorker=true;
+                                    }
+                                    try {
+                                        boolean canMove = this.canMove(startPosition, destPostion, isPreviousBlockMove, isOwnWorker, card, previousCard);
+                                        if (canMove == true)
+                                            return false;
+                                    }catch (BlockedMoveException e){
+                                        return false;
+                                    }
+                                }catch(PositionOutOfBoundsException e){
+                                    continue;
                                 }
+
                             }
                         }
                     }

@@ -72,6 +72,11 @@ public class Game implements Serializable{
         }
     }
 
+    public Player getCurrentPlayer(){
+        return turn.getCurrentPlayer();
+    }
+
+
     public Turn getTurn() {
         return turn;
     }
