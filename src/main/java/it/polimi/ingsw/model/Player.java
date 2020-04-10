@@ -8,9 +8,9 @@ public class Player implements Serializable {
     private final String nickName;
     private Card card; //FIX add final when tests are over
     private ArrayList<Worker> workers;
-    static int numWorkers;
 
-    public Player(String nickName){
+
+    public Player(String nickName, int numWorkers){
         this.nickName = nickName;
         workers = new ArrayList<>();
         this.initWorkers(numWorkers);
@@ -43,14 +43,13 @@ public class Player implements Serializable {
         return workers.get(worker).getNumBuilds();
     }
 
-
     public String getNickName()
     {
         return nickName;
     }
 
-    public static void setNumWorkers(int numWorkers){
-        Player.numWorkers = numWorkers;
+    public int getNumWorkers(){
+        return workers.size();
     }
 
 

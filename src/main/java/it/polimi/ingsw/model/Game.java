@@ -14,6 +14,7 @@ public class Game implements Serializable{
     private ArrayList<Player> players = new ArrayList<>();
     boolean useCards = false;
     CardDeck cardDeck;
+    private final int numWorkers;
 
     public Game() {
         this(5, 5, 2);
@@ -27,7 +28,7 @@ public class Game implements Serializable{
      */
     public Game(int width, int height, int numWorkers) {
         Position.setSize(width, height);
-        Player.setNumWorkers(numWorkers);
+        this.numWorkers = numWorkers;
     }
 
     /**
@@ -41,7 +42,7 @@ public class Game implements Serializable{
         this.useCards = useCards;
 
         for (int n = 0; n < nicknames.size(); n++) {
-            Player newPlayer = new Player(nicknames.get(n));
+            Player newPlayer = new Player(nicknames.get(n), numWorkers);
             players.add(newPlayer);
         }
 
@@ -83,6 +84,9 @@ public class Game implements Serializable{
         return previousTurn;
     }
 
+    public int getNumWorkers(){
+        return this.numWorkers;
+    }
     public void initTurn() {
         turn = new Turn( this.pickFirstPlayer() );
     }
