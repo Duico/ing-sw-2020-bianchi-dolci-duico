@@ -2,13 +2,10 @@ package it.polimi.ingsw.model.strategy;
 
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
-import it.polimi.ingsw.model.Board;
 
-import java.io.Serializable;
+public interface MoveStrategy { //implement DefaultMove functions here
 
-public interface MoveStrategy extends Serializable { //implement DefaultMove functions here
-
-    boolean isValidMove(Position startPosition, Position destPosition, Board board);
+    boolean isValidMove(Position startPosition, Position destPosition, BoardCell[][] grid);
 
     default boolean isAllowedToMove(int numMoves, int numBuilds){
         if(numMoves != 0 && numBuilds==0){

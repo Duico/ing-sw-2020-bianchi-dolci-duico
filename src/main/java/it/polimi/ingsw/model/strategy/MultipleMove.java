@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.strategy;
 
-import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 
@@ -18,19 +17,19 @@ public class MultipleMove implements MoveStrategy {
     }
 
     public MultipleMove(){
-        this.numMovesAllowed = 2;
+        this.numMovesAllowed = 1;
     }
 
     @Override
-    public boolean isValidMove(Position startPosition, Position destPosition, Board board) {
+    public boolean isValidMove(Position startPosition, Position destPosition, BoardCell[][] grid) {
 
-        BoardCell startCell = board.getBoardCell(startPosition);
+        BoardCell startCell = grid[startPosition.getX()][startPosition.getY()];
         int numMoves = startCell.getWorker().getNumMoves();
-        if(numMoves >= 1 && startCell.getWorker().getFirstMove().equals(destPosition)){
+        if(numMoves > 1 && startCell.getWorker().getFirstMove().equals(destPosition)){
             return false;
         }else{
             MoveStrategy defaultStrategy = new DefaultMove();
-            return defaultStrategy.isValidMove(startPosition,destPosition,board);
+            return defaultStrategy.isValidMove(startPosition,destPosition,grid);
         }
     }
 

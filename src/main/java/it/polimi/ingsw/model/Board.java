@@ -1,6 +1,12 @@
 package it.polimi.ingsw.model;
 
 
+import it.polimi.ingsw.model.exception.BlockedMoveException;
+import it.polimi.ingsw.model.strategy.BlockStrategy;
+import it.polimi.ingsw.model.strategy.MoveStrategy;
+import it.polimi.ingsw.model.strategy.OpponentStrategy;
+import it.polimi.ingsw.model.strategy.WinStrategy;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 

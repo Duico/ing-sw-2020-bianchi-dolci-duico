@@ -1,5 +1,9 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.exception.BlockedMoveException;
+import it.polimi.ingsw.model.exception.InvalidPushCell;
+import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 

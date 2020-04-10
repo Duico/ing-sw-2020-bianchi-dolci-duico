@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model.strategy;
 
-import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
-import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Position;
 
 /**
@@ -12,9 +10,9 @@ import it.polimi.ingsw.model.Position;
 public class DomeBuild implements BuildStrategy {
 
     @Override
-    public boolean isValidBuild(Position startPosition, Position destinationPosition, Boolean isDome, Board board) {
+    public boolean isValidBuild(BoardCell[][] grid, Position startPosition, Position destinationPosition, Boolean isDome) {
         try {
-            BoardCell destinationCell = board.getBoardCell(destinationPosition);
+            BoardCell destinationCell = grid[destinationPosition.getX()][destinationPosition.getY()];
             int dx = startPosition.getX() - destinationPosition.getX();
             int dy = startPosition.getY() - destinationPosition.getY();
             if (dx == 0 && dy == 0)
@@ -35,13 +33,4 @@ public class DomeBuild implements BuildStrategy {
         }
     }
 
-    @Override
-    public boolean isAllowedToBuild(int numMoves, int numBuilds, Operation lastOperation) {
-        return (numMoves == 1 && numBuilds ==0);
-    }
-
-    @Override
-    public boolean isRequiredToBuild(int numMoves, int numBuilds, Operation lastOperation) {
-        return numBuilds == 0;
-    }
 }

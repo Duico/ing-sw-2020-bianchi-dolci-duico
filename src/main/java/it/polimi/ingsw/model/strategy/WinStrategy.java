@@ -1,12 +1,9 @@
 package it.polimi.ingsw.model.strategy;
 
-import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 
-import java.io.Serializable;
-
-public interface WinStrategy extends Serializable {
+public interface WinStrategy {
     /**
      *
      * @param startPosition The position where the worker is located at the moment
@@ -14,6 +11,6 @@ public interface WinStrategy extends Serializable {
      * @param grid Main grid of the Game
      * @return
      */
-    boolean isWinningMove(Position startPosition, Position destinationPosition, Board board);
+    boolean isWinningMove(Position startPosition, Position destinationPosition, BoardCell[][] grid);
 
 }

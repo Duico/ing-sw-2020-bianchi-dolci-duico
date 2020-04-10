@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.exception.ReadConfigurationXMLException;
+import it.polimi.ingsw.model.exception.StrategyNameNotFound;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

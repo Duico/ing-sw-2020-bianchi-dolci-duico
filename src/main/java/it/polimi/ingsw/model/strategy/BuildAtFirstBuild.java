@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.strategy;
 
-import it.polimi.ingsw.model.Board;
+import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Position;
 
@@ -12,10 +12,10 @@ import it.polimi.ingsw.model.Position;
 public class BuildAtFirstBuild implements BuildStrategy {
 
     @Override
-    public boolean isValidBuild(Position startPosition, Position destinationPosition, Boolean isDome, Board board)
+    public boolean isValidBuild(BoardCell[][] grid, Position startPosition, Position destinationPosition, Boolean isDome)
     {
         BuildStrategy buildAtFirstBuild = new DefaultBuild();
-        return buildAtFirstBuild.isValidBuild(startPosition, destinationPosition, isDome, board);
+        return buildAtFirstBuild.isValidBuild(grid, startPosition, destinationPosition, isDome);
     }
 
 
@@ -34,7 +34,7 @@ public class BuildAtFirstBuild implements BuildStrategy {
 
     @Override
     public boolean isRequiredToBuild(int numMoves, int numBuilds, Operation lastOperation) {
-        if(numBuilds == 0)
+        if(numBuilds == 0 && numMoves == 1)
             return true;
         if(numBuilds == 1 && numMoves == 1 && lastOperation.equals(Operation.MOVE))
             return true;

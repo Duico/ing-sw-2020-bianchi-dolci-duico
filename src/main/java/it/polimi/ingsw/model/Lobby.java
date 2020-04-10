@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.exception.NotEnoughPlayersException;
+
 import java.util.ArrayList;
 
 public class Lobby {

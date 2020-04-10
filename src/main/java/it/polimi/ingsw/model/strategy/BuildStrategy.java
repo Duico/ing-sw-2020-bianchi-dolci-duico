@@ -1,12 +1,10 @@
 package it.polimi.ingsw.model.strategy;
 
-import it.polimi.ingsw.model.Board;
+import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Position;
 
-import java.io.Serializable;
-
-public interface BuildStrategy extends Serializable {
+public interface BuildStrategy {
 
     /**
      *
@@ -16,7 +14,7 @@ public interface BuildStrategy extends Serializable {
      * @param isDome Defines if the worker wants to build a dome
      * @return
      */
-    boolean isValidBuild(Position startPosition, Position destinationPosition, Boolean isDome, Board board);
+    boolean isValidBuild(BoardCell[][] grid, Position startPosition, Position destinationPosition, Boolean isDome);
 
     /**
      *

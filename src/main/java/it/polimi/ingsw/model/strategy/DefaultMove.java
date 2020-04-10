@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.strategy;
 
-import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 
@@ -11,11 +10,11 @@ import it.polimi.ingsw.model.Position;
 public class DefaultMove implements MoveStrategy { //inherit functions from Interface
 
     @Override
-    public boolean isValidMove(Position startPosition, Position destPosition, Board board) {
+    public boolean isValidMove(Position startPosition, Position destPosition, BoardCell[][] grid) {
 
         MoveStrategy pushStrategy = new PushMove();
-        BoardCell destCell = board.getBoardCell(destPosition);
-        boolean isValidMove = pushStrategy.isValidMove(startPosition, destPosition, board) && (destCell.getWorker() == null);
+        BoardCell destCell = grid[destPosition.getX()][destPosition.getY()];
+        boolean isValidMove = pushStrategy.isValidMove(startPosition, destPosition, grid) && (destCell.getWorker() == null);
         return isValidMove;
 
     }

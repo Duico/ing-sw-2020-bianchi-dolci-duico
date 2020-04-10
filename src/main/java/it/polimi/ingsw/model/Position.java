@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import java.util.Objects;
+import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 
 public class Position implements Cloneable{
     private int x;

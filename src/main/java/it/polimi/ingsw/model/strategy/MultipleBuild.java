@@ -1,4 +1,8 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.strategy;
+
+import it.polimi.ingsw.model.BoardCell;
+import it.polimi.ingsw.model.Operation;
+import it.polimi.ingsw.model.Position;
 
 /**
  * Class that implements the strategy that allows a Player's worker to build twice (not a dome)
@@ -8,7 +12,7 @@ package it.polimi.ingsw.model;
 public class MultipleBuild implements BuildStrategy {
 
     @Override
-    public boolean isValidBuild(BoardCell [][] grid, Position startPosition, Position destinationPosition, Boolean isDome) {
+    public boolean isValidBuild(BoardCell[][] grid, Position startPosition, Position destinationPosition, Boolean isDome) {
         try{
             BoardCell startCell = grid[startPosition.getX()][startPosition.getY()];
             int numBuilds = startCell.getWorker().getNumBuilds();

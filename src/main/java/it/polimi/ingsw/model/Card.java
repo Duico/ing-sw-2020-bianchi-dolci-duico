@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.exception.StrategyNameNotFound;
+import it.polimi.ingsw.model.strategy.*;
+
 import java.io.Serializable;
 import java.util.Objects;
 
