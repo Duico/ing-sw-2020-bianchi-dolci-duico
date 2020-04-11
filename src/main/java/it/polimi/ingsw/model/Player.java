@@ -8,12 +8,14 @@ public class Player implements Serializable {
     private final String nickName;
     private Card card; //FIX add final when tests are over
     private ArrayList<Worker> workers;
+    private final int workersToPlace;
 
 
     public Player(String nickName, int numWorkers){
         this.nickName = nickName;
         workers = new ArrayList<>();
-        this.initWorkers(numWorkers);
+        workersToPlace = numWorkers;
+        //this.initWorkers(numWorkers);
     }
 
     private void initWorkers(int numWorkers){
@@ -64,7 +66,21 @@ public class Player implements Serializable {
     }
 
 
-    public Position getCurrentPositionWorker(int currentWorkerId) {
+    public Position getWorkerCurrentPosition(int currentWorkerId) {
         return workers.get(currentWorkerId).getCurrentPosition();
+    }
+
+    public boolean addWorker(Worker newWorker){
+        if(!canPlace()){
+            return false;
+        }else{
+            workers.add(newWorker);
+            return true;
+        }
+    }
+
+    public boolean canPlace() {
+
+        return (workersToPlace>0);
     }
 }

@@ -92,15 +92,24 @@ public class Game implements Serializable{
     public int getNumWorkers(){
         return this.numWorkers;
     }
+
     public void initTurn() {
-        turn = new Turn( this.pickFirstPlayer() );
+        Card previousCard = getPreviousPlayer().getCard();
+        if(previousCard == null){
+            throw new NullPointerException("Previous Card is not set");
+        }
+
+        turn = new Turn( this.pickFirstPlayer(), previousCard, false);
     }
+
 
 
     public void nextTurn() {
         //TODO
+        Card card = turn.getCurrentPlayer().getCard();
+        boolean blockNextPlayer = turn.isBlockNextPlayer();
         previousTurn = turn;
-        turn = new Turn( this.getNextPlayer() );
+        turn = new Turn( this.getNextPlayer(), card, blockNextPlayer);
     }
 
     private Player pickFirstPlayer() {
@@ -109,12 +118,19 @@ public class Game implements Serializable{
             return randPlayer;
     }
 
-    public Player getNextPlayer() {
+    private Player getPreviousPlayer() {
+        return scrubPlayers(-1);
+    }
+    private Player getNextPlayer() {
+        return scrubPlayers(1);
+    }
+
+    private Player scrubPlayers(int direction){
         Player currentPlayer = turn.getCurrentPlayer();
         int index = players.indexOf(currentPlayer);
         if (index>0) {
             int size = players.size();
-            return players.get( (index + 1) % size );
+            return players.get( (index + direction) % size );
         }else {
             throw new RuntimeException("Current player was not found in Game player List");
         }

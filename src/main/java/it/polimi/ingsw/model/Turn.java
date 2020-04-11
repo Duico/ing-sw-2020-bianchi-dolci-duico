@@ -15,22 +15,21 @@ public class Turn implements Serializable {
     private boolean previousBlockNextPlayer;
     private Board board;
 
-    public Turn(Player currentPlayer){
-        this.currentPlayer = currentPlayer;
-        //this.currentWorkerId = currentWorkerId;
-        this.currentWorkerId = -1;
-        this.blockNextPlayer = false;
+//    public Turn(Player currentPlayer){
+//        this.currentPlayer = currentPlayer;
+//        //this.currentWorkerId = currentWorkerId;
+//        this.currentWorkerId = -1;
+//        this.blockNextPlayer = false;
+//
+//    }
 
-    }
 
-    public Turn(Player currentPlayer, Card previousTurnCard, boolean previousBlockNextPlayer, Board board){
+    public Turn(Player currentPlayer, Card previousTurnCard, boolean previousBlockNextPlayer){
         this.currentPlayer = currentPlayer;
         this.currentWorkerId = -1;
         this.blockNextPlayer = false;
         this.previousTurnCard = previousTurnCard;
         this.previousBlockNextPlayer = previousBlockNextPlayer;
-        this.board = board;
-
     }
 
     public boolean isAllowedToMove(){
@@ -48,13 +47,23 @@ public class Turn implements Serializable {
         boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
         return isRequiredToMove;
     }
-
+    private boolean isWorkersPositionSet(){
+        boolean result = true;
+        for(int i=0; i<currentPlayer.getNumWorkers(); i++){
+            if(currentPlayer.getWorkerCurrentPosition(i) == null)
+                result = false;
+        }
+        return result;
+    }
     public boolean move(Position destinationPosition){
+        if(!isWorkersPositionSet())
+            return false;
+        // ^maybe throw an error
         Card card = currentPlayer.getCard();
-        Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
+        Position startPosition = currentPlayer.getWorkerCurrentPosition(currentWorkerId);
         boolean isOwnWorker = false;
         for(int i=0; i<currentPlayer.getNumWorkers(); i++) {
-            if(currentPlayer.getCurrentPositionWorker(i).equals(destinationPosition))
+            if(currentPlayer.getWorkerCurrentPosition(i).equals(destinationPosition))
                 isOwnWorker = true;
         }
         boolean canMove = false;
@@ -85,8 +94,14 @@ public class Turn implements Serializable {
             return false;
         }
     }
-
+    public boolean place(Position placePosition){
+        Worker newWorker = new Worker();
+        board.setWorker(newWorker, placePosition);
+        return currentPlayer.addWorker(newWorker);
+    }
     public boolean isAllowedToBuild(){
+        if(!isWorkersPositionSet())
+            return false;
         Card card = currentPlayer.getCard();
         int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
         int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
@@ -96,6 +111,8 @@ public class Turn implements Serializable {
     }
 
     public boolean isRequiredToBuild(){
+        if(!isWorkersPositionSet())
+            return false;
         Card card = currentPlayer.getCard();
         int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
         int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
@@ -106,11 +123,13 @@ public class Turn implements Serializable {
 
 
     public boolean build (Position destinationPosition, boolean isDome) {
+        if(!isWorkersPositionSet())
+            return false;
         Card card = currentPlayer.getCard();
         int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
         int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
         Operation lastOperation = currentPlayer.getLastOperationWorker(currentWorkerId);
-        Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
+        Position startPosition = currentPlayer.getWorkerCurrentPosition(currentWorkerId);
         boolean isRequiredToBuild = card.getBuildStrategy().isRequiredToBuild(numMoves, numBuilds, lastOperation);
         boolean isAllowedToBuild = card.getBuildStrategy().isAllowedToBuild(numMoves, numBuilds, lastOperation);
         boolean canBuild = board.canBuild(startPosition, destinationPosition, card, isDome);
@@ -125,7 +144,7 @@ public class Turn implements Serializable {
 
     public boolean winMove(Position destinationPosition){
         Card card = currentPlayer.getCard();
-        Position startPosition = currentPlayer.getCurrentPositionWorker(currentWorkerId);
+        Position startPosition = currentPlayer.getWorkerCurrentPosition(currentWorkerId);
         return board.isWinningMove(startPosition, destinationPosition, card);
     }
 
@@ -133,7 +152,7 @@ public class Turn implements Serializable {
         Card card = currentPlayer.getCard();
         ArrayList<Position> currentPositions = new ArrayList<Position>();
         for (int i=0 ; i<currentPlayer.getNumWorkers(); i++) {
-            Position positionWorker = currentPlayer.getCurrentPositionWorker(i);
+            Position positionWorker = currentPlayer.getWorkerCurrentPosition(i);
             currentPositions.add(positionWorker);
         }
         boolean isLoseCondition = board.isLoseCondition(currentPositions, previousBlockNextPlayer, card, previousTurnCard);

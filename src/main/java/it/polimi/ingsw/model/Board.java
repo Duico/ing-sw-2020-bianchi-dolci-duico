@@ -91,7 +91,7 @@ public class Board implements Cloneable, Serializable {
 
     }
 
-    public void setWorker(Position destPosition, Worker worker){
+    public void setWorker(Worker worker, Position destPosition){
         if( this.getBoardCellReference(destPosition).getWorker() == null){
             this.getBoardCellReference(destPosition).setWorker(worker);
             this.getBoardCellReference(destPosition).getWorker().addMove(destPosition);
