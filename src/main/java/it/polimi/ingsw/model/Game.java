@@ -1,9 +1,8 @@
 package it.polimi.ingsw.model;
 
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Manages a game from start to end, handles the creation and advancement of turns
@@ -109,7 +108,7 @@ public class Game implements Serializable{
         //TODO
         //reset currentWorker's moves-builds-operations
         //
-        Card card = turn.getCurrentPlayer().getCard();
+        Card card = turn.getPlayerCard();
         boolean blockNextPlayer = turn.isBlockNextPlayer();
         previousTurn = turn;
         turn = new Turn( this.getNextPlayer(), card, blockNextPlayer);
@@ -129,9 +128,15 @@ public class Game implements Serializable{
     }
 
     private Player scrubPlayers(int direction){
-        Player currentPlayer = turn.getCurrentPlayer();
-        int index = players.indexOf(currentPlayer);
-        if (index>0) {
+        UUID id = turn.getCurrentPlayerUUID();
+        int index = -1;
+        for(int i=0;i<players.size();i++){
+            if(players.get(i).getUuid() == id){
+                index = i;
+                break;
+            }
+        }
+        if (index>=0) {
             int size = players.size();
             return players.get( (index + direction) % size );
         }else {

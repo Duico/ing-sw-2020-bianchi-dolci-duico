@@ -92,10 +92,13 @@ public class Worker implements Cloneable{
 
     public void addMove(Position position) {
         moves.add(position);
+        operations.add(Operation.MOVE);
+
     }
 
     public void addBuild(Position position){
         builds.add(position);
+        operations.add(Operation.BUILD);
     }
 
     public void deleteLastMove(){

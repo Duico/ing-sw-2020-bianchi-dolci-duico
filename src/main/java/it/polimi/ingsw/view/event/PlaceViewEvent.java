@@ -1,10 +1,17 @@
 package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Position;
 
 public class PlaceViewEvent extends ViewEvent{
-    public PlaceViewEvent(Player player) {
+    private Position destinstionPosition;
+
+    public PlaceViewEvent(Player player, Position destPosition) {
         super(player);
+        this.destinstionPosition = destPosition;
     }
-    //TODO destPosition
+
+    public Position getDestinationPosition() {
+        return destinstionPosition;
+    }
 }

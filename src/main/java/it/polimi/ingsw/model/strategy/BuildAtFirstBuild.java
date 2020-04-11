@@ -12,10 +12,10 @@ import it.polimi.ingsw.model.Position;
 public class BuildAtFirstBuild implements BuildStrategy {
 
     @Override
-    public boolean isValidBuild(Board board, Position startPosition, Position destinationPosition, Boolean isDome)
+    public boolean isValidBuild(Position startPosition, Position destinationPosition, Boolean isDome, Board board)
     {
         BuildStrategy buildAtFirstBuild = new DefaultBuild();
-        return buildAtFirstBuild.isValidBuild(board, startPosition, destinationPosition, isDome);
+        return buildAtFirstBuild.isValidBuild(startPosition, destinationPosition, isDome, board);
     }
 
 

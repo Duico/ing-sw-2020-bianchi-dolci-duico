@@ -1,13 +1,12 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.exception.BlockedMoveException;
 import it.polimi.ingsw.model.exception.InvalidPushCell;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.view.event.*;
 
 
-public class Controller implements ViewEventListener {
+public class Controller {// implements ViewEventListener {
 
     private Game game; //refer to our model
 
@@ -60,12 +59,11 @@ public class Controller implements ViewEventListener {
     public void move(MoveViewEvent message){
         Turn turn = game.getTurn();
         int currentWorkerId = message.getWorkerId();
-        Player viewPlayer = message.getPlayer();
-        //CHECK player
+        //CHECK player equals viewPlayer
         checkPlayer(message);
-        checkWorkerId(message);
+        checkAndUpdateWorkerId(message);
 
-        Position destinationPosition = message.getDestPosition();
+        Position destinationPosition = message.getDestinationPosition();
 
         if(checkWorkerNotPlaced()){
             //STOP
@@ -77,29 +75,26 @@ public class Controller implements ViewEventListener {
         }
 
         //check block
-        boolean canMove = true;
+        boolean possibleMove = true;
 
         if(turn.getPreviousBlockNextPlayer()) {
             if(turn.isBlockedMove(currentWorkerId, destinationPosition)){
-                canMove = false;
+                possibleMove = false;
 
                 //notify RemoteView
             }
         }
         //check isValidMove and isValidPush
 
-        try {
-            if(!turn.canMove(currentWorkerId, destinationPosition)){
-                canMove = false;
-                //notify view
-            }
 
-        } catch (BlockedMoveException e){
+        if(!turn.isFeasibleMove(currentWorkerId, destinationPosition)){
+            possibleMove = false;
             //notify view
         }
 
 
-        if( canMove == true ) {
+
+        if( possibleMove == true ) {
             try {
                 turn.move(currentWorkerId, destinationPosition);
             } catch (PositionOutOfBoundsException e) {
@@ -111,8 +106,6 @@ public class Controller implements ViewEventListener {
         }
     }
 
-//TODO now
-
     public void place(PlaceViewEvent message){
         Turn turn = game.getTurn();
         checkPlayer(message);
@@ -122,14 +115,36 @@ public class Controller implements ViewEventListener {
             //all workers are placed
             //notify view
         }
-        int workerId = turn.place(message.getDestPosition());
+        int workerId = turn.place(message.getDestinationPosition());
         if( workerId < 0){
             //notify view
         }
     }
 
 
-    //TODO now !!
+    public void build(BuildViewEvent message){
+        Turn turn = game.getTurn();
+        int currentWorkerId = message.getWorkerId();
+        checkPlayer(message);
+        checkAndUpdateWorkerId(message);
+
+        Position destinationPosition = message.getDestinationPosition();
+        boolean isDome = message.isDome();
+
+        if(checkWorkerNotPlaced()){
+            //STOP
+        }
+
+        if(!turn.isAllowedToBuild()){
+
+        }
+
+        boolean possibleBuild = turn.isFeasibleBuild(currentWorkerId, destinationPosition, isDome);
+        if(possibleBuild){
+            turn.build(destinationPosition, isDome);
+        }
+    }
+
 
 //    public boolean build (Position destinationPosition, boolean isDome) {
 //        if(!isWorkersPositionSet())
@@ -167,7 +182,7 @@ public class Controller implements ViewEventListener {
     }
 
 
-    private void checkWorkerId(WorkerViewEvent message){
+    private void checkAndUpdateWorkerId(WorkerViewEvent message){
         Turn turn = game.getTurn();
         int currentWorkerId = message.getWorkerId();
         if(!turn.updateCurrentWorker(currentWorkerId)) {

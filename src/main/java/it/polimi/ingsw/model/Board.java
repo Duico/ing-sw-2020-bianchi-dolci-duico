@@ -1,10 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.exception.*;
-import it.polimi.ingsw.model.strategy.*;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Board implements Cloneable, Serializable {
     BoardCell[][] grid;
@@ -21,7 +17,7 @@ public class Board implements Cloneable, Serializable {
     }
 
     public boolean canBuild(Position startPosition, Position destinationPosition, Card card, boolean isDome){
-        boolean isValidBuild = card.getBuildStrategy().isValidBuild(this.grid, startPosition, destinationPosition,isDome);
+        boolean isValidBuild = card.getBuildStrategy().isValidBuild(startPosition, destinationPosition, isDome, this.grid);
         return isValidBuild;
 
     }
@@ -29,12 +25,11 @@ public class Board implements Cloneable, Serializable {
     public void build(Position startPosition, Position destinationPosition, boolean isDome) {
         if(isDome){
             this.grid[destinationPosition.getX()][destinationPosition.getY()].setDome(true);
-            // aggiungo lo stesso addBuild?
         }else{
             int previousLevel = this.grid[destinationPosition.getX()][destinationPosition.getY()].getLevel().ordinal();
             this.grid[destinationPosition.getX()][destinationPosition.getY()].setLevel(Level.values()[previousLevel+1]);
-            this.grid[startPosition.getX()][destinationPosition.getY()].getWorker().addBuild(destinationPosition);
         }
+            this.grid[startPosition.getX()][startPosition.getY()].getWorker().addBuild(destinationPosition);
     }
 
 
@@ -78,50 +73,45 @@ public class Board implements Cloneable, Serializable {
         }
     }
 
-    public boolean isWinningMove(Position startPosition, Position destinationPosition, Card card){
-        WinStrategy winStrategy = card.getWinStrategy();
-        return winStrategy.isWinningMove(startPosition, destinationPosition, this.grid );
-    }
-
-    public boolean isLoseCondition(ArrayList<Position> currentPositions, boolean isPreviousBlockMove, Card card, Card previousCard) {
-        boolean loseCondition = true;
-        for (int i=0; i<currentPositions.size(); i++){
-            int currentY = currentPositions.get(i).getY();
-            for(int y= -1; y<=1; y++) {
-                int positionY=currentY+y;
-                if (positionY >= 0 && positionY < Position.height) {
-                    int currentX = currentPositions.get(i).getX();
-                    for (int x = -1; x <=1; x++) {
-                        int positionX=currentX+x;
-                        if (positionX >= 0 && positionX < Position.width) {
-                            if(positionX!=currentPositions.get(i).getX() || positionY!=currentPositions.get(i).getY()) {
-                                try {
-                                    Position startPosition = currentPositions.get(i);
-                                    Position destPostion = new Position(positionX, positionY);
-                                    boolean isOwnWorker=false;
-                                    for(Position position: currentPositions){
-                                        if(position.equals(destPostion))
-                                            isOwnWorker=true;
-                                    }
-                                    try {
-                                        boolean canMove = this.canMove(startPosition, destPostion, isPreviousBlockMove, isOwnWorker, card, previousCard);
-                                        if (canMove == true)
-                                            return false;
-                                    }catch (BlockedMoveException e){
-                                        return false;
-                                    }
-                                }catch(PositionOutOfBoundsException e){
-                                    continue;
-                                }
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return loseCondition;
-    }
+//    public boolean isLoseCondition(ArrayList<Position> currentPositions, boolean isPreviousBlockMove, Card card, Card previousCard) {
+//        boolean loseCondition = true;
+//        for (int i=0; i<currentPositions.size(); i++){
+//            int currentY = currentPositions.get(i).getY();
+//            for(int y= -1; y<=1; y++) {
+//                int positionY=currentY+y;
+//                if (positionY >= 0 && positionY < Position.height) {
+//                    int currentX = currentPositions.get(i).getX();
+//                    for (int x = -1; x <=1; x++) {
+//                        int positionX=currentX+x;
+//                        if (positionX >= 0 && positionX < Position.width) {
+//                            if(positionX!=currentPositions.get(i).getX() || positionY!=currentPositions.get(i).getY()) {
+//                                try {
+//                                    Position startPosition = currentPositions.get(i);
+//                                    Position destPostion = new Position(positionX, positionY);
+//                                    boolean isOwnWorker=false;
+//                                    for(Position position: currentPositions){
+//                                        if(position.equals(destPostion))
+//                                            isOwnWorker=true;
+//                                    }
+//                                    try {
+//                                        boolean canMove = this.canMove(startPosition, destPostion, isPreviousBlockMove, isOwnWorker, card, previousCard);
+//                                        if (canMove == true)
+//                                            return false;
+//                                    }catch (BlockedMoveException e){
+//                                        return false;
+//                                    }
+//                                }catch(PositionOutOfBoundsException e){
+//                                    continue;
+//                                }
+//
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return loseCondition;
+//    }
 
     @Override
     protected Board clone() {

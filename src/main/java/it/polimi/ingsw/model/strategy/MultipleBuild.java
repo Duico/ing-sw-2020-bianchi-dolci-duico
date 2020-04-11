@@ -13,17 +13,17 @@ import it.polimi.ingsw.model.Position;
 public class MultipleBuild implements BuildStrategy {
 
     @Override
-    public boolean isValidBuild(Board board, Position startPosition, Position destinationPosition, Boolean isDome) {
+    public boolean isValidBuild(Position startPosition, Position destinationPosition, Boolean isDome, Board board) {
         try{
             BoardCell startCell = board.getBoardCell(startPosition);
             int numBuilds = startCell.getWorker().getNumBuilds();
             BuildStrategy buildStrategy = new DefaultBuild();
             if(numBuilds == 0){
-                return buildStrategy.isValidBuild(board, startPosition, destinationPosition, isDome);
+                return buildStrategy.isValidBuild(startPosition, destinationPosition, isDome, board);
             }
             else if(numBuilds == 1){
                 if(destinationPosition.equals(startCell.getWorker().getFirstBuild()))
-                    return (buildStrategy.isValidBuild(board, startPosition, destinationPosition, isDome) && !isDome);
+                    return (buildStrategy.isValidBuild(startPosition, destinationPosition, isDome, board) && !isDome);
                 else
                     return false;
             }

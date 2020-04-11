@@ -14,7 +14,7 @@ public interface BuildStrategy {
      * @param isDome Defines if the worker wants to build a dome
      * @return
      */
-    boolean isValidBuild(Board board, Position startPosition, Position destinationPosition, Boolean isDome);
+    boolean isValidBuild(Position startPosition, Position destinationPosition, Boolean isDome, Board board);
 
     /**
      *

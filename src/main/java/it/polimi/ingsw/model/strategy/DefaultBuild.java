@@ -11,7 +11,7 @@ public class DefaultBuild implements BuildStrategy {
      */
 
     @Override
-    public boolean isValidBuild(Board board, Position startPosition, Position destinationPosition, Boolean isDome){
+    public boolean isValidBuild(Position startPosition, Position destinationPosition, Boolean isDome, Board board){
     try {
         BoardCell destinationCell = board.getBoardCell(destinationPosition);
         int dx = startPosition.getX() - destinationPosition.getX();

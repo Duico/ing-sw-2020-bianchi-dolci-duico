@@ -13,9 +13,9 @@ public class PushOpponent implements OpponentStrategy {
     public boolean isValidPush(Position startPosition, Position destPosition, boolean isOwnWorker, Board board){  //domandare come passare matrice
         if(isOwnWorker) return false;
 
-        boolean isFree = board.isCellFree(destPosition);
+        BoardCell destCell = board.getBoardCell(destPosition);
 
-        if(isFree == true) return true;
+        if(destCell.getWorker() == null) return true;
         else {
             try{
             Position pushDestPosition;
