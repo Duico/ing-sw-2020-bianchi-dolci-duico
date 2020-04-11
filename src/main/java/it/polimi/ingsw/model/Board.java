@@ -20,36 +20,6 @@ public class Board implements Cloneable, Serializable {
         }
     }
 
-
-    public boolean canMove(Position startPosition, Position destinationPosition, boolean isPreviousBlockMove, boolean isOwnWorker, Card card, Card previousCard) throws BlockedMoveException {
-
-        if(isPreviousBlockMove == true) {
-            boolean isBlockedMove = this.isBlockedMove(startPosition, destinationPosition, previousCard.getBlockStrategy());
-            if (isBlockedMove) {
-                return false;
-            }
-        }
-        MoveStrategy moveStrategy = card.getMoveStrategy();
-        OpponentStrategy opponentStrategy = card.getOpponentStrategy();
-        boolean isValidMove = moveStrategy.isValidMove(startPosition, destinationPosition, this.grid);
-        boolean isValidPush = opponentStrategy.isValidPush(startPosition, destinationPosition, isOwnWorker, this.grid);
-
-        if( isValidMove == true && isValidPush==true ) {
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-     private boolean isBlockedMove(Position startPosition, Position destinationPosition, BlockStrategy blockStrategy){
-        return blockStrategy.isBlockMove( startPosition, destinationPosition, this.grid);
-    }
-
-    public boolean blockNextPlayer(Position startPosition, Position destinationPosition, Card card) {
-        boolean willBlock = card.getBlockStrategy().blockNextPlayer(startPosition, destinationPosition, this.grid);
-        return willBlock;
-    }
-
     public boolean canBuild(Position startPosition, Position destinationPosition, Card card, boolean isDome){
         boolean isValidBuild = card.getBuildStrategy().isValidBuild(this.grid, startPosition, destinationPosition,isDome);
         return isValidBuild;
@@ -69,9 +39,16 @@ public class Board implements Cloneable, Serializable {
 
 
 
-    private BoardCell getBoardCell(Position position) throws CloneNotSupportedException {
-        BoardCell cell = (BoardCell) grid[position.getX()][position.getY()].clone();
-        return cell;
+    public BoardCell getBoardCell(Position position) {
+            BoardCell cell = (BoardCell) grid[position.getX()][position.getY()].clone();
+            return cell;
+    }
+    public boolean isCellFree(Position position) {
+        if(getBoardCellReference(position).getWorker() != null){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     private BoardCell getBoardCellReference(Position position){
@@ -91,10 +68,13 @@ public class Board implements Cloneable, Serializable {
 
     }
 
-    public void setWorker(Worker worker, Position destPosition){
+    public boolean setWorker(Worker worker, Position destPosition){
         if( this.getBoardCellReference(destPosition).getWorker() == null){
             this.getBoardCellReference(destPosition).setWorker(worker);
             this.getBoardCellReference(destPosition).getWorker().addMove(destPosition);
+            return true;
+        }else{
+            return false;
         }
     }
 
@@ -144,20 +124,24 @@ public class Board implements Cloneable, Serializable {
     }
 
     @Override
-    protected Board clone() throws CloneNotSupportedException {
+    protected Board clone() {
         int width = Position.width;
         int height = Position.height;
-
+        Board board = null;
         BoardCell[][] newGrid = new BoardCell[width][height];
 
         //DEEP cloning for each BoardCell in grid
         for(int i=0; i<height; i++){
             for(int j=0; j<width; j++){
-                newGrid[i][j] = (BoardCell) this.grid[i][j].clone();
+                newGrid[i][j] = this.grid[i][j].clone();
             }
         }
-        Board board = (Board) super.clone();
-        board.grid = newGrid;
+        try {
+            board = (Board) super.clone();
+            board.grid = newGrid;
+        }catch (CloneNotSupportedException e){
+            throw new RuntimeException("Clone not supported in Board");
+        }
         return board;
     }
 

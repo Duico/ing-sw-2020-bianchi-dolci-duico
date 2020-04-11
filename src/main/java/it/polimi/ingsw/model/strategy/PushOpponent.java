@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model.strategy;
 
-import it.polimi.ingsw.model.BoardCell;
-import it.polimi.ingsw.model.Position;
-import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.exception.*;
 
 /**
@@ -12,18 +10,17 @@ import it.polimi.ingsw.model.exception.*;
 public class PushOpponent implements OpponentStrategy {
 
     @Override
-    public boolean isValidPush(Position startPosition, Position destPosition, boolean isOwnWorker, BoardCell[][] grid){  //domandare come passare matrice
+    public boolean isValidPush(Position startPosition, Position destPosition, boolean isOwnWorker, Board board){  //domandare come passare matrice
         if(isOwnWorker) return false;
 
-        Worker opponentWorker = grid[destPosition.getX()][destPosition.getY()].getWorker();
-        boolean isFree = opponentWorker == null;
+        boolean isFree = board.isCellFree(destPosition);
 
         if(isFree == true) return true;
         else {
             try{
             Position pushDestPosition;
             pushDestPosition = this.destinationPosition(startPosition, destPosition);
-            BoardCell pushDestCell = grid[pushDestPosition.getX()][pushDestPosition.getY()];
+            BoardCell pushDestCell = board.getBoardCell(pushDestPosition);
                 if( pushDestCell.getWorker() != null ) return false;
                 else if( pushDestCell.hasDome()) return false;
                 else{

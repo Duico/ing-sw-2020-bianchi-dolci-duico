@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.Position;
 
 public interface MoveStrategy { //implement DefaultMove functions here
 
-    boolean isValidMove(Position startPosition, Position destPosition, BoardCell[][] grid);
+    boolean isValidMove(Position startPosition, Position destPosition, Board board);
 
     default boolean isAllowedToMove(int numMoves, int numBuilds){
         if(numMoves != 0 && numBuilds==0){

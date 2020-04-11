@@ -1,19 +1,18 @@
 package it.polimi.ingsw.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Player implements Serializable {
     private final String nickName;
     private Card card; //FIX add final when tests are over
-    private ArrayList<Worker> workers;
+    private FixedArray<Worker> workers;
     private final int workersToPlace;
 
 
     public Player(String nickName, int numWorkers){
         this.nickName = nickName;
-        workers = new ArrayList<>();
+        workers = new FixedArray<>(numWorkers);
         workersToPlace = numWorkers;
         //this.initWorkers(numWorkers);
     }

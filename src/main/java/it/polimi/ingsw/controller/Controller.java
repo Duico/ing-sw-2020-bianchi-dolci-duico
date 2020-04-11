@@ -1,8 +1,9 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.Turn;
+import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.exception.BlockedMoveException;
+import it.polimi.ingsw.model.exception.InvalidPushCell;
+import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.view.event.MoveViewEvent;
 import it.polimi.ingsw.view.event.ViewEvent;
 import it.polimi.ingsw.view.event.ViewEventListener;
@@ -12,8 +13,8 @@ public class Controller implements ViewEventListener {
 
     private Game game; //refer to our model
 
-    public Controller(Game game){
-        this.game=game;
+    public Controller(Game game) {
+        this.game = game;
     }
 
 
@@ -25,23 +26,97 @@ public class Controller implements ViewEventListener {
         Player player = game.getCurrentPlayer();
 
         int worker = message.getWorkerId();
-        if(message.getPlayer() != player) return; //todo an event Wrong player
-        else {
-            Turn turn = game.getTurn();
-            if(!turn.updateCurrentWorker(worker)){
-                return; //todo an event Wrong worker
-            }
-            else{
-                if(turn.isRequiredToMove()==false && turn.isAllowedToMove()== false){
-                    return; //todo an event not allowed movement
-                }
-                else if(turn.move(message.getDestPosition())) return; //todo an event not allowed movement
-                    else return; //todo an event not allowed movement
+        if (message.getPlayer() != player) return; //todo an event Wrong player
+
+        Turn turn = game.getTurn();
+        turn.safeMove(worker, message.getDestPosition());
+
+    }
+
+    public void move(MoveViewEvent message){
+        //CHECK player
+
+        int currentWorkerId = message.getWorkerId();
+        Position destinationPosition = message.getDestPosition();
+
+        Turn turn = game.getTurn();
 
 
-                }
-            }
-
+        if(turn.isAnyWorkerNotSet()){
+            //STOP
+            //notify view
         }
+        // ^maybe throw an error
+        //Card card = currentPlayer.getCard();
+        //Position startPosition = currentPlayer.getWorkerCurrentPosition(currentWorkerId);
+
+        //check block
+        boolean canMove = true;
+
+        if(turn.getPreviousBlockNextPlayer()) {
+            if(turn.isBlockedMove(currentWorkerId, destinationPosition)){
+                canMove = false;
+
+                //notify RemoteView
+            }
+        }
+        //check isValidMove and isValidPush
+
+        try {
+            if(!turn.canMove(currentWorkerId, destinationPosition)){
+                canMove = false;
+                //notify view
+            }
+
+        } catch (BlockedMoveException e){
+            //notify view
+        }
+
+
+        if( canMove == true ) {
+            try {
+                turn.move(currentWorkerId, destinationPosition);
+            } catch (PositionOutOfBoundsException e) {
+                e.printStackTrace();
+            } catch (InvalidPushCell invalidPushCell) {
+                invalidPushCell.printStackTrace();
+            }
+            //notify view of success/failure
+        }
+    }
+
+    public void place(PlaceViewEvent message){
+        Turn turn = game.getTurn();
+        //check player
+        if(!turn.isAnyWorkerNotSet()){
+            //notify
+        }else{
+            turn.place(message.getDestPosition());
+        }
+    }
+
+    public boolean build (Position destinationPosition, boolean isDome) {
+        if(!isWorkersPositionSet())
+            return false;
+        Card card = currentPlayer.getCard();
+        int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
+        int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
+        Operation lastOperation = currentPlayer.getLastOperationWorker(currentWorkerId);
+        Position startPosition = currentPlayer.getWorkerCurrentPosition(currentWorkerId);
+        boolean isRequiredToBuild = card.getBuildStrategy().isRequiredToBuild(numMoves, numBuilds, lastOperation);
+        boolean isAllowedToBuild = card.getBuildStrategy().isAllowedToBuild(numMoves, numBuilds, lastOperation);
+        boolean canBuild = board.canBuild(startPosition, destinationPosition, card, isDome);
+
+        if( canBuild == true ){
+            board.build(startPosition, destinationPosition, isDome);
+            return true;
+        }else
+            return false;
+
+    }
+
+    public void handleEvent(StausViewEvent message){
+        //return turn.isRequiredToMove() turn.isRequiredToBuild() turn.isAllowedToMove() turn.isAllowedToBuild()
+    }
 
 }

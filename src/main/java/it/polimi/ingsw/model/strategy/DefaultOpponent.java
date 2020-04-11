@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.strategy;
 
-import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.InvalidPushCell;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
@@ -12,8 +11,8 @@ import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 public class DefaultOpponent implements OpponentStrategy {
 
     @Override
-    public boolean isValidPush(Position startPosition, Position destPosition, boolean isOwnWorker, BoardCell[][] grid) {
-        if(grid[destPosition.getX()][destPosition.getY()].getWorker() != null)
+    public boolean isValidPush(Position startPosition, Position destPosition, boolean isOwnWorker, Board board) {
+        if(board[destPosition.getX()][destPosition.getY()].getWorker() != null)
             return false;
         else
             return true;

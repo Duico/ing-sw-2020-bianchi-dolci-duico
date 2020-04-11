@@ -74,9 +74,10 @@ public class Game implements Serializable{
 
     public Player getCurrentPlayer(){
         return turn.getCurrentPlayer();
+        //todo clone
     }
 
-
+//FIX remove
     public Turn getTurn() {
         return turn;
     }
@@ -106,6 +107,8 @@ public class Game implements Serializable{
 
     public void nextTurn() {
         //TODO
+        //reset currentWorker's moves-builds-operations
+        //
         Card card = turn.getCurrentPlayer().getCard();
         boolean blockNextPlayer = turn.isBlockNextPlayer();
         previousTurn = turn;
