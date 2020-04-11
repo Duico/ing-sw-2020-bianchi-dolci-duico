@@ -9,16 +9,17 @@ public class FixedArray<T> {
     private ArrayList<T> array;
 
     public FixedArray(int size){
+        this.size = size;
         array = new ArrayList<T>();
     }
-    public boolean add(T elem){
+    public int add(T elem){
         for(int i=0; i<size; i++){
             if(array.get(i)==null){
                 array.set(i, elem);
-                return true;
+                return i;
             }
         }
-        return false;
+        return -1;
     }
     public T get(int index){
         if(index>=0 && index<size){

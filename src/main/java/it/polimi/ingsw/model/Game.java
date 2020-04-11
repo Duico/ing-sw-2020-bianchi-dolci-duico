@@ -72,10 +72,10 @@ public class Game implements Serializable{
         }
     }
 
-    public Player getCurrentPlayer(){
-        return turn.getCurrentPlayer();
-        //todo clone
-    }
+//    public Player getCurrentPlayer(){
+//        return turn.getCurrentPlayer();
+//        //todo clone
+//    }
 
 //FIX remove
     public Turn getTurn() {

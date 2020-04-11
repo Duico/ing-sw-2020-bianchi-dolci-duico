@@ -2,26 +2,27 @@ package it.polimi.ingsw.model;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Player implements Serializable {
-    private final String nickName;
+    private String nickName;
+    private final UUID uuid;
     private Card card; //FIX add final when tests are over
     private FixedArray<Worker> workers;
-    private final int workersToPlace;
 
 
     public Player(String nickName, int numWorkers){
+        this.uuid = UUID.randomUUID();
         this.nickName = nickName;
         workers = new FixedArray<>(numWorkers);
-        workersToPlace = numWorkers;
         //this.initWorkers(numWorkers);
     }
 
-    private void initWorkers(int numWorkers){
-        for(int i=0; i < numWorkers; i++){
-            workers.add(new Worker());
-        }
-    }
+//    private void initWorkers(int numWorkers){
+//        for(int i=0; i < numWorkers; i++){
+//            workers.add(new Worker());
+//        }
+//    }
 
     public Card getCard() {
         return card;
@@ -54,32 +55,51 @@ public class Player implements Serializable {
     }
 
 
+
+
+    public Position getWorkerCurrentPosition(int currentWorkerId) {
+        Worker worker = workers.get(currentWorkerId);
+        if(worker == null){
+            return null;
+        }
+        return workers.get(currentWorkerId).getCurrentPosition();
+    }
+
+    public boolean isWorkerSet(int i){
+        return (workers.get(i) != null);
+    }
+    public int addWorker(Worker newWorker){
+        int workerId = workers.add(newWorker);
+        return workerId;
+    }
+
+    public boolean isAnyWorkerNotPlaced() {
+        return (workersToPlace()>0);
+    }
+    private int workersToPlace(){
+        int count=0;
+        for(int i=workers.size()-1; i>=0; i--){
+            if(workers.get(i)==null){
+                count++;
+            }else {
+                break;
+            }
+        }
+        return count;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return Objects.equals(getNickName(), player.getNickName()) &&
+        return  Objects.equals(getUuid(), player.getUuid()) &&
+                Objects.equals(getNickName(), player.getNickName()) &&
                 Objects.equals(getCard(), player.getCard()) &&
                 Objects.equals(workers, player.workers);
-    }
-
-
-    public Position getWorkerCurrentPosition(int currentWorkerId) {
-        return workers.get(currentWorkerId).getCurrentPosition();
-    }
-
-    public boolean addWorker(Worker newWorker){
-        if(!canPlace()){
-            return false;
-        }else{
-            workers.add(newWorker);
-            return true;
-        }
-    }
-
-    public boolean canPlace() {
-
-        return (workersToPlace>0);
     }
 }

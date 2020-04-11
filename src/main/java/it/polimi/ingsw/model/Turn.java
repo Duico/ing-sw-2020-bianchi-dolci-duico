@@ -51,29 +51,10 @@ public class Turn implements Serializable {
         boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
         return isRequiredToMove;
     }
-    public boolean isAnyWorkerNotSet(){
-        boolean result = false;
-        for(int i=0; i<currentPlayer.getNumWorkers(); i++){
-            if(currentPlayer.getWorkerCurrentPosition(i) == null)
-                result = true;
-        }
-        return result;
+    public boolean isAnyWorkerNotPlaced(){
+        return currentPlayer.isAnyWorkerNotPlaced();
     }
-    public void safeMove(int workerId, Position destinationPosition){
-        if(!isAnyWorkerNotSet()){
-            // message WorkersNotPlaced
-        }
 
-        if (!updateCurrentWorker(workerId)) {
-            // message NotCurrentWorker
-            return;
-        }
-        if (isRequiredToMove() == false && isAllowedToMove() == false) {
-            //RemoteView.notify(msg NotAllowedToMoveEvent)
-            return; //todo an event not allowed movement
-        } else if (move(destinationPosition)) return; //todo an event not allowed movement from Turn
-        else return; //todo an event not allowed movement
-    }
 //    public boolean move(Position destinationPosition){
 //        // ^maybe throw an error
 //        Card card = currentPlayer.getCard();
@@ -159,7 +140,7 @@ public class Turn implements Serializable {
         return previousBlockNextPlayer;
     }
     public boolean isAllowedToBuild(){
-        if(!isAnyWorkerNotSet())
+        if(!isAnyWorkerNotPlaced())
             return false;
         Card card = currentPlayer.getCard();
         int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
@@ -177,7 +158,7 @@ public class Turn implements Serializable {
     }
 
     public boolean isRequiredToBuild(){
-        if(!isAnyWorkerNotSet())
+        if(!isAnyWorkerNotPlaced())
             return false;
         Card card = currentPlayer.getCard();
         int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
@@ -225,9 +206,13 @@ public class Turn implements Serializable {
         return isLoseCondition;
     }
 
-    public Player getCurrentPlayer() {
-        return currentPlayer;
+    public boolean checkPlayer(Player viewPlayer){
+        return currentPlayer.getUuid() == viewPlayer.getUuid();
     }
+
+    // private Player getCurrentPlayer() {
+    //        return currentPlayer;
+    //    }
 
     public int getCurrentWorkerId(){
         return this.currentWorkerId;
@@ -245,7 +230,8 @@ public class Turn implements Serializable {
             return false;
     }
 
-    private void setCurrentWorker(int currentWorkerId){
+    private boolean setCurrentWorker(int currentWorkerId){
+        currentPlayer.isWorkerSet()
         this.currentWorkerId=currentWorkerId;
     }
 
