@@ -1,17 +1,19 @@
 package it.polimi.ingsw.model.strategy;
 
+import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 
 //has now also taken the role of SwapMove
 public class PushMove implements MoveStrategy {
+
     @Override
-    public boolean isValidMove(Position startPosition, Position destPosition, BoardCell[][] grid) {
+    public boolean isValidMove(Position startPosition, Position destPosition, Board board) {
 
         try {
 
-            BoardCell startCell = grid[startPosition.getX()][startPosition.getY()];
-            BoardCell destCell = grid[destPosition.getY()][destPosition.getY()];
+            BoardCell startCell = board.getBoardCell(startPosition);
+            BoardCell destCell = board.getBoardCell(destPosition);
             int dx = destPosition.getX() - startPosition.getX();
             int dy = destPosition.getY() - startPosition.getY();
             if(dx==0 && dy==0)

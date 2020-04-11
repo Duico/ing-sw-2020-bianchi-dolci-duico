@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.strategy;
 
+import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 
@@ -10,9 +11,9 @@ public class DefaultBuild implements BuildStrategy {
      */
 
     @Override
-    public boolean isValidBuild(BoardCell[][] grid, Position startPosition, Position destinationPosition, Boolean isDome){
+    public boolean isValidBuild(Board board, Position startPosition, Position destinationPosition, Boolean isDome){
     try {
-        BoardCell destinationCell = grid[destinationPosition.getX()][destinationPosition.getY()];
+        BoardCell destinationCell = board.getBoardCell(destinationPosition);
         int dx = startPosition.getX() - destinationPosition.getX();
         int dy = startPosition.getY() - destinationPosition.getY();
         if (dx == 0 && dy == 0)

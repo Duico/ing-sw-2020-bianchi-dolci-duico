@@ -4,10 +4,7 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.exception.BlockedMoveException;
 import it.polimi.ingsw.model.exception.InvalidPushCell;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
-import it.polimi.ingsw.view.event.MoveViewEvent;
-import it.polimi.ingsw.view.event.PlaceViewEvent;
-import it.polimi.ingsw.view.event.ViewEvent;
-import it.polimi.ingsw.view.event.ViewEventListener;
+import it.polimi.ingsw.view.event.*;
 
 
 public class Controller implements ViewEventListener {
@@ -33,6 +30,32 @@ public class Controller implements ViewEventListener {
 //        turn.safeMove(worker, message.getDestPosition());
 //
 //    }
+    private boolean checkWorkerNotPlaced(){
+        Turn turn = game.getTurn();
+        if(turn.isAnyWorkerNotPlaced()){
+            //STOP
+            //notify view
+            return false;
+        }
+        return true;
+    }
+
+    public void endTurn(EndTurnViewEvent message){
+        Turn turn = game.getTurn();
+        checkPlayer(message);
+        if(checkWorkerNotPlaced()){
+            //STOP
+        }
+
+        if(turn.isRequiredToMove()) {
+            //notify view
+        }
+
+        if(turn.isRequiredToBuild()){
+            //notify view
+        }
+        game.nextTurn();
+    }
 
     public void move(MoveViewEvent message){
         Turn turn = game.getTurn();
@@ -40,17 +63,15 @@ public class Controller implements ViewEventListener {
         Player viewPlayer = message.getPlayer();
         //CHECK player
         checkPlayer(message);
-        turn.updateCurrentWorker(currentWorkerId);
-
+        checkWorkerId(message);
 
         Position destinationPosition = message.getDestPosition();
 
-        if(!turn.isAllowedToMove()){
+        if(checkWorkerNotPlaced()){
             //STOP
-            //notify view
         }
 
-        if(turn.isAnyWorkerNotPlaced()){
+        if(!turn.isAllowedToMove()){
             //STOP
             //notify view
         }
@@ -89,20 +110,24 @@ public class Controller implements ViewEventListener {
             //notify view of success/failure
         }
     }
+
 //TODO now
 
-//    public void place(PlaceViewEvent message){
-//        Turn turn = game.getTurn();
-//        checkPlayer(message);
-//
-//        if(!turn.isAnyWorkerNotPlaced()){
-//
-//            //all workers are placed
-//            //notify view
-//        }
-//            turn.place(message.getDestPosition());
-//        }
-//    }
+    public void place(PlaceViewEvent message){
+        Turn turn = game.getTurn();
+        checkPlayer(message);
+
+        if(!turn.isAnyWorkerNotPlaced()){
+
+            //all workers are placed
+            //notify view
+        }
+        int workerId = turn.place(message.getDestPosition());
+        if( workerId < 0){
+            //notify view
+        }
+    }
+
 
     //TODO now !!
 
@@ -131,14 +156,23 @@ public class Controller implements ViewEventListener {
 //        //return turn.isRequiredToMove() turn.isRequiredToBuild() turn.isAllowedToMove() turn.isAllowedToBuild()
 //    }
 
-    public void checkPlayer(ViewEvent message) {
+    private void checkPlayer(ViewEvent message) {
         Turn turn = game.getTurn();
-
         Player viewPlayer = message.getPlayer();
         if(!turn.checkPlayer(viewPlayer)){
             //TODO
             //notify view about invalid player uuid
         }
 
+    }
+
+
+    private void checkWorkerId(WorkerViewEvent message){
+        Turn turn = game.getTurn();
+        int currentWorkerId = message.getWorkerId();
+        if(!turn.updateCurrentWorker(currentWorkerId)) {
+            //TODO
+            //notify view
+        }
     }
 }

@@ -3,8 +3,8 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 
 public class Position implements Cloneable{
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
     static int width;
     static int height;
 
@@ -23,7 +23,7 @@ public class Position implements Cloneable{
     }
 
 
-    public static final void setSize(int width, int height){
+    public static void setSize(int width, int height){
         Position.width = width;
         Position.height = height;
 

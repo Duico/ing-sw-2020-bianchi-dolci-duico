@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.strategy;
 
-import it.polimi.ingsw.model.BoardCell;
+import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Position;
 
@@ -14,7 +14,7 @@ public interface BuildStrategy {
      * @param isDome Defines if the worker wants to build a dome
      * @return
      */
-    boolean isValidBuild(BoardCell[][] grid, Position startPosition, Position destinationPosition, Boolean isDome);
+    boolean isValidBuild(Board board, Position startPosition, Position destinationPosition, Boolean isDome);
 
     /**
      *

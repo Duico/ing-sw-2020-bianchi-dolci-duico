@@ -139,6 +139,7 @@ public class Turn implements Serializable {
     public boolean getPreviousBlockNextPlayer(){
         return previousBlockNextPlayer;
     }
+
     public boolean isAllowedToBuild(){
         if(!isAnyWorkerNotPlaced())
             return false;

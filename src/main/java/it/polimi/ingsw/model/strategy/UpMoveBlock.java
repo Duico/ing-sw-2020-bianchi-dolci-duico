@@ -7,8 +7,8 @@ import it.polimi.ingsw.model.Position;
 public class UpMoveBlock implements BlockStrategy {
     @Override
     public boolean isBlockMove(Position startPosition, Position destinationPosition, Board board) {
-        BoardCell startCell = board[startPosition.getX()][startPosition.getY()];
-        BoardCell destCell = board[destinationPosition.getY()][destinationPosition.getY()];
+        BoardCell startCell = board.getBoardCell(startPosition);
+        BoardCell destCell = board.getBoardCell(destinationPosition);
         if (startCell.getLevel().ordinal()<destCell.getLevel().ordinal())
             return true;
         else
@@ -17,8 +17,8 @@ public class UpMoveBlock implements BlockStrategy {
     }
 
     public boolean blockNextPlayer(Position startPosition, Position destinationPosition, Board board){
-        BoardCell startCell = board[startPosition.getX()][startPosition.getY()];
-        BoardCell destCell = board[destinationPosition.getY()][destinationPosition.getY()];
+        BoardCell startCell = board.getBoardCell(startPosition);
+        BoardCell destCell = board.getBoardCell(destinationPosition);
         if (startCell.getLevel().ordinal()<destCell.getLevel().ordinal())
             return true;
         else

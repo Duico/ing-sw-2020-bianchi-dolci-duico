@@ -109,8 +109,8 @@ public class Worker implements Cloneable{
     @Override
     public Worker clone() throws CloneNotSupportedException {
         Worker newWorker = (Worker) super.clone();
-        //clone moves
-        ArrayList<Position> newMoves = new ArrayList<>();
+        //clone moves. Position operation are immutabile
+        /*ArrayList<Position> newMoves = new ArrayList<>();
         for(Position move: this.moves){
             newMoves.add(move);
         }
@@ -126,7 +126,7 @@ public class Worker implements Cloneable{
         for(Operation operation : this.operations){
             newOperations.add(operation);
         }
-        newWorker.operations = newOperations;
+        newWorker.operations = newOperations;*/
 
         return newWorker;
     }

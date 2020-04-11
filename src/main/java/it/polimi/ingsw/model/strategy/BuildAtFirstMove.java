@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.strategy;
 
+import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 
@@ -10,14 +11,14 @@ import it.polimi.ingsw.model.Position;
 public class BuildAtFirstMove implements MoveStrategy {
 
     @Override
-    public boolean isValidMove(Position startPosition, Position destPosition, BoardCell[][] grid) {
+    public boolean isValidMove(Position startPosition, Position destPosition, Board board) {
 
         try{
 
             int dx = destPosition.getX() - startPosition.getX();
             int dy = destPosition.getY() - startPosition.getY();
-            BoardCell destCell = grid[destPosition.getX()][destPosition.getY()];
-            BoardCell startCell = grid[startPosition.getX()][startPosition.getY()];
+            BoardCell destCell = board.getBoardCell(destPosition);
+            BoardCell startCell = board.getBoardCell(startPosition);
 
             if(dx == 0 && dy == 0)
                 return false;

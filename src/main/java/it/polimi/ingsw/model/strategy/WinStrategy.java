@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.strategy;
 
+import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 
@@ -11,6 +12,6 @@ public interface WinStrategy {
      * @param grid Main grid of the Game
      * @return
      */
-    boolean isWinningMove(Position startPosition, Position destinationPosition, BoardCell[][] grid);
+    boolean isWinningMove(Position startPosition, Position destinationPosition, Board board);
 
 }

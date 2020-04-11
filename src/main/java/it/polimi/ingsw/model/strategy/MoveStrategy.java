@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.strategy;
 
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
+import it.polimi.ingsw.model.Board;
 
 public interface MoveStrategy { //implement DefaultMove functions here
 

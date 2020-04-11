@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.strategy;
 
+import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Position;
@@ -12,17 +13,17 @@ import it.polimi.ingsw.model.Position;
 public class MultipleBuild implements BuildStrategy {
 
     @Override
-    public boolean isValidBuild(BoardCell[][] grid, Position startPosition, Position destinationPosition, Boolean isDome) {
+    public boolean isValidBuild(Board board, Position startPosition, Position destinationPosition, Boolean isDome) {
         try{
-            BoardCell startCell = grid[startPosition.getX()][startPosition.getY()];
+            BoardCell startCell = board.getBoardCell(startPosition);
             int numBuilds = startCell.getWorker().getNumBuilds();
             BuildStrategy buildStrategy = new DefaultBuild();
             if(numBuilds == 0){
-                return buildStrategy.isValidBuild(grid, startPosition, destinationPosition, isDome);
+                return buildStrategy.isValidBuild(board, startPosition, destinationPosition, isDome);
             }
             else if(numBuilds == 1){
                 if(destinationPosition.equals(startCell.getWorker().getFirstBuild()))
-                    return (buildStrategy.isValidBuild(grid, startPosition, destinationPosition, isDome) && !isDome);
+                    return (buildStrategy.isValidBuild(board, startPosition, destinationPosition, isDome) && !isDome);
                 else
                     return false;
             }
