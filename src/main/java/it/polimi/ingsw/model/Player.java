@@ -37,7 +37,7 @@ public class Player implements Serializable {
         }
     }
 
-    protected void initWorkers(int numWorkers){
+    public void initWorkers(int numWorkers){
         workers = new FixedArray<>(numWorkers);
     }
 
@@ -67,7 +67,7 @@ public class Player implements Serializable {
         if (worker == null) {
             return null;
         }
-        return workers.get(currentWorkerId).getCurrentPosition();
+        return worker.getCurrentPosition();
     }
 
     public boolean isWorkerSet(int i) {
