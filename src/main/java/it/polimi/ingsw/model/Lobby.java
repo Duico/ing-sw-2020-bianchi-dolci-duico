@@ -7,10 +7,10 @@ import java.util.ArrayList;
 public class Lobby {
     String persistencyFilename = "./game.ser";
     Game game;
-    ArrayList<String> playerNames;
+    ArrayList<Player> playerNames;//fix ArrayList<String> -> ArrayList<Player>
 
     public Lobby() {
-        playerNames = new ArrayList<>();
+        playerNames = new ArrayList<Player>();
         this.game = new Game();
     }
 
@@ -18,7 +18,7 @@ public class Lobby {
         this.game = new Game(width, height,2);
     }
 
-    public boolean addPlayerName(String nickname){
+    public boolean addPlayerName(String nickname){//fix no nickname anymore
         if( !playerNames.contains(nickname) ){
             playerNames.add(nickname);
             return true;

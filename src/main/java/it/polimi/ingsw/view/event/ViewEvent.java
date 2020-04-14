@@ -1,16 +1,15 @@
 package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.model.Player;
-
-import java.util.EventObject;
+import it.polimi.ingsw.view.RemoteView;
 
 public class ViewEvent {
-    protected Player player;
-    public ViewEvent(Player player) {
-        this.player=player;
+    protected RemoteView view;
+    public ViewEvent(RemoteView view) {
+        this.view= view;
     }
 
-    public Player getPlayer(){
-        return this.player;
+    public RemoteView getView(){
+        return this.view;
     }
 }

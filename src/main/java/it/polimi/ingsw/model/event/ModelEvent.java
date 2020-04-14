@@ -1,25 +1,25 @@
 package it.polimi.ingsw.model.event;
 
-import it.polimi.ingsw.model.Player;
+import java.util.UUID;
 
 public class ModelEvent {
-    protected Player player;
+    protected UUID playerUUID;
 
-    public ModelEvent(Player player){
-        if(player == null){
+    public ModelEvent(UUID playerUUID){
+        if(this.playerUUID == null){
             throw new IllegalArgumentException("player not specified");
         }
-        this.player = player;
+        this.playerUUID = playerUUID;
     }
 
-    public Player getPlayer(){
-        return this.player;
+    public UUID getPlayerUUID(){
+        return this.playerUUID;
     }
 
     @Override
     public String toString() {
         return "ModelEvent{" +
-                "player=" + player.getNickName() +
+                "player=" + playerUUID +
                 '}';
     }
 }

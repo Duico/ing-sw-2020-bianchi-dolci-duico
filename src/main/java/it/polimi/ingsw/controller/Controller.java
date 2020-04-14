@@ -3,10 +3,11 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.exception.InvalidPushCell;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.event.*;
 
 
-public class Controller {// implements ViewEventListener {
+public class Controller implements ViewEventListener {
 
     private Game game; //refer to our model
 
@@ -41,7 +42,8 @@ public class Controller {// implements ViewEventListener {
 
     public void endTurn(EndTurnViewEvent message){
         Turn turn = game.getTurn();
-        if(!checkPlayer(message)){
+        RemoteView view = message.getView();
+        if(!checkPlayer(view)){
 
         }
         if(checkWorkerNotPlaced()){
@@ -60,9 +62,10 @@ public class Controller {// implements ViewEventListener {
 
     public void move(MoveViewEvent message){
         Turn turn = game.getTurn();
+        RemoteView view = message.getView();
         int currentWorkerId = message.getWorkerId();
         //CHECK player equals viewPlayer
-        if(!checkPlayer(message)){
+        if(!checkPlayer(view)){
             //STOP
         }
         if(!checkWorkerId(message)){
@@ -111,7 +114,8 @@ public class Controller {// implements ViewEventListener {
 
     public void place(PlaceViewEvent message){
         Turn turn = game.getTurn();
-        if(!checkPlayer(message)){
+        RemoteView view = message.getView();
+        if(!checkPlayer(view)){
             //STOP
         }
 
@@ -129,8 +133,9 @@ public class Controller {// implements ViewEventListener {
 
     public void build(BuildViewEvent message){
         Turn turn = game.getTurn();
+        RemoteView view = message.getView();
         int currentWorkerId = message.getWorkerId();
-        if(!checkPlayer(message)){
+        if(!checkPlayer(view)){
             //STOP
         }
         if(!checkWorkerId(message)){
@@ -156,7 +161,8 @@ public class Controller {// implements ViewEventListener {
     }
 
     public void undo(UndoViewEvent message){
-        checkPlayer(message);
+        RemoteView view = message.getView();
+        checkPlayer(view);
         //check 5 sec
         if(!game.undo()){
             //ERROR
@@ -169,10 +175,11 @@ public class Controller {// implements ViewEventListener {
 //        //return turn.isRequiredToMove() turn.isRequiredToBuild() turn.isAllowedToMove() turn.isAllowedToBuild()
 //    }
 
-    private boolean checkPlayer(ViewEvent message) {
+    private boolean checkPlayer(RemoteView view) {
         Turn turn = game.getTurn();
-        Player viewPlayer = message.getPlayer();
+        Player viewPlayer = view.getPlayer();
         if(!turn.checkPlayer(viewPlayer)){
+            //view.sendError();
             //TODO
             //notify view about invalid player uuid
             return false;

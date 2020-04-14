@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.event.BuildWorkerModelEvent;
+import it.polimi.ingsw.model.event.PlaceWorkerModelEvent;
+import it.polimi.ingsw.model.event.PutWorkerModelEvent;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.model.strategy.BuildStrategy;
 import it.polimi.ingsw.model.strategy.MoveStrategy;
@@ -13,7 +16,7 @@ import java.util.UUID;
 /**
  * Manages a game from start to end, handles the creation and advancement of turns
  */
-public class Game implements Serializable{
+public class Game extends ModelEventEmitter implements Serializable{
     private Turn turn;
     private ArrayList<Player> players = new ArrayList<>();
     boolean useCards = false;
@@ -43,7 +46,7 @@ public class Game implements Serializable{
      * @param useCards  True if the game will be using cards
      * @return
      */
-    public void startGame(ArrayList<String> nicknames, boolean useCards) {
+    public void startGame(ArrayList<Player> nicknames, boolean useCards) {
 
         this.useCards = useCards;
         int numPlayers = nicknames.size();
@@ -60,7 +63,7 @@ public class Game implements Serializable{
         }
 
         for (int n = 0; n < nicknames.size(); n++) {
-            Player newPlayer = new Player(nicknames.get(n), numWorkers, cards.get(n));
+            Player newPlayer = new Player(nicknames.get(n), numWorkers, cards.get(n)); //change nicknames to Player's
             players.add(newPlayer);
         }
 
@@ -173,7 +176,9 @@ public class Game implements Serializable{
         Player currentPlayer = turn.getCurrentPlayer();
         Worker newWorker = new Worker();
         if(board.setWorker(newWorker, placePosition)) {
-            return currentPlayer.addWorker(newWorker);
+            int workerId = currentPlayer.addWorker(newWorker);
+            emitEvent(new PlaceWorkerModelEvent(currentPlayer.getUuid(), workerId, placePosition));
+            return workerId;
         }else
             return -1;
     }
@@ -189,11 +194,20 @@ public class Game implements Serializable{
         try {
             Position pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
             board.putWorkers(startPosition, destinationPosition, pushDestPosition);
+            emitEvent(new PutWorkerModelEvent(currentPlayer.getUuid(), workerId, startPosition, destinationPosition, pushDestPosition));
             turn.updateCurrentWorker(workerId);
         }catch (Exception e){
             e.printStackTrace();
         }
 
+    }
+
+    public void boardBuild(int workerId, Position destinationPosition, boolean isDome){
+        Player currentPlayer = turn.getCurrentPlayer();
+        Position startPosition = turn.getCurrentPlayer().getWorkerCurrentPosition(turn.getCurrentWorkerId());
+        board.build(startPosition, destinationPosition, isDome);
+        emitEvent(new BuildWorkerModelEvent(currentPlayer.getUuid(), workerId, startPosition, destinationPosition) );
+        turn.updateCurrentWorker(workerId);
     }
 
     public boolean isFeasibleMove(int workerId, Position destinationPosition){
@@ -240,12 +254,6 @@ public class Game implements Serializable{
         Card card = currentPlayer.getCard();
 
         return card.getBlockStrategy().blockNextPlayer(startPosition, destinationPosition, board);
-    }
-
-    public void boardBuild(int workerId, Position destinationPosition, boolean isDome){
-        Position startPosition = turn.getCurrentPlayer().getWorkerCurrentPosition(turn.getCurrentWorkerId());
-        board.build(startPosition, destinationPosition, isDome);
-        turn.updateCurrentWorker(workerId);
     }
 
     public boolean isWinningMove(Position destinationPosition){

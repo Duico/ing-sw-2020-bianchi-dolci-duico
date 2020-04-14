@@ -60,7 +60,6 @@ public class Board implements Cloneable, Serializable {
         }
         this.getBoardCellReference(startPosition).setWorker(null);
         this.getBoardCellReference(destinationPosition).getWorker().addMove(destinationPosition);
-
     }
 
     public boolean setWorker(Worker worker, Position destPosition){

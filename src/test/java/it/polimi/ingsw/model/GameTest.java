@@ -10,7 +10,7 @@ class GameTest {
     @Test
     void checkIfPlayersAdded()
     {
-        ArrayList<String> nickNames = new ArrayList<String>();
+        ArrayList<Player> nickNames = new ArrayList<>();
         nickNames.add("Player1");
         Game partita= new Game();
         partita.startGame(nickNames,true);
@@ -20,7 +20,7 @@ class GameTest {
     @Test
     void checkNumPlayers()
     {
-        ArrayList<String> nickNames = new ArrayList<String>();
+        ArrayList<Player> nickNames = new ArrayList<>();
         nickNames.add("Player1");
         nickNames.add("Player2");
         nickNames.add("Player3");
