@@ -41,7 +41,9 @@ public class Controller {// implements ViewEventListener {
 
     public void endTurn(EndTurnViewEvent message){
         Turn turn = game.getTurn();
-        checkPlayer(message);
+        if(!checkPlayer(message)){
+
+        }
         if(checkWorkerNotPlaced()){
             //STOP
         }
@@ -60,8 +62,13 @@ public class Controller {// implements ViewEventListener {
         Turn turn = game.getTurn();
         int currentWorkerId = message.getWorkerId();
         //CHECK player equals viewPlayer
-        checkPlayer(message);
-        checkAndUpdateWorkerId(message);
+        if(!checkPlayer(message)){
+            //STOP
+        }
+        if(!checkWorkerId(message)){
+            //STOP
+            //wrong worker
+        }
 
         Position destinationPosition = message.getDestinationPosition();
 
@@ -69,7 +76,7 @@ public class Controller {// implements ViewEventListener {
             //STOP
         }
 
-        if(!turn.isAllowedToMove()){
+        if(!turn.isAllowedToMove(currentWorkerId)){
             //STOP
             //notify view
         }
@@ -78,7 +85,7 @@ public class Controller {// implements ViewEventListener {
         boolean possibleMove = true;
 
         if(turn.getPreviousBlockNextPlayer()) {
-            if(turn.isBlockedMove(currentWorkerId, destinationPosition)){
+            if(game.isBlockedMove(currentWorkerId, destinationPosition)){
                 possibleMove = false;
 
                 //notify RemoteView
@@ -87,7 +94,7 @@ public class Controller {// implements ViewEventListener {
         //check isValidMove and isValidPush
 
 
-        if(!turn.isFeasibleMove(currentWorkerId, destinationPosition)){
+        if(!game.isFeasibleMove(currentWorkerId, destinationPosition)){
             possibleMove = false;
             //notify view
         }
@@ -95,27 +102,25 @@ public class Controller {// implements ViewEventListener {
 
 
         if( possibleMove == true ) {
-            try {
-                turn.move(currentWorkerId, destinationPosition);
-            } catch (PositionOutOfBoundsException e) {
-                e.printStackTrace();
-            } catch (InvalidPushCell invalidPushCell) {
-                invalidPushCell.printStackTrace();
-            }
+
+            game.move(currentWorkerId, destinationPosition);
+
             //notify view of success/failure
         }
     }
 
     public void place(PlaceViewEvent message){
         Turn turn = game.getTurn();
-        checkPlayer(message);
+        if(!checkPlayer(message)){
+            //STOP
+        }
 
         if(!turn.isAnyWorkerNotPlaced()){
 
             //all workers are placed
             //notify view
         }
-        int workerId = turn.place(message.getDestinationPosition());
+        int workerId = game.place(message.getDestinationPosition());
         if( workerId < 0){
             //notify view
         }
@@ -125,8 +130,13 @@ public class Controller {// implements ViewEventListener {
     public void build(BuildViewEvent message){
         Turn turn = game.getTurn();
         int currentWorkerId = message.getWorkerId();
-        checkPlayer(message);
-        checkAndUpdateWorkerId(message);
+        if(!checkPlayer(message)){
+            //STOP
+        }
+        if(!checkWorkerId(message)){
+            //STOP
+            //wrong worker selected
+        }
 
         Position destinationPosition = message.getDestinationPosition();
         boolean isDome = message.isDome();
@@ -135,59 +145,60 @@ public class Controller {// implements ViewEventListener {
             //STOP
         }
 
-        if(!turn.isAllowedToBuild()){
+        if(!turn.isAllowedToBuild(currentWorkerId)){
 
         }
 
-        boolean possibleBuild = turn.isFeasibleBuild(currentWorkerId, destinationPosition, isDome);
+        boolean possibleBuild = game.isFeasibleBuild(currentWorkerId, destinationPosition, isDome);
         if(possibleBuild){
-            turn.build(destinationPosition, isDome);
+            game.build(currentWorkerId, destinationPosition, isDome);
         }
     }
 
-
-//    public boolean build (Position destinationPosition, boolean isDome) {
-//        if(!isWorkersPositionSet())
-//            return false;
-//        Card card = currentPlayer.getCard();
-//        int numBuilds = currentPlayer.getNumBuildsWorker(currentWorkerId);
-//        int numMoves = currentPlayer.getNumMovesWorker(currentWorkerId);
-//        Operation lastOperation = currentPlayer.getLastOperationWorker(currentWorkerId);
-//        Position startPosition = currentPlayer.getWorkerCurrentPosition(currentWorkerId);
-//        boolean isRequiredToBuild = card.getBuildStrategy().isRequiredToBuild(numMoves, numBuilds, lastOperation);
-//        boolean isAllowedToBuild = card.getBuildStrategy().isAllowedToBuild(numMoves, numBuilds, lastOperation);
-//        boolean canBuild = board.canBuild(startPosition, destinationPosition, card, isDome);
-//
-//        if( canBuild == true ){
-//            board.build(startPosition, destinationPosition, isDome);
-//            return true;
-//        }else
-//            return false;
-//
-//    }
+    public void undo(UndoViewEvent message){
+        checkPlayer(message);
+        //check 5 sec
+        if(!game.undo()){
+            //ERROR
+            //notify view
+        }
+    }
 
 
 //    public void handleEvent(StausViewEvent message){
 //        //return turn.isRequiredToMove() turn.isRequiredToBuild() turn.isAllowedToMove() turn.isAllowedToBuild()
 //    }
 
-    private void checkPlayer(ViewEvent message) {
+    private boolean checkPlayer(ViewEvent message) {
         Turn turn = game.getTurn();
         Player viewPlayer = message.getPlayer();
         if(!turn.checkPlayer(viewPlayer)){
             //TODO
             //notify view about invalid player uuid
+            return false;
         }
-
+        return true;
     }
 
 
-    private void checkAndUpdateWorkerId(WorkerViewEvent message){
+//    private boolean updateWorkerId(WorkerViewEvent message){
+//        Turn turn = game.getTurn();
+//        int currentWorkerId = message.getWorkerId();
+//        if(!turn.updateCurrentWorker(currentWorkerId)) {
+//            //TODO
+//            //notify view
+//            return false;
+//        }
+//        return true;
+//    }
+    private boolean checkWorkerId(WorkerViewEvent message){
         Turn turn = game.getTurn();
         int currentWorkerId = message.getWorkerId();
-        if(!turn.updateCurrentWorker(currentWorkerId)) {
+        if(!turn.checkCurrentWorker(currentWorkerId)){
             //TODO
-            //notify view
+            //message contains an invalid workerId for the turn
+            return false;
         }
+        return true;
     }
 }

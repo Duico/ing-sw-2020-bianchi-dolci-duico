@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ public class Player implements Serializable {
     private FixedArray<Worker> workers;
 
 
-    public Player(String nickName, int numWorkers){
+    public Player(String nickName, int numWorkers) {
         this.uuid = UUID.randomUUID();
         this.nickName = nickName;
         workers = new FixedArray<>(numWorkers);
@@ -37,7 +38,7 @@ public class Player implements Serializable {
         return workers.get(worker).getNumMoves();
     }
 
-    public Operation getLastOperationWorker(int worker){
+    public Operation getLastOperationWorker(int worker) {
         return workers.get(worker).getLastOperation();
     }
 
@@ -45,43 +46,42 @@ public class Player implements Serializable {
         return workers.get(worker).getNumBuilds();
     }
 
-    public String getNickName()
-    {
+    public String getNickName() {
         return nickName;
     }
 
-    public int getNumWorkers(){
+    public int getNumWorkers() {
         return workers.size();
     }
 
 
-
-
     public Position getWorkerCurrentPosition(int currentWorkerId) {
         Worker worker = workers.get(currentWorkerId);
-        if(worker == null){
+        if (worker == null) {
             return null;
         }
         return workers.get(currentWorkerId).getCurrentPosition();
     }
 
-    public boolean isWorkerSet(int i){
+    public boolean isWorkerSet(int i) {
         return (workers.get(i) != null);
     }
-    public int addWorker(Worker newWorker){
+
+    public int addWorker(Worker newWorker) {
         int workerId = workers.add(newWorker);
         return workerId;
     }
 
     public boolean isAnyWorkerNotPlaced() {
-        return (workersToPlace()>0);
+        return (workersToPlace() > 0);
     }
-    private int workersToPlace(){
-        int count=0;
-        for(int i=workers.size()-1; i>=0; i--){
-            if(workers.get(i)==null){
+
+    private int workersToPlace() {
+        int count = 0;
+        for (int i = workers.size() - 1; i >= 0; i--) {
+            if (workers.get(i) == null) {
                 count++;
-            }else {
+            } else {
                 break;
             }
         }
@@ -92,14 +92,32 @@ public class Player implements Serializable {
         return uuid;
     }
 
+
+    public void resetAllWorkers() {
+        for (int i = 0; i < getNumWorkers(); i++) {
+            if (!isWorkerSet(i))
+                continue;
+            Worker worker = workers.get(i);
+            worker.reset();
+        }
+    }
+    public boolean isOwnWorkerInPosition(Position destinationPosition) {
+        boolean isOwnWorker = false;
+        for (int i = 0; i < getNumWorkers(); i++) {
+            if (getWorkerCurrentPosition(i).equals(destinationPosition))
+                isOwnWorker = true;
+        }
+        return true;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return  Objects.equals(getUuid(), player.getUuid()) &&
+        return Objects.equals(getUuid(), player.getUuid()) &&
                 Objects.equals(getNickName(), player.getNickName()) &&
                 Objects.equals(getCard(), player.getCard()) &&
                 Objects.equals(workers, player.workers);
     }
+
 }

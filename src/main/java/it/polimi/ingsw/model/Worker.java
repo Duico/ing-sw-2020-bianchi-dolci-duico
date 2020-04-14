@@ -17,6 +17,14 @@ public class Worker implements Cloneable{
         this.builds = new ArrayList<Position>();
         this.operations = new ArrayList<Operation>();
     }
+    public void reset(){
+        Position currentPosition = getCurrentPosition();
+        this.moves = new ArrayList<Position>();
+        this.builds = new ArrayList<Position>();
+        this.operations = new ArrayList<Operation>();
+        //needed for getCurrentPosition
+        this.moves.add(currentPosition);
+    }
 
     public int getNumMoves(){
         return moves.size()-1;
