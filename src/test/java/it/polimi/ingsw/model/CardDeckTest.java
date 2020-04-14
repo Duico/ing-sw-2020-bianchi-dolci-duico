@@ -1,3 +1,4 @@
+/*
 package it.polimi.ingsw.model;
 
 import org.junit.jupiter.api.Test;
@@ -46,4 +47,4 @@ class CardDeckTest {
     @Test
     void pickRandom() {
     }
-}
+}*/

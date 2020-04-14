@@ -4,7 +4,9 @@ import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Position;
 
-public interface BuildStrategy {
+import java.io.Serializable;
+
+public interface BuildStrategy extends Serializable {
 
     /**
      *

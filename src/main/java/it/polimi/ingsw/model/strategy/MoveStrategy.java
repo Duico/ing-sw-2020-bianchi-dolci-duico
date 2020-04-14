@@ -4,7 +4,9 @@ import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.Board;
 
-public interface MoveStrategy { //implement DefaultMove functions here
+import java.io.Serializable;
+
+public interface MoveStrategy extends Serializable { //implement DefaultMove functions here
 
     boolean isValidMove(Position startPosition, Position destPosition, Board board);
 

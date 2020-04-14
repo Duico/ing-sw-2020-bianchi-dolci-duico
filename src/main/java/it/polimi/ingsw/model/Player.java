@@ -11,10 +11,10 @@ public class Player implements Serializable {
     private FixedArray<Worker> workers;
 
 
-    public Player(String nickName, int numWorkers, Card card) {
+    public Player(String nickName) {
         this.uuid = UUID.randomUUID();
         this.nickName = nickName;
-        workers = new FixedArray<>(numWorkers);
+        //
         //this.initWorkers(numWorkers);
     }
 
@@ -28,9 +28,17 @@ public class Player implements Serializable {
         return card;
     }
 
-    public void setCard(Card card) { // to delete when we finish the test
+    public boolean setCard(Card card) {
+        if(this.card!=null)
+            return false;
+        else {
+            this.card = card;
+            return true;
+        }
+    }
 
-        this.card = card;
+    protected void initWorkers(int numWorkers){
+        workers = new FixedArray<>(numWorkers);
     }
 
     public int getNumMovesWorker(int worker) {

@@ -4,7 +4,9 @@ import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 
-public interface WinStrategy {
+import java.io.Serializable;
+
+public interface WinStrategy extends Serializable {
     /**
      *
      * @param startPosition The position where the worker is located at the moment

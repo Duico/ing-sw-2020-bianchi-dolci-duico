@@ -42,17 +42,19 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     /**
      * Start this Game with chosen nicknames for the players
-     * @param nicknames Array of the players nicknames, in display order
+     * @param players Array of the players, in display order
      * @param useCards  True if the game will be using cards
      * @return
      */
-    public void startGame(ArrayList<Player> nicknames, boolean useCards) {
+    public void startGame(ArrayList<Player> players, boolean useCards) {
 
         this.useCards = useCards;
-        int numPlayers = nicknames.size();
+        int numPlayers = players.size();
 
         if(numPlayers <2 || numPlayers >3)
             throw new RuntimeException("Number of Players out of range");
+
+        this.players = players;
 
         ArrayList<Card> cards;
         if (this.useCards) {
@@ -62,12 +64,11 @@ public class Game extends ModelEventEmitter implements Serializable{
            cards = dealDefaultCard(numPlayers);
         }
 
-        for (int n = 0; n < nicknames.size(); n++) {
-            Player newPlayer = new Player(nicknames.get(n), numWorkers, cards.get(n)); //change nicknames to Player's
-            players.add(newPlayer);
+        for (int n = 0; n < players.size(); n++) {
+            players.get(n).setCard(cards.get(n));
+            players.get(n).initWorkers(numWorkers);
         }
-
-
+        board = new Board();
         initTurn();
         //make an exceptional first turn that calls setWorker
     }
@@ -177,7 +178,8 @@ public class Game extends ModelEventEmitter implements Serializable{
         Worker newWorker = new Worker();
         if(board.setWorker(newWorker, placePosition)) {
             int workerId = currentPlayer.addWorker(newWorker);
-            emitEvent(new PlaceWorkerModelEvent(currentPlayer.getUuid(), workerId, placePosition));
+            //comment for testing
+            //emitEvent(new PlaceWorkerModelEvent(currentPlayer.getUuid(), workerId, placePosition));
             return workerId;
         }else
             return -1;
@@ -194,7 +196,8 @@ public class Game extends ModelEventEmitter implements Serializable{
         try {
             Position pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
             board.putWorkers(startPosition, destinationPosition, pushDestPosition);
-            emitEvent(new PutWorkerModelEvent(currentPlayer.getUuid(), workerId, startPosition, destinationPosition, pushDestPosition));
+            //comment for testing
+            //emitEvent(new PutWorkerModelEvent(currentPlayer.getUuid(), workerId, startPosition, destinationPosition, pushDestPosition));
             turn.updateCurrentWorker(workerId);
         }catch (Exception e){
             e.printStackTrace();
@@ -206,7 +209,8 @@ public class Game extends ModelEventEmitter implements Serializable{
         Player currentPlayer = turn.getCurrentPlayer();
         Position startPosition = turn.getCurrentPlayer().getWorkerCurrentPosition(turn.getCurrentWorkerId());
         board.build(startPosition, destinationPosition, isDome);
-        emitEvent(new BuildWorkerModelEvent(currentPlayer.getUuid(), workerId, startPosition, destinationPosition) );
+        //comment for testing
+        //emitEvent(new BuildWorkerModelEvent(currentPlayer.getUuid(), workerId, startPosition, destinationPosition) );
         turn.updateCurrentWorker(workerId);
     }
 

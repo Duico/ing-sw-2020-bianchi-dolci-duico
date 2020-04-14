@@ -7,10 +7,10 @@ import java.util.ArrayList;
 public class Lobby {
     String persistencyFilename = "./game.ser";
     Game game;
-    ArrayList<Player> playerNames;//fix ArrayList<String> -> ArrayList<Player>
+    ArrayList<Player> players;//fix ArrayList<String> -> ArrayList<Player>
 
     public Lobby() {
-        playerNames = new ArrayList<Player>();
+        players = new ArrayList<Player>();
         this.game = new Game();
     }
 
@@ -18,27 +18,33 @@ public class Lobby {
         this.game = new Game(width, height,2);
     }
 
-    public boolean addPlayerName(String nickname){//fix no nickname anymore
-        if( !playerNames.contains(nickname) ){
-            playerNames.add(nickname);
-            return true;
-        }else{
-            return false;
-        }
+    public boolean addPlayer(String nickname){//fix no nickname anymore
+       for(Player player: players) {
+           if (player.getNickName().equals(nickname)) {
+                return false;
+           }
+       }
+
+       players.add(new Player(nickname));
+       return true;
 
     }
 
     public void removePlayerName(String nickname){
-        playerNames.remove(nickname);
+        for(Player player: players) {
+            if (player.getNickName().equals(nickname)) {
+                players.remove(player);
+            }
+        }
     }
 
     public void startGame() throws NotEnoughPlayersException {
-        if(playerNames.size() < 2) {
+        if(players.size() < 2) {
             throw new NotEnoughPlayersException();
-        } else if(playerNames.size() > 3){
+        } else if(players.size() > 3){
             //ask to choose which players are going to play
         }
-        game.startGame(playerNames, true);
+        game.startGame(players, true); //TODO when view pass useCards
 
     }
 

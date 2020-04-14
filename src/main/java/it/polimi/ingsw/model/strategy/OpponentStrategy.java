@@ -6,7 +6,9 @@ import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.InvalidPushCell;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 
-public interface OpponentStrategy {
+import java.io.Serializable;
+
+public interface OpponentStrategy extends Serializable {
     /**
      *Check whether cell is empty or is occupied by a worker who can be pushed
      * @return False if cell is occupied by a worker who cannot be pushed away, True if empty or if opponent can be pushed

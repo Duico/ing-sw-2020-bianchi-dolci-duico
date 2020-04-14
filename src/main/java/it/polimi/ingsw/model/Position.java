@@ -2,7 +2,9 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 
-public class Position implements Cloneable{
+import java.io.Serializable;
+
+public class Position implements Serializable, Cloneable{
     private final int x;
     private final int y;
     static int width;

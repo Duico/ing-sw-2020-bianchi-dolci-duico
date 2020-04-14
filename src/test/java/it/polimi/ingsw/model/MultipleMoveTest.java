@@ -1,3 +1,4 @@
+/*
 package it.polimi.ingsw.model;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -13,9 +14,11 @@ class MultipleMoveTest {
     static MoveStrategy multipleMove;
     static MoveStrategy multipleMove2;
 
-    /**
+    */
+/**
      * Setup before all the test
-     */
+     *//*
+
     @BeforeAll
     public static void before() throws PositionOutOfBoundsException {
         System.out.println("Running setup");
@@ -41,10 +44,12 @@ class MultipleMoveTest {
         }
     }
 
-    /**
+    */
+/**
      * Control if return true when the position of destination is right
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void validPositionOfTheMove() throws PositionOutOfBoundsException {
         Position startPosition = new Position(2,2);
@@ -54,10 +59,12 @@ class MultipleMoveTest {
     }
 
 
-    /**
+    */
+/**
      * Control if return false when the destination position is wrong
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void notValidPositionOfTheMove() throws PositionOutOfBoundsException {
         Position startPosition = new Position(2,2);
@@ -67,10 +74,12 @@ class MultipleMoveTest {
     }
 
 
-    /**
+    */
+/**
      * Control if return true when the destination cell is right based on the level
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void validLevel() throws PositionOutOfBoundsException {
         Position startPosition = new Position(2,2);
@@ -81,10 +90,12 @@ class MultipleMoveTest {
         grid[destPosition.getX()][destPosition.getY()].setLevel(Level.EMPTY);
     }
 
-    /**
+    */
+/**
      * Control if return true when the destination cell is right based on the right destination level
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void validLevelMoveDown() throws PositionOutOfBoundsException {
         Position startPosition = new Position(2,2);
@@ -96,10 +107,12 @@ class MultipleMoveTest {
     }
 
 
-    /**
+    */
+/**
      * Control if return false when the destination cell is wrong based on the wrong level
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void notValidLevel() throws PositionOutOfBoundsException {
         Position startPosition = new Position(2,2);
@@ -111,10 +124,12 @@ class MultipleMoveTest {
     }
 
 
-    /**
+    */
+/**
      * Control if return false when the destination cell is wrong because it has the dome
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void notValidBecauseDome() throws PositionOutOfBoundsException {
         Position startPosition = new Position(2,2);
@@ -128,10 +143,12 @@ class MultipleMoveTest {
     }
 
 
-    /**
+    */
+/**
      * Control if return false when the destination cell is the same of the start cell
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void notValidBecauseSameStartCell() throws PositionOutOfBoundsException {
         Position startPosition = new Position(2,2);
@@ -141,10 +158,12 @@ class MultipleMoveTest {
     }
 
 
-    /**
+    */
+/**
      * Control if return false when the destination cell is occupied by a worker
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void notValidBecauseOccupiedCell() throws PositionOutOfBoundsException {
         Position startPosition = new Position(2,2);
@@ -153,9 +172,11 @@ class MultipleMoveTest {
         assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
     }
 
-    /**
+    */
+/**
      * Control if return true when the destination cell is not the startcell
-     */
+     *//*
+
     @Test
     void validBecauseNotStartCell() throws PositionOutOfBoundsException {
         Position previousStartPosition = new Position (2,2);
@@ -170,10 +191,12 @@ class MultipleMoveTest {
 
     }
 
-    /**
+    */
+/**
      * Control if return false when the destination cell is the startcell
      * * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void notValidBecauseStartCell() throws PositionOutOfBoundsException {
         Position previousStartPosition = new Position (2,2);
@@ -188,10 +211,12 @@ class MultipleMoveTest {
     }
 
 
-    /**
+    */
+/**
      * Control if return true when the worker can move
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void isAllowedToMove1() {
         int numMoves = worker1.getNumMoves();
@@ -199,10 +224,12 @@ class MultipleMoveTest {
     }
 
 
-    /**
+    */
+/**
      * Control if return true when the worker must move
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void isRequiredToMove() {
         int numMoves = worker1.getNumMoves();
@@ -210,10 +237,12 @@ class MultipleMoveTest {
     }
 
 
-    /**
+    */
+/**
      * Control if return true when the worker can move
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void isAllowedToMove2() throws PositionOutOfBoundsException {
         Position newPosition = new Position(1,1);
@@ -223,10 +252,12 @@ class MultipleMoveTest {
         worker1.deleteLastMove();
     }
 
-    /**
+    */
+/**
      * Control if return false when the worker can't move
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void isNotAllowedToMove2() throws PositionOutOfBoundsException {
         Position newPosition = new Position(1,1);
@@ -242,10 +273,12 @@ class MultipleMoveTest {
 
 
 
-    /**
+    */
+/**
      * Control if return false when the worker has already move the first time
      * @throws PositionOutOfBoundsException
-     */
+     *//*
+
     @Test
     void isNotRequiredToMove() throws PositionOutOfBoundsException {
         Position newPosition = new Position(1,1);
@@ -255,4 +288,4 @@ class MultipleMoveTest {
         worker1.deleteLastMove();
     }
 
-}
+}*/

@@ -1,14 +1,14 @@
 package it.polimi.ingsw.view.event;
 
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
+import it.polimi.ingsw.view.RemoteView;
 
 public class MoveViewEvent extends WorkerViewEvent {
 
     protected Position destPosition;
 
-    public MoveViewEvent(Player player, int workerId, Position destPosition) {
-        super(player, workerId);
+    public MoveViewEvent(RemoteView view, int workerId, Position destPosition) {
+        super(view, workerId);
         this.destPosition = destPosition;
     }
 

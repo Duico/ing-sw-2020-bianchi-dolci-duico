@@ -1,12 +1,13 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * Single worker assigned to a player
  */
-public class Worker implements Cloneable{
+public class Worker implements Cloneable, Serializable {
 
     private ArrayList<Position> moves; // initial positoin here
     private ArrayList<Position> builds; //initial position here

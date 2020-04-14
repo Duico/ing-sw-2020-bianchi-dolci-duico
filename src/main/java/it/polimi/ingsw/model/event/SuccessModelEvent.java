@@ -4,6 +4,6 @@ import it.polimi.ingsw.model.Player;
 
 public class SuccessModelEvent extends ModelEvent {
     public SuccessModelEvent(Player player) {
-        super(player);
+        super(player.getUuid());
     }
 }
