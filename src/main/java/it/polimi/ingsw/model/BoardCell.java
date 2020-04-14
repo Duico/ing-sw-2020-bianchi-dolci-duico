@@ -47,7 +47,7 @@ public class BoardCell implements Cloneable, Serializable {
         BoardCell boardCell;
         try {
             boardCell = (BoardCell) super.clone();
-            boardCell.worker = this.worker.clone();
+            boardCell.worker = ( this.worker!=null )? this.worker.clone():null;
         }catch (CloneNotSupportedException e){
             throw new RuntimeException("Clone not supported on BoardCell");
         }

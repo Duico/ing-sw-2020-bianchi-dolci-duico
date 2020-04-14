@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import it.polimi.ingsw.model.strategy.*;
@@ -11,36 +12,51 @@ class DefaultMoveTest {
 
     static Board board;
     static Game game;
-    static MoveStrategy defaultMove;
+    static MoveStrategy defaultMove = new DefaultMove();
+    static Worker worker0;
+    static Worker worker1;
+    static Worker worker2;
+    static Worker worker3;
 
     /**
      * Setup before all the test
      */
-    @BeforeAll
-    public static void before() throws PositionOutOfBoundsException {
+    @BeforeEach
+    public void before() throws PositionOutOfBoundsException {
         System.out.println("Running setup");
 
-        try {
-            Player player1 = new Player("Pippo");
+        Position.setSize(5,5);
+        board = new Board();
+        worker0 = new Worker();
+        worker1 = new Worker();
+        worker2 = new Worker();
+        worker3 = new Worker();
+        board.setWorker(worker0, new Position(0,0));
+        board.setWorker(worker1, new Position(1,1));
+        board.setWorker(worker2, new Position(2,2));
+        board.setWorker(worker3, new Position(3,3));
 
-            Player player2 = new Player("Pluto");
-            ArrayList<Player> players = new ArrayList<Player>();
-            players.add(player1);
-            players.add(player2);
-            Game game = new Game();
-            game.startGame(players, false);
-            System.out.println(game.getTurn().getCurrentPlayer().getNickName());
-            System.out.println(game.getTurn().getCurrentPlayer().getCard().getName());
-            Position startPosition1 = new Position(0,0);
-            Position startPosition2 = new Position(1,1);
-            game.place(startPosition1);
-            game.place(startPosition2);
-
-
-        }catch (Exception e){
-            System.err.println("erorre");
-            e.printStackTrace();
-        }
+//        try {
+//            Player player1 = new Player("Pippo");
+//
+//            Player player2 = new Player("Pluto");
+//            ArrayList<Player> players = new ArrayList<Player>();
+//            players.add(player1);
+//            players.add(player2);
+//            game = new Game();
+//            game.startGame(players, false);
+//            System.out.println(game.getTurn().getCurrentPlayer().getNickName());
+//            System.out.println(game.getTurn().getCurrentPlayer().getCard().getName());
+//            Position startPosition1 = new Position(0,0);
+//            Position startPosition2 = new Position(1,1);
+//            game.place(startPosition1);
+//            game.place(startPosition2);
+//
+//
+//        }catch (Exception e){
+//            System.err.println("erorre");
+//            e.printStackTrace();
+//        }
 
 
     }
@@ -52,9 +68,8 @@ class DefaultMoveTest {
      */
     @Test
     void validPositionOfTheMove() throws PositionOutOfBoundsException {
-
-        Position startPosition = game.getTurn().getCurrentPlayer().getWorkerCurrentPosition(1);
-        Position destPosition = new Position(0,1);
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         assertTrue(defaultMove.isValidMove(startPosition, destPosition, board));
     }
 

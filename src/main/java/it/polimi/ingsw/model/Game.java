@@ -61,10 +61,10 @@ public class Game extends ModelEventEmitter implements Serializable{
             createCardDeck();
             cards = dealCards(numPlayers);
         } else {
-           cards = dealDefaultCard(numPlayers);
+            cards = dealDefaultCard(numPlayers);
         }
 
-        for (int n = 0; n < players.size(); n++) {
+        for (int n = 0; n < numPlayers; n++) {
             players.get(n).setCard(cards.get(n));
             players.get(n).initWorkers(numWorkers);
         }
