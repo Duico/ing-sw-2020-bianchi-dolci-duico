@@ -28,6 +28,8 @@ public class CardDeck implements Serializable {
         readConfigurationXML(pathname);
     }
 
+
+
     private void readConfigurationXML(String pathname) throws ReadConfigurationXMLException, ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();

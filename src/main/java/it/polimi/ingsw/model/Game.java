@@ -15,10 +15,9 @@ import java.util.UUID;
  */
 public class Game implements Serializable{
     private Turn turn;
-    private Turn previousTurn;
     private ArrayList<Player> players = new ArrayList<>();
     boolean useCards = false;
-    CardDeck cardDeck;
+    private CardDeck cardDeck;
     private final int numWorkers;
     private Board board;
     private UndoBlob undoBlob;
@@ -47,21 +46,30 @@ public class Game implements Serializable{
     public void startGame(ArrayList<String> nicknames, boolean useCards) {
 
         this.useCards = useCards;
+        int numPlayers = nicknames.size();
+
+        if(numPlayers <2 || numPlayers >3)
+            throw new RuntimeException("Number of Players out of range");
+
+        ArrayList<Card> cards;
+        if (this.useCards) {
+            createCardDeck();
+            cards = dealCards(numPlayers);
+        } else {
+           cards = dealDefaultCard(numPlayers);
+        }
 
         for (int n = 0; n < nicknames.size(); n++) {
-            Player newPlayer = new Player(nicknames.get(n), numWorkers);
+            Player newPlayer = new Player(nicknames.get(n), numWorkers, cards.get(n));
             players.add(newPlayer);
         }
 
-        if (this.useCards) {
-            //createCardDeck();  TO FIX
-            //dealCards();
-        } else {
-            //assign default Card to each player
-        }
+
         initTurn();
         //make an exceptional first turn that calls setWorker
     }
+
+
 
     private void createCardDeck() {
         try {
@@ -71,57 +79,40 @@ public class Game implements Serializable{
         }
     }
 
-    public void dealCards() {
-        ArrayList<Card> randomDeck = cardDeck.pickRandom(players.size());
-        for (int i = 0; i < players.size(); i++) {
-            Card randomCard = randomDeck.get(i);
-            players.get(i).setCard(randomCard);
-        }
+    private ArrayList<Card> dealCards(int numPlayers) {
+        ArrayList<Card> randomDeck = cardDeck.pickRandom(numPlayers);
+        return randomDeck;
     }
 
-//    public Player getCurrentPlayer(){
-//        return turn.getCurrentPlayer();
-//        //todo clone
-//    }
+    private ArrayList<Card> dealDefaultCard(int numPlayers){
+        ArrayList<Card> cards = new ArrayList<>();
+        Card defaultCard = Card.getDefaultCard();
+        for(int i=0;i<numPlayers;i++)
+            cards.add(defaultCard);
+        return cards;
+    }
+
+
+
 
 //FIX remove
     public Turn getTurn() {
         return turn;
     }
 
-    public void setTurn(Turn turn) {
-        this.turn = turn;
-    }
-
-    public Turn getPreviousTurn() {
-        return previousTurn;
-    }
-
-    public int getNumWorkers(){
-        return this.numWorkers;
-    }
 
     public void initTurn() {
-        Card previousCard = getPreviousPlayer().getCard();
-        //we need previousCard to check opponentStrategy
-        if(previousCard == null){
-            throw new NullPointerException("Previous Card is not set");
-        }
-
-        turn = new Turn( this.pickFirstPlayer(), previousCard, false);
+        turn = new Turn( this.pickFirstPlayer(), null, false);
     }
 
 
 
     public void nextTurn() {
-        //TODO
-        //reset currentWorker's moves-builds-operations
-        Card previousTurnCard = turn.getPlayerCard();
+        Card previousTurnCard = turn.getCurrentPlayer().getCard();
         Player nextPlayer = this.getNextPlayer();
         nextPlayer.resetAllWorkers();
 
         boolean blockNextPlayer = turn.isBlockNextPlayer();
-        previousTurn = turn;
         turn = new Turn(nextPlayer, previousTurnCard, blockNextPlayer);
     }
 
@@ -131,9 +122,10 @@ public class Game implements Serializable{
             return randPlayer;
     }
 
-    private Player getPreviousPlayer() {
-        return scrubPlayers(-1);
-    }
+//    private Player getPreviousPlayer() {
+//        return scrubPlayers(-1);
+//    }
+
     private Player getNextPlayer() {
         return scrubPlayers(1);
     }
@@ -155,9 +147,6 @@ public class Game implements Serializable{
         }
     }
 
-    public Player getPlayer(int n) {
-        return players.get(n);
-    }
 
     public ArrayList<Player> getPlayers() {
         return this.players;
@@ -240,8 +229,8 @@ public class Game implements Serializable{
     public boolean isBlockedMove(int workerId, Position destinationPosition){
         Player currentPlayer = turn.getCurrentPlayer();
         Position startPosition = currentPlayer.getWorkerCurrentPosition(workerId);
-        Card card = currentPlayer.getCard();
-        return card.getBlockStrategy().isBlockMove( startPosition, destinationPosition, board);
+
+        return turn.getPreviousTurnCard().getBlockStrategy().isBlockMove( startPosition, destinationPosition, board);
     }
 
 
@@ -267,31 +256,6 @@ public class Game implements Serializable{
         return winStrategy.isWinningMove(startPosition, destinationPosition, board );
     }
 
-    public boolean undo(){
-        if(!turn.isUndoAvailable){
-            return false;
-        }
-        //deserialize turn, players
-        Turn undoTurn = undoBlob.getTurn();
-        Board undoBoard = undoBlob.getBoard();
-        ArrayList<Player> undoPlayers = undoBlob.getPlayers();
-        if(undoTurn == null || undoBoard == null ||undoPlayers == null){
-            return false;
-        }
-        turn = undoTurn;
-        board = undoBoard;
-        players = undoPlayers;
-        //change isUndoAvailable in currentPlayer
-        turn.isUndoAvailable = false;
-        return true;
-    }
-
-    private void backupUndo(){
-        //serialize turn, players
-        this.undoBlob = new UndoBlob(turn, board, players);
-        turn.isUndoAvailable = true;
-        //return true;
-    }
 
 
     /**
@@ -400,6 +364,33 @@ public class Game implements Serializable{
         return loseCondition;
     }
 
+    public boolean undo(){
+        if(!turn.isUndoAvailable){
+            return false;
+        }
+        //deserialize turn, players
+        Turn undoTurn = undoBlob.getTurn();
+        Board undoBoard = undoBlob.getBoard();
+        ArrayList<Player> undoPlayers = undoBlob.getPlayers();
+        if(undoTurn == null || undoBoard == null ||undoPlayers == null){
+            return false;
+        }
+        turn = undoTurn;
+        board = undoBoard;
+        players = undoPlayers;
+        //change isUndoAvailable in currentPlayer
+        turn.isUndoAvailable = false;
+        return true;
+    }
+
+    private void backupUndo(){
+        //serialize turn, players
+        this.undoBlob = new UndoBlob(turn, board, players);
+        turn.isUndoAvailable = true;
+        //return true;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -412,7 +403,7 @@ public class Game implements Serializable{
                 //Objects.equals(getPlayers(), game.getPlayers()) &&
                 //Objects.equals(cardDeck, game.cardDeck);
         for(int i=0; i<getPlayers().size(); i++){
-            playersEquals = playersEquals && getPlayer(i).getNickName().equals( game.getPlayer(i).getNickName() );
+            playersEquals = playersEquals && players.get(i).getNickName().equals( game.players.get(i).getNickName() );
         }
         return useCards == game.useCards && playersEquals;
 

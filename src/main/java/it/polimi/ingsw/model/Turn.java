@@ -117,8 +117,8 @@ public class Turn implements Serializable {
     }
 
 
-    protected Card getPlayerCard(){
-        return currentPlayer.getCard();
+    public Card getPreviousTurnCard(){
+        return this.previousTurnCard;
     }
 
     protected Player getCurrentPlayer() {

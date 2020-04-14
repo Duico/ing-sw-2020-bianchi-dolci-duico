@@ -36,6 +36,15 @@ public class Card implements Serializable {
 
     }
 
+    public static Card getDefaultCard(){
+        try {
+            Card defaultCard = new Card("Default", "Default", "Default", "Default", "Default", "Default");
+            return defaultCard;
+        }catch(StrategyNameNotFound e){
+            throw new RuntimeException("Couldn't create default Card");
+        }
+    }
+
     public String getName() {
         return name;
     }

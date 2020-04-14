@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,7 +11,7 @@ public class Player implements Serializable {
     private FixedArray<Worker> workers;
 
 
-    public Player(String nickName, int numWorkers) {
+    public Player(String nickName, int numWorkers, Card card) {
         this.uuid = UUID.randomUUID();
         this.nickName = nickName;
         workers = new FixedArray<>(numWorkers);
@@ -90,6 +89,10 @@ public class Player implements Serializable {
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public void assignDefaultCard(){
+
     }
 
 
