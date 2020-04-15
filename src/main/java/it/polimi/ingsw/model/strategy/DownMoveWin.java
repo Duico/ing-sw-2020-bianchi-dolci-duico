@@ -14,12 +14,13 @@ public class DownMoveWin implements WinStrategy {
         try{
             BoardCell startCell = board.getBoardCell(startPosition);
             BoardCell destinationCell = board.getBoardCell(destinationPosition);
+            WinStrategy defaultWin = new DefaultWin();
             if(startCell.getLevel().ordinal() == 2 && destinationCell.getLevel().ordinal() == 0)
                 return true;
             if(startCell.getLevel().ordinal() == 3 && (destinationCell.getLevel().ordinal() == 0 || destinationCell.getLevel().ordinal() == 1))
                 return true;
             else
-                return false;
+                return defaultWin.isWinningMove(startPosition,destinationPosition,board);
         }
         catch (NullPointerException e){
             throw new NullPointerException();

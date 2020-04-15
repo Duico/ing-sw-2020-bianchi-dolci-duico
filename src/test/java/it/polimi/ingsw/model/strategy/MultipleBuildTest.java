@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MultipleBuildDifferentPositionTest {
+class MultipleBuildTest {
     static Board board;
     static Game game;
-    static BuildStrategy multipleBuildDifferentPosition = new MultipleBuildDifferentPosition();
+    static BuildStrategy multipleBuild = new MultipleBuild();
     static Worker worker0;
     static Worker worker1;
     static Worker worker2;
@@ -34,50 +34,49 @@ class MultipleBuildDifferentPositionTest {
         worker3 = new Worker();
         board.setWorker(worker0, new Position(0, 0));
         board.setWorker(worker1, new Position(1, 1));
-        //board.setWorker(worker2, new Position(0, 1));
+        board.setWorker(worker2, new Position(0, 1));
 //        board.setWorker(worker3, new Position(3, 3));
     }
 
     /**
-     * check if the worker can build twice on the same position
+     * check if the worker can build twice on the same position (not dome)
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkDoubleBuildSamePosition() throws PositionOutOfBoundsException{
+    void checkDoubleBuildSamePositionNotDome() throws PositionOutOfBoundsException{
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addBuild(destPosition);
-        assertFalse(multipleBuildDifferentPosition.isValidBuild(startPosition, destPosition,false, board));
+        assertTrue(multipleBuild.isValidBuild(startPosition, destPosition,false, board));
     }
 
     /**
-     * check if the worker can build twice on different positions (not dome)
+     * check if the worker can build twice on the same position (dome)
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkDoubleBuildDifferentPositionNotDome() throws PositionOutOfBoundsException{
+    void checkDoubleBuildSamePositionDome() throws PositionOutOfBoundsException{
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
+        Position startPosition2 = new Position(startPosition.getX(), startPosition.getY()+1);
+        board.build(startPosition2, destPosition,false);
+        board.build(startPosition2, destPosition,false);
+        board.build(startPosition2, destPosition,false);
+        worker0.addBuild(destPosition);
+        assertFalse(multipleBuild.isValidBuild(startPosition, destPosition,true, board));
+    }
+
+    /**
+     * check if the worker can build twice on different positions
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void checkDoubleBuildDifferentPosition() throws PositionOutOfBoundsException{
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         Position destPosition2 = new Position(startPosition.getX(), startPosition.getY()+1);
         worker0.addBuild(destPosition);
-        assertTrue(multipleBuildDifferentPosition.isValidBuild(startPosition, destPosition2,false, board));
-    }
-
-    /**
-     * check if the worker can build twice on different positions (dome)
-     * @throws PositionOutOfBoundsException
-     */
-    @Test
-    void checkDoubleBuildDifferentPositionDome() throws PositionOutOfBoundsException{
-        Position startPosition = worker0.getCurrentPosition();
-        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
-        Position startPosition2 = new Position(startPosition.getX()+1, startPosition.getY()+1);
-        Position destPosition2 = new Position(startPosition.getX(), startPosition.getY()+1);
-        board.build(startPosition2, destPosition2, false);
-        board.build(startPosition2, destPosition2, false);
-        board.build(startPosition2, destPosition2, false);
-        worker0.addBuild(destPosition);
-        assertTrue(multipleBuildDifferentPosition.isValidBuild(startPosition, destPosition2,true, board));
+        assertFalse(multipleBuild.isValidBuild(startPosition, destPosition2,false, board));
     }
 
     /**
@@ -89,7 +88,7 @@ class MultipleBuildDifferentPositionTest {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
-        assertTrue(multipleBuildDifferentPosition.isAllowedToBuild(worker0.getNumMoves(), worker0.getNumBuilds(), worker0.getLastOperation()));
+        assertTrue(multipleBuild.isAllowedToBuild(worker0.getNumMoves(), worker0.getNumBuilds(), worker0.getLastOperation()));
     }
 
     /**
@@ -102,7 +101,7 @@ class MultipleBuildDifferentPositionTest {
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
         worker0.addBuild(startPosition);
-        assertTrue(multipleBuildDifferentPosition.isAllowedToBuild(worker0.getNumMoves(), worker0.getNumBuilds(), worker0.getLastOperation()));
+        assertTrue(multipleBuild.isAllowedToBuild(worker0.getNumMoves(), worker0.getNumBuilds(), worker0.getLastOperation()));
     }
 
     /**
@@ -114,7 +113,7 @@ class MultipleBuildDifferentPositionTest {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
-        assertTrue(multipleBuildDifferentPosition.isRequiredToBuild(worker0.getNumMoves(), worker0.getNumBuilds(), worker0.getLastOperation()));
+        assertTrue(multipleBuild.isRequiredToBuild(worker0.getNumMoves(), worker0.getNumBuilds(), worker0.getLastOperation()));
     }
 
     /**
@@ -127,6 +126,7 @@ class MultipleBuildDifferentPositionTest {
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
         worker0.addBuild(startPosition);
-        assertFalse(multipleBuildDifferentPosition.isRequiredToBuild(worker0.getNumMoves(), worker0.getNumBuilds(), worker0.getLastOperation()));
+        assertFalse(multipleBuild.isRequiredToBuild(worker0.getNumMoves(), worker0.getNumBuilds(), worker0.getLastOperation()));
     }
+
 }

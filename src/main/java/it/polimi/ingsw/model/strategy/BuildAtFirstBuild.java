@@ -34,7 +34,7 @@ public class BuildAtFirstBuild implements BuildStrategy {
 
     @Override
     public boolean isRequiredToBuild(int numMoves, int numBuilds, Operation lastOperation) {
-        if(numBuilds == 0 && numMoves == 1)
+        if(numBuilds == 0)
             return true;
         if(numBuilds == 1 && numMoves == 1 && lastOperation.equals(Operation.MOVE))
             return true;

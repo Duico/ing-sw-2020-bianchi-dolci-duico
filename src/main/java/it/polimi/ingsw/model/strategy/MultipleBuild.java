@@ -36,7 +36,7 @@ public class MultipleBuild implements BuildStrategy {
 
     @Override
     public boolean isAllowedToBuild(int numMoves, int numBuilds, Operation lastOperation) {
-        return (numMoves == 1 && numBuilds >=0);
+        return (numMoves == 1 && (numBuilds==0 || numBuilds==1) );
     }
 
     @Override

@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
-import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,100 +39,6 @@ class BuildAtFirstBuildTest {
     }
 
     /**
-     * check if the worker can build in a wrong Position (distance between start Position and destination Position > 1)
-     * @throws PositionOutOfBoundsException
-     */
-    @Test
-    void checkValidBuildWrongDestination() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
-        Position startPosition = worker0.getCurrentPosition();
-        Position destPosition = new Position(startPosition.getX()+2, startPosition.getY());
-        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
-    }
-
-    /**
-     * check if the worker can build on the same position he is on already
-     * @throws PositionOutOfBoundsException
-     */
-    @Test
-    void checkValidBuildSamePosition() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
-        Position startPosition = worker0.getCurrentPosition();
-        Position destPosition = new Position(startPosition.getX(), startPosition.getY());
-        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
-    }
-
-    /**
-     * check if the worker can build on a position occupied by a different worker
-     * @throws PositionOutOfBoundsException
-     */
-    @Test
-    void checkValidBuildOccupiedPosition() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
-        Position startPosition = worker0.getCurrentPosition();
-        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY()+1);
-        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
-    }
-
-    /**
-     * check if the worker can build on a Position where a dome has already been built on
-     * @throws PositionOutOfBoundsException
-     */
-    @Test
-    void checkValidBuildOnDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
-        Position startPosition = worker0.getCurrentPosition();
-        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
-        board.build(startPosition, destPosition, true);
-        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
-    }
-
-    /**
-     * check if the worker can build (not a dome) on a position having level <3 (TOP)
-     * @throws PositionOutOfBoundsException
-     */
-    @Test
-    void checkValidBuildLevel0NotDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
-        Position startPosition = worker0.getCurrentPosition();
-        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
-        assertTrue(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
-    }
-
-    /**
-     * check if the worker can build a dome on a position having level <3 (TOP)
-     * @throws PositionOutOfBoundsException
-     */
-    @Test
-    void checkValidBuildLevel0isDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
-        Position startPosition = worker0.getCurrentPosition();
-        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
-        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, true, board ));
-    }
-
-    /**
-     * check if the worker can build (not a dome) on a position having level = 3 (TOP)
-     * @throws PositionOutOfBoundsException
-     */
-    @Test
-    void checkValidBuildLevel3NotDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
-        Position startPosition = worker0.getCurrentPosition();
-        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
-        board.build(startPosition, destPosition, false);
-        board.build(startPosition, destPosition, false);
-        board.build(startPosition, destPosition, false);
-        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
-    }
-
-    /**
-     * check if the worker can build a dome on a position having level = 3 (TOP)
-     * @throws PositionOutOfBoundsException
-     */
-    @Test
-    void checkValidBuildLevel3isDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
-        Position startPosition = worker0.getCurrentPosition();
-        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
-        board.build(startPosition, destPosition, false);
-        board.build(startPosition, destPosition, false);
-        board.build(startPosition, destPosition, false);
-        assertTrue(buildAtFirstBuild.isValidBuild(startPosition, destPosition, true, board ));
-    }
-    /**
      * check if the worker can build when has never moved or built
      */
     @Test
@@ -145,7 +50,7 @@ class BuildAtFirstBuildTest {
      * check if the worker can build when has already moved once
      */
     @Test
-    void checkIsAllowedToBuild2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+    void checkIsAllowedToBuild2() throws PositionOutOfBoundsException{
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
@@ -156,7 +61,7 @@ class BuildAtFirstBuildTest {
      * check if the worker can build when has already built and moved
      */
     @Test
-    void checkIsAllowedToBuild3() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+    void checkIsAllowedToBuild3() throws PositionOutOfBoundsException{
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addBuild(destPosition);
@@ -168,7 +73,7 @@ class BuildAtFirstBuildTest {
      * check if the worker can build when has already moved and built
      */
     @Test
-    void checkIsNotAllowedToBuild() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+    void checkIsNotAllowedToBuild() throws PositionOutOfBoundsException{
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(startPosition);
@@ -188,7 +93,7 @@ class BuildAtFirstBuildTest {
      * check if the worker is required to build when has already built and moved
      */
     @Test
-    void checkIsRequiredToBuild2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+    void checkIsRequiredToBuild2() throws PositionOutOfBoundsException{
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addBuild(destPosition);
@@ -200,7 +105,7 @@ class BuildAtFirstBuildTest {
      * check if the worker is required to build when has already built and moved
      */
     @Test
-    void checkIsNotRequiredToBuild() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+    void checkIsNotRequiredToBuild() throws PositionOutOfBoundsException{
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(startPosition);

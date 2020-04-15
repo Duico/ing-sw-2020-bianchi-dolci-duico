@@ -1,291 +1,435 @@
-/*
 package it.polimi.ingsw.model;
 
-import org.junit.jupiter.api.BeforeAll;
+import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.model.strategy.MoveStrategy;
+import it.polimi.ingsw.model.strategy.MultipleMove;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MultipleMoveTest {
     static Board board;
     static Game game;
+    static MoveStrategy multipleMove = new MultipleMove();
+    static Worker worker0;
     static Worker worker1;
     static Worker worker2;
-    static MoveStrategy multipleMove;
-    static MoveStrategy multipleMove2;
+    static Worker worker3;
 
-    */
-/**
+    /**
      * Setup before all the test
-     *//*
-
-    @BeforeAll
-    public static void before() throws PositionOutOfBoundsException {
+     */
+    @BeforeEach
+    public void before() throws PositionOutOfBoundsException {
         System.out.println("Running setup");
 
-        try {
-            ArrayList<String> nickNames = new ArrayList<String>();
-            nickNames.add("Player1");
-            nickNames.add("Player2");
-            game = Game.createGame(nickNames, true);
-            multipleMove = new MultipleMove(2);
-            multipleMove2 = new MultipleMove();
-            board = new Board();
-            worker1 = new Worker();
-            worker2 = new Worker();
-            Position startPositionPlayer1 = new Position(2, 2);
-            board.setWorkers(worker1, startPositionPlayer1);
-            Position startPositionPlayer2 = new Position(3, 3);
-            board.setWorkers(worker2, startPositionPlayer2);
+        Position.setSize(5,5);
+        board = new Board();
+        worker0 = new Worker();
+        worker1 = new Worker();
+        worker2 = new Worker();
+        worker3 = new Worker();
+        board.setWorker(worker0, new Position(0,0));
+        board.setWorker(worker1, new Position(1,1));
+        board.setWorker(worker2, new Position(3,3));
 
 
-        }catch (Exception e){
-            System.err.println("Errore");
-        }
     }
 
-    */
-/**
-     * Control if return true when the position of destination is right
-     * @throws PositionOutOfBoundsException
-     *//*
 
+    /**
+     * Control if return true when the position of destination is right
+     * startPosition (3,3), destPosition (2,4)
+     * @throws PositionOutOfBoundsException
+     */
     @Test
     void validPositionOfTheMove() throws PositionOutOfBoundsException {
-        Position startPosition = new Position(2,2);
-        Position destPosition = new Position(1, 1);
-        BoardCell[][] grid = board.getGrid();
-        assertTrue(multipleMove.isValidMove(startPosition, destPosition, grid));
+        Position startPosition = worker2.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()+1);
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return true when the position of destination is right
+     * startPosition (3,3), destPosition (3,4)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void validPositionOfTheMove2() throws PositionOutOfBoundsException {
+        Position startPosition = worker2.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return true when the position of destination is right
+     * startPosition (3,3), destPosition (4,4)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void validPositionOfTheMove3() throws PositionOutOfBoundsException {
+        Position startPosition = worker2.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY()+1);
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return true when the position of destination is right
+     * startPosition (3,3), destPosition (2,3)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void validPositionOfTheMove4() throws PositionOutOfBoundsException {
+        Position startPosition = worker2.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()-1, startPosition.getY());
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return true when the position of destination is right
+     * startPosition (3,3), destPosition (4,3)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void validPositionOfTheMove5() throws PositionOutOfBoundsException {
+        Position startPosition = worker2.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return true when the position of destination is right
+     * startPosition (3,3), destPosition (2,4)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void validPositionOfTheMove6() throws PositionOutOfBoundsException {
+        Position startPosition = worker2.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()+1);
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return true when the position of destination is right
+     * startPosition (3,3), destPosition (3,2)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void validPositionOfTheMove7() throws PositionOutOfBoundsException {
+        Position startPosition = worker2.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX(), startPosition.getY()-1);
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return true when the position of destination is right
+     * startPosition (3,3), destPosition (2,2)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void validPositionOfTheMove8() throws PositionOutOfBoundsException {
+        Position startPosition = worker2.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()-1);
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
     }
 
 
-    */
-/**
+    /**
      * Control if return false when the destination position is wrong
+     * startPosition (3,3), destPosition (1,3)
      * @throws PositionOutOfBoundsException
-     *//*
-
+     */
     @Test
     void notValidPositionOfTheMove() throws PositionOutOfBoundsException {
-        Position startPosition = new Position(2,2);
-        Position destPosition = new Position(4, 4);
-        BoardCell[][] grid = board.getGrid();
-        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
+        Position startPosition = worker2.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()-2, startPosition.getY());
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return false when the destination position is wrong
+     * startPosition (3,3), destPosition (2,1)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void notValidPositionOfTheMove2() throws PositionOutOfBoundsException {
+        Position startPosition = worker2.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()-2);
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return false when the destination position is wrong
+     * startPosition (3,3), destPosition (1,3)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void notValidPositionOfTheMove3() throws PositionOutOfBoundsException {
+        Position startPosition = worker2.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()-2, startPosition.getY());
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
     }
 
 
-    */
-/**
+    /**
      * Control if return true when the destination cell is right based on the level
+     * The worker move up of one level
      * @throws PositionOutOfBoundsException
-     *//*
-
+     */
     @Test
-    void validLevel() throws PositionOutOfBoundsException {
-        Position startPosition = new Position(2,2);
-        Position destPosition = new Position(1, 1);
-        BoardCell[][] grid = board.getGrid();
-        grid[destPosition.getX()][destPosition.getY()].setLevel(Level.BASE);
-        assertTrue(multipleMove.isValidMove(startPosition, destPosition, grid));
-        grid[destPosition.getX()][destPosition.getY()].setLevel(Level.EMPTY);
+    void validMoveUpOneLevel() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
+        board.build(startPosition, destPosition, false);
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
     }
 
-    */
-/**
+    /**
+     * Control if return false when the destination cell is wrong based on the level
+     * The worker move up of one level in a cell with the dome
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void notValidMoveUpOneLevelBecauseDome() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
+        board.build(startPosition, destPosition, false);
+        board.build(startPosition, destPosition, true);
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return false when the destination cell is wrong based on the level
+     * The worker move up of two level
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void notValidMoveUpTwoLevel() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
+        board.build(startPosition, destPosition, false);
+        board.build(startPosition, destPosition, false);
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return false when the destination cell is wrong based on the level
+     * The worker move up of three level
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void notValidMoveUpThreeLevel() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
+        board.build(startPosition, destPosition, false);
+        board.build(startPosition, destPosition, false);
+        board.build(startPosition, destPosition, false);
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
      * Control if return true when the destination cell is right based on the right destination level
+     * The worker move down of one level
      * @throws PositionOutOfBoundsException
-     *//*
-
+     */
     @Test
-    void validLevelMoveDown() throws PositionOutOfBoundsException {
-        Position startPosition = new Position(2,2);
-        Position destPosition = new Position(1, 1);
-        BoardCell[][] grid = board.getGrid();
-        grid[startPosition.getX()][startPosition.getY()].setLevel(Level.MID);
-        assertTrue(multipleMove.isValidMove(startPosition, destPosition, grid));
-        grid[startPosition.getX()][startPosition.getY()].setLevel(Level.EMPTY);
+    void validMoveDownOneLevel() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        board.build(startPosition, startPosition, false);
+        Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
     }
 
-
-    */
-/**
-     * Control if return false when the destination cell is wrong based on the wrong level
+    /**
+     * Control if return true when the destination cell is right based on the right destination level
+     * The worker move down of two level
      * @throws PositionOutOfBoundsException
-     *//*
-
+     */
     @Test
-    void notValidLevel() throws PositionOutOfBoundsException {
-        Position startPosition = new Position(2,2);
-        Position destPosition = new Position(1, 1);
-        BoardCell[][] grid = board.getGrid();
-        grid[destPosition.getX()][destPosition.getY()].setLevel(Level.MID);
-        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
-        grid[destPosition.getX()][destPosition.getY()].setLevel(Level.EMPTY);
+    void validMoveDownTwoLevel() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        board.build(startPosition, startPosition, false);
+        board.build(startPosition, startPosition, false);
+        Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
     }
 
-
-    */
-/**
-     * Control if return false when the destination cell is wrong because it has the dome
+    /**
+     * Control if return true when the destination cell is right based on the right destination level
+     * The worker move down of three level
      * @throws PositionOutOfBoundsException
-     *//*
-
+     */
     @Test
-    void notValidBecauseDome() throws PositionOutOfBoundsException {
-        Position startPosition = new Position(2,2);
-        Position destPosition = new Position(1, 1);
-        BoardCell[][] grid = board.getGrid();
-        grid[destPosition.getX()][destPosition.getY()].setLevel(Level.MID);
-        grid[destPosition.getX()][destPosition.getY()].setDome(true);
-        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
-        grid[destPosition.getX()][destPosition.getY()].setLevel(Level.EMPTY);
-        grid[destPosition.getX()][destPosition.getY()].setDome(false);
+    void validMoveDownThreeLevel() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        board.build(startPosition, startPosition, false);
+        board.build(startPosition, startPosition, false);
+        board.build(startPosition, startPosition, false);
+        Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
+        assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
     }
 
-
-    */
-/**
-     * Control if return false when the destination cell is the same of the start cell
+    /**
+     * Control if return false when the destination cell is wrong based on the destination cell level
+     * The worker move down in a cell with the dome
      * @throws PositionOutOfBoundsException
-     *//*
-
+     */
     @Test
-    void notValidBecauseSameStartCell() throws PositionOutOfBoundsException {
-        Position startPosition = new Position(2,2);
-        Position destPosition = new Position(2, 2);
-        BoardCell[][] grid = board.getGrid();
-        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
+    void notValidMoveDownBecauseDome() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        board.build(startPosition, startPosition, false);
+        board.build(startPosition, startPosition, false);
+        board.build(startPosition, startPosition, false);
+        Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
+        board.build(startPosition, destPosition, true);
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
     }
 
-
-    */
-/**
-     * Control if return false when the destination cell is occupied by a worker
+    /**
+     * Control if return false when the destination cell is wrong based on the destination cell feature
+     * The worker move down in a occupied cell
      * @throws PositionOutOfBoundsException
-     *//*
-
+     */
     @Test
-    void notValidBecauseOccupiedCell() throws PositionOutOfBoundsException {
-        Position startPosition = new Position(2,2);
-        Position destPosition = new Position(3, 3);
-        BoardCell[][] grid = board.getGrid();
-        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
+    void notValidMoveDownBecauseOccupiedCell() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        board.build(startPosition, startPosition, false);
+        board.build(startPosition, startPosition, false);
+        board.build(startPosition, startPosition, false);
+        Position destPosition = worker1.getCurrentPosition();
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
     }
 
-    */
-/**
-     * Control if return true when the destination cell is not the startcell
-     *//*
-
+    /**
+     * Control if return false when the destination cell is wrong based on the destination cell feature
+     * The worker move up in a occupied cell
+     * @throws PositionOutOfBoundsException
+     */
     @Test
-    void validBecauseNotStartCell() throws PositionOutOfBoundsException {
-        Position previousStartPosition = new Position (2,2);
-        Position startPosition = new Position(1,1);
-        Position destPosition = new Position(0, 0);
-        BoardCell[][] grid = board.getGrid();
-        board.setWorkers(worker1, startPosition);
-        assertTrue(multipleMove.isValidMove(startPosition, destPosition, grid));
-        worker1.deleteLastMove();
-        grid[startPosition.getX()][startPosition.getY()].setWorker(null);
-        board.setWorkers(worker1, previousStartPosition);
-
+    void notValidMoveUpBecauseOccupiedCell() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = worker1.getCurrentPosition();
+        board.build(destPosition, destPosition, false);
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
     }
 
-    */
-/**
-     * Control if return false when the destination cell is the startcell
-     * * @throws PositionOutOfBoundsException
-     *//*
-
+    /**
+     * Control if return false when the destination cell is occupied
+     * @throws PositionOutOfBoundsException
+     */
     @Test
-    void notValidBecauseStartCell() throws PositionOutOfBoundsException {
-        Position previousStartPosition = new Position (2,2);
-        Position startPosition = new Position(1,1);
-        Position destPosition = new Position(2, 2);
-        BoardCell[][] grid = board.getGrid();
-        board.setWorkers(worker1, startPosition);
-        assertFalse(multipleMove.isValidMove(startPosition, destPosition, grid));
-        worker1.deleteLastMove();
-        grid[startPosition.getX()][startPosition.getY()].setWorker(null);
-        board.setWorkers(worker1, previousStartPosition);
+    void notValidMoveBecauseOccupiedCell() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = worker1.getCurrentPosition();
+        assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
+    }
+
+    /**
+     * Control if return false when the destination cell is equals the startcell
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void notValidMoveBecauseDestCellEqualsStartCell() throws PositionOutOfBoundsException {
+        Position startPosition = worker0.getCurrentPosition();
+        assertFalse(multipleMove.isValidMove(startPosition, startPosition, board));
+    }
+
+    /**
+     * Control if return true when the position of destination is right
+     * startPosition (3,3), destPosition (2,4)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void validPositionOfTheMoveHoweverAlreadyMove() throws PositionOutOfBoundsException {
+        Position destinationPosition1= new Position(4,4);
+        board.putWorkers(worker2.getCurrentPosition(), destinationPosition1, null);
+        Position startPosition = worker2.getCurrentPosition();
+        Position destinationPosition2 = new Position(4,3);
+        assertTrue(multipleMove.isValidMove(startPosition, destinationPosition2, board));
+    }
+
+    /**
+     * Control if return false when the position of destination is wrong
+     * The worker return in the initial position
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void notValidPositionOfTheMoveHoweverAlreadyMove() throws PositionOutOfBoundsException {
+        Position oldStartPosition = worker2.getCurrentPosition();
+        Position destinationPosition1= new Position(4,4);
+        board.putWorkers(worker2.getCurrentPosition(), destinationPosition1, null);
+        Position startPosition = worker2.getCurrentPosition();
+        assertFalse(multipleMove.isValidMove(startPosition, oldStartPosition, board));
     }
 
 
-    */
-/**
+
+
+    /**
      * Control if return true when the worker can move
-     * @throws PositionOutOfBoundsException
-     *//*
-
+     * The worker not ever move
+     */
     @Test
-    void isAllowedToMove1() {
-        int numMoves = worker1.getNumMoves();
-        assertTrue(multipleMove.isAllowedToMove(numMoves));
+    void isAllowedToMove() {
+
+        int numMoves = worker2.getNumMoves();
+        int numBuilds = worker2.getNumBuilds();
+        assertTrue(multipleMove.isAllowedToMove(numMoves, numBuilds));
     }
 
-
-    */
-/**
-     * Control if return true when the worker must move
-     * @throws PositionOutOfBoundsException
-     *//*
-
-    @Test
-    void isRequiredToMove() {
-        int numMoves = worker1.getNumMoves();
-        assertTrue(multipleMove.isAllowedToMove(numMoves));
-    }
-
-
-    */
-/**
+    /**
      * Control if return true when the worker can move
-     * @throws PositionOutOfBoundsException
-     *//*
-
+     * The worker has already move one time
+     */
     @Test
     void isAllowedToMove2() throws PositionOutOfBoundsException {
-        Position newPosition = new Position(1,1);
-        worker1.addMove(newPosition);
-        int numMoves = worker1.getNumMoves();
-        assertTrue(multipleMove.isAllowedToMove(numMoves));
-        worker1.deleteLastMove();
+        Position destinationPosition1= new Position(4,4);
+        board.putWorkers(worker2.getCurrentPosition(), destinationPosition1, null);
+        int numMoves = worker2.getNumMoves();
+        int numBuilds = worker2.getNumBuilds();
+        assertTrue(multipleMove.isAllowedToMove(numMoves, numBuilds));
     }
 
-    */
-/**
-     * Control if return false when the worker can't move
-     * @throws PositionOutOfBoundsException
-     *//*
 
+    /**
+     * Control if return true when the worker must move
+     */
     @Test
-    void isNotAllowedToMove2() throws PositionOutOfBoundsException {
-        Position newPosition = new Position(1,1);
-        Position newPosition2 = new Position(0,0);
-        worker1.addMove(newPosition);
-        worker1.addMove(newPosition2);
-        int numMoves = worker1.getNumMoves();
-        assertFalse(multipleMove.isAllowedToMove(numMoves));
-        worker1.deleteLastMove();
-        worker1.deleteLastMove();
+    void isRequiredToMove() {
+        int numMoves = worker2.getNumMoves();
+        assertTrue(multipleMove.isRequiredToMove(numMoves));
     }
 
 
+    /**
+     * Control if return false when the worker can't move
+     * The worker has already move 2 times
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void isNotAllowedToMove() throws PositionOutOfBoundsException {
+        Position newPosition1 = new Position(4,4);
+        worker2.addMove(newPosition1);
+        Position newPosition2 = new Position(4,3);
+        worker2.addMove(newPosition2);
+        int numMoves = worker2.getNumMoves();
+        int numBuilds = worker2.getNumBuilds();
+        assertFalse(multipleMove.isAllowedToMove(numMoves, numBuilds));
+    }
 
 
-    */
-/**
+    /**
      * Control if return false when the worker has already move the first time
      * @throws PositionOutOfBoundsException
-     *//*
-
+     */
     @Test
     void isNotRequiredToMove() throws PositionOutOfBoundsException {
-        Position newPosition = new Position(1,1);
-        worker1.addMove(newPosition);
-        int numMoves = worker1.getNumMoves();
+        Position destinationPosition1= new Position(4,4);
+        board.putWorkers(worker2.getCurrentPosition(), destinationPosition1, null);
+        int numMoves = worker2.getNumMoves();
         assertFalse(multipleMove.isRequiredToMove(numMoves));
-        worker1.deleteLastMove();
+
     }
 
-}*/
+
+}

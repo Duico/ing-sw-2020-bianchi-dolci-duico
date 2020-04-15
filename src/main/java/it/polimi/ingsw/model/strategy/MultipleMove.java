@@ -18,7 +18,7 @@ public class MultipleMove implements MoveStrategy {
     }
 
     public MultipleMove(){
-        this.numMovesAllowed = 1;
+        this.numMovesAllowed = 2;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class MultipleMove implements MoveStrategy {
 
         BoardCell startCell = board.getBoardCell(startPosition);
         int numMoves = startCell.getWorker().getNumMoves();
-        if(numMoves > 1 && startCell.getWorker().getFirstMove().equals(destPosition)){
+        if(numMoves >= 1 && startCell.getWorker().getFirstMove().equals(destPosition)){
             return false;
         }else{
             MoveStrategy defaultStrategy = new DefaultMove();

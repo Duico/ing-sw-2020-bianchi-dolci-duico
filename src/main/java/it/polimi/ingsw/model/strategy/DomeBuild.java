@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.strategy;
 
 import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
+import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Position;
 
 /**
@@ -34,4 +35,13 @@ public class DomeBuild implements BuildStrategy {
         }
     }
 
+    @Override
+    public boolean isAllowedToBuild(int numMoves, int numBuilds, Operation lastOperation) {
+        return (numMoves == 1 && numBuilds ==0);
+    }
+
+    @Override
+    public boolean isRequiredToBuild(int numMoves, int numBuilds, Operation lastOperation) {
+        return numBuilds == 0;
+    }
 }
