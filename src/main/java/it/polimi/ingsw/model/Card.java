@@ -146,7 +146,13 @@ public class Card implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return Objects.equals(getName(), card.getName());
+        return Objects.equals(getName(), card.getName()) &&
+                Objects.equals(getMoveStrategy(), card.getMoveStrategy()) &&
+                Objects.equals(getBuildStrategy(), card.getBuildStrategy()) &&
+                Objects.equals(getBlockStrategy(), card.getBlockStrategy()) &&
+                Objects.equals(getOpponentStrategy(), card.getOpponentStrategy()) &&
+                Objects.equals(getWinStrategy(), card.getWinStrategy());
+
         //no need to check functions
     }
 

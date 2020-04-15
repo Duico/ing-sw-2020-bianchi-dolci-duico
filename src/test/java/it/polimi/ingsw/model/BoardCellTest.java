@@ -56,6 +56,6 @@ class BoardCellTest {
         assertNotSame(bc.getWorker(), bcClone.getWorker());
         assertEquals(bc.getLevel(), bcClone.getLevel());
         assertEquals(bc.hasDome(), bcClone.hasDome());
-
+        assertEquals(bc.getWorker(), bcClone.getWorker());
     }
 }

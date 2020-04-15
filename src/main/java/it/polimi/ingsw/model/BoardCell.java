@@ -12,10 +12,6 @@ public class BoardCell implements Cloneable, Serializable {
         this.dome = false;
         this.worker = null;
     }
-    private void updateLevel(Level level, boolean hasDome){
-        this.setLevel(level);
-        this.setDome(hasDome);
-    }
 
     public Level getLevel() {
         return level;
@@ -53,4 +49,13 @@ public class BoardCell implements Cloneable, Serializable {
         }
         return boardCell;
     }
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BoardCell boardCell = (BoardCell) o;
+        boolean equalWorkers = (getWorker() == null && boardCell.getWorker() == null) || getWorker().equals(boardCell.getWorker());
+        return equalWorkers && getLevel().equals(boardCell.getLevel()) && hasDome() == boardCell.hasDome();
+    }
+
 }
