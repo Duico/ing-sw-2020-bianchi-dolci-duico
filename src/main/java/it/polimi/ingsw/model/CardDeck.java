@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CardDeck implements Serializable {
     private ArrayList<Card> cardDeck;
@@ -67,28 +68,35 @@ public class CardDeck implements Serializable {
     public Card getCard(int i) {
         return cardDeck.get(i);
     }
-
-    /**
-     * Picks [numPlayers] random cards to be assigned to all players in the game
-     * @param numPlayers Number of cards to extract,should be equal to the number of players
-     * @return Deck of [numPlayers] cards
-     */
-    public ArrayList<Card> pickRandom(int numPlayers) {
-        int rand;
-        ArrayList<Card> randomDeck = new ArrayList<>();
-        int i = 0;
-        while(i < numPlayers)
-        {
-            Card randCard ;
-            do {
-                rand = (int) Math.floor( (Math.random() * (double) cardDeck.size()) );
-                randCard=cardDeck.get(rand);
-            }
-            while(randomDeck.contains(randCard));
-            randomDeck.add(randCard);
-            i++;
+    public List<String> getCardNames(){
+        ArrayList<String> cardNames  = new ArrayList<String>();
+        for(Card card: cardDeck){
+            cardNames.add(card.getName());
         }
-        return randomDeck;
+        return cardNames;
     }
+
+//    /**
+//     * Picks [numPlayers] random cards to be assigned to all players in the game
+//     * @param numPlayers Number of cards to extract,should be equal to the number of players
+//     * @return Deck of [numPlayers] cards
+//     */
+//    public ArrayList<Card> pickRandom(int numPlayers) {
+//        int rand;
+//        ArrayList<Card> randomDeck = new ArrayList<>();
+//        int i = 0;
+//        while(i < numPlayers)
+//        {
+//            Card randCard ;
+//            do {
+//                rand = (int) Math.floor( (Math.random() * (double) cardDeck.size()) );
+//                randCard=cardDeck.get(rand);
+//            }
+//            while(randomDeck.contains(randCard));
+//            randomDeck.add(randCard);
+//            i++;
+//        }
+//        return randomDeck;
+//    }
 }
 
