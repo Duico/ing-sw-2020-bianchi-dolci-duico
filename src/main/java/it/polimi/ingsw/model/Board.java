@@ -17,21 +17,21 @@ public class Board implements Cloneable, Serializable {
     }
 
     public void build(Position startPosition, Position destinationPosition, boolean isDome) {
-        Worker worker = this.grid[startPosition.getX()][startPosition.getY()].getWorker();
+        Worker worker = this.getBoardCellReference(startPosition).getWorker();
         if(worker == null){
             throw new NullPointerException("Worker not set inside BoardCell in startPosition");
         }
         if(isDome){
-            this.grid[destinationPosition.getX()][destinationPosition.getY()].setDome(true);
+            getBoardCellReference(destinationPosition).setDome(true);
         }else{
-            int previousLevel = this.grid[destinationPosition.getX()][destinationPosition.getY()].getLevel().ordinal();
-            this.grid[destinationPosition.getX()][destinationPosition.getY()].setLevel(Level.values()[previousLevel+1]);
+            int previousLevel = getBoardCellReference(destinationPosition).getLevel().ordinal();
+            getBoardCellReference(destinationPosition).setLevel(Level.values()[previousLevel+1]);
         }
         worker.addBuild(destinationPosition);
     }
 
     public BoardCell getBoardCell(Position position) {
-            BoardCell cell = grid[position.getX()][position.getY()].clone();
+            BoardCell cell = getBoardCellReference(position).clone();
             return cell;
     }
 
@@ -41,14 +41,24 @@ public class Board implements Cloneable, Serializable {
 
 
     public void putWorkers(Position startPosition, Position destinationPosition, Position pushDestPosition){
-        Worker temp = this.getBoardCellReference(startPosition).getWorker();
-        this.getBoardCellReference(destinationPosition).setWorker(this.getBoardCellReference(startPosition).getWorker());
-        if(pushDestPosition != null){
-            this.getBoardCellReference(pushDestPosition).getWorker().addMove(pushDestPosition);
-            this.getBoardCellReference(destinationPosition).setWorker(temp);
+        BoardCell startBoardCell = getBoardCellReference(startPosition);
+        Worker startWorker = startBoardCell.getWorker();
+        if(startWorker == null){
+            throw new NullPointerException("Worker not set inside BoardCell in startPosition");
         }
-        this.getBoardCellReference(startPosition).setWorker(null);
-        this.getBoardCellReference(destinationPosition).getWorker().addMove(destinationPosition);
+        BoardCell destinationCell = getBoardCellReference(destinationPosition);
+        startBoardCell.setWorker(null);
+        if(pushDestPosition != null) {
+            Worker destinationWorker = destinationCell.getWorker();
+            if(destinationWorker == null){
+                throw new NullPointerException("Worker not set inside BoardCell in destinationPosition, which is needed for push");
+            }
+            BoardCell pushDestBoardCell = getBoardCellReference(pushDestPosition);
+            pushDestBoardCell.setWorker(destinationWorker);
+            destinationWorker.addMove(pushDestPosition);
+        }
+        destinationCell.setWorker(startWorker);
+        startWorker.addMove(destinationPosition);
     }
 
     public boolean setWorker(Worker worker, Position destPosition){
