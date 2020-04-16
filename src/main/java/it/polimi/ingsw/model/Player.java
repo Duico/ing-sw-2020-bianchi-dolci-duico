@@ -5,15 +5,17 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Player implements Serializable {
-    private String nickName;
+    private final String nickName;
     private final UUID uuid;
     private Card card; //FIX add final when tests are over
     private FixedArray<Worker> workers;
+    private boolean isChallenger;
 
 
     public Player(String nickName) {
         this.uuid = UUID.randomUUID();
         this.nickName = nickName;
+        this.isChallenger = false;
         //
         //this.initWorkers(numWorkers);
     }
@@ -99,10 +101,6 @@ public class Player implements Serializable {
         return uuid;
     }
 
-    public void assignDefaultCard(){
-
-    }
-
 
     public void resetAllWorkers() {
         for (int i = 0; i < getNumWorkers(); i++) {
@@ -120,6 +118,11 @@ public class Player implements Serializable {
         }
         return true;
     }
+
+    public void setIsChallenger(boolean isChallenger){
+        this.isChallenger=isChallenger;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

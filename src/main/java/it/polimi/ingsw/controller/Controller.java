@@ -60,6 +60,46 @@ public class Controller implements ViewEventListener {
         game.nextTurn();
     }
 
+    public void challengerCards(CardsChallengerViewEvent message){
+        Turn turn = game.getTurn();
+        RemoteView view = message.getView();
+
+        if(!checkPlayer(view)){
+            //notify view
+        }
+
+
+        game.setChoseCards(message.getCards());
+        game.nextTurn();
+    }
+
+    public void setPlayerCards(CardViewEvent message){
+        Turn turn = game.getTurn();
+        RemoteView view = message.getView();
+        String cardName = message.getNameCard();
+        if(!checkPlayer(view)){
+
+        }
+
+        game.setPlayerCards(cardName);
+        game.nextTurn();
+    }
+
+    public void setFirstPlayer(FirstPlayerViewEvent message){
+        Turn turn = game.getTurn();
+        RemoteView view = message.getView();
+        String nickName = message.getNickName();
+        if(!checkPlayer(view)){
+
+        }
+        if(game.isSetFirstPlayer()){
+            //notify view, già settato
+        }
+
+        game.setFirstPlayer(nickName);
+        //the next turn is set in game.setFirstPlayer
+    }
+
     public void move(MoveViewEvent message){
         Turn turn = game.getTurn();
         RemoteView view = message.getView();
@@ -107,7 +147,6 @@ public class Controller implements ViewEventListener {
         if( possibleMove == true ) {
 
             game.move(currentWorkerId, destinationPosition);
-
             //notify view of success/failure
         }
     }
@@ -157,6 +196,7 @@ public class Controller implements ViewEventListener {
         boolean possibleBuild = game.isFeasibleBuild(currentWorkerId, destinationPosition, isDome);
         if(possibleBuild){
             game.build(currentWorkerId, destinationPosition, isDome);
+
         }
     }
 

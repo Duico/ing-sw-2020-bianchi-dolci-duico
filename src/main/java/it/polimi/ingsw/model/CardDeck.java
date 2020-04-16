@@ -98,5 +98,23 @@ public class CardDeck implements Serializable {
 //        }
 //        return randomDeck;
 //    }
+
+    public boolean existCard(String name){
+        for(int i=0; i<cardDeck.size();i++){
+            if(name.equals(cardDeck.get(i).getName()))
+                return true;
+        }
+        return false;
+    }
+
+    public Card getCardByName(String name){
+        int i;
+        for(i=0; i<cardDeck.size();i++){
+            if(name.equals(cardDeck.get(i).getName()))
+                break;
+        }
+        return cardDeck.get(i);
+
+    }
 }
 

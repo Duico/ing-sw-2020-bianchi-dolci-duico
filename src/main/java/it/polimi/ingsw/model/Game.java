@@ -21,6 +21,8 @@ public class Game extends ModelEventEmitter implements Serializable{
     private ArrayList<Player> players = new ArrayList<>();
     boolean useCards = false;
     private CardDeck cardDeck;
+    private ArrayList<Card> chosenCards;
+    private Player firstPlayer;
     private final int numWorkers;
     private Board board;
     private UndoBlob undoBlob;
@@ -49,6 +51,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     public void startGame(ArrayList<Player> players, boolean useCards) {
 
         this.useCards = useCards;
+        this.firstPlayer=null;
         int numPlayers = players.size();
 
         if(numPlayers <2 || numPlayers >3)
@@ -56,25 +59,28 @@ public class Game extends ModelEventEmitter implements Serializable{
 
         this.players = players;
 
-        ArrayList<Card> cards;
+
         if (this.useCards) {
             createCardDeck();
-           // cards = dealCards(numPlayers);
-        } else {
-          //  cards = dealDefaultCard(numPlayers);
-        }
-        //TODO temporary fix
-        cards = dealDefaultCard(numPlayers);
 
-        for (int n = 0; n < numPlayers; n++) {
-            players.get(n).setCard(cards.get(n));
-            players.get(n).initWorkers(numWorkers);
+        } else {
+            Player challenger = pickFirstPlayer();
+            challenger.setIsChallenger(true);
+            setFirstPlayer(challenger);
+            dealDefaultCard(numPlayers);
         }
+
+        for(Player player: players){
+           player.initWorkers(numWorkers);
+        }
+
         board = new Board();
-        initTurn();
+        chosenCards = new ArrayList<>();
+        Player challenger = pickFirstPlayer();
+        challenger.setIsChallenger(true);
+        initTurn(challenger);
         //make an exceptional first turn that calls setWorker
     }
-
 
 
     private void createCardDeck() {
@@ -85,41 +91,98 @@ public class Game extends ModelEventEmitter implements Serializable{
         }
     }
 
-//    private ArrayList<Card> dealCards(int numPlayers) {
-//        ArrayList<Card> randomDeck = cardDeck.pickRandom(numPlayers);
-//        return randomDeck;
-//    }
+   /* private ArrayList<Card> dealCards(int numPlayers) {
+        ArrayList<Card> randomDeck = cardDeck.pickRandom(numPlayers);
+        return randomDeck;
+    }*/
 
-    private ArrayList<Card> dealDefaultCard(int numPlayers){
-        ArrayList<Card> cards = new ArrayList<>();
+    private void dealDefaultCard(int numPlayers){
         Card defaultCard = Card.getDefaultCard();
-        for(int i=0;i<numPlayers;i++)
-            cards.add(defaultCard);
-        return cards;
+        for (int n = 0; n < numPlayers; n++) {
+            players.get(n).setCard(defaultCard);
+
+        }
+
+    }
+
+    public boolean setChosenCards(ArrayList<String> cards){
+        for(int i=0; i<players.size(); i++){
+            chosenCards.add(cardDeck.getCardByName(cards.get(i)));
+        }
+        return true;
     }
 
 
+    public void setPlayerCards(String nameCard){
+        for(int i=0; i<chosenCards.size(); i++){
+            Card card = chosenCards.get(i);
+            if (card.getName().equals(nameCard)){
+                Player currentPlayer = turn.getCurrentPlayer();
+                currentPlayer.setCard(card);
+                chosenCards.remove(card);
+                if(chosenCards.size()>0)
+                    return;
+                else{
+                    //notify view per challenger restituisco la lista dei player
+                }
+            }
+        }
+    }
 
 
-//FIX remove
     public Turn getTurn() {
         return turn;
     }
 
 
-    public void initTurn() {
-        turn = new Turn( this.pickFirstPlayer(), null, false);
+    public void initTurn(Player player) {
+
+        turn = new Turn( player, null, false);
+        //notify view
+        //event for the challenger view for choose the three or two cards
     }
 
+    /*public void nextTurn() {
+            Card previousTurnCard = turn.getCurrentPlayer().getCard();
+            Player nextPlayer = this.getNextPlayer();
+            nextPlayer.resetAllWorkers();
+            boolean blockNextPlayer = turn.isBlockNextPlayer();
+            turn = new Turn(nextPlayer, previousTurnCard, blockNextPlayer);
+    }*/
 
 
     public void nextTurn() {
-        Card previousTurnCard = turn.getCurrentPlayer().getCard();
-        Player nextPlayer = this.getNextPlayer();
-        nextPlayer.resetAllWorkers();
+        if(!isSetFirstPlayer()){
+            Card previousTurnCard = turn.getCurrentPlayer().getCard();
+            Player nextPlayer = this.getNextPlayer();
+            turn = new Turn( nextPlayer, null, false);
+            //notify view
+        }else /*if(!turn.isAllowedToMove() && !turn.isAllowedToBuild())*/ {
+                Card previousTurnCard = turn.getCurrentPlayer().getCard();
+                Player nextPlayer = this.getNextPlayer();
+                nextPlayer.resetAllWorkers();
+                boolean blockNextPlayer = turn.isBlockNextPlayer();
+                turn = new Turn(nextPlayer, previousTurnCard, blockNextPlayer);
+            }
+    }
 
-        boolean blockNextPlayer = turn.isBlockNextPlayer();
-        turn = new Turn(nextPlayer, previousTurnCard, blockNextPlayer);
+    public void firstTurn(Player player) {
+        setFirstPlayer(player);
+        turn = new Turn(this.firstPlayer, null, false);
+        //notify view of new turn;
+    }
+
+    private void setFirstPlayer(Player player){
+            if(players.contains(player)) {
+                this.firstPlayer = players.get(players.indexOf(player));
+            }
+    }
+
+    public boolean isSetFirstPlayer(){
+        if(firstPlayer==null)
+            return false;
+        else
+            return true;
     }
 
     private Player pickFirstPlayer() {
