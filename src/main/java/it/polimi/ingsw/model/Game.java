@@ -1,8 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.event.BuildWorkerModelEvent;
-import it.polimi.ingsw.model.event.PlaceWorkerModelEvent;
-import it.polimi.ingsw.model.event.PutWorkerModelEvent;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.model.strategy.BuildStrategy;
 import it.polimi.ingsw.model.strategy.MoveStrategy;
@@ -136,10 +133,16 @@ public class Game extends ModelEventEmitter implements Serializable{
 
 
     public void initTurn(Player player) {
-
         turn = new Turn( player, null, false);
         //notify view
         //event for the challenger view for choose the three or two cards
+    }
+    public void createTurn(){
+        Card previousTurnCard = turn.getCurrentPlayer().getCard();
+        Player nextPlayer = this.getNextPlayer();
+        nextPlayer.resetAllWorkers();
+        boolean blockNextPlayer = turn.isBlockNextPlayer();
+        turn = new Turn(nextPlayer, previousTurnCard, blockNextPlayer);
     }
 
     /*public void nextTurn() {
@@ -155,16 +158,15 @@ public class Game extends ModelEventEmitter implements Serializable{
         if(!isSetFirstPlayer()){
             Card previousTurnCard = turn.getCurrentPlayer().getCard();
             Player nextPlayer = this.getNextPlayer();
-            turn = new Turn( nextPlayer, null, false);
+            initTurn(nextPlayer);
             //notify view
+
         }else /*if(!turn.isAllowedToMove() && !turn.isAllowedToBuild())*/ {
-                Card previousTurnCard = turn.getCurrentPlayer().getCard();
-                Player nextPlayer = this.getNextPlayer();
-                nextPlayer.resetAllWorkers();
-                boolean blockNextPlayer = turn.isBlockNextPlayer();
-                turn = new Turn(nextPlayer, previousTurnCard, blockNextPlayer);
-            }
+            createTurn();
+            checkHasLost();
+        }
     }
+
 
     public void firstTurn(Player player) {
         setFirstPlayer(player);
@@ -224,13 +226,13 @@ public class Game extends ModelEventEmitter implements Serializable{
     public void move(int workerId, Position destinationPosition) {
         backupUndo();
         boardMove(workerId, destinationPosition);
-        //return undoStatus;
+        checkHasLost();
     }
 
     public void build(int workerId, Position destinationPosition, boolean isDome){
         backupUndo();
         boardBuild(workerId, destinationPosition, isDome);
-        //return undoStatus;
+        checkHasLost();
     }
 
     public int place(Position placePosition) {
@@ -409,33 +411,52 @@ public class Game extends ModelEventEmitter implements Serializable{
         return false;
     }
 
-    private boolean canDoOperation(int workerId){
+    private boolean cannotMakeRequiredOperation(int workerId){
         boolean isRequiredToMove = turn.isRequiredToMove(workerId);
         boolean isRequiredToBuild = turn.isRequiredToBuild(workerId);
 
         if(isRequiredToBuild && isRequiredToMove){
             if(!canBuild(workerId) && !canMove(workerId))
-                return false;
+                return true;
         }else if(isRequiredToBuild){
             if(!canBuild(workerId))
-                return false;
+                return true;
         }else if(isRequiredToMove){//should be impossible
             if(!canMove(workerId))
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 
-    public boolean checkLoseCondition() {
+    public void checkHasLost(){
+        if(hasLost()){
+            //notify view
+            Player currentPlayer = turn.getCurrentPlayer();
+            for(int i=0; i<numWorkers; i++){
+                Position workerPosition = currentPlayer.getWorkerCurrentPosition(i);
+                board.removeWorker(workerPosition);
+            }
+            players.remove(currentPlayer);
+        }
+    }
+
+    private boolean hasLost(){
+        if(!turn.isUndoAvailable){
+            return isLoseCondition();
+        }else{
+            return false;
+        }
+    }
+
+    private boolean isLoseCondition() {
         Player currentPlayer = turn.getCurrentPlayer();
-        Card card = currentPlayer.getCard();
         boolean loseCondition = true;
         if(turn.isSetCurrentWorker()){
-            loseCondition = !canDoOperation(turn.getCurrentWorkerId()); //&& loseCondition
+            loseCondition = cannotMakeRequiredOperation(turn.getCurrentWorkerId()); //&& loseCondition
 
         }else {//first operation of the turn can have workerId not set
             for (int workerId = 0; workerId < currentPlayer.getNumWorkers(); workerId++) {
-                loseCondition = !canDoOperation(workerId) && loseCondition;
+                loseCondition = cannotMakeRequiredOperation(workerId) && loseCondition;
             }
         }
         return loseCondition;

@@ -71,6 +71,14 @@ public class Board implements Cloneable, Serializable {
         }
     }
 
+    public boolean removeWorker(Position position){
+        if( this.getBoardCellReference(position).getWorker() != null ){
+            this.getBoardCellReference(position).setWorker(null);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     protected Board clone() {
         int width = Position.width;

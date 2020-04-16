@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.exception.NotEnoughPlayersException;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class Lobby {
     String persistencyFilename = "./game.ser";
@@ -18,15 +19,27 @@ public class Lobby {
         this.game = new Game(width, height,2);
     }
 
-    public boolean addPlayer(String nickname){//fix no nickname anymore
-       for(Player player: players) {
-           if (player.getNickName().equals(nickname)) {
+    public boolean validateNickname(String nickname){
+        for(Player player: players){
+            if(player.getNickName() == nickname)
                 return false;
-           }
-       }
+        }
+        final Pattern pattern = Pattern.compile("^[A-Za-z0-9\\-_]{3,32}$");
+        if (!pattern.matcher(nickname).matches()) {
+            return false;
+        }
+        return true;
+    }
 
-       players.add(new Player(nickname));
-       return true;
+    public Player addPlayer(String nickname){
+        if(!validateNickname(nickname)){
+            //todo
+            //notify view
+            return null;
+        }
+        Player newPlayer = new Player(nickname);
+        players.add(newPlayer);
+        return newPlayer;
 
     }
 
