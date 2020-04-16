@@ -73,10 +73,13 @@ public class Card implements Serializable {
         if (moveStrategy.equals("Default")){
             this.moveStrategy = new DefaultMove();
         }
-        else if(moveStrategy.contentEquals("Multiple")){
-            this.moveStrategy = new MultipleMove();
-        }
-        else if(moveStrategy.contentEquals("Push")){
+        else if(moveStrategy.startsWith("Multiple")){
+            int numMoves = Integer.parseUnsignedInt(moveStrategy.substring("Multiple".length()).replaceAll("[\\D]", ""));
+            if(numMoves>1 && numMoves<64) {
+                this.moveStrategy = new MultipleMove();
+            }else
+                throw new StrategyNameNotFound();
+        }else if(moveStrategy.contentEquals("Push")){
             this.moveStrategy = new PushMove();
         }
         else if(moveStrategy.contentEquals("BuildAtFirst")){
@@ -94,8 +97,11 @@ public class Card implements Serializable {
         else if (buildStrategy.contentEquals("Dome")){
             this.buildStrategy = new DomeBuild();
         }
-        else if (buildStrategy.contentEquals("Multiple")){
-            this.buildStrategy = new MultipleBuild();
+        else if (buildStrategy.contentEquals("Double")){
+            this.buildStrategy = new DoubleBuild();
+        }
+        else if(buildStrategy.contentEquals("DifferentMultiple")) {
+            this.buildStrategy = new MultipleBuildDifferentPosition();
         }
         else if (buildStrategy.contentEquals("BuildAtFirst")){
             this.buildStrategy = new BuildAtFirstBuild();
@@ -147,13 +153,11 @@ public class Card implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
         return Objects.equals(getName(), card.getName()) &&
-                Objects.equals(getMoveStrategy(), card.getMoveStrategy()) &&
-                Objects.equals(getBuildStrategy(), card.getBuildStrategy()) &&
-                Objects.equals(getBlockStrategy(), card.getBlockStrategy()) &&
-                Objects.equals(getOpponentStrategy(), card.getOpponentStrategy()) &&
-                Objects.equals(getWinStrategy(), card.getWinStrategy());
-
-        //no need to check functions
+                Objects.equals(getMoveStrategy().getClass(), card.getMoveStrategy().getClass()) &&
+                Objects.equals(getBuildStrategy().getClass(), card.getBuildStrategy().getClass()) &&
+                Objects.equals(getBlockStrategy().getClass(), card.getBlockStrategy().getClass()) &&
+                Objects.equals(getOpponentStrategy().getClass(), card.getOpponentStrategy().getClass()) &&
+                Objects.equals(getWinStrategy().getClass(), card.getWinStrategy().getClass());
     }
 
 }

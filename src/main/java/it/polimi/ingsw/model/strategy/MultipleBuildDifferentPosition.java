@@ -32,13 +32,13 @@ public class MultipleBuildDifferentPosition implements BuildStrategy {
 
     @Override
     public boolean isAllowedToBuild(int numMoves, int numBuilds, Operation lastOperation) {
-       BuildStrategy MultipleBuildDifferentPosition = new MultipleBuild();
+       BuildStrategy MultipleBuildDifferentPosition = new DoubleBuild();
        return MultipleBuildDifferentPosition.isAllowedToBuild(numMoves, numBuilds, lastOperation);
     }
 
     @Override
     public boolean isRequiredToBuild(int numMoves, int numBuilds, Operation lastOperation) {
-        BuildStrategy MultipleBuildDifferentPosition = new MultipleBuild();
+        BuildStrategy MultipleBuildDifferentPosition = new DoubleBuild();
         return MultipleBuildDifferentPosition.isRequiredToBuild(numMoves, numBuilds, lastOperation);
     }
 }

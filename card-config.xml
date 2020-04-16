@@ -1,26 +1,74 @@
 <cardDeck>
     <card>
-        <name>DefaultONE</name>
-        <moveStrategy>Default</moveStrategy>
+        <name>Apollo</name>
+        <moveStrategy>Push</moveStrategy>
         <buildStrategy>Default</buildStrategy>
         <winStrategy>Default</winStrategy>
 	    <blockStrategy>Default</blockStrategy>
-	    <opponentStrategy>Default</opponentStrategy>
+	    <opponentStrategy>Swap</opponentStrategy>
     </card>
     <card>
-        <name>DefaultTWO</name>
-        <moveStrategy>Default</moveStrategy>
+        <name>Artemis</name>
+        <moveStrategy>Multiple(2)</moveStrategy>
         <buildStrategy>Default</buildStrategy>
         <winStrategy>Default</winStrategy>
-	    <blockStrategy>Default</blockStrategy>
-	    <opponentStrategy>Default</opponentStrategy>
+        <blockStrategy>Default</blockStrategy>
+        <opponentStrategy>Default</opponentStrategy>
     </card>
     <card>
-        <name>DefaultTHREE</name>
+        <name>Athena</name>
         <moveStrategy>Default</moveStrategy>
         <buildStrategy>Default</buildStrategy>
         <winStrategy>Default</winStrategy>
-	    <blockStrategy>Default</blockStrategy>
-	    <opponentStrategy>Default</opponentStrategy>
+        <blockStrategy>UpMove</blockStrategy>
+        <opponentStrategy>Default</opponentStrategy>
+    </card>
+    <card>
+        <name>Atlas</name>
+        <moveStrategy>Default</moveStrategy>
+        <buildStrategy>Dome</buildStrategy>
+        <winStrategy>Default</winStrategy>
+        <blockStrategy>Default</blockStrategy>
+        <opponentStrategy>Default</opponentStrategy>
+    </card>
+    <card>
+        <name>Demeter</name>
+        <moveStrategy>Default</moveStrategy>
+        <buildStrategy>DifferentMultiple</buildStrategy>
+        <winStrategy>Default</winStrategy>
+        <blockStrategy>Default</blockStrategy>
+        <opponentStrategy>Default</opponentStrategy>
+    </card>
+    <card>
+        <name>Hephaestus</name>
+        <moveStrategy>Default</moveStrategy>
+        <buildStrategy>Double</buildStrategy>
+        <winStrategy>Default</winStrategy>
+        <blockStrategy>Default</blockStrategy>
+        <opponentStrategy>Default</opponentStrategy>
+    </card>
+    <card>
+        <name>Minotaur</name>
+        <moveStrategy>Push</moveStrategy>
+        <buildStrategy>Default</buildStrategy>
+        <winStrategy>Default</winStrategy>
+        <blockStrategy>Default</blockStrategy>
+        <opponentStrategy>Push</opponentStrategy>
+    </card>
+    <card>
+        <name>Pan</name>
+        <moveStrategy>Default</moveStrategy>
+        <buildStrategy>Default</buildStrategy>
+        <winStrategy>DownMove</winStrategy>
+        <blockStrategy>Default</blockStrategy>
+        <opponentStrategy>Default</opponentStrategy>
+    </card>
+    <card>
+        <name>Prometheus</name>
+        <moveStrategy>BuildAtFirst</moveStrategy>
+        <buildStrategy>BuildAtFirst</buildStrategy>
+        <winStrategy>Default</winStrategy>
+        <blockStrategy>Default</blockStrategy>
+        <opponentStrategy>Default</opponentStrategy>
     </card>
 </cardDeck>

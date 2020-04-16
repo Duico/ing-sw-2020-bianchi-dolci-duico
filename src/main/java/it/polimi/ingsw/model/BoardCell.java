@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class BoardCell implements Cloneable, Serializable {
     private Level level;

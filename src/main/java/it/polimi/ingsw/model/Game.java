@@ -59,10 +59,12 @@ public class Game extends ModelEventEmitter implements Serializable{
         ArrayList<Card> cards;
         if (this.useCards) {
             createCardDeck();
-            cards = dealCards(numPlayers);
+           // cards = dealCards(numPlayers);
         } else {
-            cards = dealDefaultCard(numPlayers);
+          //  cards = dealDefaultCard(numPlayers);
         }
+        //TODO temporary fix
+        cards = dealDefaultCard(numPlayers);
 
         for (int n = 0; n < numPlayers; n++) {
             players.get(n).setCard(cards.get(n));
@@ -83,10 +85,10 @@ public class Game extends ModelEventEmitter implements Serializable{
         }
     }
 
-    private ArrayList<Card> dealCards(int numPlayers) {
-        ArrayList<Card> randomDeck = cardDeck.pickRandom(numPlayers);
-        return randomDeck;
-    }
+//    private ArrayList<Card> dealCards(int numPlayers) {
+//        ArrayList<Card> randomDeck = cardDeck.pickRandom(numPlayers);
+//        return randomDeck;
+//    }
 
     private ArrayList<Card> dealDefaultCard(int numPlayers){
         ArrayList<Card> cards = new ArrayList<>();
