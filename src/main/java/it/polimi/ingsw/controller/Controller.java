@@ -1,8 +1,9 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.exception.InvalidPushCell;
-import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Position;
+import it.polimi.ingsw.model.Turn;
 import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.event.*;
 
@@ -69,7 +70,7 @@ public class Controller implements ViewEventListener {
         }
 
 
-        game.setChoseCards(message.getCards());
+        game.setChosenCards(message.getCards());
         game.nextTurn();
     }
 
