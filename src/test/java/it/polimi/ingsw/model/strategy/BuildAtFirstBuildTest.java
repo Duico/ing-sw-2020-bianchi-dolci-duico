@@ -40,6 +40,100 @@ class BuildAtFirstBuildTest {
     }
 
     /**
+     * check if the worker can build in a wrong Position (distance between start Position and destination Position > 1)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void checkValidBuildWrongDestination() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()+2, startPosition.getY());
+        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
+    }
+
+    /**
+     * check if the worker can build on the same position he is on already
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void checkValidBuildSamePosition() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX(), startPosition.getY());
+        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
+    }
+
+    /**
+     * check if the worker can build on a position occupied by a different worker
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void checkValidBuildOccupiedPosition() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY()+1);
+        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
+    }
+
+    /**
+     * check if the worker can build on a Position where a dome has already been built on
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void checkValidBuildOnDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
+        board.build(startPosition, destPosition, true);
+        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
+    }
+
+    /**
+     * check if the worker can build (not a dome) on a position having level <3 (TOP)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void checkValidBuildLevel0NotDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
+        assertTrue(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
+    }
+
+    /**
+     * check if the worker can build a dome on a position having level <3 (TOP)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void checkValidBuildLevel0isDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
+        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, true, board ));
+    }
+
+    /**
+     * check if the worker can build (not a dome) on a position having level = 3 (TOP)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void checkValidBuildLevel3NotDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
+        board.build(startPosition, destPosition, false);
+        board.build(startPosition, destPosition, false);
+        board.build(startPosition, destPosition, false);
+        assertFalse(buildAtFirstBuild.isValidBuild(startPosition, destPosition, false, board ));
+    }
+
+    /**
+     * check if the worker can build a dome on a position having level = 3 (TOP)
+     * @throws PositionOutOfBoundsException
+     */
+    @Test
+    void checkValidBuildLevel3isDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
+        Position startPosition = worker0.getCurrentPosition();
+        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
+        board.build(startPosition, destPosition, false);
+        board.build(startPosition, destPosition, false);
+        board.build(startPosition, destPosition, false);
+        assertTrue(buildAtFirstBuild.isValidBuild(startPosition, destPosition, true, board ));
+    }
+    /**
      * check if the worker can build when has never moved or built
      */
     @Test

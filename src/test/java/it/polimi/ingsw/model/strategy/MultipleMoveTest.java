@@ -6,11 +6,11 @@ import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
-import it.polimi.ingsw.model.strategy.MoveStrategy;
-import it.polimi.ingsw.model.strategy.MultipleMove;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MultipleMoveTest {
     static Board board;
