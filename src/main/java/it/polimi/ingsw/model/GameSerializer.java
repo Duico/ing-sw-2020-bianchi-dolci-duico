@@ -45,10 +45,12 @@ public class GameSerializer {
     }
 
     public boolean writeGame(Game game){
+        boolean success = false;
         ObjectOutputStream out = null;
         try {
             out = initOutputStream();
             out.writeObject(game);
+            success = true;
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
@@ -60,7 +62,7 @@ public class GameSerializer {
                 }
             }
         }
-
+        return success;
     }
 
     public Game readGame(){
