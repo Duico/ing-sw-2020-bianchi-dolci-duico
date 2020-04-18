@@ -70,4 +70,9 @@ public abstract class Turn implements Serializable {
         return this.getPhase();
     }
 
+    public boolean checkCurrentWorker(int workerId){
+        return false;
+    }
+
+
 }
