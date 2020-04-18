@@ -61,12 +61,18 @@ public class Lobby {
 
     }
 
-    public void persistencyLoadGame(){
+    public boolean persistencyLoadGame(){
         GameSerializer gameSerializer = new GameSerializer(persistencyFilename);
-        this.game = gameSerializer.readGame();
+        Game readGame = gameSerializer.readGame();
+        if(Game.validateGame(readGame)){
+            this.game = readGame;
+            return true;
+        }else{
+            return false;
+        }
     }
-    public void persistencySaveGame(){
+    public boolean persistencySaveGame(){
         GameSerializer gameSerializer = new GameSerializer(persistencyFilename);
-        gameSerializer.writeGame(this.game);
+        return gameSerializer.writeGame(this.game);
     }
 }

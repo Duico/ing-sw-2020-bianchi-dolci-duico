@@ -76,7 +76,7 @@ public class Card implements Serializable {
         else if(moveStrategy.startsWith("Multiple")){
             int numMoves = Integer.parseUnsignedInt(moveStrategy.substring("Multiple".length()).replaceAll("[\\D]", ""));
             if(numMoves>1 && numMoves<=8) {
-                this.moveStrategy = new MultipleMove();
+                this.moveStrategy = new MultipleMove(numMoves);
             }else
                 throw new StrategyNameNotFound();
         }else if(moveStrategy.contentEquals("Push")){

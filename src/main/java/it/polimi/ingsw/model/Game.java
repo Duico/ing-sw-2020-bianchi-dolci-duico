@@ -41,6 +41,15 @@ public class Game extends ModelEventEmitter implements Serializable{
         this.numWorkers = numWorkers;
     }
 
+    public static boolean validateGame(Game readGame) {
+        //TODO improve
+        return readGame != null &&
+                readGame.board != null &&
+                readGame.players != null &&
+                readGame.players.size() >=2 &&
+                readGame.numWorkers > 0;
+    }
+
     /**
      * Start this Game with chosen nicknames for the players
      * @param players Array of the players, in display order

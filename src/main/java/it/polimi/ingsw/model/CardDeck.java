@@ -2,10 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.exception.ReadConfigurationXMLException;
 import it.polimi.ingsw.model.exception.StrategyNameNotFound;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -45,12 +42,12 @@ public class CardDeck implements Serializable {
             if (node.getNodeType() == Node.ELEMENT_NODE)
             {
                 Element eElement = (Element) node;
-                String name = eElement.getElementsByTagName("name").item(0).getTextContent();
-                String moveStrategy = eElement.getElementsByTagName("moveStrategy").item(0).getTextContent();
-                String buildStrategy = eElement.getElementsByTagName("buildStrategy").item(0).getTextContent();
-                String winStrategy = eElement.getElementsByTagName("winStrategy").item(0).getTextContent();
-                String blockStrategy = eElement.getElementsByTagName("blockStrategy").item(0).getTextContent();
-                String opponentStrategy = eElement.getElementsByTagName("opponentStrategy").item(0).getTextContent();
+                String name = getPropertyName(eElement, "name");
+                String moveStrategy = getPropertyName(eElement, "moveStrategy");
+                String buildStrategy = getPropertyName(eElement, "buildStrategy");
+                String winStrategy = getPropertyName(eElement,"winStrategy");
+                String blockStrategy = getPropertyName(eElement, "blockStrategy");
+                String opponentStrategy = getPropertyName(eElement,"opponentStrategy");
 
                 try {
                     cardDeck.add(new Card(name, moveStrategy, buildStrategy, winStrategy, blockStrategy, opponentStrategy));
@@ -115,6 +112,10 @@ public class CardDeck implements Serializable {
         }
         return cardDeck.get(i);
 
+    }
+    private String getPropertyName(Element node, String tagName){
+        Node leaf = node.getElementsByTagName(tagName).item(0);
+        return (leaf != null)? leaf.getTextContent():"Default";
     }
 }
 

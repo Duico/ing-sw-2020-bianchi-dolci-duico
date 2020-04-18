@@ -44,7 +44,7 @@ public class GameSerializer {
         return inputStream;
     }
 
-    public void writeGame(Game game){
+    public boolean writeGame(Game game){
         ObjectOutputStream out = null;
         try {
             out = initOutputStream();
