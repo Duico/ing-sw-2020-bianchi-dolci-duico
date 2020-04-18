@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.strategy;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +41,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkValidBuildWrongDestination() throws PositionOutOfBoundsException{
+    void checkValidBuildWrongDestination() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+2, startPosition.getY());
         assertFalse(defaultBuild.isValidBuild(startPosition, destPosition, false, board ));
@@ -51,7 +52,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkValidBuildSamePosition() throws PositionOutOfBoundsException{
+    void checkValidBuildSamePosition() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY());
         assertFalse(defaultBuild.isValidBuild(startPosition, destPosition, false, board ));
@@ -62,7 +63,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkValidBuildOccupiedPosition() throws PositionOutOfBoundsException{
+    void checkValidBuildOccupiedPosition() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY()+1);
         assertFalse(defaultBuild.isValidBuild(startPosition, destPosition, false, board ));
@@ -73,7 +74,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkValidBuildOnDome() throws PositionOutOfBoundsException{
+    void checkValidBuildOnDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         board.build(startPosition, destPosition, true);
@@ -85,7 +86,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkValidBuildLevel0NotDome() throws PositionOutOfBoundsException{
+    void checkValidBuildLevel0NotDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         assertTrue(defaultBuild.isValidBuild(startPosition, destPosition, false, board ));
@@ -96,7 +97,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkValidBuildLevel0isDome() throws PositionOutOfBoundsException{
+    void checkValidBuildLevel0isDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         assertFalse(defaultBuild.isValidBuild(startPosition, destPosition, true, board ));
@@ -107,7 +108,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkValidBuildLevel3NotDome() throws PositionOutOfBoundsException{
+    void checkValidBuildLevel3NotDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         board.build(startPosition, destPosition, false);
@@ -121,7 +122,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkValidBuildLevel3isDome() throws PositionOutOfBoundsException{
+    void checkValidBuildLevel3isDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         board.build(startPosition, destPosition, false);
@@ -144,7 +145,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkIsNotAllowedToBuild2() throws PositionOutOfBoundsException{
+    void checkIsNotAllowedToBuild2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
@@ -157,7 +158,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkIsAllowedToBuild() throws PositionOutOfBoundsException{
+    void checkIsAllowedToBuild() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
@@ -169,7 +170,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkIsAllowedToBuild2() throws PositionOutOfBoundsException{
+    void checkIsAllowedToBuild2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
@@ -182,7 +183,7 @@ class DefaultBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkIsNotRequiredToBuild() throws PositionOutOfBoundsException{
+    void checkIsNotRequiredToBuild() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);

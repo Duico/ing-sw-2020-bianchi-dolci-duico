@@ -43,7 +43,7 @@ public class Turn implements Serializable {
         return isRequiredToBuild(currentWorkerId);
     }
     public boolean isRequiredToBuild(int workerId){
-        if(!isAnyWorkerNotPlaced())
+        if(isAnyWorkerNotPlaced())
             return false;
         Card card = currentPlayer.getCard();
         int numBuilds = currentPlayer.getNumBuildsWorker(workerId);
@@ -57,7 +57,7 @@ public class Turn implements Serializable {
         return isAllowedToBuild(currentWorkerId);
     }
     public boolean isAllowedToBuild(int workerId){
-        if(!isAnyWorkerNotPlaced())
+        if(isAnyWorkerNotPlaced())
             return false;
         Card card = currentPlayer.getCard();
         int numBuilds = currentPlayer.getNumBuildsWorker(workerId);

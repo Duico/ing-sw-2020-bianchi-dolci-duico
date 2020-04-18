@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +51,7 @@ class BuildAtFirstBuildTest {
      * check if the worker can build when has already moved once
      */
     @Test
-    void checkIsAllowedToBuild2() throws PositionOutOfBoundsException{
+    void checkIsAllowedToBuild2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
@@ -61,7 +62,7 @@ class BuildAtFirstBuildTest {
      * check if the worker can build when has already built and moved
      */
     @Test
-    void checkIsAllowedToBuild3() throws PositionOutOfBoundsException{
+    void checkIsAllowedToBuild3() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addBuild(destPosition);
@@ -73,7 +74,7 @@ class BuildAtFirstBuildTest {
      * check if the worker can build when has already moved and built
      */
     @Test
-    void checkIsNotAllowedToBuild() throws PositionOutOfBoundsException{
+    void checkIsNotAllowedToBuild() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(startPosition);
@@ -93,7 +94,7 @@ class BuildAtFirstBuildTest {
      * check if the worker is required to build when has already built and moved
      */
     @Test
-    void checkIsRequiredToBuild2() throws PositionOutOfBoundsException{
+    void checkIsRequiredToBuild2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addBuild(destPosition);
@@ -105,7 +106,7 @@ class BuildAtFirstBuildTest {
      * check if the worker is required to build when has already built and moved
      */
     @Test
-    void checkIsNotRequiredToBuild() throws PositionOutOfBoundsException{
+    void checkIsNotRequiredToBuild() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(startPosition);

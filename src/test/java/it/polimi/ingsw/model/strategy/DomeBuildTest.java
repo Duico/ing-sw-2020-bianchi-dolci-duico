@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +44,7 @@ class DomeBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkCanBuildDomeOnLevel0() throws PositionOutOfBoundsException{
+    void checkCanBuildDomeOnLevel0() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         assertTrue(domeBuild.isValidBuild(startPosition, destPosition, true, board ));
@@ -54,7 +55,7 @@ class DomeBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkCanBuildDomeOnLevel1() throws PositionOutOfBoundsException{
+    void checkCanBuildDomeOnLevel1() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         board.build(startPosition,destPosition, false);
@@ -66,7 +67,7 @@ class DomeBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkCanBuildDomeOnLevel2() throws PositionOutOfBoundsException{
+    void checkCanBuildDomeOnLevel2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         board.build(startPosition,destPosition, false);
@@ -79,7 +80,7 @@ class DomeBuildTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkCanBuildDomeOnLevel3() throws PositionOutOfBoundsException{
+    void checkCanBuildDomeOnLevel3() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         board.build(startPosition,destPosition, false);

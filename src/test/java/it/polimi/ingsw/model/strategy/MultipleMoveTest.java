@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 import it.polimi.ingsw.model.strategy.MoveStrategy;
 import it.polimi.ingsw.model.strategy.MultipleMove;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +48,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()+1);
         assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -59,7 +60,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove2() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
         assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -71,7 +72,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove3() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove3() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY()+1);
         assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -83,7 +84,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove4() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove4() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-1, startPosition.getY());
         assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -95,7 +96,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove5() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove5() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -107,7 +108,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove6() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove6() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()+1);
         assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -119,7 +120,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove7() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove7() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()-1);
         assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -131,7 +132,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove8() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove8() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()-1);
         assertTrue(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -144,7 +145,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidPositionOfTheMove() throws PositionOutOfBoundsException {
+    void notValidPositionOfTheMove() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-2, startPosition.getY());
         assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -156,7 +157,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidPositionOfTheMove2() throws PositionOutOfBoundsException {
+    void notValidPositionOfTheMove2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()-2);
         assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -168,7 +169,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidPositionOfTheMove3() throws PositionOutOfBoundsException {
+    void notValidPositionOfTheMove3() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-2, startPosition.getY());
         assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -181,7 +182,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validMoveUpOneLevel() throws PositionOutOfBoundsException {
+    void validMoveUpOneLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
         board.build(startPosition, destPosition, false);
@@ -194,7 +195,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveUpOneLevelBecauseDome() throws PositionOutOfBoundsException {
+    void notValidMoveUpOneLevelBecauseDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
         board.build(startPosition, destPosition, false);
@@ -208,7 +209,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveUpTwoLevel() throws PositionOutOfBoundsException {
+    void notValidMoveUpTwoLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
         board.build(startPosition, destPosition, false);
@@ -222,7 +223,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveUpThreeLevel() throws PositionOutOfBoundsException {
+    void notValidMoveUpThreeLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
         board.build(startPosition, destPosition, false);
@@ -237,7 +238,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validMoveDownOneLevel() throws PositionOutOfBoundsException {
+    void validMoveDownOneLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         board.build(startPosition, startPosition, false);
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
@@ -250,7 +251,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validMoveDownTwoLevel() throws PositionOutOfBoundsException {
+    void validMoveDownTwoLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         board.build(startPosition, startPosition, false);
         board.build(startPosition, startPosition, false);
@@ -264,7 +265,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validMoveDownThreeLevel() throws PositionOutOfBoundsException {
+    void validMoveDownThreeLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         board.build(startPosition, startPosition, false);
         board.build(startPosition, startPosition, false);
@@ -279,7 +280,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveDownBecauseDome() throws PositionOutOfBoundsException {
+    void notValidMoveDownBecauseDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         board.build(startPosition, startPosition, false);
         board.build(startPosition, startPosition, false);
@@ -295,7 +296,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveDownBecauseOccupiedCell() throws PositionOutOfBoundsException {
+    void notValidMoveDownBecauseOccupiedCell() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         board.build(startPosition, startPosition, false);
         board.build(startPosition, startPosition, false);
@@ -310,7 +311,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveUpBecauseOccupiedCell() throws PositionOutOfBoundsException {
+    void notValidMoveUpBecauseOccupiedCell() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = worker1.getCurrentPosition();
         board.build(destPosition, destPosition, false);
@@ -322,7 +323,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveBecauseOccupiedCell() throws PositionOutOfBoundsException {
+    void notValidMoveBecauseOccupiedCell() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = worker1.getCurrentPosition();
         assertFalse(multipleMove.isValidMove(startPosition, destPosition, board));
@@ -333,7 +334,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveBecauseDestCellEqualsStartCell() throws PositionOutOfBoundsException {
+    void notValidMoveBecauseDestCellEqualsStartCell() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         assertFalse(multipleMove.isValidMove(startPosition, startPosition, board));
     }
@@ -344,7 +345,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMoveHoweverAlreadyMove() throws PositionOutOfBoundsException {
+    void validPositionOfTheMoveHoweverAlreadyMove() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position destinationPosition1= new Position(4,4);
         board.putWorkers(worker2.getCurrentPosition(), destinationPosition1, null);
         Position startPosition = worker2.getCurrentPosition();
@@ -358,7 +359,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidPositionOfTheMoveHoweverAlreadyMove() throws PositionOutOfBoundsException {
+    void notValidPositionOfTheMoveHoweverAlreadyMove() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position oldStartPosition = worker2.getCurrentPosition();
         Position destinationPosition1= new Position(4,4);
         board.putWorkers(worker2.getCurrentPosition(), destinationPosition1, null);

@@ -18,6 +18,8 @@ public class Game extends ModelEventEmitter implements Serializable{
     private ArrayList<Player> players = new ArrayList<>();
     boolean useCards = false;
     private CardDeck cardDeck;
+
+
     private ArrayList<Card> chosenCards;
     private Player firstPlayer;
     private final int numWorkers;
@@ -61,9 +63,6 @@ public class Game extends ModelEventEmitter implements Serializable{
             createCardDeck();
 
         } else {
-            Player challenger = pickFirstPlayer();
-            challenger.setIsChallenger(true);
-            setFirstPlayer(challenger);
             dealDefaultCard(numPlayers);
         }
 
@@ -75,6 +74,9 @@ public class Game extends ModelEventEmitter implements Serializable{
         chosenCards = new ArrayList<>();
         Player challenger = pickFirstPlayer();
         challenger.setIsChallenger(true);
+        if(!useCards)
+            setFirstPlayer(challenger);
+
         initTurn(challenger);
         //make an exceptional first turn that calls setWorker
     }
@@ -121,6 +123,7 @@ public class Game extends ModelEventEmitter implements Serializable{
                     return;
                 else{
                     //notify view per challenger restituisco la lista dei player
+                    return;
                 }
             }
         }
@@ -129,6 +132,10 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     public Turn getTurn() {
         return turn;
+    }
+
+    public ArrayList<Card> getChosenCards() {
+        return (ArrayList<Card>)chosenCards.clone();
     }
 
 
@@ -163,7 +170,7 @@ public class Game extends ModelEventEmitter implements Serializable{
 
         }else /*if(!turn.isAllowedToMove() && !turn.isAllowedToBuild())*/ {
             createTurn();
-            checkHasLost();
+            //checkHasLost(); comment for testing
         }
     }
 
@@ -219,14 +226,14 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
 
-    public ArrayList<Player> getPlayers() {
+    /*public ArrayList<Player> getPlayers() {
         return this.players;
-    }
+    }*/
 
     public void move(int workerId, Position destinationPosition) {
         backupUndo();
         boardMove(workerId, destinationPosition);
-        checkHasLost();
+        //checkHasLost(); for testing
     }
 
     public void build(int workerId, Position destinationPosition, boolean isDome){
@@ -489,7 +496,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
 
-    @Override
+   /* @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -505,5 +512,5 @@ public class Game extends ModelEventEmitter implements Serializable{
         }
         return useCards == game.useCards && playersEquals;
 
-    }
+    }*/
 }

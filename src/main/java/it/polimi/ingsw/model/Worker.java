@@ -122,17 +122,20 @@ public class Worker implements Cloneable, Serializable {
         operations.add(Operation.BUILD);
     }
 
-    public void deleteLastMove(){
-        moves.remove(moves.size()-1);
-    }
-
-    public void deleteLastBuild(){
-        builds.remove(builds.size()-1);
-    }
 
     @Override
-    public Worker clone() throws CloneNotSupportedException {
-        Worker newWorker = (Worker) super.clone();
+    public Worker clone(){
+        Worker newWorker;
+        try {
+            newWorker = (Worker) super.clone();
+            newWorker.moves = (ArrayList<Position>) this.moves.clone();
+            newWorker.builds = (ArrayList<Position>) this.builds.clone();
+            newWorker.operations = (ArrayList<Operation>) this.operations.clone();
+
+        }catch (CloneNotSupportedException e){
+            throw new RuntimeException("Clone not supported on BoardCell");
+        }
+        return newWorker;
         //clone moves. Position operation are immutabile
         /*ArrayList<Position> newMoves = new ArrayList<>();
         for(Position move: this.moves){
@@ -151,19 +154,8 @@ public class Worker implements Cloneable, Serializable {
             newOperations.add(operation);
         }
         newWorker.operations = newOperations;*/
-
-        return newWorker;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Worker worker = (Worker) o;
-        return Objects.equals(getMoves(), worker.getMoves()) &&
-                Objects.equals(getBuilds(), worker.getBuilds()) &&
-                Objects.equals(operations, worker.operations);
-    }
 
     public Operation getLastOperation() {
             return operations.get(operations.size()-1);

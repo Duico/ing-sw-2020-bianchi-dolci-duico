@@ -3,6 +3,7 @@ import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 import it.polimi.ingsw.model.strategy.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ class DefaultOpponentTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void isCellEmpty() throws PositionOutOfBoundsException {
+    void isCellEmpty() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(2,2);
         assertTrue(defaultOpponent.isValidPush(startPosition, destPosition, false, board));
@@ -56,7 +57,7 @@ class DefaultOpponentTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void isCellEmpty2() throws PositionOutOfBoundsException {
+    void isCellEmpty2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker1.getCurrentPosition();
         Position destPosition = new Position(1,1);
         assertFalse(defaultOpponent.isValidPush(startPosition, destPosition, false, board));

@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +44,7 @@ class MultipleBuildDifferentPositionTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkDoubleBuildSamePosition() throws PositionOutOfBoundsException{
+    void checkDoubleBuildSamePosition() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addBuild(destPosition);
@@ -55,7 +56,7 @@ class MultipleBuildDifferentPositionTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkDoubleBuildDifferentPositionNotDome() throws PositionOutOfBoundsException{
+    void checkDoubleBuildDifferentPositionNotDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         Position destPosition2 = new Position(startPosition.getX(), startPosition.getY()+1);
@@ -68,7 +69,7 @@ class MultipleBuildDifferentPositionTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkDoubleBuildDifferentPositionDome() throws PositionOutOfBoundsException{
+    void checkDoubleBuildDifferentPositionDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         Position startPosition2 = new Position(startPosition.getX()+1, startPosition.getY()+1);
@@ -85,7 +86,7 @@ class MultipleBuildDifferentPositionTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkIsAllowedToBuild() throws PositionOutOfBoundsException{
+    void checkIsAllowedToBuild() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
@@ -97,7 +98,7 @@ class MultipleBuildDifferentPositionTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkIsAllowedToBuild2() throws PositionOutOfBoundsException{
+    void checkIsAllowedToBuild2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
@@ -110,7 +111,7 @@ class MultipleBuildDifferentPositionTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkIsRequiredToBuild() throws PositionOutOfBoundsException{
+    void checkIsRequiredToBuild() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);
@@ -122,7 +123,7 @@ class MultipleBuildDifferentPositionTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void checkIsRequiredToBuild2() throws PositionOutOfBoundsException{
+    void checkIsRequiredToBuild2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         worker0.addMove(destPosition);

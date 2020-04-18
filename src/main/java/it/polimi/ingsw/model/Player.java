@@ -130,6 +130,10 @@ public class Player implements Serializable {
         this.isChallenger=isChallenger;
     }
 
+    public boolean isChallenger(){
+        return this.isChallenger;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

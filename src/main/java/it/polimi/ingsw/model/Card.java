@@ -10,7 +10,7 @@ import java.util.Objects;
  * Represents a God card with strategies to be used by the worker
  */
 public class Card implements Serializable {
-    private String name;
+    private final String name;
     private MoveStrategy moveStrategy;
     private BuildStrategy buildStrategy;
     private WinStrategy winStrategy;
@@ -64,9 +64,9 @@ public class Card implements Serializable {
         return opponentStrategy;
     }
 
-    public void setName(String name) {
+    /*public void setName(String name) {
         this.name = name;
-    }
+    }*/
 
     private void setMoveStrategy(String moveStrategy) throws StrategyNameNotFound {
 
