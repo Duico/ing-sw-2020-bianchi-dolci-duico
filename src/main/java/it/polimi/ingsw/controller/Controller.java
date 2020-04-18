@@ -89,15 +89,17 @@ public class Controller implements ViewEventListener {
     public void setFirstPlayer(FirstPlayerViewEvent message){
         Turn turn = game.getTurn();
         RemoteView view = message.getView();
-        String nickName = message.getNickName();
+        Player firstPlayer = message.getFirstPlayer();
+        //TODO check viewPlayer is challenger
         if(!checkPlayer(view)){
 
         }
         if(game.isSetFirstPlayer()){
             //notify view, già settato
         }
-
-        game.setFirstPlayer(nickName);
+        //TODO
+        //check all workers are set and all cards are set
+        game.firstTurn(firstPlayer);
         //the next turn is set in game.setFirstPlayer
     }
 
