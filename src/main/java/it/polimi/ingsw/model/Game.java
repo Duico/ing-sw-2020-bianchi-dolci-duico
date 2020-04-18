@@ -140,7 +140,7 @@ public class Game extends ModelEventEmitter implements Serializable{
 
 
     public void initTurn(Player player) {
-        turn = new Turn( player, null, false);
+        turn = new ChoseCardsTurn(player);
         //notify view
         //event for the challenger view for choose the three or two cards
     }
@@ -149,7 +149,7 @@ public class Game extends ModelEventEmitter implements Serializable{
         Player nextPlayer = this.getNextPlayer();
         nextPlayer.resetAllWorkers();
         boolean blockNextPlayer = turn.isBlockNextPlayer();
-        turn = new Turn(nextPlayer, previousTurnCard, blockNextPlayer);
+        turn = new NormalTurn(nextPlayer, previousTurnCard, blockNextPlayer);
     }
 
     /*public void nextTurn() {
@@ -162,12 +162,12 @@ public class Game extends ModelEventEmitter implements Serializable{
 
 
     public void nextTurn() {
-        if(!isSetFirstPlayer()){
+        if(!isSetFirstPlayer()) {
             Card previousTurnCard = turn.getCurrentPlayer().getCard();
             Player nextPlayer = this.getNextPlayer();
             initTurn(nextPlayer);
             //notify view
-
+        }else if(){ //PlaceWorkersTurn
         }else /*if(!turn.isAllowedToMove() && !turn.isAllowedToBuild())*/ {
             createTurn();
             //checkHasLost(); comment for testing
@@ -177,7 +177,7 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     public void firstTurn(Player player) {
         setFirstPlayer(player);
-        turn = new Turn(this.firstPlayer, null, false);
+        turn = new NormalTurn(this.firstPlayer, null, false);
         //notify view of new turn;
     }
 
@@ -230,7 +230,8 @@ public class Game extends ModelEventEmitter implements Serializable{
         return this.players;
     }*/
 
-    public void move(int workerId, Position destinationPosition) {
+    public void move(int workerId, Position destinationPosition){
+        //FIX check is NormalTurn
         backupUndo();
         boardMove(workerId, destinationPosition);
         //checkHasLost(); for testing
@@ -243,6 +244,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
     public int place(Position placePosition) {
+        //FIX check is SetWorkerTurn
         backupUndo();
         return boardPlace(placePosition);
         //return undoStatus;
@@ -495,6 +497,14 @@ public class Game extends ModelEventEmitter implements Serializable{
         //return true;
     }
 
+    private boolean isAnyPlayerWorkerNotPlaced(){
+        for(Player player: players){
+            if(player.isAnyWorkerNotPlaced()){
+                return true;
+            }
+        }
+        return false;
+    }
 
    /* @Override
     public boolean equals(Object o) {

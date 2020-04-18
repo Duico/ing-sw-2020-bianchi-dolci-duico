@@ -74,8 +74,12 @@ class CardDeckTest {
 
     }
     @Test
-    void getCard() {
-        //TODO when we decide how to deal cards
+    void getCard() throws Exception{
+        CardDeck cd = new CardDeck("./card-config_test0.xml");
+        assertEquals(
+                new Card("DefaultONE", "Default","Default","Default","Default","Default"),
+                cd.getCard(0)
+        );
     }
 
 }

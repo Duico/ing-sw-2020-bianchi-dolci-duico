@@ -9,12 +9,14 @@ import it.polimi.ingsw.view.event.ViewEventListener;
 import javax.swing.event.EventListenerList;
 import java.util.EventListener;
 
+//TODO add comments
 public class EventEmitter {
     protected EventListenerList listenerList = new EventListenerList();
 
     public void addEventListener(EventListener listener){
         listenerList.add(EventListener.class, listener);
     }
+
 
     public void removeEventListener(EventListener listener){
         listenerList.add(EventListener.class, listener);

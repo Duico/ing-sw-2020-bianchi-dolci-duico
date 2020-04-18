@@ -2,42 +2,23 @@
     <card>
         <name>Apollo</name>
         <moveStrategy>Push</moveStrategy>
-        <buildStrategy>Default</buildStrategy>
-        <winStrategy>Default</winStrategy>
-	    <blockStrategy>Default</blockStrategy>
 	    <opponentStrategy>Swap</opponentStrategy>
     </card>
     <card>
         <name>Artemis</name>
         <moveStrategy>Multiple(2)</moveStrategy>
-        <buildStrategy>Default</buildStrategy>
-        <winStrategy>Default</winStrategy>
-        <blockStrategy>Default</blockStrategy>
-        <opponentStrategy>Default</opponentStrategy>
     </card>
     <card>
         <name>Athena</name>
-        <moveStrategy>Default</moveStrategy>
-        <buildStrategy>Default</buildStrategy>
-        <winStrategy>Default</winStrategy>
         <blockStrategy>UpMove</blockStrategy>
-        <opponentStrategy>Default</opponentStrategy>
     </card>
     <card>
         <name>Atlas</name>
-        <moveStrategy>Default</moveStrategy>
         <buildStrategy>Dome</buildStrategy>
-        <winStrategy>Default</winStrategy>
-        <blockStrategy>Default</blockStrategy>
-        <opponentStrategy>Default</opponentStrategy>
     </card>
     <card>
         <name>Demeter</name>
-        <moveStrategy>Default</moveStrategy>
         <buildStrategy>DifferentMultiple</buildStrategy>
-        <winStrategy>Default</winStrategy>
-        <blockStrategy>Default</blockStrategy>
-        <opponentStrategy>Default</opponentStrategy>
     </card>
     <card>
         <name>Hephaestus</name>
