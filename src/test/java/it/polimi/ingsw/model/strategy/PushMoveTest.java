@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 import it.polimi.ingsw.model.strategy.MoveStrategy;
 import it.polimi.ingsw.model.strategy.PushMove;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +54,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()+1);
         assertTrue(pushMove.isValidMove(startPosition, destPosition, board));
@@ -65,7 +66,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove2() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
         assertTrue(pushMove.isValidMove(startPosition, destPosition, board));
@@ -77,7 +78,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove3() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove3() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY()+1);
         assertTrue(pushMove.isValidMove(startPosition, destPosition, board));
@@ -89,7 +90,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove4() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove4() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-1, startPosition.getY());
         assertTrue(pushMove.isValidMove(startPosition, destPosition, board));
@@ -101,7 +102,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove5() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove5() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
         assertTrue(pushMove.isValidMove(startPosition, destPosition, board));
@@ -113,7 +114,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove6() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove6() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()+1);
         assertTrue(pushMove.isValidMove(startPosition, destPosition, board));
@@ -125,7 +126,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove7() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove7() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()-1);
         assertTrue(pushMove.isValidMove(startPosition, destPosition, board));
@@ -137,7 +138,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validPositionOfTheMove8() throws PositionOutOfBoundsException {
+    void validPositionOfTheMove8() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()-1);
         assertTrue(pushMove.isValidMove(startPosition, destPosition, board));
@@ -150,7 +151,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidPositionOfTheMove() throws PositionOutOfBoundsException {
+    void notValidPositionOfTheMove() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-2, startPosition.getY());
         assertFalse(pushMove.isValidMove(startPosition, destPosition, board));
@@ -162,7 +163,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidPositionOfTheMove2() throws PositionOutOfBoundsException {
+    void notValidPositionOfTheMove2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-1, startPosition.getY()-2);
         assertFalse(pushMove.isValidMove(startPosition, destPosition, board));
@@ -174,7 +175,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidPositionOfTheMove3() throws PositionOutOfBoundsException {
+    void notValidPositionOfTheMove3() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker2.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX()-2, startPosition.getY());
         assertFalse(pushMove.isValidMove(startPosition, destPosition, board));
@@ -187,7 +188,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validMoveUpOneLevel() throws PositionOutOfBoundsException {
+    void validMoveUpOneLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
         board.build(startPosition, destPosition, false);
@@ -200,7 +201,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveUpOneLevelBecauseDome() throws PositionOutOfBoundsException {
+    void notValidMoveUpOneLevelBecauseDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
         board.build(startPosition, destPosition, true);
@@ -213,7 +214,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveUpTwoLevel() throws PositionOutOfBoundsException {
+    void notValidMoveUpTwoLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
         board.build(startPosition, destPosition, false);
@@ -227,7 +228,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveUpThreeLevel() throws PositionOutOfBoundsException {
+    void notValidMoveUpThreeLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
         board.build(startPosition, destPosition, false);
@@ -242,7 +243,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validMoveDownOneLevel() throws PositionOutOfBoundsException {
+    void validMoveDownOneLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         board.build(startPosition, startPosition, false);
         Position destPosition = new Position(startPosition.getX(), startPosition.getY()+1);
@@ -255,7 +256,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validMoveDownTwoLevel() throws PositionOutOfBoundsException {
+    void validMoveDownTwoLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         board.build(startPosition, startPosition, false);
         board.build(startPosition, startPosition, false);
@@ -269,7 +270,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validMoveDownThreeLevel() throws PositionOutOfBoundsException {
+    void validMoveDownThreeLevel() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         board.build(startPosition, startPosition, false);
         board.build(startPosition, startPosition, false);
@@ -284,7 +285,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveDownBecauseDome() throws PositionOutOfBoundsException {
+    void notValidMoveDownBecauseDome() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         board.build(startPosition, startPosition, false);
         board.build(startPosition, startPosition, false);
@@ -301,7 +302,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validMoveDownHoweverOccupiedCell() throws PositionOutOfBoundsException {
+    void validMoveDownHoweverOccupiedCell() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         board.build(startPosition, startPosition, false);
         board.build(startPosition, startPosition, false);
@@ -316,7 +317,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validMoveUpHoweverOccupiedCell() throws PositionOutOfBoundsException {
+    void validMoveUpHoweverOccupiedCell() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = worker1.getCurrentPosition();
         board.build(destPosition, destPosition, false);
@@ -328,7 +329,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void validMoveHoweverOccupiedCell() throws PositionOutOfBoundsException {
+    void validMoveHoweverOccupiedCell() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = worker1.getCurrentPosition();
         assertTrue(pushMove.isValidMove(startPosition, destPosition, board));
@@ -339,7 +340,7 @@ class PushMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void notValidMoveBecauseDestCellEqualsStartCell() throws PositionOutOfBoundsException {
+    void notValidMoveBecauseDestCellEqualsStartCell() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         assertFalse(pushMove.isValidMove(startPosition, startPosition, board));
     }

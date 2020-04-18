@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ class UpMoveBlockTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void isBlockMove() throws PositionOutOfBoundsException {
+    void isBlockMove() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position buildPosition = new Position(1,0);
         board.build(worker0.getCurrentPosition(), buildPosition, false);
         assertTrue(upMoveBlock.isBlockMove(worker1.getCurrentPosition(), buildPosition, board));
@@ -57,7 +58,7 @@ class UpMoveBlockTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void isNotBlockMove() throws PositionOutOfBoundsException {
+    void isNotBlockMove() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(1,0);
         assertFalse(upMoveBlock.isBlockMove(startPosition, destPosition, board));
@@ -68,7 +69,7 @@ class UpMoveBlockTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void blockNextPlayerMove() throws PositionOutOfBoundsException {
+    void blockNextPlayerMove() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position buildPosition = new Position(1,0);
         board.build(worker0.getCurrentPosition(), buildPosition, false);
         assertTrue(upMoveBlock.blockNextPlayer(worker1.getCurrentPosition(), buildPosition, board));
@@ -79,7 +80,7 @@ class UpMoveBlockTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void isNotBlockNextPlayerMove() throws PositionOutOfBoundsException {
+    void isNotBlockNextPlayerMove() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position startPosition = worker0.getCurrentPosition();
         Position destPosition = new Position(1,0);
         assertFalse(upMoveBlock.blockNextPlayer(startPosition, destPosition, board));

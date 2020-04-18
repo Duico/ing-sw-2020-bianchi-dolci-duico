@@ -387,7 +387,7 @@ class MultipleMoveTest {
      * The worker has already move one time
      */
     @Test
-    void isAllowedToMove2() throws PositionOutOfBoundsException {
+    void isAllowedToMove2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position destinationPosition1= new Position(4,4);
         board.putWorkers(worker2.getCurrentPosition(), destinationPosition1, null);
         int numMoves = worker2.getNumMoves();
@@ -428,7 +428,7 @@ class MultipleMoveTest {
      * @throws PositionOutOfBoundsException
      */
     @Test
-    void isNotRequiredToMove() throws PositionOutOfBoundsException {
+    void isNotRequiredToMove() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         Position destinationPosition1= new Position(4,4);
         board.putWorkers(worker2.getCurrentPosition(), destinationPosition1, null);
         int numMoves = worker2.getNumMoves();
