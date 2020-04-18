@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -19,12 +21,19 @@ public class Worker implements Cloneable, Serializable {
         this.operations = new ArrayList<Operation>();
     }
     public void reset(){
-        Position currentPosition = getCurrentPosition();
+        Position currentPosition = null;
+        try{
+            currentPosition = getCurrentPosition();
+        }catch(WorkerPositionNotSetException e){
+            e.printStackTrace();
+        }
         this.moves = new ArrayList<Position>();
         this.builds = new ArrayList<Position>();
         this.operations = new ArrayList<Operation>();
-        //needed for getCurrentPosition
-        this.moves.add(currentPosition);
+        if(currentPosition!=null) {
+            //needed for getCurrentPosition
+            this.moves.add(currentPosition);
+        }
     }
 
     public int getNumMoves(){
@@ -35,7 +44,10 @@ public class Worker implements Cloneable, Serializable {
         return builds.size();
     }
 
-    public Position getCurrentPosition(){
+    public Position getCurrentPosition() throws WorkerPositionNotSetException{
+        if(this.moves.size() == 0){
+            throw new WorkerPositionNotSetException();
+        }
         return this.moves.get( this.moves.size()-1 );
     }
 

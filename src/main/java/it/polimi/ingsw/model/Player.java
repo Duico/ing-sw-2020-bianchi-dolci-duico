@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
@@ -69,7 +71,12 @@ public class Player implements Serializable {
         if (worker == null) {
             return null;
         }
-        return worker.getCurrentPosition();
+        try {
+            return worker.getCurrentPosition();
+        }catch(WorkerPositionNotSetException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public boolean isWorkerSet(int i) {
