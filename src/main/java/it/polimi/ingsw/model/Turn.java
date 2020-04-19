@@ -69,9 +69,7 @@ public abstract class Turn implements Serializable {
     public boolean getBlockNextPlayer(){
         return false;
     }
-    public boolean getPrevicanBuildousBlockNextPlayer(){
-        return false;
-    }
+
 //     private Player getCurrentPlayer() {
 ////            return currentPlayer;
 ////        }

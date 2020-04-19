@@ -37,17 +37,9 @@ class GameTest {
             assertEquals(null, players.get(i).getCard());
 
         }
-        //assertNotEquals(null, game.getTurn());
-        //create boolean game.isTurnSet()
-        assertNotEquals(null, game.getCurrentPlayer());
-        //Per Tia:
-        //Non so se abbia senso fare il getter pubblico del player
-        //Si potrebbe fare un metodo isSetCurrentPlayer()
-        //o qualcosa di simile
-        //Se no lasciamo perdere questi controlli
-
         assertEquals(0,game.getChosenCards().size());
         assertFalse(game.isSetFirstPlayer());
+        assertEquals(TurnPhase.CHOSE_CARDS, game.getTurnPhase());
     }
 
     @Test
@@ -67,12 +59,10 @@ class GameTest {
             assertNotEquals(null, players.get(i).getCard());
             assertEquals("Default", players.get(i).getCard().getName());
         }
-        //assertNotEquals(null, game.getTurn());
-        //create boolean game.isTurnSet()
-        assertNotEquals(null, game.getCurrentPlayer());
         assertEquals(0,game.getChosenCards().size());
         assertTrue(game.isSetFirstPlayer());
-        assertTrue(game.getCurrentPlayer().isChallenger());
+        assertEquals(TurnPhase.PLACE_WORKERS, game.getTurnPhase());
+
     }
 
     @Test
@@ -135,6 +125,7 @@ class GameTest {
     @Test
     void setChallengerChosenCards(){
         //TODO control that name of the string
+        assertEquals(TurnPhase.CHOSE_CARDS, game.getTurnPhase());
         ArrayList<String> chosenCards = new ArrayList<>();
         chosenCards.add("Apollo");
         chosenCards.add("Artemis");
@@ -145,6 +136,7 @@ class GameTest {
         assertEquals(3, game.getChosenCards().size());
     }
 
+
     @Test
     void chooseCorrectlyACard(){
         ArrayList<String> chosenCards = new ArrayList<>();
@@ -152,9 +144,7 @@ class GameTest {
         chosenCards.add("Artemis");
         chosenCards.add("Athena");
         game.setChosenCards(chosenCards);
-        Player currentTurnPlayer = game.getCurrentPlayer();
         game.setPlayerCards("Apollo");
-        assertEquals("Apollo", currentTurnPlayer.getCard().getName());
         assertEquals(2, game.getChosenCards().size());
     }
 
@@ -165,14 +155,10 @@ class GameTest {
         chosenCards.add("Artemis");
         chosenCards.add("Athena");
         game.setChosenCards(chosenCards);
-        Player currentTurnPlayer = game.getCurrentPlayer();
         game.setPlayerCards("Apollo");
-        assertEquals("Apollo", currentTurnPlayer.getCard().getName());
         assertEquals(2, game.getChosenCards().size());
         game.nextTurn();
-        Player currentTurnPlayer2 = game.getCurrentPlayer();
         game.setPlayerCards("Artemis");
-        assertEquals("Artemis", currentTurnPlayer2.getCard().getName());
         assertEquals(1, game.getChosenCards().size());
 
     }
@@ -184,26 +170,28 @@ class GameTest {
         chosenCards.add("Artemis");
         chosenCards.add("Athena");
         game.setChosenCards(chosenCards);
+        assertEquals(TurnPhase.CHOSE_CARDS, game.getTurnPhase());
         game.nextTurn();
-        Player currentTurnPlayer = game.getCurrentPlayer();
+
         game.setPlayerCards("Apollo");
-        assertEquals("Apollo", currentTurnPlayer.getCard().getName());
+        assertEquals(TurnPhase.CHOSE_CARDS, game.getTurnPhase());
         assertEquals(2, game.getChosenCards().size());
         game.nextTurn();
-        Player currentTurnPlayer2 = game.getCurrentPlayer();
+
         game.setPlayerCards("Artemis");
-        assertEquals("Artemis", currentTurnPlayer2.getCard().getName());
+        assertEquals(TurnPhase.CHOSE_CARDS, game.getTurnPhase());
         assertEquals(1, game.getChosenCards().size());
         game.nextTurn();
-        Player currentTurnPlayer3 = game.getCurrentPlayer();
-        assertTrue(currentTurnPlayer3.isChallenger());
+
         game.setPlayerCards("Athena");
-        assertEquals("Athena", currentTurnPlayer3.getCard().getName());
+        assertEquals(TurnPhase.CHOSE_CARDS, game.getTurnPhase());
         assertEquals(0, game.getChosenCards().size());
         assertFalse(game.isSetFirstPlayer());
-        game.firstTurn(currentTurnPlayer2);
-        assertEquals(game.getCurrentPlayer(), currentTurnPlayer2);
+        game.firstTurn(player0);
+        game.nextTurn();
+
         assertTrue(game.isSetFirstPlayer());
+        assertEquals(TurnPhase.PLACE_WORKERS, game.getTurnPhase());
 
     }
 
@@ -220,6 +208,7 @@ class GameTest {
         game.startGame(players, false);
         assertTrue(game.isAnyWorkerNotPlaced());
     }
+
 
     @Test
     void isAnyWorkerNotPlaced() throws PositionOutOfBoundsException {
@@ -243,6 +232,7 @@ class GameTest {
      * Set a worker on the board
      * @throws PositionOutOfBoundsException
      */
+
     @Test
     void setWorkerOnTheBoard() throws PositionOutOfBoundsException {
         players = new ArrayList<>();
@@ -263,6 +253,7 @@ class GameTest {
      * Set a worker on the board in a occupied cell
      * @throws PositionOutOfBoundsException
      */
+
     @Test
     void setWorkerOnTheBoardInAOccupiedCell() throws PositionOutOfBoundsException {
         players = new ArrayList<>();
@@ -314,18 +305,50 @@ class GameTest {
         assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position destPosition = new Position(0,1);
-        assertTrue(game.isAllowedToMove());
+        assertTrue(game.isAllowedToMove(0));
         assertTrue(game.isRequiredToMove());
         game.isFeasibleMove(0,destPosition);
-        //non esiste piu' updateCurrentWorker
-        //game.updateCurrentWorker(0); //it is important update the currentWorker
+        assertTrue(game.checkCurrentWorker(0));
+    }
+
+    @Test
+    void defaultMove() throws PositionOutOfBoundsException {
+        players = new ArrayList<>();
+        Player player0 = new Player("Player1");
+        Player player1 = new Player("Player2");
+        Player player2 = new Player("player3");
+        players.add(player0);
+        players.add(player1);
+        players.add(player2);
+        Game game = new Game();
+        game.startGame(players, false);
+        Position workerPosition1Player1 = new Position (0,0);
+        Position workerPosition2Player1 = new Position (1,1);
+        game.place(workerPosition1Player1);
+        game.place(workerPosition2Player1);
+        assertFalse(game.isAnyWorkerNotPlaced());
+        game.nextTurn();
+        Position workerPosition1Player2 = new Position (4,4);
+        Position workerPosition2Player2 = new Position (3,3);
+        game.place(workerPosition1Player2);
+        game.place(workerPosition2Player2);
+        assertFalse(game.isAnyWorkerNotPlaced());
+        game.nextTurn();
+        Position workerPosition1Player3 = new Position (4,0);
+        Position workerPosition2Player3 = new Position (3,0);
+        game.place(workerPosition1Player3);
+        game.place(workerPosition2Player3);
+        assertFalse(game.isAnyWorkerNotPlaced());
+        game.nextTurn();
+        Position destPosition = new Position(0,1);
+        assertTrue(game.isAllowedToMove(0));
+        assertTrue(game.isRequiredToMove());
+        game.isFeasibleMove(0,destPosition);
         assertTrue(game.checkCurrentWorker(0));
         game.move(0,destPosition);
-        assertEquals(destPosition,game.getCurrentPlayer().getWorkerCurrentPosition(0));
         assertFalse(game.isAllowedToMove());
         assertFalse(game.isRequiredToMove());
         assertFalse(game.checkCurrentWorker(1));
-
     }
 
     @Test
@@ -358,15 +381,13 @@ class GameTest {
         assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position destPosition = new Position(0,0);
-        assertTrue(game.isAllowedToMove());
+        assertTrue(game.isAllowedToMove(0));
+        assertTrue(game.isAllowedToMove(1));
         assertTrue(game.isRequiredToMove());
         assertFalse(game.isFeasibleMove(0,destPosition));
-        //assertNotEquals(destPosition,game.getCurrentPlayer().getWorkerCurrentPosition(0));
-        assertTrue(game.isAllowedToMove());
-        assertTrue(game.isRequiredToMove());
-        //assertFalse(game.checkCurrentWorker(1));
 
     }
+
 
     @Test
     void isFeasibleDefaultBuild() throws PositionOutOfBoundsException {
@@ -398,10 +419,9 @@ class GameTest {
         assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position destPosition = new Position(0,1);
-        assertTrue(game.isAllowedToMove());
+        assertTrue(game.isAllowedToMove(0));
         assertTrue(game.isRequiredToMove());
         game.isFeasibleMove(0,destPosition);
-       // game.updateCurrentWorker(0); //it is important update the currentWorker
         assertTrue(game.checkCurrentWorker(0));
         game.move(0,destPosition);
         assertTrue(game.isRequiredToBuild());
@@ -410,6 +430,52 @@ class GameTest {
         assertTrue(game.isFeasibleBuild(0,destBuildPosition, false));
 
     }
+
+    @Test
+    void DefaultBuild() throws PositionOutOfBoundsException {
+        players = new ArrayList<>();
+        Player player0 = new Player("Player1");
+        Player player1 = new Player("Player2");
+        Player player2 = new Player("player3");
+        players.add(player0);
+        players.add(player1);
+        players.add(player2);
+        Game game = new Game();
+        game.startGame(players, false);
+        Position workerPosition1Player1 = new Position (0,0);
+        Position workerPosition2Player1 = new Position (1,1);
+        game.place(workerPosition1Player1);
+        game.place(workerPosition2Player1);
+        assertFalse(game.isAnyWorkerNotPlaced());
+        game.nextTurn();
+        Position workerPosition1Player2 = new Position (4,4);
+        Position workerPosition2Player2 = new Position (3,3);
+        game.place(workerPosition1Player2);
+        game.place(workerPosition2Player2);
+        assertFalse(game.isAnyWorkerNotPlaced());
+        game.nextTurn();
+        Position workerPosition1Player3 = new Position (4,0);
+        Position workerPosition2Player3 = new Position (3,0);
+        game.place(workerPosition1Player3);
+        game.place(workerPosition2Player3);
+        assertFalse(game.isAnyWorkerNotPlaced());
+        game.nextTurn();
+        Position destPosition = new Position(0,1);
+        assertTrue(game.isAllowedToMove(0));
+        assertTrue(game.isRequiredToMove());
+        game.isFeasibleMove(0,destPosition);
+        assertTrue(game.checkCurrentWorker(0));
+        game.move(0,destPosition);
+        assertTrue(game.isRequiredToBuild());
+        assertTrue(game.isAllowedToBuild());
+        Position destBuildPosition = new Position(0,0);
+        assertTrue(game.isFeasibleBuild(0,destBuildPosition, false));
+        game.build(0,destBuildPosition, false);
+        assertFalse(game.isRequiredToBuild());
+        assertFalse(game.isAllowedToBuild());
+
+    }
+
 
     @Test
     void isNotFeasibleDefaultBuild() throws PositionOutOfBoundsException {
@@ -441,19 +507,83 @@ class GameTest {
         assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position destPosition = new Position(0,1);
-        assertTrue(game.isAllowedToMove());
+        assertTrue(game.isAllowedToMove(0));
         assertTrue(game.isRequiredToMove());
         game.isFeasibleMove(0,destPosition);
-
-        //non esiste piu'
-        //game.updateCurrentWorker(0); //it is important update the currentWorker
         assertTrue(game.checkCurrentWorker(0));
         game.move(0,destPosition);
         Position destBuildPosition = new Position(0,0);
         assertFalse(game.isFeasibleBuild(0,destPosition, false));
-        assertFalse(game.isFeasibleBuild(0,destPosition,true));
+        assertFalse(game.isFeasibleBuild(0,destBuildPosition,true));
+    }
+
+    @Test
+    void undo() throws PositionOutOfBoundsException {
+        ArrayList<String> chosenCards = new ArrayList<>();
+        chosenCards.add("Apollo");
+        chosenCards.add("Artemis");
+        chosenCards.add("Athena");
+        game.setChosenCards(chosenCards);
+        assertEquals(TurnPhase.CHOSE_CARDS, game.getTurnPhase());
+        game.nextTurn();
+
+        game.setPlayerCards("Apollo");
+        assertEquals(TurnPhase.CHOSE_CARDS, game.getTurnPhase());
+        assertEquals(2, game.getChosenCards().size());
+        game.nextTurn();
+
+        game.setPlayerCards("Artemis");
+        assertEquals(TurnPhase.CHOSE_CARDS, game.getTurnPhase());
+        assertEquals(1, game.getChosenCards().size());
+        game.nextTurn();
+
+        game.setPlayerCards("Athena");
+        assertEquals(TurnPhase.CHOSE_CARDS, game.getTurnPhase());
+        assertEquals(0, game.getChosenCards().size());
+        assertFalse(game.isSetFirstPlayer());
+        game.firstTurn(player0);
+        game.nextTurn();
+
+        assertTrue(game.isSetFirstPlayer());
+        assertEquals(TurnPhase.PLACE_WORKERS, game.getTurnPhase());
+        Position workerPosition1Player1 = new Position (0,0);
+        Position workerPosition2Player1 = new Position (1,1);
+        game.place(workerPosition1Player1);
+        game.place(workerPosition2Player1);
+        assertFalse(game.isAnyWorkerNotPlaced());
+        game.nextTurn();
+        Position workerPosition1Player2 = new Position (4,4);
+        Position workerPosition2Player2 = new Position (3,3);
+        game.place(workerPosition1Player2);
+        game.place(workerPosition2Player2);
+        assertFalse(game.isAnyWorkerNotPlaced());
+        game.nextTurn();
+        Position workerPosition1Player3 = new Position (4,0);
+        Position workerPosition2Player3 = new Position (3,0);
+        game.place(workerPosition1Player3);
+        game.place(workerPosition2Player3);
+        assertFalse(game.isAnyWorkerNotPlaced());
+
+        game.nextTurn();
+        assertEquals(TurnPhase.NORMAL, game.getTurnPhase());
+        Position destPosition = new Position(0,1);
+        assertFalse(game.undo());
+        assertTrue(game.isAllowedToMove(0));
+        assertTrue(game.isRequiredToMove());
+        game.move(0,destPosition);
+        assertFalse(game.isRequiredToMove());
+        assertTrue(game.checkCurrentWorker(0));
+        assertTrue(game.undo());
+        assertTrue(game.isAllowedToMove(0));
+        assertTrue(game.isRequiredToMove());
+        assertTrue(game.checkCurrentWorker(0));
+        assertTrue(game.checkCurrentWorker(1));
+        assertFalse(game.undo());
+
 
     }
+
+
 
 
 }

@@ -30,7 +30,11 @@ public class NormalTurn extends Turn {
         return isAllowedToMove;
     }
     public boolean isRequiredToMove(){
-        return isRequiredToMove(currentWorkerId);
+        if(currentWorkerId>=0){
+            return isRequiredToMove(currentWorkerId);
+        }else {
+            return true;
+        }
     }
     public boolean isRequiredToMove(int workerId){
         Card card = currentPlayer.getCard();
@@ -41,7 +45,11 @@ public class NormalTurn extends Turn {
     }
 
     public boolean isRequiredToBuild(){
-        return isRequiredToBuild(currentWorkerId);
+        if(currentWorkerId>=0){
+            return isRequiredToBuild(currentWorkerId);
+        }else {
+            return true;
+        }
     }
     public boolean isRequiredToBuild(int workerId){
         if(isAnyWorkerNotPlaced())
@@ -125,6 +133,7 @@ public class NormalTurn extends Turn {
 
     //NEW ADDS
     void boardMove(Board board, int workerId, Position destinationPosition) {
+        updateCurrentWorker(workerId);
         Player currentPlayer = this.getCurrentPlayer();
         Card card = currentPlayer.getCard();
         Position startPosition = currentPlayer.getWorkerCurrentPosition(this.getCurrentWorkerId());
@@ -143,17 +152,7 @@ public class NormalTurn extends Turn {
         }
 
     }
-    int boardPlace(Board board, Position placePosition){
-        Player currentPlayer = this.getCurrentPlayer();
-        Worker newWorker = new Worker();
-        if(board.setWorker(newWorker, placePosition)) {
-            int workerId = currentPlayer.addWorker(newWorker);
-            //comment for testing
-            //emitEvent(new PlaceWorkerModelEvent(currentPlayer.getUuid(), workerId, placePosition));
-            return workerId;
-        }else
-            return -1;
-    }
+
 
     void boardBuild(Board board, int workerId, Position destinationPosition, boolean isDome){
         Player currentPlayer = this.getCurrentPlayer();

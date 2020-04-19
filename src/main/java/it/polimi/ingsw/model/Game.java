@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.model.strategy.BuildStrategy;
 import it.polimi.ingsw.model.strategy.MoveStrategy;
@@ -86,8 +87,8 @@ public class Game extends ModelEventEmitter implements Serializable{
         if(!useCards)
             setFirstPlayer(challenger);
 
-        initTurn(challenger);
-        //make an exceptional first turn that calls setWorker
+            initTurn(challenger);
+
     }
 
 
@@ -149,36 +150,33 @@ public class Game extends ModelEventEmitter implements Serializable{
 
 
     public void initTurn(Player player) {
-        turn = new ChoseCardsTurn(player);
-        //notify view
-        //event for the challenger view for choose the three or two cards
+        if(!useCards){
+            turn=new PlaceWorkersTurn(player);
+            //notify view
+            //event set the worker on the board
+        }else {
+            turn = new ChoseCardsTurn(player);
+            //notify view
+            //event for the challenger view for choose the three or two cards
+        }
     }
-    public void createTurn(){
+    public void createNormalTurn(Player nextPlayer){
         Card previousTurnCard = turn.getCurrentPlayer().getCard();
-        Player nextPlayer = this.getNextPlayer();
         nextPlayer.resetAllWorkers();
         boolean blockNextPlayer = turn.isBlockNextPlayer();
         turn = new NormalTurn(nextPlayer, previousTurnCard, blockNextPlayer);
     }
 
-    /*public void nextTurn() {
-            Card previousTurnCard = turn.getCurrentPlayer().getCard();
-            Player nextPlayer = this.getNextPlayer();
-            nextPlayer.resetAllWorkers();
-            boolean blockNextPlayer = turn.isBlockNextPlayer();
-            turn = new Turn(nextPlayer, previousTurnCard, blockNextPlayer);
-    }*/
 
-
-    public void nextTurn() {
+    public void nextTurn() { //notify view in every cases
+        Player nextPlayer = this.getNextPlayer();
         if(!isSetFirstPlayer()) {
-            Card previousTurnCard = turn.getCurrentPlayer().getCard();
-            Player nextPlayer = this.getNextPlayer();
             initTurn(nextPlayer);
             //notify view
-      //  }else if(){ //PlaceWorkersTurn
-        }else /*if(!turn.isAllowedToMove() && !turn.isAllowedToBuild())*/ {
-            createTurn();
+        }else if(isAnyPlayersWorkerNotPlaced()){
+            turn = new PlaceWorkersTurn(nextPlayer);
+        }else/*if(!turn.isAllowedToMove() && !turn.isAllowedToBuild())*/ {
+            createNormalTurn(nextPlayer);
             //checkHasLost(); comment for testing
         }
     }
@@ -186,7 +184,7 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     public void firstTurn(Player player) {
         setFirstPlayer(player);
-        turn = new NormalTurn(this.firstPlayer, null, false);
+        turn = new PlaceWorkersTurn(this.firstPlayer);
         //notify view of new turn;
     }
 
@@ -209,9 +207,6 @@ public class Game extends ModelEventEmitter implements Serializable{
             return randPlayer;
     }
 
-//    private Player getPreviousPlayer() {
-//        return scrubPlayers(-1);
-//    }
 
     private Player getNextPlayer() {
         return scrubPlayers(1);
@@ -241,17 +236,27 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     public void move(int workerId, Position destinationPosition){
         //FIX check is NormalTurn
+        if(turn.getPhase() != TurnPhase.NORMAL)
+            throw new IllegalTurnPhaseException();
         NormalTurn normalTurn = (NormalTurn) turn;
         backupUndo();
         normalTurn.boardMove(board, workerId, destinationPosition);
+
         //checkHasLost(); for testing
     }
     public boolean isAllowedToMove(){
         return turn.isAllowedToMove();
     }
+
+    public boolean isAllowedToMove(int workerId){
+        return turn.isAllowedToMove(workerId);
+    }
+
+
     public boolean isRequiredToMove(){
         return turn.isRequiredToMove();
     }
+
     public boolean isFeasibleMove(int workerId, Position destinationPosition){
         return turn.isFeasibleMove(board, workerId, destinationPosition);
     }
@@ -267,6 +272,8 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     public void build(int workerId, Position destinationPosition, boolean isDome){
         //FIX check NormalTurn
+        if(turn.getPhase() != TurnPhase.NORMAL)
+            throw new IllegalTurnPhaseException();
         NormalTurn normalTurn = (NormalTurn) turn;
         backupUndo();
         normalTurn.boardBuild(board, workerId, destinationPosition, isDome);
@@ -275,6 +282,11 @@ public class Game extends ModelEventEmitter implements Serializable{
     public boolean isAllowedToBuild(){
         return turn.isAllowedToBuild();
     }
+
+    public boolean isAllowedToBuild(int workerId){
+        return turn.isAllowedToBuild(workerId);
+    }
+
     public boolean isRequiredToBuild(){
         return turn.isRequiredToBuild();
     }
@@ -284,13 +296,24 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     public int place(Position placePosition) {
         //FIX check is SetWorkerTurn
-        NormalTurn normalTurn = (NormalTurn) turn;
+        if(turn.getPhase() != TurnPhase.PLACE_WORKERS)
+            throw new IllegalTurnPhaseException();
+        PlaceWorkersTurn placeWorkersTurn = (PlaceWorkersTurn) turn;
         backupUndo();
-        return normalTurn.boardPlace(board, placePosition);
+        return placeWorkersTurn.boardPlace(board, placePosition);
         //return undoStatus;
     }
+
     public boolean isAnyWorkerNotPlaced() {
         return turn.isAnyWorkerNotPlaced();
+    }
+
+    public boolean isAnyPlayersWorkerNotPlaced(){
+        for(Player player:players){
+            if(player.isAnyWorkerNotPlaced())
+                return true;
+        }
+        return false;
     }
 
     public TurnPhase getTurnPhase(){
@@ -302,6 +325,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     public boolean checkCurrentWorker(int currentWorkerId) {
         return turn.checkCurrentWorker(currentWorkerId);
     }
+
 
     public void checkHasLost(){
         if(hasLost()){

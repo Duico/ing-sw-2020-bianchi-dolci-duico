@@ -42,9 +42,9 @@ public class Controller implements ViewEventListener {
         if(!checkPlayer(view)){
 
         }
-        if(checkNormalTurn()){
+        /*if(checkNormalTurn()){
             //STOP
-        }
+        }*/
 
         if(game.isRequiredToMove()) {
             //notify view
@@ -113,7 +113,7 @@ public class Controller implements ViewEventListener {
             //STOP
         }
 
-        if(!game.isAllowedToMove()){
+        if(!game.isAllowedToMove(currentWorkerId)){
             //STOP
             //notify view
         }
