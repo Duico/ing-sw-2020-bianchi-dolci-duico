@@ -50,12 +50,11 @@ public class Board implements Cloneable, Serializable {
         startBoardCell.setWorker(null);
         if(pushDestPosition != null) {
             Worker destinationWorker = destinationCell.getWorker();
-            if(destinationWorker == null){
-                throw new NullPointerException("Worker not set inside BoardCell in destinationPosition, which is needed for push");
+            if(destinationWorker != null){
+                BoardCell pushDestBoardCell = getBoardCellReference(pushDestPosition);
+                pushDestBoardCell.setWorker(destinationWorker);
+                destinationWorker.addMove(pushDestPosition);
             }
-            BoardCell pushDestBoardCell = getBoardCellReference(pushDestPosition);
-            pushDestBoardCell.setWorker(destinationWorker);
-            destinationWorker.addMove(pushDestPosition);
         }
         destinationCell.setWorker(startWorker);
         startWorker.addMove(destinationPosition);
