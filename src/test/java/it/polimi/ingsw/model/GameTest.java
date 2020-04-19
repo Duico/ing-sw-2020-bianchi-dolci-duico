@@ -37,8 +37,15 @@ class GameTest {
             assertEquals(null, players.get(i).getCard());
 
         }
-        assertNotEquals(null, game.getTurn());
-        assertNotEquals(null, game.getTurn().getCurrentPlayer());
+        //assertNotEquals(null, game.getTurn());
+        //create boolean game.isTurnSet()
+        assertNotEquals(null, game.getCurrentPlayer());
+        //Per Tia:
+        //Non so se abbia senso fare il getter pubblico del player
+        //Si potrebbe fare un metodo isSetCurrentPlayer()
+        //o qualcosa di simile
+        //Se no lasciamo perdere questi controlli
+
         assertEquals(0,game.getChosenCards().size());
         assertFalse(game.isSetFirstPlayer());
     }
@@ -60,11 +67,12 @@ class GameTest {
             assertNotEquals(null, players.get(i).getCard());
             assertEquals("Default", players.get(i).getCard().getName());
         }
-        assertNotEquals(null, game.getTurn());
-        assertNotEquals(null, game.getTurn().getCurrentPlayer());
+        //assertNotEquals(null, game.getTurn());
+        //create boolean game.isTurnSet()
+        assertNotEquals(null, game.getCurrentPlayer());
         assertEquals(0,game.getChosenCards().size());
         assertTrue(game.isSetFirstPlayer());
-        assertTrue(game.getTurn().getCurrentPlayer().isChallenger());
+        assertTrue(game.getCurrentPlayer().isChallenger());
     }
 
     @Test
@@ -144,7 +152,7 @@ class GameTest {
         chosenCards.add("Artemis");
         chosenCards.add("Athena");
         game.setChosenCards(chosenCards);
-        Player currentTurnPlayer = game.getTurn().getCurrentPlayer();
+        Player currentTurnPlayer = game.getCurrentPlayer();
         game.setPlayerCards("Apollo");
         assertEquals("Apollo", currentTurnPlayer.getCard().getName());
         assertEquals(2, game.getChosenCards().size());
@@ -157,12 +165,12 @@ class GameTest {
         chosenCards.add("Artemis");
         chosenCards.add("Athena");
         game.setChosenCards(chosenCards);
-        Player currentTurnPlayer = game.getTurn().getCurrentPlayer();
+        Player currentTurnPlayer = game.getCurrentPlayer();
         game.setPlayerCards("Apollo");
         assertEquals("Apollo", currentTurnPlayer.getCard().getName());
         assertEquals(2, game.getChosenCards().size());
         game.nextTurn();
-        Player currentTurnPlayer2 = game.getTurn().getCurrentPlayer();
+        Player currentTurnPlayer2 = game.getCurrentPlayer();
         game.setPlayerCards("Artemis");
         assertEquals("Artemis", currentTurnPlayer2.getCard().getName());
         assertEquals(1, game.getChosenCards().size());
@@ -177,24 +185,24 @@ class GameTest {
         chosenCards.add("Athena");
         game.setChosenCards(chosenCards);
         game.nextTurn();
-        Player currentTurnPlayer = game.getTurn().getCurrentPlayer();
+        Player currentTurnPlayer = game.getCurrentPlayer();
         game.setPlayerCards("Apollo");
         assertEquals("Apollo", currentTurnPlayer.getCard().getName());
         assertEquals(2, game.getChosenCards().size());
         game.nextTurn();
-        Player currentTurnPlayer2 = game.getTurn().getCurrentPlayer();
+        Player currentTurnPlayer2 = game.getCurrentPlayer();
         game.setPlayerCards("Artemis");
         assertEquals("Artemis", currentTurnPlayer2.getCard().getName());
         assertEquals(1, game.getChosenCards().size());
         game.nextTurn();
-        Player currentTurnPlayer3 = game.getTurn().getCurrentPlayer();
+        Player currentTurnPlayer3 = game.getCurrentPlayer();
         assertTrue(currentTurnPlayer3.isChallenger());
         game.setPlayerCards("Athena");
         assertEquals("Athena", currentTurnPlayer3.getCard().getName());
         assertEquals(0, game.getChosenCards().size());
         assertFalse(game.isSetFirstPlayer());
         game.firstTurn(currentTurnPlayer2);
-        assertEquals(game.getTurn().getCurrentPlayer(), currentTurnPlayer2);
+        assertEquals(game.getCurrentPlayer(), currentTurnPlayer2);
         assertTrue(game.isSetFirstPlayer());
 
     }
@@ -210,7 +218,7 @@ class GameTest {
         players.add(player2);
         Game game = new Game();
         game.startGame(players, false);
-        assertTrue(game.getTurn().isAnyWorkerNotPlaced());
+        assertTrue(game.isAnyWorkerNotPlaced());
     }
 
     @Test
@@ -228,7 +236,7 @@ class GameTest {
         Position workerPosition1 = new Position(2,2);
         game.place(workerPosition);
         game.place(workerPosition1);
-        assertFalse(game.getTurn().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
     }
 
     /**
@@ -248,7 +256,7 @@ class GameTest {
         game.startGame(players, false);
         Position workerPosition = new Position (0,0);
         assertEquals(game.place(workerPosition),0);
-        assertTrue(game.getTurn().isAnyWorkerNotPlaced());
+        assertTrue(game.isAnyWorkerNotPlaced());
     }
 
     /**
@@ -270,9 +278,9 @@ class GameTest {
         Position workerPosition2 = new Position (1,1);
         game.place(workerPosition);
         game.place(workerPosition2);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
-        assertTrue(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertTrue(game.isAnyWorkerNotPlaced());
         assertEquals(-1, game.place(workerPosition));
     }
 
@@ -291,31 +299,32 @@ class GameTest {
         Position workerPosition2Player1 = new Position (1,1);
         game.place(workerPosition1Player1);
         game.place(workerPosition2Player1);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position workerPosition1Player2 = new Position (4,4);
         Position workerPosition2Player2 = new Position (3,3);
         game.place(workerPosition1Player2);
         game.place(workerPosition2Player2);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position workerPosition1Player3 = new Position (4,0);
         Position workerPosition2Player3 = new Position (3,0);
         game.place(workerPosition1Player3);
         game.place(workerPosition2Player3);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position destPosition = new Position(0,1);
-        assertTrue(game.getTurn().isAllowedToMove(0));
-        assertTrue(game.getTurn().isRequiredToMove(0));
+        assertTrue(game.isAllowedToMove());
+        assertTrue(game.isRequiredToMove());
         game.isFeasibleMove(0,destPosition);
-        game.getTurn().updateCurrentWorker(0); //it is important update the currentWorker
-        assertTrue(game.getTurn().checkCurrentWorker(0));
+        //non esiste piu' updateCurrentWorker
+        //game.updateCurrentWorker(0); //it is important update the currentWorker
+        assertTrue(game.checkCurrentWorker(0));
         game.move(0,destPosition);
-        assertEquals(destPosition,game.getTurn().getCurrentPlayer().getWorkerCurrentPosition(0));
-        assertFalse(game.getTurn().isAllowedToMove(0));
-        assertFalse(game.getTurn().isRequiredToMove(0));
-        assertFalse(game.getTurn().checkCurrentWorker(1));
+        assertEquals(destPosition,game.getCurrentPlayer().getWorkerCurrentPosition(0));
+        assertFalse(game.isAllowedToMove());
+        assertFalse(game.isRequiredToMove());
+        assertFalse(game.checkCurrentWorker(1));
 
     }
 
@@ -334,28 +343,28 @@ class GameTest {
         Position workerPosition2Player1 = new Position (1,1);
         game.place(workerPosition1Player1);
         game.place(workerPosition2Player1);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position workerPosition1Player2 = new Position (4,4);
         Position workerPosition2Player2 = new Position (3,3);
         game.place(workerPosition1Player2);
         game.place(workerPosition2Player2);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position workerPosition1Player3 = new Position (4,0);
         Position workerPosition2Player3 = new Position (3,0);
         game.place(workerPosition1Player3);
         game.place(workerPosition2Player3);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position destPosition = new Position(0,0);
-        assertTrue(game.getTurn().isAllowedToMove(0));
-        assertTrue(game.getTurn().isRequiredToMove(0));
+        assertTrue(game.isAllowedToMove());
+        assertTrue(game.isRequiredToMove());
         assertFalse(game.isFeasibleMove(0,destPosition));
-        //assertNotEquals(destPosition,game.getTurn().getCurrentPlayer().getWorkerCurrentPosition(0));
-        assertTrue(game.getTurn().isAllowedToMove(0));
-        assertTrue(game.getTurn().isRequiredToMove(0));
-        //assertFalse(game.getTurn().checkCurrentWorker(1));
+        //assertNotEquals(destPosition,game.getCurrentPlayer().getWorkerCurrentPosition(0));
+        assertTrue(game.isAllowedToMove());
+        assertTrue(game.isRequiredToMove());
+        //assertFalse(game.checkCurrentWorker(1));
 
     }
 
@@ -374,29 +383,29 @@ class GameTest {
         Position workerPosition2Player1 = new Position (1,1);
         game.place(workerPosition1Player1);
         game.place(workerPosition2Player1);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position workerPosition1Player2 = new Position (4,4);
         Position workerPosition2Player2 = new Position (3,3);
         game.place(workerPosition1Player2);
         game.place(workerPosition2Player2);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position workerPosition1Player3 = new Position (4,0);
         Position workerPosition2Player3 = new Position (3,0);
         game.place(workerPosition1Player3);
         game.place(workerPosition2Player3);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position destPosition = new Position(0,1);
-        assertTrue(game.getTurn().isAllowedToMove(0));
-        assertTrue(game.getTurn().isRequiredToMove(0));
+        assertTrue(game.isAllowedToMove());
+        assertTrue(game.isRequiredToMove());
         game.isFeasibleMove(0,destPosition);
-        game.getTurn().updateCurrentWorker(0); //it is important update the currentWorker
-        assertTrue(game.getTurn().checkCurrentWorker(0));
+       // game.updateCurrentWorker(0); //it is important update the currentWorker
+        assertTrue(game.checkCurrentWorker(0));
         game.move(0,destPosition);
-        assertTrue(game.getTurn().isRequiredToBuild());
-        assertTrue(game.getTurn().isAllowedToBuild());
+        assertTrue(game.isRequiredToBuild());
+        assertTrue(game.isAllowedToBuild());
         Position destBuildPosition = new Position(0,0);
         assertTrue(game.isFeasibleBuild(0,destBuildPosition, false));
 
@@ -417,26 +426,28 @@ class GameTest {
         Position workerPosition2Player1 = new Position (1,1);
         game.place(workerPosition1Player1);
         game.place(workerPosition2Player1);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position workerPosition1Player2 = new Position (4,4);
         Position workerPosition2Player2 = new Position (3,3);
         game.place(workerPosition1Player2);
         game.place(workerPosition2Player2);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position workerPosition1Player3 = new Position (4,0);
         Position workerPosition2Player3 = new Position (3,0);
         game.place(workerPosition1Player3);
         game.place(workerPosition2Player3);
-        assertFalse(game.getTurn().getCurrentPlayer().isAnyWorkerNotPlaced());
+        assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         Position destPosition = new Position(0,1);
-        assertTrue(game.getTurn().isAllowedToMove(0));
-        assertTrue(game.getTurn().isRequiredToMove(0));
+        assertTrue(game.isAllowedToMove());
+        assertTrue(game.isRequiredToMove());
         game.isFeasibleMove(0,destPosition);
-        game.getTurn().updateCurrentWorker(0); //it is important update the currentWorker
-        assertTrue(game.getTurn().checkCurrentWorker(0));
+
+        //non esiste piu'
+        //game.updateCurrentWorker(0); //it is important update the currentWorker
+        assertTrue(game.checkCurrentWorker(0));
         game.move(0,destPosition);
         Position destBuildPosition = new Position(0,0);
         assertFalse(game.isFeasibleBuild(0,destPosition, false));
