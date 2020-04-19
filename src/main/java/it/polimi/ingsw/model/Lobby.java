@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 public class Lobby {
     String persistencyFilename = "./game.ser";
     Game game;
+    int numPlayers;
     ArrayList<Player> players;//fix ArrayList<String> -> ArrayList<Player>
 
     public Lobby() {
@@ -52,9 +53,9 @@ public class Lobby {
     }
 
     public void startGame() throws NotEnoughPlayersException {
-        if(players.size() < 2) {
+        if(players.size() < getNumPlayers()) {
             throw new NotEnoughPlayersException();
-        } else if(players.size() > 3){
+        } else if(players.size() > getNumPlayers()){
             //ask to choose which players are going to play
         }
         game.startGame(players, true); //TODO when view pass useCards
@@ -74,5 +75,11 @@ public class Lobby {
     public boolean persistencySaveGame(){
         GameSerializer gameSerializer = new GameSerializer(persistencyFilename);
         return gameSerializer.writeGame(this.game);
+    }
+
+    public int getNumPlayers(){
+        //if(numPlayers>=2 && numPlayers<=3){
+            return numPlayers;
+
     }
 }

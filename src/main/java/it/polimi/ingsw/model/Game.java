@@ -138,8 +138,8 @@ public class Game extends ModelEventEmitter implements Serializable{
         }
     }
 
-
-    public Turn getTurn() {
+    //todo should become protected in the end
+    private Turn getTurn() {
         return turn;
     }
 
@@ -176,7 +176,7 @@ public class Game extends ModelEventEmitter implements Serializable{
             Player nextPlayer = this.getNextPlayer();
             initTurn(nextPlayer);
             //notify view
-        }else if(){ //PlaceWorkersTurn
+      //  }else if(){ //PlaceWorkersTurn
         }else /*if(!turn.isAllowedToMove() && !turn.isAllowedToBuild())*/ {
             createTurn();
             //checkHasLost(); comment for testing
@@ -241,209 +241,66 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     public void move(int workerId, Position destinationPosition){
         //FIX check is NormalTurn
+        NormalTurn normalTurn = (NormalTurn) turn;
         backupUndo();
-        boardMove(workerId, destinationPosition);
+        normalTurn.boardMove(board, workerId, destinationPosition);
         //checkHasLost(); for testing
+    }
+    public boolean isAllowedToMove(){
+        return turn.isAllowedToMove();
+    }
+    public boolean isRequiredToMove(){
+        return turn.isRequiredToMove();
+    }
+    public boolean isFeasibleMove(int workerId, Position destinationPosition){
+        return turn.isFeasibleMove(board, workerId, destinationPosition);
+    }
+    public boolean isBlockedMove(int workerId, Position destinationPosition){
+        boolean blocked = false;
+        if(turn.getPreviousBlockNextPlayer()) {
+            if(turn.isBlockedMove(board, workerId, destinationPosition)){
+                blocked = true;
+            }
+        }
+        return blocked;
     }
 
     public void build(int workerId, Position destinationPosition, boolean isDome){
+        //FIX check NormalTurn
+        NormalTurn normalTurn = (NormalTurn) turn;
         backupUndo();
-        boardBuild(workerId, destinationPosition, isDome);
+        normalTurn.boardBuild(board, workerId, destinationPosition, isDome);
         checkHasLost();
+    }
+    public boolean isAllowedToBuild(){
+        return turn.isAllowedToBuild();
+    }
+    public boolean isRequiredToBuild(){
+        return turn.isRequiredToBuild();
+    }
+    public boolean isFeasibleBuild(int workerId, Position buildPosition, boolean isDome){
+        return turn.isFeasibleBuild(board, workerId, buildPosition, isDome);
     }
 
     public int place(Position placePosition) {
         //FIX check is SetWorkerTurn
+        NormalTurn normalTurn = (NormalTurn) turn;
         backupUndo();
-        return boardPlace(placePosition);
+        return normalTurn.boardPlace(board, placePosition);
         //return undoStatus;
     }
-    private int boardPlace(Position placePosition){
-        Player currentPlayer = turn.getCurrentPlayer();
-        Worker newWorker = new Worker();
-        if(board.setWorker(newWorker, placePosition)) {
-            int workerId = currentPlayer.addWorker(newWorker);
-            //comment for testing
-            //emitEvent(new PlaceWorkerModelEvent(currentPlayer.getUuid(), workerId, placePosition));
-            return workerId;
-        }else
-            return -1;
+    public boolean isAnyWorkerNotPlaced() {
+        return turn.isAnyWorkerNotPlaced();
     }
 
-    private void boardMove(int workerId, Position destinationPosition) {
-        Player currentPlayer = turn.getCurrentPlayer();
-        Card card = currentPlayer.getCard();
-        Position startPosition = currentPlayer.getWorkerCurrentPosition(turn.getCurrentWorkerId());
-
-        if(turn.getBlockNextPlayer() == false) {
-            blockNextPlayer(workerId, destinationPosition);
-        }
-        try {
-            Position pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
-            board.putWorkers(startPosition, destinationPosition, pushDestPosition);
-            //comment for testing
-            //emitEvent(new PutWorkerModelEvent(currentPlayer.getUuid(), workerId, startPosition, destinationPosition, pushDestPosition));
-            turn.updateCurrentWorker(workerId);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
+    public TurnPhase getTurnPhase(){
+        return turn.getPhase();
     }
-
-    public void boardBuild(int workerId, Position destinationPosition, boolean isDome){
-        Player currentPlayer = turn.getCurrentPlayer();
-        Position startPosition = turn.getCurrentPlayer().getWorkerCurrentPosition(turn.getCurrentWorkerId());
-        board.build(startPosition, destinationPosition, isDome);
-        //comment for testing
-        //emitEvent(new BuildWorkerModelEvent(currentPlayer.getUuid(), workerId, startPosition, destinationPosition) );
-        turn.updateCurrentWorker(workerId);
+    public boolean checkPlayer(Player viewPlayer){
+        return turn.getCurrentPlayer().getUuid() == viewPlayer.getUuid();
     }
-
-    public boolean isFeasibleMove(int workerId, Position destinationPosition){
-        Player currentPlayer = turn.getCurrentPlayer();
-        Card card = currentPlayer.getCard();
-        Position startPosition = currentPlayer.getWorkerCurrentPosition(workerId);
-
-        boolean isOwnWorker = turn.getCurrentPlayer().isOwnWorkerInPosition(destinationPosition);
-
-        MoveStrategy moveStrategy = card.getMoveStrategy();
-        OpponentStrategy opponentStrategy = card.getOpponentStrategy();
-        boolean isValidMove = moveStrategy.isValidMove(startPosition, destinationPosition, this.board);
-        boolean isValidPush = opponentStrategy.isValidPush(startPosition, destinationPosition, isOwnWorker, this.board);
-
-        if( isValidMove == true && isValidPush==true ) {
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public boolean isFeasibleBuild(int workerId, Position destinationPosition, boolean isDome){
-        Player currentPlayer = turn.getCurrentPlayer();
-        Card card = currentPlayer.getCard();
-        Position startPosition = currentPlayer.getWorkerCurrentPosition(workerId);
-
-        BuildStrategy buildStrategy = card.getBuildStrategy();
-        boolean isValidBuild = buildStrategy.isValidBuild(startPosition, destinationPosition, isDome, this.board);
-
-        return isValidBuild;
-    }
-
-    public boolean isBlockedMove(int workerId, Position destinationPosition){
-        Player currentPlayer = turn.getCurrentPlayer();
-        Position startPosition = currentPlayer.getWorkerCurrentPosition(workerId);
-
-        return turn.getPreviousTurnCard().getBlockStrategy().isBlockMove( startPosition, destinationPosition, board);
-    }
-
-
-    public boolean blockNextPlayer(int workerId, Position destinationPosition) {
-        Player currentPlayer = turn.getCurrentPlayer();
-        Position startPosition = currentPlayer.getWorkerCurrentPosition(workerId);
-        Card card = currentPlayer.getCard();
-
-        return card.getBlockStrategy().blockNextPlayer(startPosition, destinationPosition, board);
-    }
-
-    public boolean isWinningMove(Position destinationPosition){
-        Player currentPlayer = turn.getCurrentPlayer();
-        Card card = currentPlayer.getCard();
-        Position startPosition = currentPlayer.getWorkerCurrentPosition(turn.getCurrentWorkerId());
-        WinStrategy winStrategy = card.getWinStrategy();
-        return winStrategy.isWinningMove(startPosition, destinationPosition, board );
-    }
-
-
-
-    /**
-     * Checks is the chosen worker can move in any cell in the current operation, respecting all constraints imposed by cards
-     * @param workerId WorkerId of the worker of currentPlayer you want to check
-     * @return True if an adjacent cell exists where the player can move in the current operation
-     */
-    private boolean canMove(int workerId) {
-        Player currentPlayer = turn.getCurrentPlayer();
-        Position position = currentPlayer.getWorkerCurrentPosition(workerId);
-        int currentY = position.getY();
-        for(int dy= -1; dy<=1; dy++) {
-            int positionY=currentY+dy;
-            if (positionY < 0 || positionY >= Position.height) {
-                continue;
-            }
-            int currentX = position.getX();
-            for (int dx = -1; dx <=1; dx++) {
-                int positionX=currentX+dx;
-                if (positionX < 0 || positionX >= Position.width) {
-                    continue;
-                }
-                try {
-                    Position destPosition = new Position(positionX, positionY);
-
-                    //try {
-                    //if destPosition is a good candidate for a move, check if the worker can effectively move in destPosition
-                    if(!isBlockedMove(workerId, destPosition) && isFeasibleMove(workerId, destPosition))
-                        return true;
-                    //}catch (BlockedMoveException e){
-                    //    continue;
-                    //}
-                }catch(PositionOutOfBoundsException e){
-                    continue;
-                }
-
-            }
-        }
-        return false;
-    }
-    /**
-     * Checks is the chosen worker can build in any cell in the current operation, respecting all constraints imposed by cards
-     * @param workerId WorkerId of the worker of currentPlayer you want to check
-     * @return True if an adjacent cell exists where the player can build in the current operation
-     */
-    private boolean canBuild(int workerId){
-        Player currentPlayer = turn.getCurrentPlayer();
-        Position position = currentPlayer.getWorkerCurrentPosition(workerId);
-        int currentY = position.getY();
-        for(int dy= -1; dy<=1; dy++) {
-            int positionY=currentY+dy;
-            if (positionY < 0 || positionY >= Position.height) {
-                continue;
-            }
-            int currentX = position.getX();
-            for (int dx = -1; dx <=1; dx++) {
-                int positionX=currentX+dx;
-                if (positionX < 0 || positionX >= Position.width) {
-                    continue;
-                }
-                try {
-                    Position destPosition = new Position(positionX, positionY);
-
-                    //if destPosition is a good candidate for a move, check if the worker can effectively move in destPosition
-                    if(isFeasibleBuild(workerId, destPosition, false) && isFeasibleBuild(workerId, destPosition, true))
-                        return true;
-
-                }catch(PositionOutOfBoundsException e){
-                    continue;
-                }
-
-            }
-        }
-        return false;
-    }
-
-    private boolean cannotMakeRequiredOperation(int workerId){
-        boolean isRequiredToMove = turn.isRequiredToMove(workerId);
-        boolean isRequiredToBuild = turn.isRequiredToBuild(workerId);
-
-        if(isRequiredToBuild && isRequiredToMove){
-            if(!canBuild(workerId) && !canMove(workerId))
-                return true;
-        }else if(isRequiredToBuild){
-            if(!canBuild(workerId))
-                return true;
-        }else if(isRequiredToMove){//should be impossible
-            if(!canMove(workerId))
-                return true;
-        }
-        return false;
+    public boolean checkCurrentWorker(int currentWorkerId) {
+        return turn.checkCurrentWorker(currentWorkerId);
     }
 
     public void checkHasLost(){
@@ -460,24 +317,10 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     private boolean hasLost(){
         if(!turn.isUndoAvailable){
-            return isLoseCondition();
+            return turn.isLoseCondition(board);
         }else{
             return false;
         }
-    }
-
-    private boolean isLoseCondition() {
-        Player currentPlayer = turn.getCurrentPlayer();
-        boolean loseCondition = true;
-        if(turn.isSetCurrentWorker()){
-            loseCondition = cannotMakeRequiredOperation(turn.getCurrentWorkerId()); //&& loseCondition
-
-        }else {//first operation of the turn can have workerId not set
-            for (int workerId = 0; workerId < currentPlayer.getNumWorkers(); workerId++) {
-                loseCondition = cannotMakeRequiredOperation(workerId) && loseCondition;
-            }
-        }
-        return loseCondition;
     }
 
     public boolean undo(){
@@ -506,14 +349,7 @@ public class Game extends ModelEventEmitter implements Serializable{
         //return true;
     }
 
-    private boolean isAnyPlayerWorkerNotPlaced(){
-        for(Player player: players){
-            if(player.isAnyWorkerNotPlaced()){
-                return true;
-            }
-        }
-        return false;
-    }
+
 
    /* @Override
     public boolean equals(Object o) {

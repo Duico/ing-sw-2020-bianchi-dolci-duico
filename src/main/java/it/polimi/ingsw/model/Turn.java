@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 public abstract class Turn implements Serializable {
-    final Player currentPlayer;
+    protected final Player currentPlayer;
     protected boolean isUndoAvailable = false; // false when deserializing for undo
     final private TurnPhase phase;
 
@@ -14,6 +14,11 @@ public abstract class Turn implements Serializable {
         this.currentPlayer = currentPlayer;
 
     }
+    public TurnPhase getPhase(){
+        return this.phase;
+    }
+
+
     public boolean isAllowedToMove(){
         return false;
     }
@@ -38,17 +43,34 @@ public abstract class Turn implements Serializable {
     public boolean isAllowedToBuild(int workerId){
         return false;
     }
+    private boolean canBuild(Board board, int workerId){
+        return false;
+    }
+    private boolean canMove(Board board, int workerId){
+        return false;
+    }
+
     public boolean isAnyWorkerNotPlaced(){
         return currentPlayer.isAnyWorkerNotPlaced();
     }
-    public boolean getBlockNextPlayer(){
+
+    public boolean isFeasibleMove(Board board, int workerId, Position destinationPosition){
+        return false;
+    }
+    public boolean isFeasibleBuild(Board board, int workerId, Position destinationPosition, boolean isDome){
+        return false;
+    }
+    public boolean isBlockedMove(Board board, int workerId, Position destinationPosition) {
         return false;
     }
     public boolean getPreviousBlockNextPlayer(){
         return false;
     }
-    public boolean checkPlayer(Player viewPlayer){
-        return currentPlayer.getUuid() == viewPlayer.getUuid();
+    public boolean getBlockNextPlayer(){
+        return false;
+    }
+    public boolean getPrevicanBuildousBlockNextPlayer(){
+        return false;
     }
 //     private Player getCurrentPlayer() {
 ////            return currentPlayer;
@@ -65,14 +87,33 @@ public abstract class Turn implements Serializable {
     public boolean isBlockNextPlayer() {
         return false;
     }
-
-    public TurnPhase getPhase(){
-        return this.getPhase();
+    public boolean isWinningMove(Board board, Position destinationPosition){
+        return false;
     }
 
     public boolean checkCurrentWorker(int workerId){
         return false;
     }
 
+    boolean isLoseCondition(Board board) {
+        return false;
+    }
+
+    boolean cannotMakeRequiredOperation(Board board, int workerId){
+        boolean isRequiredToMove = this.isRequiredToMove(workerId);
+        boolean isRequiredToBuild = this.isRequiredToBuild(workerId);
+
+        if(isRequiredToBuild && isRequiredToMove){
+            if(!canBuild(board, workerId) && !canMove(board, workerId))
+                return true;
+        }else if(isRequiredToBuild){
+            if(!canBuild(board, workerId))
+                return true;
+        }else if(isRequiredToMove){//should be impossible
+            if(!canMove(board, workerId))
+                return true;
+        }
+        return false;
+    }
 
 }

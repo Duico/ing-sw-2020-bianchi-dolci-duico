@@ -1,9 +1,6 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.Position;
-import it.polimi.ingsw.model.Turn;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.event.*;
 
@@ -31,9 +28,8 @@ public class Controller implements ViewEventListener {
 //        turn.safeMove(worker, message.getDestPosition());
 //
 //    }
-    private boolean checkWorkerNotPlaced(){
-        Turn turn = game.getTurn();
-        if(turn.isAnyWorkerNotPlaced()){
+    private boolean checkNormalTurn(){
+        if(game.getTurnPhase() != TurnPhase.NORMAL){
             //STOP
             //notify view
             return false;
@@ -42,27 +38,25 @@ public class Controller implements ViewEventListener {
     }
 
     public void endTurn(EndTurnViewEvent message){
-        Turn turn = game.getTurn();
         RemoteView view = message.getView();
         if(!checkPlayer(view)){
 
         }
-        if(checkWorkerNotPlaced()){
+        if(checkNormalTurn()){
             //STOP
         }
 
-        if(turn.isRequiredToMove()) {
+        if(game.isRequiredToMove()) {
             //notify view
         }
 
-        if(turn.isRequiredToBuild()){
+        if(game.isRequiredToBuild()){
             //notify view
         }
         game.nextTurn();
     }
 
     public void challengerCards(CardsChallengerViewEvent message){
-        Turn turn = game.getTurn();
         RemoteView view = message.getView();
 
         if(!checkPlayer(view)){
@@ -75,7 +69,6 @@ public class Controller implements ViewEventListener {
     }
 
     public void setPlayerCards(CardViewEvent message){
-        Turn turn = game.getTurn();
         RemoteView view = message.getView();
         String cardName = message.getNameCard();
         if(!checkPlayer(view)){
@@ -87,7 +80,6 @@ public class Controller implements ViewEventListener {
     }
 
     public void setFirstPlayer(FirstPlayerViewEvent message){
-        Turn turn = game.getTurn();
         RemoteView view = message.getView();
         Player firstPlayer = message.getFirstPlayer();
         //TODO check viewPlayer is challenger
@@ -104,7 +96,6 @@ public class Controller implements ViewEventListener {
     }
 
     public void move(MoveViewEvent message){
-        Turn turn = game.getTurn();
         RemoteView view = message.getView();
         int currentWorkerId = message.getWorkerId();
         //CHECK player equals viewPlayer
@@ -118,11 +109,11 @@ public class Controller implements ViewEventListener {
 
         Position destinationPosition = message.getDestinationPosition();
 
-        if(checkWorkerNotPlaced()){
+        if(checkNormalTurn()){
             //STOP
         }
 
-        if(!turn.isAllowedToMove(currentWorkerId)){
+        if(!game.isAllowedToMove()){
             //STOP
             //notify view
         }
@@ -130,13 +121,11 @@ public class Controller implements ViewEventListener {
         //check block
         boolean possibleMove = true;
 
-        if(turn.getPreviousBlockNextPlayer()) {
-            if(game.isBlockedMove(currentWorkerId, destinationPosition)){
+        if(game.isBlockedMove(currentWorkerId, destinationPosition)){
                 possibleMove = false;
-
                 //notify RemoteView
-            }
         }
+
         //check isValidMove and isValidPush
 
 
@@ -155,13 +144,12 @@ public class Controller implements ViewEventListener {
     }
 
     public void place(PlaceViewEvent message){
-        Turn turn = game.getTurn();
         RemoteView view = message.getView();
         if(!checkPlayer(view)){
             //STOP
         }
 
-        if(!turn.isAnyWorkerNotPlaced()){
+        if(!game.isAnyWorkerNotPlaced()){
 
             //all workers are placed
             //notify view
@@ -174,7 +162,6 @@ public class Controller implements ViewEventListener {
 
 
     public void build(BuildViewEvent message){
-        Turn turn = game.getTurn();
         RemoteView view = message.getView();
         int currentWorkerId = message.getWorkerId();
         if(!checkPlayer(view)){
@@ -188,11 +175,11 @@ public class Controller implements ViewEventListener {
         Position destinationPosition = message.getDestinationPosition();
         boolean isDome = message.isDome();
 
-        if(checkWorkerNotPlaced()){
+        if(checkNormalTurn()){
             //STOP
         }
 
-        if(!turn.isAllowedToBuild(currentWorkerId)){
+        if(!game.isAllowedToBuild()){
 
         }
 
@@ -213,15 +200,9 @@ public class Controller implements ViewEventListener {
         }
     }
 
-
-//    public void handleEvent(StausViewEvent message){
-//        //return turn.isRequiredToMove() turn.isRequiredToBuild() turn.isAllowedToMove() turn.isAllowedToBuild()
-//    }
-
     private boolean checkPlayer(RemoteView view) {
-        Turn turn = game.getTurn();
         Player viewPlayer = view.getPlayer();
-        if(!turn.checkPlayer(viewPlayer)){
+        if(!game.checkPlayer(viewPlayer)){
             //view.sendError();
             //TODO
             //notify view about invalid player uuid
@@ -242,9 +223,8 @@ public class Controller implements ViewEventListener {
 //        return true;
 //    }
     private boolean checkWorkerId(WorkerViewEvent message){
-        Turn turn = game.getTurn();
         int currentWorkerId = message.getWorkerId();
-        if(!turn.checkCurrentWorker(currentWorkerId)){
+        if(!game.checkCurrentWorker(currentWorkerId)){
             //TODO
             //message contains an invalid workerId for the turn
             return false;
