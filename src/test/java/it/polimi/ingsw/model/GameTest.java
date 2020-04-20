@@ -101,6 +101,20 @@ class GameTest {
 
     }
 
+    @Test
+    void checkCorrectPlayer(){
+        setCardTurn();
+        assertTrue(game.checkPlayer(player0));
+
+    }
+
+    @Test
+    void checkIncorrectPlayer(){
+        setCardTurn();
+        assertFalse(game.checkPlayer(player1));
+
+    }
+
 
     @Test
     void checkCorrectNumPlayers()
@@ -383,6 +397,27 @@ class GameTest {
     }
 
     @Test
+    void checkHasLost() throws PositionOutOfBoundsException {
+        Game game= setGameWithoutCards();
+        setPlaceWorkerTurn(game);
+        Position destPosition = new Position(0,1);
+        assertTrue(game.isAllowedToMove(0));
+        assertTrue(game.isRequiredToMove());
+        game.isFeasibleMove(0,destPosition);
+        assertTrue(game.checkCurrentWorker(0));
+        game.move(0,destPosition);
+        assertFalse(game.checkHasLost());
+
+    }
+
+    @Test
+    void checkHasLost2() throws PositionOutOfBoundsException {
+        Game game= setGameWithoutCards();
+        setPlaceWorkerTurn(game);
+        assertFalse(game.checkHasLost());
+    }
+
+    @Test
     void undo() throws PositionOutOfBoundsException {
         setCardTurn();
         setPlaceWorkerTurn(game);
@@ -419,7 +454,7 @@ class GameTest {
 
         game.setPlayerCards("Athena");
         game.firstTurn(player0);
-        game.nextTurn();
+
     }
 
     private void setPlaceWorkerTurn(Game game) throws PositionOutOfBoundsException {

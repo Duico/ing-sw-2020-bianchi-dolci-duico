@@ -28,27 +28,19 @@ public abstract class Turn implements Serializable {
     public boolean isRequiredToMove(){
         return false;
     }
-    public boolean isRequiredToMove(int workerId){
-        return false;
-    }
+    public abstract boolean isRequiredToMove(int workerId);
     public boolean isRequiredToBuild(){
         return false;
     }
-    public boolean isRequiredToBuild(int workerId){
-        return false;
-    }
+    public abstract boolean isRequiredToBuild(int workerId);
     public boolean isAllowedToBuild(){
         return false;
     }
     public boolean isAllowedToBuild(int workerId){
         return false;
     }
-    private boolean canBuild(Board board, int workerId){
-        return false;
-    }
-    private boolean canMove(Board board, int workerId){
-        return false;
-    }
+    public abstract boolean canBuild(Board board, int workerId);
+    public abstract boolean canMove(Board board, int workerId);
 
     public boolean isAnyWorkerNotPlaced(){
         return currentPlayer.isAnyWorkerNotPlaced();
@@ -102,13 +94,13 @@ public abstract class Turn implements Serializable {
         boolean isRequiredToBuild = this.isRequiredToBuild(workerId);
 
         if(isRequiredToBuild && isRequiredToMove){
-            if(!canBuild(board, workerId) && !canMove(board, workerId))
+            if(!this.canBuild(board, workerId) && !this.canMove(board, workerId))
                 return true;
         }else if(isRequiredToBuild){
-            if(!canBuild(board, workerId))
+            if(!this.canBuild(board, workerId))
                 return true;
         }else if(isRequiredToMove){//should be impossible
-            if(!canMove(board, workerId))
+            if(!this.canMove(board, workerId))
                 return true;
         }
         return false;

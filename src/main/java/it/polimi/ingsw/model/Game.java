@@ -241,8 +241,7 @@ public class Game extends ModelEventEmitter implements Serializable{
         NormalTurn normalTurn = (NormalTurn) turn;
         backupUndo();
         normalTurn.boardMove(board, workerId, destinationPosition);
-
-        //checkHasLost(); for testing
+        checkHasLost();
     }
     public boolean isAllowedToMove(){
         return turn.isAllowedToMove();
@@ -327,7 +326,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
 
-    public void checkHasLost(){
+    public boolean checkHasLost(){
         if(hasLost()){
             //notify view
             Player currentPlayer = turn.getCurrentPlayer();
@@ -336,15 +335,25 @@ public class Game extends ModelEventEmitter implements Serializable{
                 board.removeWorker(workerPosition);
             }
             players.remove(currentPlayer);
+            return true;
         }
+        return false;
     }
 
     private boolean hasLost(){
-        if(!turn.isUndoAvailable){
-            return turn.isLoseCondition(board);
+        if(!isAnyPlayersWorkerNotPlaced()) {
+            if (!turn.isUndoAvailable) {
+                return turn.isLoseCondition(board);
+            } else {
+                return false;
+            }
         }else{
             return false;
         }
+    }
+
+    public boolean isUndoAvailable(){
+        return turn.isUndoAvailable;
     }
 
     public boolean undo(){

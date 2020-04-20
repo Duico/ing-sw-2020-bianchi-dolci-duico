@@ -6,7 +6,7 @@ import it.polimi.ingsw.view.event.BuildViewEvent;
 import it.polimi.ingsw.view.event.MoveViewEvent;
 
 public class ViewEventEmitter extends EventEmitter { //for Controller
-
+/*
     public void emitEvent(MoveViewEvent evt){
         executeEventListeners( (listener)->{
             ((Controller) listener).move(evt);
@@ -18,5 +18,5 @@ public class ViewEventEmitter extends EventEmitter { //for Controller
             ((Controller) listener).build(evt);
         });
     }
-
+*/
 }

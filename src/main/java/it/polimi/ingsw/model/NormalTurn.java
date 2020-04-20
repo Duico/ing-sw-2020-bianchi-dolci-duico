@@ -220,7 +220,7 @@ public class NormalTurn extends Turn {
      * @param workerId WorkerId of the worker of currentPlayer you want to check
      * @return True if an adjacent cell exists where the player can move in the current operation
      */
-    private boolean canMove(Board board, int workerId) {
+    public boolean canMove(Board board, int workerId) {
         Player currentPlayer = this.getCurrentPlayer();
         Position position = currentPlayer.getWorkerCurrentPosition(workerId);
         int currentY = position.getY();
@@ -258,7 +258,7 @@ public class NormalTurn extends Turn {
      * @param workerId WorkerId of the worker of currentPlayer you want to check
      * @return True if an adjacent cell exists where the player can build in the current operation
      */
-    private boolean canBuild(Board board, int workerId){
+    public boolean canBuild(Board board, int workerId){
         Player currentPlayer = this.getCurrentPlayer();
         Position position = currentPlayer.getWorkerCurrentPosition(workerId);
         int currentY = position.getY();
@@ -297,7 +297,9 @@ public class NormalTurn extends Turn {
 
         }else {//first operation of the turn can have workerId not set
             for (int workerId = 0; workerId < currentPlayer.getNumWorkers(); workerId++) {
-                loseCondition = cannotMakeRequiredOperation(board, workerId) && loseCondition;
+                loseCondition = cannotMakeRequiredOperation(board, workerId);
+                if(!loseCondition)
+                    return false;
             }
         }
         return loseCondition;

@@ -158,6 +158,9 @@ public class Worker implements Cloneable, Serializable {
 
 
     public Operation getLastOperation() {
+        if(operations.size()>0)
             return operations.get(operations.size()-1);
+        else
+            return null;
     }
 }

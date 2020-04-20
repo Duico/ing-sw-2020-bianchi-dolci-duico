@@ -16,4 +16,19 @@ public class PlaceWorkersTurn extends Turn {
         }else
             return -1;
     }
+
+    public boolean canBuild(Board board, int workerId){
+        return false;
+    }
+    public boolean canMove(Board board, int workerId){
+        return false;
+    }
+
+    public boolean isRequiredToBuild(int workerId){
+        return false;
+    }
+
+    public boolean isRequiredToMove(int workerId){
+        return false;
+    }
 }
