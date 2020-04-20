@@ -15,6 +15,7 @@ public class FixedArray<T> implements Serializable {
 
     /**
      * Create a fixed size array of the provided size
+     * All the elements are initially set to null
      * @param size Final size of the array
      */
     public FixedArray(int size){
@@ -47,8 +48,9 @@ public class FixedArray<T> implements Serializable {
     public T get(int index){
         if(index>=0 && index<size){
             return array.get(index);
+        }else{
+            throw new IndexOutOfBoundsException("FixedArray.get("+index+") out of bounds");
         }
-        return null;
     }
 
     /**
@@ -66,6 +68,20 @@ public class FixedArray<T> implements Serializable {
 
     public int size() {
         return size;
+    }
+
+    /**
+     * Counts the null elements in the array
+     * @return Count of the null elements
+     */
+    public int nullCount(){
+        int count = 0;
+       for (int i = size() - 1; i >= 0; i--) {
+            if (get(i) == null) {
+                count++;
+            }
+        }
+       return count;
     }
 }
 

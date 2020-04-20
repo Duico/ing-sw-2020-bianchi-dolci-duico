@@ -93,15 +93,7 @@ public class Player implements Serializable {
     }
 
     private int workersToPlace() {
-        int count = 0;
-        for (int i = workers.size() - 1; i >= 0; i--) {
-            if (workers.get(i) == null) {
-                count++;
-            } else {
-                break;
-            }
-        }
-        return count;
+        return workers.nullCount();
     }
 
     public UUID getUuid() {
