@@ -110,12 +110,12 @@ public class Player implements Serializable {
         }
     }
     public boolean isOwnWorkerInPosition(Position destinationPosition) {
-        boolean isOwnWorker = false;
+
         for (int i = 0; i < getNumWorkers(); i++) {
             if (getWorkerCurrentPosition(i).equals(destinationPosition))
-                isOwnWorker = true;
+                return true;
         }
-        return true;
+        return false;
     }
 
     public void setIsChallenger(boolean isChallenger){

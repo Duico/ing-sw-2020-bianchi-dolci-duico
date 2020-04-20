@@ -158,7 +158,6 @@ public class Controller implements ViewEventListener {
         int workerId = game.place(message.getDestinationPosition());
         if( workerId < 0){
             //notify view
-            //either all workers are set or
         }
     }
 
