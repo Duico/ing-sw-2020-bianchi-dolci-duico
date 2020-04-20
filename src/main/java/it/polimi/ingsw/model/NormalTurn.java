@@ -126,13 +126,8 @@ public class NormalTurn extends Turn {
         return this.previousTurnCard;
     }
 
-    protected Player getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-
     //NEW ADDS
-    void boardMove(Board board, int workerId, Position destinationPosition) {
+    protected void boardMove(Board board, int workerId, Position destinationPosition) {
         updateCurrentWorker(workerId);
         Player currentPlayer = this.getCurrentPlayer();
         Card card = currentPlayer.getCard();
@@ -154,7 +149,7 @@ public class NormalTurn extends Turn {
     }
 
 
-    void boardBuild(Board board, int workerId, Position destinationPosition, boolean isDome){
+    protected void boardBuild(Board board, int workerId, Position destinationPosition, boolean isDome){
         Player currentPlayer = this.getCurrentPlayer();
         Position startPosition = currentPlayer.getWorkerCurrentPosition(this.getCurrentWorkerId());
         board.build(startPosition, destinationPosition, isDome);
@@ -220,7 +215,7 @@ public class NormalTurn extends Turn {
      * @param workerId WorkerId of the worker of currentPlayer you want to check
      * @return True if an adjacent cell exists where the player can move in the current operation
      */
-    public boolean canMove(Board board, int workerId) {
+    protected boolean canMove(Board board, int workerId) {
         Player currentPlayer = this.getCurrentPlayer();
         Position position = currentPlayer.getWorkerCurrentPosition(workerId);
         int currentY = position.getY();
@@ -258,7 +253,7 @@ public class NormalTurn extends Turn {
      * @param workerId WorkerId of the worker of currentPlayer you want to check
      * @return True if an adjacent cell exists where the player can build in the current operation
      */
-    public boolean canBuild(Board board, int workerId){
+    protected boolean canBuild(Board board, int workerId){
         Player currentPlayer = this.getCurrentPlayer();
         Position position = currentPlayer.getWorkerCurrentPosition(workerId);
         int currentY = position.getY();
@@ -304,4 +299,5 @@ public class NormalTurn extends Turn {
         }
         return loseCondition;
     }
+
 }

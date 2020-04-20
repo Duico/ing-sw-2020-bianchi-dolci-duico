@@ -414,6 +414,8 @@ class GameTest {
     void checkHasLost2() throws PositionOutOfBoundsException {
         Game game= setGameWithoutCards();
         setPlaceWorkerTurn(game);
+        assertTrue(game.isRequiredToMove());
+        assertTrue(game.isRequiredToBuild());
         assertFalse(game.checkHasLost());
     }
 

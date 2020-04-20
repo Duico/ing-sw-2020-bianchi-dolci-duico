@@ -28,19 +28,27 @@ public abstract class Turn implements Serializable {
     public boolean isRequiredToMove(){
         return false;
     }
-    public abstract boolean isRequiredToMove(int workerId);
+    public boolean isRequiredToMove(int workerId){
+        return false;
+    }
     public boolean isRequiredToBuild(){
         return false;
     }
-    public abstract boolean isRequiredToBuild(int workerId);
+    public boolean isRequiredToBuild(int workerId){
+        return false;
+    }
     public boolean isAllowedToBuild(){
         return false;
     }
     public boolean isAllowedToBuild(int workerId){
         return false;
     }
-    public abstract boolean canBuild(Board board, int workerId);
-    public abstract boolean canMove(Board board, int workerId);
+    protected boolean canBuild(Board board, int workerId){
+        return false;
+    }
+    protected boolean canMove(Board board, int workerId){
+        return false;
+    }
 
     public boolean isAnyWorkerNotPlaced(){
         return currentPlayer.isAnyWorkerNotPlaced();
@@ -77,9 +85,9 @@ public abstract class Turn implements Serializable {
     public boolean isBlockNextPlayer() {
         return false;
     }
-    public boolean isWinningMove(Board board, Position destinationPosition){
-        return false;
-    }
+//    public boolean isWinningMove(Board board, Position destinationPosition){
+//        return false;
+//    }
 
     public boolean checkCurrentWorker(int workerId){
         return false;
@@ -90,17 +98,17 @@ public abstract class Turn implements Serializable {
     }
 
     boolean cannotMakeRequiredOperation(Board board, int workerId){
-        boolean isRequiredToMove = this.isRequiredToMove(workerId);
-        boolean isRequiredToBuild = this.isRequiredToBuild(workerId);
+        boolean isRequiredToMove = isRequiredToMove(workerId);
+        boolean isRequiredToBuild = isRequiredToBuild(workerId);
 
         if(isRequiredToBuild && isRequiredToMove){
-            if(!this.canBuild(board, workerId) && !this.canMove(board, workerId))
+            if(!canBuild(board, workerId) && !canMove(board, workerId))
                 return true;
         }else if(isRequiredToBuild){
-            if(!this.canBuild(board, workerId))
+            if(!canBuild(board, workerId))
                 return true;
         }else if(isRequiredToMove){//should be impossible
-            if(!this.canMove(board, workerId))
+            if(!canMove(board, workerId))
                 return true;
         }
         return false;

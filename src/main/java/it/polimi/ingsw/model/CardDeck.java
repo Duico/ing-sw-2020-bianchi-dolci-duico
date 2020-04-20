@@ -96,7 +96,7 @@ public class CardDeck implements Serializable {
 //        return randomDeck;
 //    }
 
-    public boolean existCard(String name){
+    public boolean existsCardByName(String name){
         for(int i=0; i<cardDeck.size();i++){
             if(name.equals(cardDeck.get(i).getName()))
                 return true;

@@ -82,4 +82,22 @@ class CardDeckTest {
         );
     }
 
+    @Test
+    void existsCardTest() throws Exception {
+        CardDeck cd = new CardDeck("./card-config.xml");
+        assertTrue(cd.existsCardByName("Apollo"));
+        assertTrue(cd.existsCardByName("Artemis"));
+        assertTrue(cd.existsCardByName("Athena"));
+        assertTrue(cd.existsCardByName("Atlas"));
+        assertTrue(cd.existsCardByName("Demeter"));
+        assertTrue(cd.existsCardByName("Hephaestus"));
+        assertTrue(cd.existsCardByName("Minotaur"));
+        assertTrue(cd.existsCardByName("Pan"));
+        assertTrue(cd.existsCardByName("Prometheus"));
+
+        assertFalse(cd.existsCardByName(""));
+        assertFalse(cd.existsCardByName("Pippo"));
+        assertFalse(cd.existsCardByName("Pluto"));
+        assertFalse(cd.existsCardByName(" "));
+    }
 }
