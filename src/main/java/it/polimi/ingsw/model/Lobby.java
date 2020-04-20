@@ -51,6 +51,12 @@ public class Lobby {
             }
         }
     }
+    public boolean isAdmin(Player player){
+        if(this.players==null){
+            return false;
+        }
+        return this.players.get(0).equals(player);
+    }
 
     public void startGame() throws NotEnoughPlayersException {
         if(players.size() < getNumPlayers()) {

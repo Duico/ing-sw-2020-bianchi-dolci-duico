@@ -1,7 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.view.RemoteView;
+import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.view.ViewEventListener;
 import it.polimi.ingsw.view.event.*;
 
 
@@ -38,7 +39,7 @@ public class Controller implements ViewEventListener {
     }
 
     public void endTurn(EndTurnViewEvent message){
-        RemoteView view = message.getView();
+        View view = message.getView();
         if(!checkPlayer(view)){
 
         }
@@ -57,7 +58,7 @@ public class Controller implements ViewEventListener {
     }
 
     public void challengerCards(CardsChallengerViewEvent message){
-        RemoteView view = message.getView();
+        View view = message.getView();
 
         if(!checkPlayer(view)){
             //notify view
@@ -69,7 +70,7 @@ public class Controller implements ViewEventListener {
     }
 
     public void setPlayerCards(CardViewEvent message){
-        RemoteView view = message.getView();
+        View view = message.getView();
         String cardName = message.getNameCard();
         if(!checkPlayer(view)){
 
@@ -80,7 +81,7 @@ public class Controller implements ViewEventListener {
     }
 
     public void setFirstPlayer(FirstPlayerViewEvent message){
-        RemoteView view = message.getView();
+        View view = message.getView();
         Player firstPlayer = message.getFirstPlayer();
         //TODO check viewPlayer is challenger
         if(!checkPlayer(view)){
@@ -96,7 +97,7 @@ public class Controller implements ViewEventListener {
     }
 
     public void move(MoveViewEvent message){
-        RemoteView view = message.getView();
+        View view = message.getView();
         int currentWorkerId = message.getWorkerId();
         //CHECK player equals viewPlayer
         if(!checkPlayer(view)){
@@ -123,7 +124,7 @@ public class Controller implements ViewEventListener {
 
         if(game.isBlockedMove(currentWorkerId, destinationPosition)){
                 possibleMove = false;
-                //notify RemoteView
+                //notify View
         }
 
         //check isValidMove and isValidPush
@@ -144,7 +145,7 @@ public class Controller implements ViewEventListener {
     }
 
     public void place(PlaceViewEvent message){
-        RemoteView view = message.getView();
+        View view = message.getView();
         if(!checkPlayer(view)){
             //STOP
         }
@@ -162,7 +163,7 @@ public class Controller implements ViewEventListener {
 
 
     public void build(BuildViewEvent message){
-        RemoteView view = message.getView();
+        View view = message.getView();
         int currentWorkerId = message.getWorkerId();
         if(!checkPlayer(view)){
             //STOP
@@ -191,7 +192,7 @@ public class Controller implements ViewEventListener {
     }
 
     public void undo(UndoViewEvent message){
-        RemoteView view = message.getView();
+        View view = message.getView();
         checkPlayer(view);
         //check 5 sec
         if(!game.undo()){
@@ -200,7 +201,7 @@ public class Controller implements ViewEventListener {
         }
     }
 
-    private boolean checkPlayer(RemoteView view) {
+    private boolean checkPlayer(View view) {
         Player viewPlayer = view.getPlayer();
         if(!game.checkPlayer(viewPlayer)){
             //view.sendError();

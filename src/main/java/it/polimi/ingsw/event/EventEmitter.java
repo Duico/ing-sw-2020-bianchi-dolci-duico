@@ -1,34 +1,31 @@
 package it.polimi.ingsw.event;
 
-import it.polimi.ingsw.event.Event;
-import it.polimi.ingsw.event.EventHandler;
-import it.polimi.ingsw.view.event.BuildViewEvent;
-import it.polimi.ingsw.view.event.MoveViewEvent;
-import it.polimi.ingsw.view.event.ViewEventListener;
-
 import javax.swing.event.EventListenerList;
 import java.util.EventListener;
 
-//TODO add comments
-public class EventEmitter {
+public abstract class EventEmitter {
     protected EventListenerList listenerList = new EventListenerList();
 
-    public void addEventListener(EventListener listener){
-        listenerList.add(EventListener.class, listener);
+    public <T extends EventListener> void addEventListener(Class<T> listenerClass, T listener){
+        listenerList.add(listenerClass, listener);
     }
 
 
-    public void removeEventListener(EventListener listener){
-        listenerList.add(EventListener.class, listener);
+    public <T extends EventListener> void removeEventListener(Class<T> listenerClass, T listener){
+        listenerList.remove(listenerClass, listener);
     }
 
-    protected void executeEventListeners(EventHandler eventHandler){
+    protected <T extends EventListener>  void executeEventListeners(Class<T> listenerClass, EventHandler<T> eventHandler){
         Object[] listeners = listenerList.getListenerList();
+        /*
+        i is increased by 2 at every loop because:
+        even indices have Class<T>,
+        odd indices have the effective EventListener
+        */
         for(int i=0; i<listeners.length; i+=2){
-            if(listeners[i] == EventListener.class){
-                eventHandler.handleEvent((EventListener) listeners[i+1]);
+            if(listeners[i] == listenerClass){
+                eventHandler.handleEvent((T) listeners[i+1]);
             }
         }
     }
-
 }
