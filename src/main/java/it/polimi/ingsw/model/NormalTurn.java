@@ -87,10 +87,6 @@ public class NormalTurn extends Turn {
         return currentPlayer.getUuid() == viewPlayer.getUuid();
     }
 
-//     private Player getCurrentPlayer() {
-////            return currentPlayer;
-////        }
-
     public int getCurrentWorkerId(){
         return this.currentWorkerId;
     }
@@ -134,7 +130,7 @@ public class NormalTurn extends Turn {
         Position startPosition = currentPlayer.getWorkerCurrentPosition(this.getCurrentWorkerId());
 
         if(this.getBlockNextPlayer() == false) {
-            blockNextPlayer(board, workerId, destinationPosition);
+            blockNextPlayer=blockNextPlayer(board, workerId, destinationPosition);
         }
         try {
             Position pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
@@ -150,6 +146,7 @@ public class NormalTurn extends Turn {
 
 
     protected void boardBuild(Board board, int workerId, Position destinationPosition, boolean isDome){
+        updateCurrentWorker(workerId); //da dire
         Player currentPlayer = this.getCurrentPlayer();
         Position startPosition = currentPlayer.getWorkerCurrentPosition(this.getCurrentWorkerId());
         board.build(startPosition, destinationPosition, isDome);
@@ -157,20 +154,22 @@ public class NormalTurn extends Turn {
         //emitEvent(new BuildWorkerModelEvent(currentPlayer.getUuid(), workerId, startPosition, destinationPosition) );
         this.updateCurrentWorker(workerId);
     }
+
     private boolean blockNextPlayer(Board board, int workerId, Position destinationPosition) {
         Player currentPlayer = this.getCurrentPlayer();
         Position startPosition = currentPlayer.getWorkerCurrentPosition(workerId);
         Card card = currentPlayer.getCard();
-
         return card.getBlockStrategy().blockNextPlayer(startPosition, destinationPosition, board);
     }
 
     public boolean isFeasibleMove(Board board, int workerId, Position destinationPosition){
+
         Player currentPlayer = this.getCurrentPlayer();
         Card card = currentPlayer.getCard();
         Position startPosition = currentPlayer.getWorkerCurrentPosition(workerId);
 
         boolean isOwnWorker = currentPlayer.isOwnWorkerInPosition(destinationPosition);
+
 
         MoveStrategy moveStrategy = card.getMoveStrategy();
         OpponentStrategy opponentStrategy = card.getOpponentStrategy();
@@ -198,14 +197,13 @@ public class NormalTurn extends Turn {
     public boolean isBlockedMove(Board board, int workerId, Position destinationPosition){
         Player currentPlayer = this.getCurrentPlayer();
         Position startPosition = currentPlayer.getWorkerCurrentPosition(workerId);
-
         return this.getPreviousTurnCard().getBlockStrategy().isBlockMove( startPosition, destinationPosition, board);
     }
 
-    public boolean isWinningMove(Board board, Position destinationPosition){
+    public boolean isWinningMove(Board board, Position destinationPosition, int workerId){
         Player currentPlayer = this.getCurrentPlayer();
         Card card = currentPlayer.getCard();
-        Position startPosition = currentPlayer.getWorkerCurrentPosition(this.getCurrentWorkerId());
+        Position startPosition = currentPlayer.getWorkerCurrentPosition(workerId);
         WinStrategy winStrategy = card.getWinStrategy();
         return winStrategy.isWinningMove(startPosition, destinationPosition, board);
     }
@@ -218,6 +216,7 @@ public class NormalTurn extends Turn {
     protected boolean canMove(Board board, int workerId) {
         Player currentPlayer = this.getCurrentPlayer();
         Position position = currentPlayer.getWorkerCurrentPosition(workerId);
+
         int currentY = position.getY();
         for(int dy= -1; dy<=1; dy++) {
             int positionY=currentY+dy;
@@ -232,14 +231,11 @@ public class NormalTurn extends Turn {
                 }
                 try {
                     Position destPosition = new Position(positionX, positionY);
-
-                    //try {
                     //if destPosition is a good candidate for a move, check if the worker can effectively move in destPosition
-                    if(!isBlockedMove(board, workerId, destPosition) && isFeasibleMove(board, workerId, destPosition))
+                    if(!isBlockedMove(board, workerId, destPosition) && isFeasibleMove(board, workerId, destPosition)) {
                         return true;
-                    //}catch (BlockedMoveException e){
-                    //    continue;
-                    //}
+                    }
+
                 }catch(PositionOutOfBoundsException e){
                     continue;
                 }
@@ -272,9 +268,9 @@ public class NormalTurn extends Turn {
                     Position destPosition = new Position(positionX, positionY);
 
                     //if destPosition is a good candidate for a move, check if the worker can effectively move in destPosition
-                    if(isFeasibleBuild(board, workerId, destPosition, false) && isFeasibleBuild(board, workerId, destPosition, true))
+                    if(isFeasibleBuild(board, workerId, destPosition, false) || isFeasibleBuild(board, workerId, destPosition, true)) {
                         return true;
-
+                    }
                 }catch(PositionOutOfBoundsException e){
                     continue;
                 }
