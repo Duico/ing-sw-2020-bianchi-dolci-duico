@@ -1,0 +1,26 @@
+<cardDeck>
+    <card>
+        <name>DefaultONE</name>
+        <moveStrategy>Default</moveStrategy>
+        <buildStrategy>Default</buildStrategy>
+        <winStrategy>Default</winStrategy>
+	    <blockStrategy>Default</blockStrategy>
+	    <opponentStrategy>Default</opponentStrategy>
+    </card>
+    <card>
+        <name>DefaultTWO</name>
+        <moveStrategy>Default</moveStrategy>
+        <buildStrategy>Default</buildStrategy>
+        <winStrategy>Default</winStrategy>
+	    <blockStrategy>Default</blockStrategy>
+	    <opponentStrategy>Default</opponentStrategy>
+    </card>
+    <card>
+        <name>DefaultTHREE</name>
+        <moveStrategy>Default</moveStrategy>
+        <buildStrategy>Default</buildStrategy>
+        <winStrategy>Default</winStrategy>
+	    <blockStrategy>Default</blockStrategy>
+	    <opponentStrategy>Default</opponentStrategy>
+    </card>
+</cardDeck>
