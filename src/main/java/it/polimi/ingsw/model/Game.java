@@ -384,21 +384,21 @@ public class Game extends ModelEventEmitter implements Serializable{
 
 
 
-   /* @Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
         boolean playersEquals = true;
-        //return useCards == game.useCards &&
+       // return useCards == game.useCards &&
                 //Objects.equals(getTurn(), game.getTurn()) &&
                 //Objects.equals(getPreviousTurn(), game.getPreviousTurn()) &&
                 //Objects.equals(getPlayers(), game.getPlayers()) &&
                 //Objects.equals(cardDeck, game.cardDeck);
-        for(int i=0; i<getPlayers().size(); i++){
+        for(int i=0; i<players.size(); i++){
             playersEquals = playersEquals && players.get(i).getNickName().equals( game.players.get(i).getNickName() );
         }
         return useCards == game.useCards && playersEquals;
 
-    }*/
+    }
 }

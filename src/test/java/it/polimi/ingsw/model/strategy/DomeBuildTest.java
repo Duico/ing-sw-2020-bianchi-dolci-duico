@@ -123,18 +123,6 @@ class DomeBuildTest {
         assertTrue(domeBuild.isAllowedToBuild(worker0.getNumMoves(), worker0.getNumBuilds(), worker0.getLastOperation()));
     }
 
-    /**
-     * check if the worker is allowed to build when has already moved twice
-     * @throws PositionOutOfBoundsException
-     */
-    @Test
-    void checkIsAllowedToBuild2() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
-        Position startPosition = worker0.getCurrentPosition();
-        Position destPosition = new Position(startPosition.getX()+1, startPosition.getY());
-        worker0.addMove(destPosition);
-        worker0.addMove(startPosition);
-        assertTrue(domeBuild.isAllowedToBuild(worker0.getNumMoves(), worker0.getNumBuilds(), worker0.getLastOperation()));
-    }
 
     /**
      * check if the worker is required to build when has already both moved and built
