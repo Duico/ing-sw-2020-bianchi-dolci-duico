@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.event.PersistencyEvent;
 import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.model.strategy.BuildStrategy;
@@ -8,7 +9,10 @@ import it.polimi.ingsw.model.strategy.OpponentStrategy;
 import it.polimi.ingsw.model.strategy.WinStrategy;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -25,7 +29,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     private Player firstPlayer;
     private final int numWorkers;
     private Board board;
-    private UndoBlob undoBlob;
+    private transient UndoBlob undoBlob;
 
     public Game() {
         this(5, 5, 2);
@@ -382,7 +386,21 @@ public class Game extends ModelEventEmitter implements Serializable{
         //return true;
     }
 
-
+    public void regenerateUndo(){
+        backupUndo();
+    }
+//
+//    //for persistency
+//    public PersistencyEvent generatePersistencyEvent() {
+//        List<Player> clonedPlayers = (List<Player>) players.clone();
+//        Turn clonedTurn = turn.clone();
+//        //useCards
+//        //firstPlayer;
+//        // int numWorkers;
+//        Board clonedBoard = board.clone();
+//        private UndoBlob undoBlob;
+//        return new PersistencyEvent();
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -392,13 +410,32 @@ public class Game extends ModelEventEmitter implements Serializable{
         boolean playersEquals = true;
        // return useCards == game.useCards &&
                 //Objects.equals(getTurn(), game.getTurn()) &&
-                //Objects.equals(getPreviousTurn(), game.getPreviousTurn()) &&
+               //equals(getPreviousTurn(), game.getPreviousTurn()) &&
                 //Objects.equals(getPlayers(), game.getPlayers()) &&
                 //Objects.equals(cardDeck, game.cardDeck);
         for(int i=0; i<players.size(); i++){
-            playersEquals = playersEquals && players.get(i).getNickName().equals( game.players.get(i).getNickName() );
+            playersEquals = playersEquals && players.get(i).equals( game.players.get(i) );
         }
-        return useCards == game.useCards && playersEquals;
+        return useCards == game.useCards &&
+                numWorkers == game.numWorkers &&
+                Objects.equals(board, game.board) &&
+                Objects.equals(turn, game.turn) &&
+                Objects.equals(cardDeck, game.cardDeck) &&
+                //undoBlob
+                playersEquals;
 
     }
+
+//    @Override
+//    protected Game clone() {
+//        Game newGame = null;
+//        try {
+//            newGame = (Game) super.clone();
+//            newGame.board.cleanWorkers();
+//
+//        }catch (CloneNotSupportedException e){
+//            e.printStackTrace();
+//        }
+//        return newGame;
+//    }
 }

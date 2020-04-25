@@ -55,7 +55,7 @@ public class BoardCell implements Cloneable, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BoardCell boardCell = (BoardCell) o;
-        boolean equalWorkers = (getWorker() == null && boardCell.getWorker() == null) || getWorker().equals(boardCell.getWorker());
+        boolean equalWorkers = Objects.equals(getWorker(), boardCell.getWorker());
         return equalWorkers && getLevel().equals(boardCell.getLevel()) && hasDome() == boardCell.hasDome();
     }
 

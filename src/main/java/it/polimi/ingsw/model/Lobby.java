@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 public class Lobby {
     String persistencyFilename = "./game.ser";
+    //TODO should be in a configuration file
     Game game;
     int numPlayers;
     ArrayList<Player> players;//fix ArrayList<String> -> ArrayList<Player>
@@ -14,6 +15,10 @@ public class Lobby {
     public Lobby() {
         players = new ArrayList<Player>();
         this.game = new Game();
+    }
+    public Lobby(String persistencyFilename){
+        this();
+        this.persistencyFilename = persistencyFilename;
     }
 
     public void changeBoardSize(int width, int height){
@@ -68,20 +73,25 @@ public class Lobby {
 
     }
 
-    public boolean persistencyLoadGame(){
+    /**
+     * Read a serialized Game
+     * @return Null if read Game is not valid, a Game if it is valid
+     */
+    public Game persistencyLoadGame(){
         GameSerializer gameSerializer = new GameSerializer(persistencyFilename);
         Game readGame = gameSerializer.readGame();
         if(Game.validateGame(readGame)){
-            this.game = readGame;
-            return true;
+            return readGame;
         }else{
-            return false;
+            return null;
         }
     }
+
     public boolean persistencySaveGame(){
         GameSerializer gameSerializer = new GameSerializer(persistencyFilename);
         return gameSerializer.writeGame(this.game);
     }
+
 
     public int getNumPlayers(){
         //if(numPlayers>=2 && numPlayers<=3){

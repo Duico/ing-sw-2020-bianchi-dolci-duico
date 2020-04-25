@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Array with final size, which doesn't allow resizing
@@ -82,6 +83,17 @@ public class FixedArray<T> implements Serializable {
             }
         }
        return count;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (obj.getClass() == getClass()){
+            FixedArray<Worker> fa = (FixedArray<Worker>) obj;
+            return Objects.equals(array, fa.array);
+
+        }
+        return super.equals(obj);
     }
 }
 

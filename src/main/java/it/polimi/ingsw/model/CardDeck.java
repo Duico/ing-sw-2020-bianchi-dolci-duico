@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CardDeck implements Serializable {
     private ArrayList<Card> cardDeck;
@@ -117,5 +118,14 @@ public class CardDeck implements Serializable {
         Node leaf = node.getElementsByTagName(tagName).item(0);
         return (leaf != null)? leaf.getTextContent():"Default";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CardDeck cardDeck1 = (CardDeck) o;
+        return Objects.equals(cardDeck, cardDeck1.cardDeck);
+    }
+    
 }
 

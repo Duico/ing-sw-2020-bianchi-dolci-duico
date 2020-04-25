@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class Turn implements Serializable {
@@ -17,7 +18,6 @@ public abstract class Turn implements Serializable {
     public TurnPhase getPhase(){
         return this.phase;
     }
-
 
     public boolean isAllowedToMove(){
         return false;
@@ -112,6 +112,16 @@ public abstract class Turn implements Serializable {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Turn turn = (Turn) o;
+        return /*isUndoAvailable == turn.isUndoAvailable &&*/
+                Objects.equals(getCurrentPlayer(), turn.getCurrentPlayer()) &&
+                getPhase() == turn.getPhase();
     }
 
 }

@@ -131,10 +131,11 @@ public class Player implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return Objects.equals(getUuid(), player.getUuid()) &&
+        boolean eq = Objects.equals(getUuid(), player.getUuid()) &&
                 Objects.equals(getNickName(), player.getNickName()) &&
                 Objects.equals(getCard(), player.getCard()) &&
                 Objects.equals(workers, player.workers);
+        return eq;
     }
 
 

@@ -100,4 +100,17 @@ public class Board implements Cloneable, Serializable {
         return board;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Board board = (Board) o;
+        boolean eq = true;
+        for(int i=0;i<Position.width;i++){
+            for(int j=0; j<Position.height; j++){
+                eq = eq && grid[i][j].equals(board.grid[i][j]);
+            }
+        }
+        return eq;
+    }
 }

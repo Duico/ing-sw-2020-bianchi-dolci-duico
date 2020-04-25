@@ -163,4 +163,15 @@ public class Worker implements Cloneable, Serializable {
         else
             return null;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Worker worker = (Worker) o;
+        return Objects.equals(getMoves(), worker.getMoves()) &&
+                Objects.equals(getBuilds(), worker.getBuilds()) &&
+                Objects.equals(operations, worker.operations);
+    }
+
 }
