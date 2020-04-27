@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Player implements Serializable {
+public class Player implements Serializable, Cloneable {
     private final String nickName;
     private final UUID uuid;
     private Card card; //FIX add final when tests are over
@@ -66,8 +66,8 @@ public class Player implements Serializable {
     }
 
 
-    public Position getWorkerCurrentPosition(int currentWorkerId) {
-        Worker worker = workers.get(currentWorkerId);
+    public Position getWorkerPosition(int workerId) {
+        Worker worker = workers.get(workerId);
         if (worker == null) {
             return null;
         }
@@ -112,8 +112,12 @@ public class Player implements Serializable {
     public boolean isOwnWorkerInPosition(Position destinationPosition) {
 
         for (int i = 0; i < getNumWorkers(); i++) {
-            if (getWorkerCurrentPosition(i).equals(destinationPosition))
-                return true;
+            try {
+                if (workers.get(i).getCurrentPosition().equals(destinationPosition))
+                    return true;
+            }catch(WorkerPositionNotSetException e){
+
+            }
         }
         return false;
     }
@@ -138,6 +142,28 @@ public class Player implements Serializable {
         return eq;
     }
 
+    @Override
+    public Player clone(){
+        try {
+            return (Player) super.clone();
+        }catch (CloneNotSupportedException e){
+            throw new RuntimeException("Clone not supported in Player");
+        }
+
+    }
 
 
+    public int getWorkerId(Position workerPosition) {
+        for(int i=0; i<workers.size(); i++){
+            Worker worker = workers.get(i);
+            try{
+                if(worker!=null && worker.getCurrentPosition()==workerPosition){
+                    return i;
+                }
+            }catch (WorkerPositionNotSetException e){
+
+            }
+        }
+        return -1;
+    }
 }

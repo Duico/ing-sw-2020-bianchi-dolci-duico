@@ -4,11 +4,10 @@ import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.view.RemoteView;
 
 public class MoveViewEvent extends WorkerViewEvent {
+    private Position destPosition;
 
-    protected Position destPosition;
-
-    public MoveViewEvent(RemoteView view, int workerId, Position destPosition) {
-        super(view, workerId);
+    public MoveViewEvent(RemoteView view, Position startPosition, Position destPosition) {
+        super(view, startPosition);
         this.destPosition = destPosition;
     }
 

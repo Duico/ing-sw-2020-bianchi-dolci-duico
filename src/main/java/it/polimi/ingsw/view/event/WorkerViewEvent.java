@@ -1,20 +1,25 @@
 package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.view.RemoteView;
 
-public class WorkerViewEvent extends ViewEvent {
+import java.io.PipedOutputStream;
 
-    protected int workerId;
+public class WorkerViewEvent extends GameViewEvent {
+
+    protected Position workerPosition;
 
 
-    public WorkerViewEvent(RemoteView view, int workerId) {
+    public WorkerViewEvent(RemoteView view, Position workerPosition) {
         super(view);
-        this.workerId = workerId;
+        this.workerPosition = workerPosition;
     }
 
-
-    public int getWorkerId(){
-        return this.workerId;
+    public Position getWorkerPosition() {
+        return workerPosition;
+    }
+    public Position getStartPosition(){
+        return getWorkerPosition();
     }
 }

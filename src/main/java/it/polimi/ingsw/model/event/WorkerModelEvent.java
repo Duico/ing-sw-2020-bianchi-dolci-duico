@@ -1,14 +1,15 @@
 package it.polimi.ingsw.model.event;
 
-import java.util.UUID;
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Position;
 
-public class WorkerModelEvent extends ModelEvent{
-    private int workerId;
-    public WorkerModelEvent(UUID playerUUID, int workerId) {
-        super(playerUUID);
-        this.workerId = workerId;
+public class WorkerModelEvent extends UpdateModelEvent{
+    private Position startPosition;
+    public WorkerModelEvent(Player player, Position startPosition) {
+        super(player);
+        this.startPosition = startPosition;
     }
-    public int getWorkerId() {
-        return workerId;
+    public Position getStartPosition(){
+        return this.startPosition;
     }
 }

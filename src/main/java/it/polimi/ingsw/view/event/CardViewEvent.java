@@ -2,7 +2,7 @@ package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.view.RemoteView;
 
-public class CardViewEvent extends ViewEvent {
+public class CardViewEvent extends GameViewEvent {
     private String card;
 
     public CardViewEvent(RemoteView view, String card) {
@@ -10,7 +10,7 @@ public class CardViewEvent extends ViewEvent {
         this.card= card;
     }
 
-    public String getNameCard(){
+    public String getCardName(){
         return this.card;
     }
 }

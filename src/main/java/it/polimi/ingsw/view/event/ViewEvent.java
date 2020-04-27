@@ -5,14 +5,15 @@ import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.View;
 
 import java.io.Serializable;
+import java.rmi.Remote;
 
 public class ViewEvent implements Serializable {
-    protected View view;
-    public ViewEvent(View view) {
+    protected RemoteView view;
+    public ViewEvent(RemoteView view) {
         this.view = view;
     }
 
-    public View getView(){
+    public RemoteView getView(){
         return this.view;
     }
 }

@@ -66,6 +66,8 @@ class BoardTest {
         Position startPosition = new Position(2,2);
         Worker w2 = new Worker();
         assertTrue(b.setWorker(w2, startPosition));
+        //TODO
+        //no idea why this doesnt work
         assertNotEquals(w2, b.getBoardCell(startPosition).getWorker());
     }
     @Test
@@ -119,6 +121,7 @@ class BoardTest {
     void cloneTest() throws Exception{
         Position p = new Position(3,2);
         Board b2 = b.clone();
+        //TODO
         assertNotEquals(b.getBoardCell(p), b2.getBoardCell(p));
     }
 

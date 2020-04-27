@@ -2,8 +2,8 @@ package it.polimi.ingsw.model.event;
 
 import it.polimi.ingsw.model.Player;
 
-public class MoveFailModelEvent extends FailModelEvent {
-    public MoveFailModelEvent(Player player) {
+public class UpdateModelEvent extends ModelEvent {
+    public UpdateModelEvent(Player player) {
         super(player);
     }
 }

@@ -1,11 +1,12 @@
 package it.polimi.ingsw.model;
 
+import java.io.PipedOutputStream;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
 public abstract class Turn implements Serializable {
-    protected final Player currentPlayer;
+    final Player currentPlayer;
     protected boolean isUndoAvailable = false; // false when deserializing for undo
     final private TurnPhase phase;
 
@@ -22,31 +23,31 @@ public abstract class Turn implements Serializable {
     public boolean isAllowedToMove(){
         return false;
     }
-    public boolean isAllowedToMove(int workerId){
+    public boolean isAllowedToMove(Position workerPosition){
         return false;
     }
     public boolean isRequiredToMove(){
         return false;
     }
-    public boolean isRequiredToMove(int workerId){
+    public boolean isRequiredToMove(Position workerPosition){
         return false;
     }
     public boolean isRequiredToBuild(){
         return false;
     }
-    public boolean isRequiredToBuild(int workerId){
+    public boolean isRequiredToBuild(Position workerPosition){
         return false;
     }
     public boolean isAllowedToBuild(){
         return false;
     }
-    public boolean isAllowedToBuild(int workerId){
+    public boolean isAllowedToBuild(Position workerPosition){
         return false;
     }
-    protected boolean canBuild(Board board, int workerId){
+    protected boolean canBuild(Board board, Position workerPosition){
         return false;
     }
-    protected boolean canMove(Board board, int workerId){
+    protected boolean canMove(Board board, Position workerPosition){
         return false;
     }
 
@@ -54,13 +55,13 @@ public abstract class Turn implements Serializable {
         return currentPlayer.isAnyWorkerNotPlaced();
     }
 
-    public boolean isFeasibleMove(Board board, int workerId, Position destinationPosition){
+    public boolean isFeasibleMove(Board board, Position startPosition, Position destinationPosition){
         return false;
     }
-    public boolean isFeasibleBuild(Board board, int workerId, Position destinationPosition, boolean isDome){
+    public boolean isFeasibleBuild(Board board, Position startPosition, Position destinationPosition, boolean isDome){
         return false;
     }
-    public boolean isBlockedMove(Board board, int workerId, Position destinationPosition) {
+    public boolean isBlockedMove(Board board, Position startPosition, Position destinationPosition) {
         return false;
     }
     public boolean getPreviousBlockNextPlayer(){
@@ -73,8 +74,11 @@ public abstract class Turn implements Serializable {
 //     private Player getCurrentPlayer() {
 ////            return currentPlayer;
 ////        }
-    public UUID getCurrentPlayerUUID() {
-        return currentPlayer.getUuid();
+//    public UUID getCurrentPlayerUUID() {
+//        return currentPlayer.getUuid();
+//    }
+    public boolean isCurrentPlayerUUID(UUID playerId){
+        return currentPlayer.getUuid() == playerId;
     }
     protected Player getCurrentPlayer() {
         return currentPlayer;
@@ -89,7 +93,7 @@ public abstract class Turn implements Serializable {
 //        return false;
 //    }
 
-    public boolean checkCurrentWorker(int workerId){
+    public boolean checkCurrentWorker(Position workerPosition){
         return false;
     }
 
@@ -97,18 +101,18 @@ public abstract class Turn implements Serializable {
         return false;
     }
 
-    boolean cannotMakeRequiredOperation(Board board, int workerId){
-        boolean isRequiredToMove = isRequiredToMove(workerId);
-        boolean isRequiredToBuild = isRequiredToBuild(workerId);
+    boolean cannotMakeRequiredOperation(Board board, Position workerPosition){
+        boolean isRequiredToMove = isRequiredToMove(workerPosition);
+        boolean isRequiredToBuild = isRequiredToBuild(workerPosition);
 
         if(isRequiredToBuild && isRequiredToMove){
-            if(!canBuild(board, workerId) && !canMove(board, workerId))
+            if(!canBuild(board, workerPosition) && !canMove(board, workerPosition))
                 return true;
         }else if(isRequiredToBuild){
-            if(!canBuild(board, workerId))
+            if(!canBuild(board, workerPosition))
                 return true;
         }else if(isRequiredToMove){//should be impossible
-            if(!canMove(board, workerId))
+            if(!canMove(board, workerPosition))
                 return true;
         }
         return false;

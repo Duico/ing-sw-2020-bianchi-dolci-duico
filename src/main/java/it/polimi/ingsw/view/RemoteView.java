@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.controller.response.ControllerResponse;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.event.BoardListener;
 import it.polimi.ingsw.model.event.ModelEvent;
@@ -15,7 +16,7 @@ public class RemoteView extends View {
         //this.connection = connection;
     }
 
-    public void dispatchEvent(ModelEvent message){
+    public void eventResponse(ControllerResponse response){
         //send to Client View
     }
 

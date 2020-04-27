@@ -1,9 +1,12 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.controller.response.*;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.ViewEventListener;
 import it.polimi.ingsw.view.event.*;
+
+import java.util.List;
 
 
 public class Controller implements ViewEventListener {
@@ -19,215 +22,233 @@ public class Controller implements ViewEventListener {
         System.out.println("Generic event from view");
     }
 
-//    public void handleEvent(MoveViewEvent message) {
-//        Player player = game.getCurrentPlayer();
-//
-//        int worker = message.getWorkerId();
-//        if (message.getPlayer() != player) return; //todo an event Wrong player
-//
-//        Turn turn = game.getTurn();
-//        turn.safeMove(worker, message.getDestPosition());
-//
-//    }
-    private boolean checkNormalTurn(){
-        if(game.getTurnPhase() != TurnPhase.NORMAL){
-            //STOP
-            //notify view
-            return false;
-        }
-        return true;
+    public void sendInfo(InfoViewEvent message){
+        RemoteView view = message.getView();
+        Player player = view.getPlayer();
+        //IMPLEMENT IF NEEDED
+        // send REQUIRED info about the player
+        // like:
+        // Required/Allowed Operations (ONLY THESE if a flag is set)
+        // turn Phase, workers to place
+        // undoAvailable
+        // etc
     }
 
     public void endTurn(EndTurnViewEvent message){
-        View view = message.getView();
-        if(!checkPlayer(view)){
-
+        RemoteView view = message.getView();
+        if(checkIsWrongPlayer(message)){
+            return;
         }
-        /*if(checkNormalTurn()){
-            //STOP
-        }*/
-
+        boolean advanceTurn = true;
         if(game.isRequiredToMove()) {
-            //notify view
+            view.eventResponse(new RequiredOperationControllerResponse(message, Operation.MOVE));
+            advanceTurn = false;
         }
 
-        if(game.isRequiredToBuild()){
-            //notify view
+        if(game.isRequiredToBuild()) {
+            view.eventResponse(new RequiredOperationControllerResponse(message, Operation.BUILD));
+            advanceTurn = false;
         }
-        game.nextTurn();
+
+        if(advanceTurn) {
+            view.eventResponse(new SuccessControllerResponse(message));
+            game.nextTurn();
+        }
     }
 
-    public void challengerCards(CardsChallengerViewEvent message){
-        View view = message.getView();
+    public void challengerCards(ChallengerCardViewEvent message){
+        RemoteView view = message.getView();
 
-        if(!checkPlayer(view)){
-            //notify view
+        if(checkIsWrongPlayer(message)){
+            return;
         }
 
-
-        game.setChosenCards(message.getCards());
-        game.nextTurn();
+        if(!game.setChosenCards(message.getCardNamesList())){
+            view.eventResponse(new IllegalCardNamesListControllerResponse(message));
+        }else{
+            view.eventResponse(new SuccessControllerResponse(message));
+            game.nextTurn();
+        }
     }
 
-    public void setPlayerCards(CardViewEvent message){
-        View view = message.getView();
-        String cardName = message.getNameCard();
-        if(!checkPlayer(view)){
-
+    public void setPlayerCard(CardViewEvent message){
+        RemoteView view = message.getView();
+        String cardName = message.getCardName();
+        if(checkIsWrongPlayer(message)){
+            return;
         }
 
-        game.setPlayerCards(cardName);
+        if(!game.setPlayerCard(cardName)){
+            List<String> cardNames = game.getChosenCardsNames();
+            view.eventResponse(new IllegalCardNameControllerResponse(message, cardNames));
+            return;
+        }
+        view.eventResponse(new SuccessControllerResponse(message));
         game.nextTurn();
     }
 
     public void setFirstPlayer(FirstPlayerViewEvent message){
-        View view = message.getView();
+        RemoteView view = message.getView();
         Player firstPlayer = message.getFirstPlayer();
-        //TODO check viewPlayer is challenger
-        if(!checkPlayer(view)){
+        if(checkIsWrongPlayer(message)){
+            return;
+        }
+        if(!isCurrentPlayerChalleger()){
+            view.eventResponse(new NotCurrentPlayerControllerResponse(message));
+            return;
+        }
+        if(checkIsWrongTurnPhase(message, TurnPhase.CHOSE_CARDS)){
+            return;
+        }
 
-        }
         if(game.isSetFirstPlayer()){
-            //notify view, già settato
+            view.eventResponse(new IllegalFirstPlayerControllerResponse(message, IllegalFirstPlayerControllerResponse.Reason.ALREADY_SET));
+            return;
         }
-        //TODO
-        //check all workers are set and all cards are set
-        game.firstTurn(firstPlayer);
+            //check all workers are set and all cards are set
+            //^^DONE
+            //^^wrongTurnPhase should do
+
         //the next turn is set in game.setFirstPlayer
+        if(!game.firstTurn(firstPlayer)){
+            view.eventResponse(new IllegalFirstPlayerControllerResponse(message, IllegalFirstPlayerControllerResponse.Reason.NON_EXISTENT));
+        }else {
+            view.eventResponse(new SuccessControllerResponse(message));
+        }
     }
 
     public void move(MoveViewEvent message){
-        View view = message.getView();
-        int currentWorkerId = message.getWorkerId();
-        //CHECK player equals viewPlayer
-        if(!checkPlayer(view)){
-            //STOP
+        RemoteView view = message.getView();
+        Position workerPosition = message.getWorkerPosition();
+
+        if(checkIsWrongPlayer(message)){
+            return;
         }
-        if(!checkWorkerId(message)){
-            //STOP
-            //wrong worker
+        if(!isCurrentWorkerId(message)){
+            view.eventResponse(new FailedOperationControllerResponse(message, Operation.MOVE, FailedOperationControllerResponse.Reason.NOT_CURRENT_WORKER));
+            return;
         }
 
         Position destinationPosition = message.getDestinationPosition();
 
-        if(checkNormalTurn()){
-            //STOP
+        if(checkIsWrongTurnPhase(message, TurnPhase.NORMAL)){
+            return;
         }
 
-        if(!game.isAllowedToMove(currentWorkerId)){
-            //STOP
-            //notify view
+        if(!game.isAllowedToMove(workerPosition)){
+            view.eventResponse(new FailedOperationControllerResponse(message, Operation.MOVE, FailedOperationControllerResponse.Reason.NOT_ALLOWED));
+            return;
         }
 
-        //check block
-        boolean possibleMove = true;
-
-        if(game.isBlockedMove(currentWorkerId, destinationPosition)){
-                possibleMove = false;
-                //notify View
+        //checks block
+        if(game.isBlockedMove(workerPosition, destinationPosition)){
+            view.eventResponse(new FailedOperationControllerResponse(message, Operation.MOVE, FailedOperationControllerResponse.Reason.BLOCKED_BY_OPPONENT));
+            return;
         }
 
-        //check isValidMove and isValidPush
-
-
-        if(!game.isFeasibleMove(currentWorkerId, destinationPosition)){
-            possibleMove = false;
-            //notify view
+        //checks isValidMove and isValidPush
+        if(!game.isFeasibleMove(workerPosition, destinationPosition)){
+            view.eventResponse(new FailedOperationControllerResponse(message, Operation.MOVE, FailedOperationControllerResponse.Reason.NOT_FEASIBLE));
+            return;
         }
+        view.eventResponse(new SuccessControllerResponse(message));
+        game.move(workerPosition, destinationPosition);
 
-
-
-        if( possibleMove == true ) {
-
-            game.move(currentWorkerId, destinationPosition);
-            //notify view of success/failure
-        }
     }
 
     public void place(PlaceViewEvent message){
-        View view = message.getView();
-        if(!checkPlayer(view)){
-            //STOP
+        RemoteView view = message.getView();
+        if(checkIsWrongPlayer(message)){
+            return;
         }
 
         if(!game.isAnyWorkerNotPlaced()){
-
-            //all workers are placed
-            //notify view
+            view.eventResponse(new FailedOperationControllerResponse(message, Operation.PLACE, FailedOperationControllerResponse.Reason.NOT_FEASIBLE));
         }
         int workerId = game.place(message.getDestinationPosition());
         if( workerId < 0){
-            //notify view
+            view.eventResponse(new FailedOperationControllerResponse(message, Operation.PLACE, FailedOperationControllerResponse.Reason.DESTINATION_NOT_EMPTY));
+        }else{
+            view.eventResponse(new SuccessControllerResponse(message));
         }
     }
 
 
     public void build(BuildViewEvent message){
-        View view = message.getView();
-        int currentWorkerId = message.getWorkerId();
-        if(!checkPlayer(view)){
-            //STOP
+        RemoteView view = message.getView();
+        Position workerPosition = message.getWorkerPosition();
+        if(checkIsWrongPlayer(message)){
+            return;
         }
-        if(!checkWorkerId(message)){
-            //STOP
-            //wrong worker selected
+        if(!isCurrentWorkerId(message)){
+            view.eventResponse(new FailedOperationControllerResponse(message, Operation.BUILD, FailedOperationControllerResponse.Reason.NOT_CURRENT_WORKER));
+            return;
         }
 
         Position destinationPosition = message.getDestinationPosition();
         boolean isDome = message.isDome();
 
-        if(checkNormalTurn()){
-            //STOP
+        if(checkIsWrongTurnPhase(message, TurnPhase.NORMAL)){
+            return;
         }
 
         if(!game.isAllowedToBuild()){
-
+            view.eventResponse(new FailedOperationControllerResponse(message, Operation.BUILD, FailedOperationControllerResponse.Reason.NOT_ALLOWED));
+            return;
         }
 
-        boolean possibleBuild = game.isFeasibleBuild(currentWorkerId, destinationPosition, isDome);
-        if(possibleBuild){
-            game.build(currentWorkerId, destinationPosition, isDome);
 
+
+        if(!game.isFeasibleBuild(workerPosition, destinationPosition, isDome)){
+            view.eventResponse(new FailedOperationControllerResponse(message, Operation.BUILD, FailedOperationControllerResponse.Reason.NOT_FEASIBLE));
+            return;
         }
+        view.eventResponse(new SuccessControllerResponse(message));
+        game.build(workerPosition, destinationPosition, isDome);
+
+
     }
 
     public void undo(UndoViewEvent message){
-        View view = message.getView();
-        checkPlayer(view);
-        //check 5 sec
+        RemoteView view = message.getView();
+        if(checkIsWrongPlayer(message)){
+            return;
+        }
+        //TODO
+        //timer 5 sec
         if(!game.undo()){
-            //ERROR
-            //notify view
+            view.eventResponse(new FailedUndoControllerResponse(message, FailedUndoControllerResponse.Reason.NOT_AVAILABLE));
+        }else{
+            view.eventResponse(new SuccessControllerResponse(message));
         }
     }
 
-    private boolean checkPlayer(View view) {
+    private boolean checkIsWrongPlayer(ViewEvent message) {
+        RemoteView view = message.getView();
         Player viewPlayer = view.getPlayer();
-        if(!game.checkPlayer(viewPlayer)){
-            //view.sendError();
-            //TODO
-            //notify view about invalid player uuid
+        if(game.getCurrentPlayer().getUuid() == viewPlayer.getUuid()){
+            view.eventResponse(new NotCurrentPlayerControllerResponse(message));
             return false;
         }
         return true;
     }
 
+    private boolean isCurrentPlayerChalleger(){
+        //you always have to call checkPlayer before
+        return game.getCurrentPlayer().isChallenger();
+    }
 
-//    private boolean updateWorkerId(WorkerViewEvent message){
-//        Turn turn = game.getTurn();
-//        int currentWorkerId = message.getWorkerId();
-//        if(!turn.updateCurrentWorker(currentWorkerId)) {
-//            //TODO
-//            //notify view
-//            return false;
-//        }
-//        return true;
-//    }
-    private boolean checkWorkerId(WorkerViewEvent message){
-        int currentWorkerId = message.getWorkerId();
-        if(!game.checkCurrentWorker(currentWorkerId)){
-            //TODO
-            //message contains an invalid workerId for the turn
+    private boolean checkIsWrongTurnPhase(ViewEvent message, TurnPhase turnPhase){
+        RemoteView view = message.getView();
+        if(game.getTurnPhase() != turnPhase){
+            view.eventResponse(new IllegalTurnPhaseControllerResponse(message, turnPhase));
+            return true;
+        }
+        return false;
+    }
+    private boolean isCurrentWorkerId(WorkerViewEvent message){
+        Position currentWorkerPosition = message.getWorkerPosition();
+        if(!game.checkCurrentWorker(currentWorkerPosition)){
             return false;
         }
         return true;

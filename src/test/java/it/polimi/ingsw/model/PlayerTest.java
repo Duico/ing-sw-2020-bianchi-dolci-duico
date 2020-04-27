@@ -103,7 +103,7 @@ class PlayerTest {
         Position position = new Position(0,0);
         player1.addWorker(worker1);
         board.setWorker(worker1,position);
-        assertTrue(player1.getWorkerCurrentPosition(0)!=null);
+        assertTrue(player1.getWorkerPosition(0)!=null);
     }
 
 

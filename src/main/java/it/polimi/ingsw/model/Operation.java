@@ -5,5 +5,6 @@ package it.polimi.ingsw.model;
  */
 public enum Operation{
     MOVE,
-    BUILD
+    BUILD,
+    PLACE
 }

@@ -89,11 +89,21 @@ public class FixedArray<T> implements Serializable {
         if (this == obj) return true;
         if (obj == null) return false;
         if (obj.getClass() == getClass()){
-            FixedArray<Worker> fa = (FixedArray<Worker>) obj;
+            FixedArray<T> fa = (FixedArray<T>) obj;
             return Objects.equals(array, fa.array);
 
         }
         return super.equals(obj);
+    }
+
+    public FixedArray<T> clone(){
+        FixedArray<T> fixedArray = null;
+        try{
+            fixedArray = (FixedArray<T>) super.clone();
+        }catch(CloneNotSupportedException e){
+            throw new RuntimeException("Clone not supported in FixedArray");
+        }
+        return fixedArray;
     }
 }
 

@@ -4,15 +4,15 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.view.RemoteView;
 
-public class PlaceViewEvent extends ViewEvent{
-    private Position destinstionPosition;
+public class PlaceViewEvent extends WorkerViewEvent{
+    private Position destinationPosition;
 
-    public PlaceViewEvent(RemoteView view, Player player, Position destPosition) {
-        super(view);
-        this.destinstionPosition = destPosition;
+    public PlaceViewEvent(RemoteView view, Player player, Position placePosition) {
+        super(view, placePosition);
+        this.destinationPosition = placePosition;
     }
 
     public Position getDestinationPosition() {
-        return destinstionPosition;
+        return destinationPosition;
     }
 }

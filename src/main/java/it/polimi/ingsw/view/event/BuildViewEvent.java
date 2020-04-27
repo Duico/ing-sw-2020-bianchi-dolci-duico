@@ -9,8 +9,8 @@ public class BuildViewEvent extends WorkerViewEvent {
     private Position destinationPosition;
     private boolean isDome;
 
-    public BuildViewEvent(RemoteView view, Player player, int workerId, Position destinationPosition, boolean isDome) {
-        super(view, workerId);
+    public BuildViewEvent(RemoteView view, Player player, Position workerPosition, Position destinationPosition, boolean isDome) {
+        super(view, workerPosition);
         this.destinationPosition = destinationPosition;
         this.isDome = isDome;
     }
