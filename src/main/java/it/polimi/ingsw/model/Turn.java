@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
+
 import java.io.PipedOutputStream;
 import java.io.Serializable;
 import java.util.Objects;
@@ -19,11 +21,11 @@ public abstract class Turn implements Serializable {
     public TurnPhase getPhase(){
         return this.phase;
     }
-
     public boolean isAllowedToMove(){
         return false;
     }
     public boolean isAllowedToMove(Position workerPosition){
+
         return false;
     }
     public boolean isRequiredToMove(){
@@ -50,17 +52,18 @@ public abstract class Turn implements Serializable {
     protected boolean canMove(Board board, Position workerPosition){
         return false;
     }
-
     public boolean isAnyWorkerNotPlaced(){
         return currentPlayer.isAnyWorkerNotPlaced();
     }
-
     public boolean isFeasibleMove(Board board, Position startPosition, Position destinationPosition){
+        System.out.println("entro nell'astratto");
         return false;
     }
     public boolean isFeasibleBuild(Board board, Position startPosition, Position destinationPosition, boolean isDome){
         return false;
     }
+
+
     public boolean isBlockedMove(Board board, Position startPosition, Position destinationPosition) {
         return false;
     }
@@ -70,6 +73,11 @@ public abstract class Turn implements Serializable {
     public boolean getBlockNextPlayer(){
         return false;
     }
+    protected Position boardMove(Board board, Position startPosition, Position destinationPosition){
+        return null;
+    };
+    protected void boardBuild(Board board, Position startPosition, Position destinationPosition, boolean isDome){};
+    protected int boardPlace(Board board, Position placePosition){return -1;};
 
 //     private Player getCurrentPlayer() {
 ////            return currentPlayer;

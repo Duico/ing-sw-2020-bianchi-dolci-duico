@@ -1,11 +1,12 @@
 package it.polimi.ingsw.model;
 
 public class PlaceWorkersTurn extends Turn {
+
     public PlaceWorkersTurn(Player currentPlayer) {
         super(TurnPhase.PLACE_WORKERS, currentPlayer);
     }
 
-    int boardPlace(Board board, Position placePosition){
+    protected int boardPlace(Board board, Position placePosition){
         Player currentPlayer = this.getCurrentPlayer();
         //for extra security
         if(!currentPlayer.isAnyWorkerNotPlaced()){
@@ -22,6 +23,12 @@ public class PlaceWorkersTurn extends Turn {
 
         return -1;
     }
+
+    /*@Override
+    public boolean isValidPlace(Board board, Position placePosition) {
+        Worker newWorker = new Worker();
+        return board.setWorker(newWorker, placePosition);
+    }*/
 }
 
 

@@ -11,7 +11,7 @@ public interface MoveStrategy extends Serializable { //implement DefaultMove fun
     boolean isValidMove(Position startPosition, Position destPosition, Board board);
 
     default boolean isAllowedToMove(int numMoves, int numBuilds){
-        if(numMoves != 0 && numBuilds==0){
+        if(numMoves != 0 /*&& numBuilds==0*/){
             return false;
         }else{
             return true;

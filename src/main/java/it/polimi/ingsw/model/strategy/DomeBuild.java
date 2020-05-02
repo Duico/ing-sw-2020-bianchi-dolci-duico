@@ -25,7 +25,7 @@ public class DomeBuild implements BuildStrategy {
                 return false;
             else if (destinationCell.getWorker() != null)
                 return false;
-            else if(destinationCell.getLevel().ordinal() == 3 && !isDome)
+            else if(destinationCell.getLevel().getOrd() == 3 && !isDome)
                 return false;
             else
                 return true;

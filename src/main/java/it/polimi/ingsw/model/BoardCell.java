@@ -12,15 +12,20 @@ public class BoardCell implements Cloneable, Serializable {
         this.level = Level.EMPTY;
         this.dome = false;
         this.worker = null;
+
     }
 
     public Level getLevel() {
         return level;
     }
 
+
+
     public void setLevel(Level level) {
         this.level = level;
     }
+
+
 
     public void setDome(boolean hasDome) {
         this.dome = hasDome;

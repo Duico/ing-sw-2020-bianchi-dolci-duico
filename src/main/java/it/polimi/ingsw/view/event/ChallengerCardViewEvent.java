@@ -1,3 +1,4 @@
+
 package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.view.RemoteView;
@@ -15,3 +16,4 @@ public class ChallengerCardViewEvent extends GameViewEvent {
         return this.cardNamesList;
     }
 }
+

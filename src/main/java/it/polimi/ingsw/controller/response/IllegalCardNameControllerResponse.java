@@ -1,3 +1,4 @@
+
 package it.polimi.ingsw.controller.response;
 
 import it.polimi.ingsw.view.event.CardViewEvent;
@@ -10,3 +11,4 @@ public class IllegalCardNameControllerResponse extends ControllerResponse {
         super(message);
     }
 }
+

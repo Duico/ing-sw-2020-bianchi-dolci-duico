@@ -22,9 +22,9 @@ public class PushMove implements MoveStrategy {
                 return false;
             else if(destCell.hasDome())
                 return false;
-            else if((startCell.getLevel().ordinal()+1) >= (destCell.getLevel().ordinal()))
+            else if((startCell.getLevel().getOrd()+1) >= (destCell.getLevel().getOrd())) {
                 return true;
-            else
+            }else
                 return false;
         }catch (NullPointerException e){
             throw new NullPointerException();

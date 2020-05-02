@@ -19,7 +19,6 @@ public class WorkerViewEvent extends GameViewEvent {
     public Position getWorkerPosition() {
         return workerPosition;
     }
-    public Position getStartPosition(){
-        return getWorkerPosition();
-    }
+
 }
+

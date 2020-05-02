@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.event.BuildWorkerModelEvent;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.model.strategy.BuildStrategy;
 import it.polimi.ingsw.model.strategy.MoveStrategy;
@@ -20,21 +19,26 @@ public class NormalTurn extends Turn {
         this.previousTurnCard = previousTurnCard;
         this.previousBlockNextPlayer = previousBlockNextPlayer;
     }
+
     @Override
     public boolean isAllowedToMove(){
         return isAllowedToMove(currentPlayer.getWorkerPosition(currentWorkerId));
     }
+
     @Override
     public boolean isAllowedToMove(Position workerPosition){
+
         Card card = currentPlayer.getCard();
         int workerId = currentPlayer.getWorkerId(workerPosition);
-        if(workerId == -1)
+        if(workerId == -1) {
             return false;
+        }
         int numBuilds = currentPlayer.getNumBuildsWorker(workerId);
         int numMoves = currentPlayer.getNumMovesWorker(workerId);
         boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(numMoves, numBuilds);
         return isAllowedToMove;
     }
+
     @Override
     public boolean isRequiredToMove(){
         if(currentWorkerId>=0){
@@ -43,6 +47,7 @@ public class NormalTurn extends Turn {
             return true;
         }
     }
+
     @Override
     public boolean isRequiredToMove(Position workerPosition){
         if(isAnyWorkerNotPlaced())
@@ -56,6 +61,7 @@ public class NormalTurn extends Turn {
         boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
         return isRequiredToMove;
     }
+
     @Override
     public boolean isRequiredToBuild(){
         if(currentWorkerId>=0){
@@ -64,6 +70,7 @@ public class NormalTurn extends Turn {
             return true;
         }
     }
+
     @Override
     public boolean isRequiredToBuild(Position workerPosition){
         if(isAnyWorkerNotPlaced())
@@ -78,10 +85,12 @@ public class NormalTurn extends Turn {
         boolean isRequiredToBuild = card.getBuildStrategy().isRequiredToBuild(numMoves, numBuilds, lastOperation);
         return isRequiredToBuild;
     }
+
     @Override
     public boolean isAllowedToBuild(){
         return isAllowedToBuild(currentPlayer.getWorkerPosition(currentWorkerId));
     }
+
     @Override
     public boolean isAllowedToBuild(Position workerPosition){
         if(isAnyWorkerNotPlaced())
@@ -103,7 +112,6 @@ public class NormalTurn extends Turn {
     public boolean getPreviousBlockNextPlayer(){
         return previousBlockNextPlayer;
     }
-
     public int getCurrentWorkerId(){
         return this.currentWorkerId;
     }
@@ -112,10 +120,27 @@ public class NormalTurn extends Turn {
 //    public boolean checkCurrentWorker(int workerId){
 //        return  isSetCurrentWorker() && (currentWorkerId == workerId );
 //    }
-    @Override
+
+    /*@Override
     public boolean checkCurrentWorker(Position workerPosition){
         return workerPosition != null && workerPosition == currentPlayer.getWorkerPosition(currentWorkerId);
+    }*/
+
+    //TODO: da dire all'ale
+    public boolean checkCurrentWorker(Position workerPosition){
+        if(isSetCurrentWorker())
+            return workerPosition != null && workerPosition.equals(currentPlayer.getWorkerPosition(currentWorkerId));
+        else{
+            for(int i=0;i<currentPlayer.getNumWorkers();i++){
+                if(currentPlayer.getWorkerPosition(i).equals(workerPosition))
+                    return true;
+            }
+            return false;
+        }
+
     }
+
+
 
     public boolean isSetCurrentWorker(){
         return currentWorkerId>=0;

@@ -24,8 +24,9 @@ public class Board implements Cloneable, Serializable {
         if(isDome){
             getBoardCellReference(destinationPosition).setDome(true);
         }else{
-            int previousLevel = getBoardCellReference(destinationPosition).getLevel().ordinal();
+            int previousLevel = getBoardCellReference(destinationPosition).getLevel().getOrd();
             getBoardCellReference(destinationPosition).setLevel(Level.values()[previousLevel+1]);
+
         }
         worker.addBuild(destinationPosition);
     }

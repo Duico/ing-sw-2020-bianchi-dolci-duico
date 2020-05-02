@@ -1,3 +1,4 @@
+
 package it.polimi.ingsw.controller.response;
 
 import it.polimi.ingsw.view.event.ViewEvent;
@@ -12,3 +13,4 @@ public class ControllerResponse{
         return event;
     }
 }
+

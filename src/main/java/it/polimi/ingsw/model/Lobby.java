@@ -10,10 +10,12 @@ public class Lobby {
     //TODO should be in a configuration file
     Game game;
     int numPlayers;
-    ArrayList<Player> players;//fix ArrayList<String> -> ArrayList<Player>
+    private ArrayList<String> players;
+    //ArrayList<Player> players;//fix ArrayList<String> -> ArrayList<Player>
 
     public Lobby() {
-        players = new ArrayList<Player>();
+        //players = new ArrayList<Player>();
+        players = new ArrayList<>();
         this.game = new Game();
     }
     public Lobby(String persistencyFilename){
@@ -25,7 +27,7 @@ public class Lobby {
         this.game = new Game(width, height,2);
     }
 
-    public boolean validateNickname(String nickname){
+    /*public boolean validateNickname(String nickname){
         for(Player player: players){
             if(player.getNickName() == nickname)
                 return false;
@@ -35,27 +37,47 @@ public class Lobby {
             return false;
         }
         return true;
-    }
+    }*/
 
-    public Player addPlayer(String nickname){
-        if(!validateNickname(nickname)){
-            //todo
-            //notify view
-            return null;
+    public boolean validateNickname(String nickname){
+        for(String player: players){
+            if(player.equals(nickname))
+                return false;
         }
-        Player newPlayer = new Player(nickname);
-        players.add(newPlayer);
-        return newPlayer;
+        final Pattern pattern = Pattern.compile("^[A-Za-z0-9\\-_]{3,32}$");
+        if (!pattern.matcher(nickname).matches()) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean addPlayer(String nickname){
+        if(!validateNickname(nickname)){
+            return false;
+        }
+
+        players.add(nickname);
+        return true;
 
     }
 
-    public void removePlayerName(String nickname){
+    /*public void removePlayerName(String nickname){
         for(Player player: players) {
             if (player.getNickName().equals(nickname)) {
                 players.remove(player);
             }
         }
+    }*/
+
+    public void removePlayerName(String nickname){
+        for(String player: players) {
+            if (player.equals(nickname)) {
+                players.remove(player);
+            }
+        }
     }
+
+
     public boolean isAdmin(Player player){
         if(this.players==null){
             return false;
@@ -63,7 +85,7 @@ public class Lobby {
         return this.players.get(0).equals(player);
     }
 
-    public void startGame() throws NotEnoughPlayersException {
+    /*public void startGame() throws NotEnoughPlayersException {
         if(players.size() < getNumPlayers()) {
             throw new NotEnoughPlayersException();
         } else if(players.size() > getNumPlayers()){
@@ -71,7 +93,7 @@ public class Lobby {
         }
         game.startGame(players, true); //TODO when view pass useCards
 
-    }
+    }*/
 
     /**
      * Read a serialized Game
@@ -97,5 +119,15 @@ public class Lobby {
         //if(numPlayers>=2 && numPlayers<=3){
             return numPlayers;
 
+    }
+
+    public boolean setNumPlayers(int numPlayers) {
+        if(this.numPlayers!=0)
+            return false;
+        else if(2<=numPlayers && numPlayers<=3) {
+            this.numPlayers = numPlayers;
+            return true;
+        }else
+            return false;
     }
 }

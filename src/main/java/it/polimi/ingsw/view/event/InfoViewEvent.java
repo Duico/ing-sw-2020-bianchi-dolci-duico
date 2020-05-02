@@ -1,3 +1,4 @@
+
 package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.view.RemoteView;

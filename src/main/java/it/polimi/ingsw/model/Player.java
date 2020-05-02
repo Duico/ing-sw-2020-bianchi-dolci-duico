@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
+        import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.UUID;
+        import java.io.Serializable;
+        import java.util.Objects;
+        import java.util.UUID;
 
 public class Player implements Serializable, Cloneable {
     private final String nickName;
@@ -157,7 +157,7 @@ public class Player implements Serializable, Cloneable {
         for(int i=0; i<workers.size(); i++){
             Worker worker = workers.get(i);
             try{
-                if(worker!=null && worker.getCurrentPosition()==workerPosition){
+                if(worker!=null && worker.getCurrentPosition().equals(workerPosition)){
                     return i;
                 }
             }catch (WorkerPositionNotSetException e){

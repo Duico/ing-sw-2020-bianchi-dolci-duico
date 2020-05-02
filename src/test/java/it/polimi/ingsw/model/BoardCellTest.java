@@ -22,14 +22,19 @@ class BoardCellTest {
 
     @Test
     void levelFullTest() {
+
         assertEquals(bc.getLevel(), Level.EMPTY);
         bc.setLevel(Level.BASE);
+
         assertEquals(bc.getLevel(), Level.BASE);
         bc.setLevel(Level.MID);
+
         assertEquals(bc.getLevel(), Level.MID);
         bc.setLevel(Level.TOP);
+
         assertEquals(bc.getLevel(), Level.TOP);
         bc.setDome(true);
+
         assertEquals(bc.getLevel(), Level.TOP);
     }
 
@@ -51,10 +56,12 @@ class BoardCellTest {
     void cloneTest(){
         bc.setWorker(w);
         bc.setLevel(Level.MID);
+
         BoardCell bcClone = bc.clone();
         assertNotSame(bc, bcClone);
         assertNotSame(bc.getWorker(), bcClone.getWorker());
         assertEquals(bc.getLevel(), bcClone.getLevel());
+
         assertEquals(bc.hasDome(), bcClone.hasDome());
 
     }

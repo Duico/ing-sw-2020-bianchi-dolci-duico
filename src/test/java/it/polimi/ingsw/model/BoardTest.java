@@ -28,26 +28,35 @@ class BoardTest {
         Position startPosition = new Position(3,2);
         Position destinationPosition = new Position(2,2);
         assertEquals(Level.EMPTY, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.BASE, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.MID, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.TOP, b.getBoardCell(destinationPosition).getLevel());
+
     }
     @Test
     void buildAllAndDome() throws Exception {
         Position startPosition = new Position(3,2);
         Position destinationPosition = new Position(2,2);
         assertEquals(Level.EMPTY, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.BASE, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.MID, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.TOP, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, true);
         assertEquals(Level.TOP, b.getBoardCell(destinationPosition).getLevel());
+
         assertTrue(b.getBoardCell(destinationPosition).hasDome());
     }
     @Test
@@ -56,10 +65,11 @@ class BoardTest {
         Position destinationPosition = new Position(2,2);
         b.build(startPosition, destinationPosition, false);
         BoardCell bc = b.getBoardCell(destinationPosition);
-        //assertNotEquals(bc, b.getBoardCellReference(destinationPosition)); why?
+        //assertNotEquals(bc, b.getBoardCellReference(destinationPosition));
         bc.setLevel(Level.EMPTY);
         b.build(startPosition, destinationPosition, false);
         assertNotEquals(b.getBoardCell(destinationPosition).getLevel(), bc.getLevel());
+
     }
     @Test
     void setWorker() throws Exception{

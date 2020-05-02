@@ -1,3 +1,4 @@
+
 package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.model.Player;
@@ -17,3 +18,4 @@ public class ViewEvent implements Serializable {
         return this.view;
     }
 }
+

@@ -1,3 +1,4 @@
+
 package it.polimi.ingsw.controller.response;
 
 import it.polimi.ingsw.model.TurnPhase;
@@ -10,3 +11,4 @@ public class IllegalTurnPhaseControllerResponse extends ControllerResponse {
         this.requiredPhase = requiredPhase;
     }
 }
+

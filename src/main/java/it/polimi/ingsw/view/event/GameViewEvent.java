@@ -1,3 +1,4 @@
+
 package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.view.RemoteView;
@@ -7,3 +8,4 @@ public class GameViewEvent extends ViewEvent{
         super(view);
     }
 }
+

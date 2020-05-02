@@ -83,7 +83,7 @@ public class Game extends ModelEventEmitter implements Serializable{
         chosenCards = new ArrayList<>();
         Player challenger = pickFirstPlayer();
         challenger.setIsChallenger(true);
-        emitEvent(new FullInfoModelEvent(challenger, players, board, cardDeck));
+        //emitEvent(new FullInfoModelEvent(challenger, players, board, cardDeck));
 
         if(!useCards)
             setFirstPlayer(challenger);
@@ -101,10 +101,6 @@ public class Game extends ModelEventEmitter implements Serializable{
         }
     }
 
-   /* private ArrayList<Card> dealCards(int numPlayers) {
-        ArrayList<Card> randomDeck = cardDeck.pickRandom(numPlayers);
-        return randomDeck;
-    }*/
 
     private void dealDefaultCard(int numPlayers){
         Card defaultCard = Card.getDefaultCard();
@@ -143,7 +139,7 @@ public class Game extends ModelEventEmitter implements Serializable{
 //                }else{
 //                    //list of players sent to challenger
 //                }
-                emitEvent( new SetCardModelEvent(currentPlayer, card.getName()) );
+                //emitEvent( new SetCardModelEvent(currentPlayer, card.getName()) );
                 return true;
             }
         }
@@ -274,17 +270,12 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
 
-    /*public ArrayList<Player> getPlayers() {
-        return this.players;
-    }*/
-
     public void move(Position startPosition, Position destinationPosition){
-        //FIX check is NormalTurn
         if(turn.getPhase() != TurnPhase.NORMAL)
             throw new IllegalTurnPhaseException();
-        NormalTurn normalTurn = (NormalTurn) turn;
+
         backupUndo();
-        Position pushDestPosition = normalTurn.boardMove(board, startPosition, destinationPosition);
+        Position pushDestPosition = turn.boardMove(board, startPosition, destinationPosition);
         emitEvent(new MoveWorkerModelEvent(getCurrentPlayer(), startPosition, destinationPosition, pushDestPosition));
         checkHasLost();
     }
@@ -302,6 +293,9 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
     public boolean isFeasibleMove(Position startPosition, Position destinationPosition){
+        System.out.println("Ecco la destPosition");
+        System.out.println(destinationPosition.getX());
+        System.out.println(destinationPosition.getY());
         return turn.isFeasibleMove(board, startPosition, destinationPosition);
     }
     public boolean isBlockedMove(Position startPosition, Position destinationPosition){
@@ -317,12 +311,12 @@ public class Game extends ModelEventEmitter implements Serializable{
     public void build(Position startPosition, Position destinationPosition, boolean isDome){
         if(turn.getPhase() != TurnPhase.NORMAL)
             throw new IllegalTurnPhaseException();
-        NormalTurn normalTurn = (NormalTurn) turn;
         backupUndo();
         emitEvent(new BuildWorkerModelEvent(getCurrentPlayer(), startPosition, destinationPosition) );
-        normalTurn.boardBuild(board, startPosition, destinationPosition, isDome);
+        turn.boardBuild(board, startPosition, destinationPosition, isDome);
         checkHasLost();
     }
+
     public boolean isAllowedToBuild(){
         return turn.isAllowedToBuild();
     }
@@ -338,15 +332,16 @@ public class Game extends ModelEventEmitter implements Serializable{
         return turn.isFeasibleBuild(board, startPosition, buildPosition, isDome);
     }
 
+
     public int place(Position placePosition) {
-        //FIX check is SetWorkerTurn
         if(turn.getPhase() != TurnPhase.PLACE_WORKERS)
             throw new IllegalTurnPhaseException();
-        PlaceWorkersTurn placeWorkersTurn = (PlaceWorkersTurn) turn;
         backupUndo();
-        //EVENT
-        int workerId = placeWorkersTurn.boardPlace(board, placePosition);
-        emitEvent(new PlaceWorkerModelEvent(getCurrentPlayer(), placePosition));
+
+        int workerId = turn.boardPlace(board, placePosition);
+        if(workerId>=0) {
+            emitEvent(new PlaceWorkerModelEvent(getCurrentPlayer(), placePosition));
+        }
         return workerId;
     }
 
@@ -365,15 +360,15 @@ public class Game extends ModelEventEmitter implements Serializable{
     public TurnPhase getTurnPhase(){
         return turn.getPhase();
     }
-//    public boolean checkPlayer(Player viewPlayer){
-//        return turn.getCurrentPlayer().getUuid() == viewPlayer.getUuid();
-//    }
+
+
     public Player getCurrentPlayer(){
         if(turn.getCurrentPlayer() == null){
             return null;
         }
         return turn.getCurrentPlayer().clone();
     }
+
     public boolean checkCurrentWorker(Position currentWorkerPosition) {
         return turn.checkCurrentWorker(currentWorkerPosition);
     }
@@ -387,7 +382,7 @@ public class Game extends ModelEventEmitter implements Serializable{
                 Position workerPosition = currentPlayer.getWorkerPosition(i);
                 board.removeWorker(workerPosition);
             }
-            emitEvent(new PlayerRemovalModelEvent(getCurrentPlayer()));
+            //emitEvent(new PlayerRemovalModelEvent(getCurrentPlayer()));
             players.remove(currentPlayer);
             return true;
         }
