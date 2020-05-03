@@ -23,24 +23,55 @@ public class Server {
     private Lobby lobby;
     private ServerSocket serverSocket;
     private ExecutorService executor = Executors.newFixedThreadPool(128);
-    private Map<String, ClientConnection> waitingConnection = new HashMap<>();
-    private ArrayList<ClientConnection> waitingGameConnection = new ArrayList<>();
-    private Map<ClientConnection, ClientConnection> playingConnection = new HashMap<>();
+    //private Map<String, ClientConnection> waitingConnection = new HashMap<>();
+    private Map<ViewConnection,Player> waitingConnection = new HashMap<>();
+    private ArrayList<ViewConnection> waitingGameConnection = new ArrayList<>();
+    //private Map<ClientConnection, ClientConnection> playingConnection = new HashMap<>();
 
     //Deregister connection
-    public synchronized void deregisterConnection(ClientConnection c) {
-        ClientConnection opponent = playingConnection.get(c);
+    public synchronized void clientCloseConnection(ViewConnection c) {
+
+        waitingConnection.remove(c);
+
+        ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
+        for (int i = 0; i < viewConnections.size(); i++){
+            viewConnections.get(i).asyncSend("La partita è terminata causa disconnessione di un player");
+            viewConnections.get(i).asyncSend("quit");
+        }
+
+       waitingConnection.clear();
+        /*ClientConnection opponent = playingConnection.get(c);
         if(opponent != null) {
             opponent.closeConnection();
         }
+
+        for (ClientConnection connection : waitingConnection.get()) {
+            connection.asyncSend("La partita è terminata causa disconnessione di un player");
+            connection.closeConnection();
+            waitingConnection.remove(connection);
+        }
+
         playingConnection.remove(c);
         playingConnection.remove(opponent);
-        Iterator<String> iterator = waitingConnection.keySet().iterator();
+        */
+        /*
+        ArrayList<ClientConnection> iterator = new ArrayList<>(waitingConnection.keySet());
+        while(iterator.size()>0){
+            iterator.get(0).asyncSend("La partita è terminata causa disconnessione di un player");
+            iterator.get(0).closeConnection();
+            waitingConnection.remove(iterator.get(0));
+        }
+
+         */
+        /*
         while(iterator.hasNext()){
+            iterator.
             if(waitingConnection.get(iterator.next())==c){
                 iterator.remove();
             }
-        }
+
+
+        }*/
     }
 
     public void adviseAllAttendances(){
@@ -50,25 +81,27 @@ public class Server {
 
 
     //Wait for another player
-    public synchronized void lobby(ClientConnection c, String name){
+    public synchronized void lobby(ViewConnection c, String name){
 
-        waitingConnection.put(name, c);
+        waitingConnection.put(c, new Player(name));
         if (waitingConnection.size() == lobby.getNumPlayers()) {
 
-            List<String> keys = new ArrayList<>(waitingConnection.keySet());
-            ArrayList<ClientConnection> clientConnections = new ArrayList<>();
+            //List<String> keys = new ArrayList<>(waitingConnection.keySet());
+            ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
             ArrayList<Player> players = new ArrayList<>();
+            //ArrayList<Player> players = new ArrayList<>();
 
-            for (int i = 0; i < keys.size(); i++) {
-                players.add(new Player(keys.get(i)));
-                clientConnections.add(waitingConnection.get(keys.get(i)));
+            for (int i = 0; i < waitingConnection.size(); i++) {
+                //players.add(new Player(keys.get(i)));
+                //clientConnections.add(waitingConnection.get(players.get(i)));
+                players.add(waitingConnection.get(viewConnections.get(i)));
             }
 
 
             ArrayList<RemoteView> remoteView = new ArrayList<>();
             for(int i=0;i<players.size();i++) {
-                remoteView.add(new RemoteView(players.get(i), clientConnections.get(i)));
-                clientConnections.get(i).asyncSend("La partita può incominciare");
+                remoteView.add(new RemoteView(players.get(i), viewConnections.get(i)));
+                viewConnections.get(i).asyncSend("La partita può incominciare");
             }
 
 
@@ -95,10 +128,12 @@ public class Server {
         while(true){
             try {
                 Socket newSocket = serverSocket.accept();
-                SocketClientConnection socketConnection = new SocketClientConnection(newSocket, this);
+                //serverSocket.setSoTimeout(10000);
+                SocketViewConnection socketConnection = new SocketViewConnection(newSocket, this);
                 executor.submit(socketConnection);
             } catch (IOException e) {
                 System.out.println("Connection Error!");
+                System.out.println("Il server ha perso la connessione!");
             }
         }
     }
@@ -138,7 +173,7 @@ public class Server {
         }
     }
 
-    public void addWaitingGame(ClientConnection c){
+    public void addWaitingGame(ViewConnection c){
         waitingGameConnection.add(c);
     }
 

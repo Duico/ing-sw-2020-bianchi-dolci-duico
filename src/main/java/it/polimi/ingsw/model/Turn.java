@@ -76,7 +76,7 @@ public abstract class Turn implements Serializable {
     };
     protected void boardBuild(Board board, Position startPosition, Position destinationPosition, boolean isDome){};
     protected int boardPlace(Board board, Position placePosition){return -1;};
-
+    public Card getPreviousTurnCard(){return null;}
 //     private Player getCurrentPlayer() {
 ////            return currentPlayer;
 ////        }

@@ -2,7 +2,7 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.view.ViewEventListener;
 
-public interface ClientConnection {
+public interface ViewConnection {
 
     void closeConnection();
 

@@ -9,14 +9,16 @@ import it.polimi.ingsw.model.strategy.WinStrategy;
 public class NormalTurn extends Turn {
     private int currentWorkerId;
     private Card previousTurnCard;
+    //private Card previousBlockCard;
     private boolean blockNextPlayer;
     private boolean previousBlockNextPlayer;
 
-    public NormalTurn(Player currentPlayer, Card previousTurnCard, boolean previousBlockNextPlayer){
+    public NormalTurn(Player currentPlayer, Card previousTurnCard, /*Card previousBlockCard,*/ boolean previousBlockNextPlayer){
         super(TurnPhase.NORMAL, currentPlayer);
         this.currentWorkerId = -1;
         this.blockNextPlayer = false;
         this.previousTurnCard = previousTurnCard;
+        //this.previousBlockCard = previousBlockCard;
         this.previousBlockNextPlayer = previousBlockNextPlayer;
     }
 
@@ -112,6 +114,7 @@ public class NormalTurn extends Turn {
     public boolean getPreviousBlockNextPlayer(){
         return previousBlockNextPlayer;
     }
+    //public Card getPreviousBlockCard(){return previousBlockCard;}
     public int getCurrentWorkerId(){
         return this.currentWorkerId;
     }
@@ -229,6 +232,11 @@ public class NormalTurn extends Turn {
 
         return isValidBuild;
     }
+
+    /*public boolean isBlockedMove(Board board, Position startPosition, Position destinationPosition){
+        Player currentPlayer = this.getCurrentPlayer();
+        return this.getPreviousTurnCard().getBlockStrategy().isBlockMove( startPosition, destinationPosition, board);
+    }*/
 
     public boolean isBlockedMove(Board board, Position startPosition, Position destinationPosition){
         Player currentPlayer = this.getCurrentPlayer();

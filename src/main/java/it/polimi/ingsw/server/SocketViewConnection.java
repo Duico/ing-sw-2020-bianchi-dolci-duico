@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 
-public class SocketClientConnection extends ObservableConnection implements ClientConnection, Runnable {
+public class SocketViewConnection extends ObservableConnection implements ViewConnection, Runnable {
 
     private Socket socket;
     private ObjectOutputStream out;
@@ -18,7 +18,7 @@ public class SocketClientConnection extends ObservableConnection implements Clie
 
     private boolean active = true;
 
-    public SocketClientConnection(Socket socket, Server server)  {
+    public SocketViewConnection(Socket socket, Server server)  {
         this.socket = socket;
         this.server = server;
 
@@ -57,8 +57,7 @@ public class SocketClientConnection extends ObservableConnection implements Clie
 
     private void close() {
         closeConnection();
-        System.out.println("Deregistering client...");
-        server.deregisterConnection(this);
+        server.clientCloseConnection(this);
         System.out.println("Done!");
     }
 
@@ -87,8 +86,8 @@ public class SocketClientConnection extends ObservableConnection implements Clie
                     }
 
                 }
-            } catch (Exception e){
-                setActive(false);
+            } catch (IOException | NoSuchElementException | ClassNotFoundException e) {
+                //System.err.println("Error!" + e.getMessage());
             }
         });
         t.start();
@@ -132,8 +131,14 @@ public class SocketClientConnection extends ObservableConnection implements Clie
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             Thread t0 = asyncReadFromSocket(in);
             t0.join();
+            out.close();
+            in.close();
+            socket.close();
         } catch (IOException | NoSuchElementException | InterruptedException e) {
             System.err.println("Error! Entra qui" + e.getMessage());
+
+        } finally{
+            close();
         }
 
 

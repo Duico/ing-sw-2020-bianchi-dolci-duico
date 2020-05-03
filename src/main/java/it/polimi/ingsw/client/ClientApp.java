@@ -3,21 +3,21 @@ package it.polimi.ingsw.client;
 public class ClientApp
 {
     public static void main(String[] args){
-        ClientView clientView = new ClientView();
-        Client client = new Client("127.0.0.1", 12345);
-        clientView.addObserverMove(client);
-        clientView.addObserverLobby(client);
-        clientView.addObserverBuild(client);
-        clientView.addObserverPlace(client);
-        clientView.addObserverEndTurn(client);
-        clientView.addObserverUndo(client);
-        clientView.addObserverChalCards(client);
-        clientView.addObserverSetCard(client);
-        clientView.addObserverFirstPlayer(client);
+        ClientGui clientGui = new ClientGui();
+        ClientGuiConnection clientGuiConnection = new ClientGuiConnection("127.0.0.1", 12345);
+        clientGui.addObserverMove(clientGuiConnection);
+        clientGui.addObserverLobby(clientGuiConnection);
+        clientGui.addObserverBuild(clientGuiConnection);
+        clientGui.addObserverPlace(clientGuiConnection);
+        clientGui.addObserverEndTurn(clientGuiConnection);
+        clientGui.addObserverUndo(clientGuiConnection);
+        clientGui.addObserverChalCards(clientGuiConnection);
+        clientGui.addObserverSetCard(clientGuiConnection);
+        clientGui.addObserverFirstPlayer(clientGuiConnection);
 
-        Thread thread1 = new Thread(client);
+        Thread thread1 = new Thread(clientGuiConnection);
         thread1.start();
-        Thread thread2 = new Thread(clientView);
+        Thread thread2 = new Thread(clientGui);
         thread2.start();
 
     }

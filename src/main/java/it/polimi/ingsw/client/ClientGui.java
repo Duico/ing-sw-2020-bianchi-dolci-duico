@@ -7,11 +7,11 @@ import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ClientView extends /*Observable<LobbyViewEvent>*/ ObservableGui implements Runnable {
+public class ClientGui extends /*Observable<LobbyViewEvent>*/ ObservableGui implements Runnable {
     public boolean creatorGame;
     public String nickName;
 
-    public ClientView(){
+    public ClientGui(){
         this.creatorGame=false;
     }
 
@@ -52,8 +52,9 @@ public class ClientView extends /*Observable<LobbyViewEvent>*/ ObservableGui imp
             String userName = in.nextLine();  // Read user input
             String[] inputs = userName.split(",");
 
-            if (userName.equals("Mattia") || userName.equals("Nico") || userName.equals("Fede"))
-                generateLobbyEvent(userName);
+            if (/*userName.equals("Mattia") || userName.equals("Nico") || userName.equals("Fede")*/inputs[0].equals("Name"))
+                generateLobbyEvent(inputs[1]);
+
             else if(inputs[0].equals("Move")) {
                 int x1=Integer.parseInt(inputs[1]);
                 int y1=Integer.parseInt(inputs[2]);

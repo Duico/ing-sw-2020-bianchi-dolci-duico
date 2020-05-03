@@ -11,9 +11,10 @@ public interface ModelEventListener extends EventListener {
     void newTurn(NewTurnModelEvent e);
     void chosenCards(ChosenCardsModelEvent e);
     void setCard(SetCardModelEvent e);
-    void removePlayer(PlayerRemovalModelEvent e);
+    void defeatPlayer(PlayerDefeatModelEvent e);
     void fullInfo(FullInfoModelEvent e);
     void newCardsTurn(NewChoseCardTurnModelEvent e);
     void winGame(WinModelEvent e);
+    void undo(UndoModelEvent e);
 
 }

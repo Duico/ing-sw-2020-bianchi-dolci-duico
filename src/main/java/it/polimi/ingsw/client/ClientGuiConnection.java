@@ -17,7 +17,7 @@ import it.polimi.ingsw.view.event.PlaceViewEvent;
 
 import java.util.Scanner;
 
-public class Client implements FirstPlayerEventListener, SetCardEventListener, ChalCardsEventListener, MovementEventListener, LobbyEventListener,BuildEventListener, PlaceEventListener, EndTurnEventListener, UndoGuiEventListener, Runnable {
+public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEventListener, ChalCardsEventListener, MovementEventListener, LobbyEventListener,BuildEventListener, PlaceEventListener, EndTurnEventListener, UndoGuiEventListener, Runnable {
 
     private Socket socket;
     private String ip;
@@ -25,7 +25,7 @@ public class Client implements FirstPlayerEventListener, SetCardEventListener, C
     private ObjectOutputStream socketOut;
 
 
-    public Client(String ip, int port){
+    public ClientGuiConnection(String ip, int port){
         this.ip = ip;
         this.port = port;
 
@@ -150,6 +150,7 @@ public class Client implements FirstPlayerEventListener, SetCardEventListener, C
             try {
                 socketOut.close();
                 socket.close();
+                System.out.println("Il server ha chiuso");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -196,6 +197,12 @@ public class Client implements FirstPlayerEventListener, SetCardEventListener, C
 
     @Override
     public void undo(UndoGuiEvent e) {
+        try {
+            socket.close();
+        }catch (IOException ex){
+
+        }
+
         SetUpMessage message = new SetUpMessage(SetUpType.UNDO, null);
         asyncSend(message);
     }

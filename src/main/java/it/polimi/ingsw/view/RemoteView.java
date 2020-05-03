@@ -2,7 +2,6 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.controller.response.ControllerResponse;
 import it.polimi.ingsw.message.OperationMessage;
-import it.polimi.ingsw.message.*;
 import it.polimi.ingsw.message.SetUpMessage;
 import it.polimi.ingsw.message.SetUpType;
 //import it.polimi.ingsw.model.Operation;
@@ -11,19 +10,19 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
-import it.polimi.ingsw.server.ClientConnection;
+import it.polimi.ingsw.server.ViewConnection;
 import it.polimi.ingsw.view.event.*;
 //import it.polimi.ingsw.server.ClientConnection;
 
 public class RemoteView extends ViewEventEmitter implements ViewEventListener, ModelEventListener {
 
-    private ClientConnection clientConnection;
+    private ViewConnection viewConnection;
     private Player player;
 
-    public RemoteView(Player player, ClientConnection c) {
+    public RemoteView(Player player, ViewConnection c) {
         this.player=player;
-        this.clientConnection = c;
-        clientConnection.addObserver(this);
+        this.viewConnection = c;
+        viewConnection.addObserver(this);
     }
 
     public String getNickName(){
@@ -36,7 +35,7 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
 
     public void sendMessage(Object message){
 
-        clientConnection.asyncSend(message);
+        viewConnection.asyncSend(message);
     }
 
 
@@ -166,7 +165,7 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
     }
 
     @Override
-    public void removePlayer(PlayerRemovalModelEvent e) {
+    public void defeatPlayer(PlayerDefeatModelEvent e) {
     }
 
     @Override
@@ -187,6 +186,11 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
     public void winGame(WinModelEvent e) {
         System.out.println(e.getPlayer().getNickName());
         System.out.println("win");
+    }
+
+    @Override
+    public void undo(UndoModelEvent e) {
+
     }
 
 

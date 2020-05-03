@@ -49,9 +49,9 @@ public class ModelEventEmitter extends EventEmitter {//for View
         });
     }
 
-    public void emitEvent(PlayerRemovalModelEvent evt){
+    public void emitEvent(PlayerDefeatModelEvent evt){
         executeEventListeners((listener)->{
-            listener.removePlayer(evt);
+            listener.defeatPlayer(evt);
         });
     }
 
@@ -64,6 +64,12 @@ public class ModelEventEmitter extends EventEmitter {//for View
     public void emitEvent(NewChoseCardTurnModelEvent evt){
         executeEventListeners((listener)->{
             listener.newCardsTurn(evt);
+        });
+    }
+
+    public void emitEvent(UndoModelEvent evt){
+        executeEventListeners((listener)->{
+            listener.undo(evt);
         });
     }
 
