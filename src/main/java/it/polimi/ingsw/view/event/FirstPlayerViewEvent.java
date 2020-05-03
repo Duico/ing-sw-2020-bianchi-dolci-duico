@@ -7,14 +7,14 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.view.RemoteView;
 
 public class FirstPlayerViewEvent extends GameViewEvent {
-    private Player player;
+    private String player;
 
-    public FirstPlayerViewEvent(RemoteView view, Player player){
+    public FirstPlayerViewEvent(RemoteView view, String player){
         super(view);
         this.player=player;
     }
 
-    public Player getFirstPlayer() {
+    public String getFirstPlayer() {
         return player;
     }
 }

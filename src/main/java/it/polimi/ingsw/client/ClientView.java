@@ -4,6 +4,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ClientView extends /*Observable<LobbyViewEvent>*/ ObservableGui implements Runnable {
@@ -70,11 +71,41 @@ public class ClientView extends /*Observable<LobbyViewEvent>*/ ObservableGui imp
                 int y=Integer.parseInt(inputs[2]);
                 generatePlaceEvent(x, y);
             }
+            else if(inputs[0].equals("ChalCards")) {
+                String card1=inputs[1];
+                String card2=inputs[2];
+                String card3=inputs[3];
+                generateChalCardsEvent(card1, card2, card3);
+            }
+            else if(inputs[0].equals("SetCard")) {
+                String card1=inputs[1];
+                generateSetCardEvent(card1);
+            }
+            else if(inputs[0].equals("SetPlayer")) {
+                String player=inputs[1];
+                generateSetFirstPlayer(player);
+            }
             else if(userName.equals("EndTurn"))
                 generateEndTurnEven();
             else if(userName.equals("Undo"))
                 generateUndoEven();
         }
+    }
+
+    private void generateSetFirstPlayer(String player) {
+        notify(new FirstPlayerGuiEvent(player));
+    }
+
+    private void generateSetCardEvent(String card1) {
+        notify(new SetCardGuiEvent(card1));
+    }
+
+    private void generateChalCardsEvent(String card1, String card2, String card3) {
+        ArrayList<String> cards = new ArrayList<>();
+        cards.add(card1);
+        cards.add(card2);
+        cards.add(card3);
+        notify(new ChalCardsGuiEvent(cards));
     }
 
     private void generateUndoEven() {

@@ -7,9 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChallengerCardViewEvent extends GameViewEvent {
-    List<String> cardNamesList = new ArrayList<>();
-    public ChallengerCardViewEvent(RemoteView view) {
+    List<String> cardNamesList;
+    public ChallengerCardViewEvent(RemoteView view, ArrayList<String> cardNamesList) {
         super(view);
+        this.cardNamesList=cardNamesList;
     }
 
     public List<String> getCardNamesList(){

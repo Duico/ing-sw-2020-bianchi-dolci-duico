@@ -31,6 +31,12 @@ public class ModelEventEmitter extends EventEmitter {//for View
         });
     }
 
+    public void emitEvent(WinModelEvent evt){
+        executeEventListeners((listener)->{
+            listener.winGame(evt);
+        });
+    }
+
     public void emitEvent(ChosenCardsModelEvent evt){
         executeEventListeners((listener)->{
             listener.chosenCards(evt);
@@ -46,6 +52,18 @@ public class ModelEventEmitter extends EventEmitter {//for View
     public void emitEvent(PlayerRemovalModelEvent evt){
         executeEventListeners((listener)->{
             listener.removePlayer(evt);
+        });
+    }
+
+    public void emitEvent(FullInfoModelEvent evt){
+        executeEventListeners((listener)->{
+            listener.fullInfo(evt);
+        });
+    }
+
+    public void emitEvent(NewChoseCardTurnModelEvent evt){
+        executeEventListeners((listener)->{
+            listener.newCardsTurn(evt);
         });
     }
 

@@ -18,7 +18,6 @@ public class DownMoveWin implements WinStrategy {
             if(startCell.getLevel().getOrd() == 2  && destinationCell.getLevel().getOrd() == 0)
                 return true;
             if(startCell.getLevel().getOrd() == 3 && (destinationCell.getLevel().getOrd() == 0 || destinationCell.getLevel().getOrd() == 1))
-            //if(startCell.getLivello() == 3 && (destinationCell.getLivello() == 0 || destinationCell.getLivello() == 1))
                 return true;
             else
                 return defaultWin.isWinningMove(startPosition,destinationPosition,board);

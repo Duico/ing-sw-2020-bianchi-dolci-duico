@@ -12,5 +12,7 @@ public interface GameViewEventListener extends EventListener {
      void undo(UndoViewEvent e);
      void setFirstPlayer(FirstPlayerViewEvent e);
      void endTurn(EndTurnViewEvent e);
+     void challengerCards(ChallengerCardViewEvent e);
+
 }
 

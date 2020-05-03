@@ -83,7 +83,6 @@ public class SocketClientConnection extends ObservableConnection implements Clie
                         checkUpRegistration(message.getNickName(), 3);
                     }
                     else{
-                        System.out.println("qua arrivo2");
                         notify(inputObject);
                     }
 

@@ -83,10 +83,11 @@ public class Game extends ModelEventEmitter implements Serializable{
         chosenCards = new ArrayList<>();
         Player challenger = pickFirstPlayer();
         challenger.setIsChallenger(true);
-        //emitEvent(new FullInfoModelEvent(challenger, players, board, cardDeck));
+        emitEvent(new FullInfoModelEvent(challenger, players, board, cardDeck));
 
         if(!useCards)
-            setFirstPlayer(challenger);
+            setFirstPlayer(challenger.getNickName());
+            //setFirstPlayer(challenger);
 
         initTurn(challenger);
 
@@ -122,25 +123,36 @@ public class Game extends ModelEventEmitter implements Serializable{
             chosenCards.add(chosenCard);
         }
 
-        emitEvent( new ChosenCardsModelEvent(getCurrentPlayer(), getChosenCardsNames()) );
+        //emitEvent( new ChosenCardsModelEvent(getCurrentPlayer(), getChosenCardsNames()) );
         return true;
     }
 
 
     public boolean setPlayerCard(String nameCard){
-        for(int i=0; i<chosenCards.size(); i++){
-            Card card = chosenCards.get(i);
-            if (card.getName().equals(nameCard)){
-                Player currentPlayer = turn.getCurrentPlayer();
-                currentPlayer.setCard(card);
-                chosenCards.remove(card);
-//                if(chosenCards.size()>0){
+        if(turn.getCurrentPlayer().getCard()==null) {
+            for (int i = 0; i < chosenCards.size(); i++) {
+                Card card = chosenCards.get(i);
+                if (card.getName().equals(nameCard)) {
+                    Player currentPlayer = turn.getCurrentPlayer();
+                    currentPlayer.setCard(card);
+                    emitEvent(new SetCardModelEvent(getCurrentPlayer(), nameCard));
+                    chosenCards.remove(card);
+//              if(chosenCards.size()>0){
 //                    new SetCardModelEvent(currentPlayer, card.getName());
 //                }else{
 //                    //list of players sent to challenger
 //                }
-                //emitEvent( new SetCardModelEvent(currentPlayer, card.getName()) );
-                return true;
+                    //emitEvent( new SetCardModelEvent(currentPlayer, card.getName()) );
+                    if (chosenCards.size() > 0) {
+                        nextTurn();
+                        //emitEvent(new NewChoseCardTurnModelEvent(currentPlayer,  card.getName());
+                    } else {
+                        nextTurn();
+                        //list of players sent to challenger
+                    }
+                    //emitEvent( new SetCardModelEvent(currentPlayer, card.getName()) );
+                    return true;
+                }
             }
         }
         return false;
@@ -216,13 +228,28 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
     private void startChoseCardsTurn(Player player){
         turn = new ChoseCardsTurn(player);
-        emitEvent(new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS));
+        //emitEvent(new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS));
+        if(chosenCards.size()==0) {
+            emitEvent(new NewChoseCardTurnModelEvent(player, TurnPhase.CHOSE_CARDS, cardDeck.getCardNames()));
+        }else if(chosenCards.size()==1) {
+            Card card = chosenCards.get(0);
+            player.setCard(card);
+            emitEvent(new SetCardModelEvent(getCurrentPlayer(), card.getName()));
+            ArrayList<String> namePlayers = new ArrayList<>();
+            for(int i=0;i<players.size();i++)
+                namePlayers.add(players.get(i).getNickName());
+            emitEvent(new NewChoseCardTurnModelEvent(player, TurnPhase.CHOSE_CARDS, namePlayers));
+        }else{
+            emitEvent(new NewChoseCardTurnModelEvent(player, TurnPhase.CHOSE_CARDS, getChosenCardsNames()));
+        }
     }
 
-    public boolean firstTurn(Player player) {
+    //TODO: Chiedere ad ale
+    /*public boolean firstTurn(Player player) {
         if(!setFirstPlayer(player)){
             return false;
         }
+        emitEvent(new NewTurnModelEvent(player, TurnPhase.NORMAL));
         nextTurn(player);
         return true;
     }
@@ -233,6 +260,26 @@ public class Game extends ModelEventEmitter implements Serializable{
             return true;
         }
         return false;
+    }
+    */
+
+    public boolean firstTurn(String nickname) {
+        Player firstPlayer=setFirstPlayer(nickname);
+        if(firstPlayer==null){
+            return false;
+        }
+        emitEvent(new NewTurnModelEvent(firstPlayer, TurnPhase.NORMAL));
+        nextTurn(firstPlayer);
+        return true;
+    }
+
+    private Player setFirstPlayer(String nickName){
+        for(int i=0;i<players.size();i++)
+            if(players.get(i).getNickName().equals(nickName)) {
+                this.firstPlayer = players.get(i);
+                return firstPlayer;
+            }
+        return null;
     }
 
     public boolean isSetFirstPlayer(){
@@ -277,6 +324,8 @@ public class Game extends ModelEventEmitter implements Serializable{
         backupUndo();
         Position pushDestPosition = turn.boardMove(board, startPosition, destinationPosition);
         emitEvent(new MoveWorkerModelEvent(getCurrentPlayer(), startPosition, destinationPosition, pushDestPosition));
+        if(turn.isWinningMove(board,startPosition,destinationPosition))
+            emitEvent(new WinModelEvent(getCurrentPlayer()));
         checkHasLost();
     }
     public boolean isAllowedToMove(){
@@ -293,9 +342,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
     public boolean isFeasibleMove(Position startPosition, Position destinationPosition){
-        System.out.println("Ecco la destPosition");
-        System.out.println(destinationPosition.getX());
-        System.out.println(destinationPosition.getY());
+
         return turn.isFeasibleMove(board, startPosition, destinationPosition);
     }
     public boolean isBlockedMove(Position startPosition, Position destinationPosition){
@@ -312,7 +359,7 @@ public class Game extends ModelEventEmitter implements Serializable{
         if(turn.getPhase() != TurnPhase.NORMAL)
             throw new IllegalTurnPhaseException();
         backupUndo();
-        emitEvent(new BuildWorkerModelEvent(getCurrentPlayer(), startPosition, destinationPosition) );
+        emitEvent(new BuildWorkerModelEvent(getCurrentPlayer(), startPosition, destinationPosition, isDome) );
         turn.boardBuild(board, startPosition, destinationPosition, isDome);
         checkHasLost();
     }

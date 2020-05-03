@@ -1,12 +1,13 @@
 package it.polimi.ingsw.message;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class SetUpMessage implements Serializable {
     private final SetUpType type;
-    private final String message;
+    private final ArrayList<String> message;
 
-    public SetUpMessage(SetUpType type, String message){
+    public SetUpMessage(SetUpType type, ArrayList<String> message){
         this.type=type;
         this.message=message;
     }
@@ -15,7 +16,7 @@ public class SetUpMessage implements Serializable {
         return type;
     }
 
-    public String getMessage() {
+    public ArrayList<String> getMessage() {
         return message;
     }
 }

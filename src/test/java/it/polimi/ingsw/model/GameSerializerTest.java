@@ -71,7 +71,8 @@ class GameSerializerTest {
         game.nextTurn();
 
         game.setPlayerCard("Athena");
-        game.firstTurn(player0);
+        //game.firstTurn(player0);
+        game.firstTurn(player0.getNickName());
 
     }
 

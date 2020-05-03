@@ -10,6 +10,71 @@ public class ObservableGui {
     private final List<PlaceEventListener> observerPlace = new ArrayList<>();
     private final List<EndTurnEventListener> observerEndTurn = new ArrayList<>();
     private final List<UndoGuiEventListener> observerUndo = new ArrayList<>();
+    private final List<ChalCardsEventListener> observerChalCards = new ArrayList<>();
+    private final List<SetCardEventListener> observerSetCard = new ArrayList<>();
+    private final List<FirstPlayerEventListener> observerFirstPlayer = new ArrayList<>();
+
+    public void addObserverFirstPlayer(FirstPlayerEventListener observer){
+        synchronized (observerFirstPlayer) {
+            observerFirstPlayer.add(observer);
+        }
+    }
+
+    public void removeObserverFirstPlayer(FirstPlayerEventListener observer){
+        synchronized (observerFirstPlayer) {
+            observerFirstPlayer.remove(observer);
+        }
+    }
+
+    protected void notify(FirstPlayerGuiEvent message){
+        synchronized (observerFirstPlayer) {
+            for(FirstPlayerEventListener observer : observerFirstPlayer){
+                observer.firstPlayer(message);
+            }
+        }
+    }
+
+    public void addObserverSetCard(SetCardEventListener observer){
+        synchronized (observerSetCard) {
+            observerSetCard.add(observer);
+        }
+    }
+
+    public void removeObserverSetCard(SetCardEventListener observer){
+        synchronized (observerChalCards) {
+            observerChalCards.remove(observer);
+        }
+    }
+
+    protected void notify(SetCardGuiEvent message){
+        synchronized (observerSetCard) {
+            for(SetCardEventListener observer : observerSetCard){
+                observer.setCard(message);
+            }
+        }
+    }
+
+    public void addObserverChalCards(ChalCardsEventListener observer){
+        synchronized (observerChalCards) {
+            observerChalCards.add(observer);
+        }
+    }
+
+    public void removeObserverChalCards(ChalCardsEventListener observer){
+        synchronized (observerChalCards) {
+            observerChalCards.remove(observer);
+        }
+    }
+
+    protected void notify(ChalCardsGuiEvent message){
+        synchronized (observerChalCards) {
+            for(ChalCardsEventListener observer : observerChalCards){
+                observer.chalCards(message);
+            }
+        }
+    }
+
+
 
     public void addObserverMove(MovementEventListener observer){
         synchronized (observersMove) {

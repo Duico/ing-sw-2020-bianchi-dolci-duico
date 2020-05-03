@@ -126,7 +126,7 @@ public class NormalTurn extends Turn {
         return workerPosition != null && workerPosition == currentPlayer.getWorkerPosition(currentWorkerId);
     }*/
 
-    //TODO: da dire all'ale
+
     public boolean checkCurrentWorker(Position workerPosition){
         if(isSetCurrentWorker())
             return workerPosition != null && workerPosition.equals(currentPlayer.getWorkerPosition(currentWorkerId));
@@ -139,8 +139,6 @@ public class NormalTurn extends Turn {
         }
 
     }
-
-
 
     public boolean isSetCurrentWorker(){
         return currentWorkerId>=0;
@@ -312,6 +310,7 @@ public class NormalTurn extends Turn {
         }
         return false;
     }
+
     @Override
     boolean isLoseCondition(Board board) {
         Player currentPlayer = this.getCurrentPlayer();

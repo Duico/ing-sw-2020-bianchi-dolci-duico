@@ -11,6 +11,9 @@ public class ClientApp
         clientView.addObserverPlace(client);
         clientView.addObserverEndTurn(client);
         clientView.addObserverUndo(client);
+        clientView.addObserverChalCards(client);
+        clientView.addObserverSetCard(client);
+        clientView.addObserverFirstPlayer(client);
 
         Thread thread1 = new Thread(client);
         thread1.start();

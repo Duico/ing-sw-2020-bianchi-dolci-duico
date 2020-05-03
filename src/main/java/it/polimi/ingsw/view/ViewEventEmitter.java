@@ -8,43 +8,49 @@ import it.polimi.ingsw.view.event.*;
 public class ViewEventEmitter extends EventEmitter {
 
      public void emitEvent(MoveViewEvent evt){
-        executeMoveEventListeners((listener)->{
+        executeEventListeners((listener)->{
             listener.move(evt);
         });
     }
 
+    public void emitEvent(ChallengerCardViewEvent evt){
+        executeEventListeners((listener)->{
+            listener.challengerCards(evt);
+        });
+    }
+
     public void emitEvent(BuildViewEvent evt){
-        executeBuildEventListeners( (listener)->{
+        executeEventListeners( (listener)->{
             listener.build(evt);
         });
     }
 
     public void emitEvent(PlaceViewEvent evt){
-        executePlaceEventListeners((listener)->{
+        executeEventListeners((listener)->{
             listener.place(evt);
         });
     }
 
     public void emitEvent(FirstPlayerViewEvent evt){
-        executeFirstPlayerEventListeners((listener)->{
+        executeEventListeners((listener)->{
             listener.setFirstPlayer(evt);
         });
     }
 
     public void emitEvent(CardViewEvent evt){
-        executePlayerCardEventListeners((listener)->{
+        executeEventListeners((listener)->{
             listener.setPlayerCard(evt);
         });
     }
 
     public void emitEvent(UndoViewEvent evt){
-        executeUndoEventListeners((listener)->{
+        executeEventListeners((listener)->{
             listener.undo(evt);
         });
     }
 
     public void emitEvent(EndTurnViewEvent evt){
-        executeEndTurnEventListeners((listener)->{
+        executeEventListeners((listener)->{
             listener.endTurn(evt);
         });
     }
@@ -52,10 +58,10 @@ public class ViewEventEmitter extends EventEmitter {
 
 
 
-    private void executeMoveEventListeners(EventHandler<GameViewEventListener> eventHandler){
+    private void executeEventListeners(EventHandler<GameViewEventListener> eventHandler){
         executeEventListeners(GameViewEventListener.class, eventHandler);
     }
-
+/*
     private void executeBuildEventListeners(EventHandler<GameViewEventListener> eventHandler){
         executeEventListeners(GameViewEventListener.class, eventHandler);
     }
@@ -79,7 +85,7 @@ public class ViewEventEmitter extends EventEmitter {
     private void executeEndTurnEventListeners(EventHandler<GameViewEventListener> eventHandler){
         executeEventListeners(GameViewEventListener.class, eventHandler);
     }
-
+*/
 
 
 

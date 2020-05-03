@@ -8,4 +8,8 @@ public class SetCardModelEvent extends UpdateModelEvent {
         super(player);
         this.cardName = cardName;
     }
+
+    public String getCardName(){
+        return this.cardName;
+    }
 }

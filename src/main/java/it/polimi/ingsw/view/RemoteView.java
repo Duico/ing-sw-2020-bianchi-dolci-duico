@@ -95,19 +95,16 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
             }else if(messaggio.getType() == SetUpType.UNDO){
             UndoViewEvent e = new UndoViewEvent(this);
             emitEvent(e);
-        }
-            /*SetUpMessage messaggio = (SetUpMessage)message;
-            if (messaggio.getType() == SetUpType.FIRSTPLAYER){
-                FirstPlayerViewEvent e = new FirstPlayerViewEvent(this, messaggio);
+            } else if(messaggio.getType() == SetUpType.CHALLENGERCARDS){
+                ChallengerCardViewEvent e = new ChallengerCardViewEvent(this, messaggio.getMessage());
                 emitEvent(e);
             } else if(messaggio.getType() == SetUpType.CHOSENCARD){
-                CardViewEvent e = new CardViewEvent(this, messaggio.getMessage());
-                emitEvent(e);
-             else if(messaggio.getType() == SetUpType.CHALLENGERCARDS){
-                UndoViewEvent e = new UndoViewEvent(this, messaggio);
+            CardViewEvent e = new CardViewEvent(this, messaggio.getMessage().get(0));
+            emitEvent(e);
+            } else if (messaggio.getType() == SetUpType.FIRSTPLAYER) {
+                FirstPlayerViewEvent e = new FirstPlayerViewEvent(this, messaggio.getMessage().get(0));
                 emitEvent(e);
             }
-*/
         }
 
         else {
@@ -126,14 +123,15 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
     @Override
     public void movement(MoveWorkerModelEvent e) {
         System.out.println("Remote View Movement");
-        System.out.println(e.getStartPosition().getX());
-        System.out.println(e.getStartPosition().getY());
-        System.out.println(e.getDestinationPosition().getX());
-        System.out.println(e.getDestinationPosition().getY());
+/*
+        OperationMessage message = new OperationMessage(Operation.MOVE, e.getStartPosition(), e.getDestinationPosition() , false);
+        sendMessage(message);*/
     }
 
     @Override
     public void build(BuildWorkerModelEvent e) {
+        /*OperationMessage message = new OperationMessage(Operation.PLACE, e.getStartPosition(), e.getDestinationPosition() , e.isDome());
+        sendMessage(message);*/
 
     }
 
@@ -142,7 +140,8 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
         System.out.println("Remote View place Position");
         System.out.println(e.getPlacePosition().getX());
         System.out.println(e.getPlacePosition().getY());
-       /*OperationMessage message = new OperationMessage(Operation.PLACE, e.getPlacePosition(), null , false);
+        /*
+        OperationMessage message = new OperationMessage(Operation.PLACE, e.getPlacePosition(), null , false);
         sendMessage(message);*/
     }
 
@@ -151,6 +150,7 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
 
         System.out.println("Remote View: turn player:");
         System.out.println(e.getPlayer().getNickName());
+
     }
 
     @Override
@@ -160,11 +160,33 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
 
     @Override
     public void setCard(SetCardModelEvent e) {
-
+        System.out.println(e.getPlayer().getNickName());
+        System.out.println("Set card:");
+        System.out.println(e.getCardName());
     }
 
     @Override
     public void removePlayer(PlayerRemovalModelEvent e) {
+    }
+
+    @Override
+    public void fullInfo(FullInfoModelEvent e) {
+
+    }
+
+    @Override
+    public void newCardsTurn(NewChoseCardTurnModelEvent e) {
+        System.out.println("Remote View: turn player:");
+        System.out.println(e.getPlayer().getNickName());
+        System.out.println("Cards:");
+        for(int i=0;i<e.getCards().size();i++)
+            System.out.println(e.getCards().get(i));
+    }
+
+    @Override
+    public void winGame(WinModelEvent e) {
+        System.out.println(e.getPlayer().getNickName());
+        System.out.println("win");
     }
 
 

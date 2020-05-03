@@ -25,7 +25,6 @@ public abstract class Turn implements Serializable {
         return false;
     }
     public boolean isAllowedToMove(Position workerPosition){
-
         return false;
     }
     public boolean isRequiredToMove(){
@@ -56,7 +55,6 @@ public abstract class Turn implements Serializable {
         return currentPlayer.isAnyWorkerNotPlaced();
     }
     public boolean isFeasibleMove(Board board, Position startPosition, Position destinationPosition){
-        System.out.println("entro nell'astratto");
         return false;
     }
     public boolean isFeasibleBuild(Board board, Position startPosition, Position destinationPosition, boolean isDome){
@@ -97,9 +95,9 @@ public abstract class Turn implements Serializable {
     public boolean isBlockNextPlayer() {
         return false;
     }
-//    public boolean isWinningMove(Board board, Position destinationPosition){
-//        return false;
-//    }
+    public boolean isWinningMove(Board board, Position startPosition, Position destinationPosition){
+       return false;
+    }
 
     public boolean checkCurrentWorker(Position workerPosition){
         return false;

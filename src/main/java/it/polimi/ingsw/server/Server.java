@@ -73,12 +73,13 @@ public class Server {
 
 
             Game game = new Game();
-            game.startGame(players, false);
+
             Controller controller = new Controller(game);
             for(int i=0;i<remoteView.size();i++) {
                 remoteView.get(i).addEventListener(GameViewEventListener.class, controller);
                 game.addEventListener(ModelEventListener.class, remoteView.get(i));
             }
+            game.startGame(players, true);
 
 
         }

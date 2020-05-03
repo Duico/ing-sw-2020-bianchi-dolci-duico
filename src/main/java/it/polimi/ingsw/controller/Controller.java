@@ -69,12 +69,15 @@ public class Controller implements GameViewEventListener {
         RemoteView view = message.getView();
 
         if(checkIsWrongPlayer(message)){
+            view.sendMessage("incorrect player");
             return;
         }
 
         if(!game.setChosenCards(message.getCardNamesList())){
+            view.sendMessage("wrong name Cards");
             view.eventResponse(new IllegalCardNamesListControllerResponse(message));
         }else{
+            view.sendMessage("correct Cards");
             view.eventResponse(new SuccessControllerResponse(message));
             game.nextTurn();
         }
@@ -88,21 +91,23 @@ public class Controller implements GameViewEventListener {
         }
 
         if(!game.setPlayerCard(cardName)){
+            view.sendMessage("incorrect name Card");
             List<String> cardNames = game.getChosenCardsNames();
             view.eventResponse(new IllegalCardNameControllerResponse(message, cardNames));
             return;
         }
         view.eventResponse(new SuccessControllerResponse(message));
-        game.nextTurn();
+        //game.nextTurn();
     }
 
     public void setFirstPlayer(FirstPlayerViewEvent message){
         RemoteView view = message.getView();
-        Player firstPlayer = message.getFirstPlayer();
+        //Player firstPlayer = message.getFirstPlayer();
         if(checkIsWrongPlayer(message)){
             return;
         }
         if(!isCurrentPlayerChalleger()){
+            view.sendMessage("Player is not challenger");
             view.eventResponse(new NotCurrentPlayerControllerResponse(message));
             return;
         }
@@ -111,6 +116,7 @@ public class Controller implements GameViewEventListener {
         }
 
         if(game.isSetFirstPlayer()){
+            view.sendMessage("Player already set");
             view.eventResponse(new IllegalFirstPlayerControllerResponse(message, IllegalFirstPlayerControllerResponse.Reason.ALREADY_SET));
             return;
         }
@@ -119,9 +125,11 @@ public class Controller implements GameViewEventListener {
             //^^wrongTurnPhase should do
 
         //the next turn is set in game.setFirstPlayer
-        if(!game.firstTurn(firstPlayer)){
+        if(!game.firstTurn(message.getFirstPlayer())){
+            view.sendMessage("incorrect setting");
             view.eventResponse(new IllegalFirstPlayerControllerResponse(message, IllegalFirstPlayerControllerResponse.Reason.NON_EXISTENT));
         }else {
+            view.sendMessage("correct setting");
             view.eventResponse(new SuccessControllerResponse(message));
         }
     }
@@ -182,10 +190,17 @@ public class Controller implements GameViewEventListener {
             return;
         }
 
+        if(checkIsWrongTurnPhase(message, TurnPhase.PLACE_WORKERS)){
+            view.sendMessage("incorrect turn phase");
+            return;
+        }
+
         if(!game.isAnyWorkerNotPlaced()){
             view.sendMessage("You have already place all the workers");
             view.eventResponse(new FailedOperationControllerResponse(message, Operation.PLACE, FailedOperationControllerResponse.Reason.NOT_FEASIBLE));
         }
+
+
 
         //int workerId = game.place(message.getDestinationPosition());
         int workerId = game.place(message.getWorkerPosition());

@@ -7,13 +7,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import it.polimi.ingsw.message.*;
 import it.polimi.ingsw.model.Operation;
+import it.polimi.ingsw.model.Position;
+import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.view.event.PlaceViewEvent;
 
 import java.util.Scanner;
 
-public class Client implements MovementEventListener, LobbyEventListener,BuildEventListener, PlaceEventListener, EndTurnEventListener, UndoGuiEventListener, Runnable {
+public class Client implements FirstPlayerEventListener, SetCardEventListener, ChalCardsEventListener, MovementEventListener, LobbyEventListener,BuildEventListener, PlaceEventListener, EndTurnEventListener, UndoGuiEventListener, Runnable {
 
     private Socket socket;
     private String ip;
@@ -44,13 +48,26 @@ public class Client implements MovementEventListener, LobbyEventListener,BuildEv
             public void run() {
                 try {
                     while (isActive()) {
-                        Object inputObject = socketIn.readObject();
-                        if(inputObject instanceof String){
-                            System.out.println((String)inputObject);
+                        Object message = socketIn.readObject();
+                        if(message instanceof String){
+                            System.out.println((String)message);
                         }
-                        /*else if (inputObject instanceof Board){
-                            ((Board)inputObject).print();
-                        } */
+                        else if (message instanceof OperationMessage){
+                            OperationMessage messaggio = (OperationMessage)message;
+                            if (messaggio.getType().equals(Operation.PLACE)) {
+                                Position startPosition;
+                                try {
+                                    startPosition = new Position(messaggio.getStartPosition().getX(), messaggio.getStartPosition().getY());
+                                    System.out.println("you have place here");
+                                    System.out.println(messaggio.getStartPosition().getX());
+                                    System.out.println(messaggio.getStartPosition().getY());
+
+
+                                }catch (PositionOutOfBoundsException e){
+
+                                }
+                            }
+                        }
                         else {
                             throw new IllegalArgumentException();
                         }
@@ -180,6 +197,28 @@ public class Client implements MovementEventListener, LobbyEventListener,BuildEv
     @Override
     public void undo(UndoGuiEvent e) {
         SetUpMessage message = new SetUpMessage(SetUpType.UNDO, null);
+        asyncSend(message);
+    }
+
+    @Override
+    public void chalCards(ChalCardsGuiEvent e) {
+        SetUpMessage message = new SetUpMessage(SetUpType.CHALLENGERCARDS, e.getCards());
+        asyncSend(message);
+    }
+
+    @Override
+    public void setCard(SetCardGuiEvent e) {
+        ArrayList<String> card= new ArrayList<>();
+        card.add(e.getCard());
+        SetUpMessage message = new SetUpMessage(SetUpType.CHOSENCARD, card);
+        asyncSend(message);
+    }
+
+    @Override
+    public void firstPlayer(FirstPlayerGuiEvent e) {
+        ArrayList<String> name= new ArrayList<>();
+        name.add(e.getFirstPlayer());
+        SetUpMessage message = new SetUpMessage(SetUpType.FIRSTPLAYER, name );
         asyncSend(message);
     }
 }
