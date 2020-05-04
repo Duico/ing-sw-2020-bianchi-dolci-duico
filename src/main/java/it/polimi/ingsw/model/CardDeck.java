@@ -109,9 +109,10 @@ public class CardDeck implements Serializable {
         int i;
         for(i=0; i<cardDeck.size();i++){
             if(name.equals(cardDeck.get(i).getName()))
-                break;
+                return cardDeck.get(i);
+                //break;
         }
-        return cardDeck.get(i);
+        return null;
 
     }
     private String getPropertyName(Element node, String tagName){

@@ -5,5 +5,7 @@ public enum SetUpType {
     CHOSENCARD,
     CHALLENGERCARDS,
     UNDO,
-    ENDTURN
+    ENDTURN,
+    NEWTURNCARD,
+    NEWTURN
 }

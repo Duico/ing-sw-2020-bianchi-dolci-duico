@@ -7,15 +7,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
+import java.util.*;
+
 import it.polimi.ingsw.message.*;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.server.TimeOutCheckerInterface;
+import it.polimi.ingsw.server.TimeoutCounter;
 import it.polimi.ingsw.view.event.PlaceViewEvent;
-
-import java.util.Scanner;
 
 public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEventListener, ChalCardsEventListener, MovementEventListener, LobbyEventListener,BuildEventListener, PlaceEventListener, EndTurnEventListener, UndoGuiEventListener, Runnable {
 
@@ -28,7 +28,6 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
     public ClientGuiConnection(String ip, int port){
         this.ip = ip;
         this.port = port;
-
 
     }
 
@@ -51,6 +50,27 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
                         Object message = socketIn.readObject();
                         if(message instanceof String){
                             System.out.println((String)message);
+                        }else if (message instanceof SetUpMessage){
+                            SetUpMessage messaggio = (SetUpMessage) message;
+                            if(messaggio.getType().equals(SetUpType.NEWTURNCARD)){
+                                System.out.println("It's your turn, chose:");
+                                for (int i=0;i<messaggio.getMessage().size();i++)
+                                    System.out.println(messaggio.getMessage().get(i));
+                            }
+                            if(messaggio.getType().equals(SetUpType.CHOSENCARD)){
+                                System.out.println("Correct chose card");
+                                for (int i=0;i<messaggio.getMessage().size();i++)
+                                    System.out.println(messaggio.getMessage().get(i));
+                            }
+                            if(messaggio.getType().equals(SetUpType.CHALLENGERCARDS)){
+                                System.out.println("Correct choses cards");
+                                for (int i=0;i<messaggio.getMessage().size();i++)
+                                    System.out.println(messaggio.getMessage().get(i));
+                            }
+                            if(messaggio.getType().equals(SetUpType.NEWTURN)){
+                                System.out.println("It's your turn, place");
+                            }
+
                         }
                         else if (message instanceof OperationMessage){
                             OperationMessage messaggio = (OperationMessage)message;
@@ -68,6 +88,11 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
                                 }
                             }
                         }
+                        else if (message instanceof ErrorMessage){
+                            ErrorMessage messaggio = (ErrorMessage) message;
+                            System.out.println(messaggio.getMessage());
+                            socketIn.close();
+                        }
                         else {
                             throw new IllegalArgumentException();
                         }
@@ -80,29 +105,6 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
         t.start();
         return t;
     }
-
-
-
-   /* public Thread asyncWriteToSocket(final Scanner stdin, final ObjectOutputStream socketOut){
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (isActive()) {
-                        String inputLine = stdin.nextLine();
-                        LobbyViewEvent lobbyEvent = new LobbyViewEvent(inputLine);
-                        socketOut.writeObject(lobbyEvent);
-                        socketOut.flush();
-                    }
-                }catch(Exception e){
-                    setActive(false);
-                }
-            }
-        });
-        t.start();
-        return t;
-    }*/
-
 
 
     public void asyncSend(final Object message){
@@ -125,20 +127,35 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
 
     }
 
+    public void startMyTimer() {
+
+        Timer timer = new Timer();
+        TimeOutCheckerInterface timeOutChecker = () -> {
+            if (isActive()){
+                send("ping");
+                return false;
+            }else{
+                System.out.println("The connection is inactive");
+                return true;
+            }
+        };
+
+            TimerTask task = new TimeoutCounter(timeOutChecker);
+            int intialDelay = 3000;
+            int delta = 3000;
+            timer.schedule(task, intialDelay, delta);
+    }
+
 
     public void run() {
-
-
         try{
             socket = new Socket(ip, port);
-            //System.out.println("Connection established");
+            startMyTimer();
             ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
             socketOut = new ObjectOutputStream(socket.getOutputStream());
-            //Scanner stdin = new Scanner(System.in);
             Thread t0 = asyncReadFromSocket(socketIn);
-            //Thread t1 = asyncWriteToSocket(stdin, socketOut);
             t0.join();
-            //t1.join();
+
         } catch(InterruptedException | NoSuchElementException e){
             System.out.println("Connection closed from the client side");
         } catch (UnknownHostException e) {
@@ -150,7 +167,6 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
             try {
                 socketOut.close();
                 socket.close();
-                System.out.println("Il server ha chiuso");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -161,14 +177,13 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
 
     @Override
     public void move(MovementGuiEvent e) {
-
         OperationMessage message = new OperationMessage(Operation.MOVE, e.getStartPosition(), e.getDestinationPosition(), false);
         asyncSend(message);
     }
 
     @Override
     public void sendLobbyEvent(LobbyGuiEvent e) {
-        LobbyMessage message = new LobbyMessage(e.getNickname());
+        LobbyMessage message = new LobbyMessage(e.getNickname(), e.getNumPlayers());
         asyncSend(message);
     }
 
@@ -197,11 +212,6 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
 
     @Override
     public void undo(UndoGuiEvent e) {
-        try {
-            socket.close();
-        }catch (IOException ex){
-
-        }
 
         SetUpMessage message = new SetUpMessage(SetUpType.UNDO, null);
         asyncSend(message);

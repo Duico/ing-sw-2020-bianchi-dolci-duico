@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChosenCardsModelEvent extends UpdateModelEvent {
-    private ArrayList<String> chosenCards;
-    public ChosenCardsModelEvent(Player player, ArrayList<String> chosenCards) {
+    private List<String> chosenCards;
+    public ChosenCardsModelEvent(Player player, List<String> chosenCards) {
         super(player);
         this.chosenCards=chosenCards;
 

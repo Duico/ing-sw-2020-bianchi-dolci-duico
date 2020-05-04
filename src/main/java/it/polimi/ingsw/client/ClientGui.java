@@ -15,9 +15,9 @@ public class ClientGui extends /*Observable<LobbyViewEvent>*/ ObservableGui impl
         this.creatorGame=false;
     }
 
-    public void generateLobbyEvent(String userName) {
+    public void generateLobbyEvent(String userName, int numPlayer) {
 
-        notify(new LobbyGuiEvent(userName));
+        notify(new LobbyGuiEvent(userName, numPlayer));
     }
 
 
@@ -52,8 +52,8 @@ public class ClientGui extends /*Observable<LobbyViewEvent>*/ ObservableGui impl
             String userName = in.nextLine();  // Read user input
             String[] inputs = userName.split(",");
 
-            if (/*userName.equals("Mattia") || userName.equals("Nico") || userName.equals("Fede")*/inputs[0].equals("Name"))
-                generateLobbyEvent(inputs[1]);
+            if (inputs[0].equals("Name"))
+                generateLobbyEvent(inputs[1], Integer.parseInt(inputs[2]));
 
             else if(inputs[0].equals("Move")) {
                 int x1=Integer.parseInt(inputs[1]);
@@ -73,10 +73,10 @@ public class ClientGui extends /*Observable<LobbyViewEvent>*/ ObservableGui impl
                 generatePlaceEvent(x, y);
             }
             else if(inputs[0].equals("ChalCards")) {
-                String card1=inputs[1];
-                String card2=inputs[2];
-                String card3=inputs[3];
-                generateChalCardsEvent(card1, card2, card3);
+                ArrayList<String> cards = new ArrayList<>();
+                for(int i=1; i< inputs.length ;i++)
+                    cards.add(inputs[i]);
+                generateChalCardsEvent(cards);
             }
             else if(inputs[0].equals("SetCard")) {
                 String card1=inputs[1];
@@ -101,11 +101,7 @@ public class ClientGui extends /*Observable<LobbyViewEvent>*/ ObservableGui impl
         notify(new SetCardGuiEvent(card1));
     }
 
-    private void generateChalCardsEvent(String card1, String card2, String card3) {
-        ArrayList<String> cards = new ArrayList<>();
-        cards.add(card1);
-        cards.add(card2);
-        cards.add(card3);
+    private void generateChalCardsEvent(ArrayList<String> cards) {
         notify(new ChalCardsGuiEvent(cards));
     }
 

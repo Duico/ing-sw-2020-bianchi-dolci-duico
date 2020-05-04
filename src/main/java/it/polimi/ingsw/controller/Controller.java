@@ -73,11 +73,13 @@ public class Controller implements GameViewEventListener {
             return;
         }
 
+
         if(!game.setChosenCards(message.getCardNamesList())){
-            view.sendMessage("wrong name Cards");
+
+            view.sendMessage("wrong name Cards, the number of cards is incorrect");
             view.eventResponse(new IllegalCardNamesListControllerResponse(message));
         }else{
-            view.sendMessage("correct Cards");
+            //view.sendMessage("correct Cards");
             view.eventResponse(new SuccessControllerResponse(message));
             game.nextTurn();
         }
@@ -129,7 +131,7 @@ public class Controller implements GameViewEventListener {
             view.sendMessage("incorrect setting");
             view.eventResponse(new IllegalFirstPlayerControllerResponse(message, IllegalFirstPlayerControllerResponse.Reason.NON_EXISTENT));
         }else {
-            view.sendMessage("correct setting");
+            //view.sendMessage("correct setting");
             view.eventResponse(new SuccessControllerResponse(message));
         }
     }
@@ -208,7 +210,7 @@ public class Controller implements GameViewEventListener {
             view.sendMessage("incorrect position");
             view.eventResponse(new FailedOperationControllerResponse(message, Operation.PLACE, FailedOperationControllerResponse.Reason.DESTINATION_NOT_EMPTY));
         }else{
-            view.sendMessage("correct position, worker set");
+            //view.sendMessage("correct position, worker set");
             view.eventResponse(new SuccessControllerResponse(message));
         }
     }

@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.NoSuchElementException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SocketViewConnection extends ObservableConnection implements ViewConnection, Runnable {
 
@@ -15,6 +18,7 @@ public class SocketViewConnection extends ObservableConnection implements ViewCo
     private ObjectOutputStream out;
     private ObjectInputStream input;
     private Server server;
+    static final int maxRetries = 10;
 
     private boolean active = true;
 
@@ -46,7 +50,6 @@ public class SocketViewConnection extends ObservableConnection implements ViewCo
 
     @Override
     public synchronized void closeConnection() {
-        send("Connection closed!");
         try {
             socket.close();
         } catch (IOException e) {
@@ -58,7 +61,7 @@ public class SocketViewConnection extends ObservableConnection implements ViewCo
     private void close() {
         closeConnection();
         server.clientCloseConnection(this);
-        System.out.println("Done!");
+        System.out.println("Disconnect player done!");
     }
 
     @Override
@@ -76,15 +79,16 @@ public class SocketViewConnection extends ObservableConnection implements ViewCo
             try {
                 while (isActive()) {
                     Object inputObject = socketIn.readObject();
-                    if(inputObject instanceof LobbyMessage) {
+                    if(inputObject instanceof String){
+
+                    }
+                    else if(inputObject instanceof LobbyMessage) {
                         LobbyMessage message = (LobbyMessage) inputObject;
-                        System.out.print("sono nel lobby event");
-                        checkUpRegistration(message.getNickName(), 3);
+                        checkUpRegistration(message.getNickName(), message.getNumPlayers());
                     }
                     else{
                         notify(inputObject);
                     }
-
                 }
             } catch (IOException | NoSuchElementException | ClassNotFoundException e) {
                 //System.err.println("Error!" + e.getMessage());
@@ -94,11 +98,15 @@ public class SocketViewConnection extends ObservableConnection implements ViewCo
         return t;
     }
 
+
+
     public void checkUpRegistration(String nickName, int numPlayers){
         if(server.getNumPlayers()==0){
             server.addPlayer(nickName);
-            if(!server.setNumPlayers(numPlayers))
+            if(!server.setNumPlayers(numPlayers)) {
                 send("incorrect number of player");
+                return;
+            }
             server.lobby(this, nickName);
             server.adviseAllAttendances();
             send("Attendi gli avversari");
@@ -117,6 +125,7 @@ public class SocketViewConnection extends ObservableConnection implements ViewCo
 
         try{
 
+            socket.setSoTimeout(20000);
             out = new ObjectOutputStream(socket.getOutputStream());
             if(server.createNewGame())
                 send("Welcome, select number of player and nickname");
@@ -136,6 +145,7 @@ public class SocketViewConnection extends ObservableConnection implements ViewCo
             socket.close();
         } catch (IOException | NoSuchElementException | InterruptedException e) {
             System.err.println("Error! Entra qui" + e.getMessage());
+            System.out.println("ciaooo");
 
         } finally{
             close();

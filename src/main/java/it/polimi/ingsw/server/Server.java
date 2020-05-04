@@ -3,6 +3,8 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.GameViewEventListener;
+import it.polimi.ingsw.message.ErrorMessage;
+import it.polimi.ingsw.message.ErrorTyper;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Lobby;
 import it.polimi.ingsw.model.Player;
@@ -23,55 +25,22 @@ public class Server {
     private Lobby lobby;
     private ServerSocket serverSocket;
     private ExecutorService executor = Executors.newFixedThreadPool(128);
-    //private Map<String, ClientConnection> waitingConnection = new HashMap<>();
     private Map<ViewConnection,Player> waitingConnection = new HashMap<>();
     private ArrayList<ViewConnection> waitingGameConnection = new ArrayList<>();
-    //private Map<ClientConnection, ClientConnection> playingConnection = new HashMap<>();
 
-    //Deregister connection
+    public Server() throws IOException {
+        this.serverSocket = new ServerSocket(PORT);
+    }
+
     public synchronized void clientCloseConnection(ViewConnection c) {
-
         waitingConnection.remove(c);
-
         ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
         for (int i = 0; i < viewConnections.size(); i++){
-            viewConnections.get(i).asyncSend("La partita è terminata causa disconnessione di un player");
-            viewConnections.get(i).asyncSend("quit");
+            viewConnections.get(i).asyncSend(new ErrorMessage(ErrorTyper.DISCONNECT, "La partita è terminata causa disconnessione di un player"));
+
         }
+        waitingConnection.clear();
 
-       waitingConnection.clear();
-        /*ClientConnection opponent = playingConnection.get(c);
-        if(opponent != null) {
-            opponent.closeConnection();
-        }
-
-        for (ClientConnection connection : waitingConnection.get()) {
-            connection.asyncSend("La partita è terminata causa disconnessione di un player");
-            connection.closeConnection();
-            waitingConnection.remove(connection);
-        }
-
-        playingConnection.remove(c);
-        playingConnection.remove(opponent);
-        */
-        /*
-        ArrayList<ClientConnection> iterator = new ArrayList<>(waitingConnection.keySet());
-        while(iterator.size()>0){
-            iterator.get(0).asyncSend("La partita è terminata causa disconnessione di un player");
-            iterator.get(0).closeConnection();
-            waitingConnection.remove(iterator.get(0));
-        }
-
-         */
-        /*
-        while(iterator.hasNext()){
-            iterator.
-            if(waitingConnection.get(iterator.next())==c){
-                iterator.remove();
-            }
-
-
-        }*/
     }
 
     public void adviseAllAttendances(){
@@ -80,20 +49,15 @@ public class Server {
     }
 
 
-    //Wait for another player
     public synchronized void lobby(ViewConnection c, String name){
 
         waitingConnection.put(c, new Player(name));
         if (waitingConnection.size() == lobby.getNumPlayers()) {
 
-            //List<String> keys = new ArrayList<>(waitingConnection.keySet());
             ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
             ArrayList<Player> players = new ArrayList<>();
-            //ArrayList<Player> players = new ArrayList<>();
 
             for (int i = 0; i < waitingConnection.size(); i++) {
-                //players.add(new Player(keys.get(i)));
-                //clientConnections.add(waitingConnection.get(players.get(i)));
                 players.add(waitingConnection.get(viewConnections.get(i)));
             }
 
@@ -104,9 +68,7 @@ public class Server {
                 viewConnections.get(i).asyncSend("La partita può incominciare");
             }
 
-
             Game game = new Game();
-
             Controller controller = new Controller(game);
             for(int i=0;i<remoteView.size();i++) {
                 remoteView.get(i).addEventListener(GameViewEventListener.class, controller);
@@ -120,15 +82,11 @@ public class Server {
 
     }
 
-    public Server() throws IOException {
-        this.serverSocket = new ServerSocket(PORT);
-    }
 
     public void run(){
         while(true){
             try {
                 Socket newSocket = serverSocket.accept();
-                //serverSocket.setSoTimeout(10000);
                 SocketViewConnection socketConnection = new SocketViewConnection(newSocket, this);
                 executor.submit(socketConnection);
             } catch (IOException e) {

@@ -1,10 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.controller.response.ControllerResponse;
-import it.polimi.ingsw.message.OperationMessage;
-import it.polimi.ingsw.message.SetUpMessage;
-import it.polimi.ingsw.message.SetUpType;
-//import it.polimi.ingsw.model.Operation;
+import it.polimi.ingsw.message.*;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
@@ -12,7 +9,7 @@ import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.server.ViewConnection;
 import it.polimi.ingsw.view.event.*;
-//import it.polimi.ingsw.server.ClientConnection;
+import java.util.ArrayList;
 
 public class RemoteView extends ViewEventEmitter implements ViewEventListener, ModelEventListener {
 
@@ -44,7 +41,7 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
 
         if(message instanceof OperationMessage) {
             OperationMessage messaggio = (OperationMessage) message;
-            System.out.println(messaggio.getType());
+
             if (messaggio.getType().equals(Operation.MOVE)) {
                 Position startPosition;
                 Position destPosition;
@@ -122,46 +119,57 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
     @Override
     public void movement(MoveWorkerModelEvent e) {
         System.out.println("Remote View Movement");
-/*
-        OperationMessage message = new OperationMessage(Operation.MOVE, e.getStartPosition(), e.getDestinationPosition() , false);
+        /*OperationMessage message = new OperationMessage(Operation.MOVE, e.getStartPosition(), e.getDestinationPosition() , false);
         sendMessage(message);*/
     }
 
     @Override
     public void build(BuildWorkerModelEvent e) {
-        /*OperationMessage message = new OperationMessage(Operation.PLACE, e.getStartPosition(), e.getDestinationPosition() , e.isDome());
+        /*OperationMessage message = new OperationMessage(Operation.BUILD, e.getStartPosition(), e.getDestinationPosition() , e.isDome());
         sendMessage(message);*/
 
     }
 
     @Override
     public void place(PlaceWorkerModelEvent e) {
-        System.out.println("Remote View place Position");
-        System.out.println(e.getPlacePosition().getX());
-        System.out.println(e.getPlacePosition().getY());
-        /*
-        OperationMessage message = new OperationMessage(Operation.PLACE, e.getPlacePosition(), null , false);
-        sendMessage(message);*/
+        if(e.getPlayer().getNickName().equals(getPlayer().getNickName())) {
+            OperationMessage message = new OperationMessage(Operation.PLACE, e.getPlacePosition(), null , false);
+            sendMessage(message);
+        }
+
+
     }
 
     @Override
     public void newTurn(NewTurnModelEvent e) {
-
-        System.out.println("Remote View: turn player:");
-        System.out.println(e.getPlayer().getNickName());
+        if(e.getPlayer().getNickName().equals(getPlayer().getNickName())) {
+            SetUpMessage message = new SetUpMessage(SetUpType.NEWTURN, null);
+            sendMessage(message);
+        }else
+            sendMessage("it's not your turn, wait....");
 
     }
 
     @Override
     public void chosenCards(ChosenCardsModelEvent e) {
+        if(e.getPlayer().getNickName().equals(getPlayer().getNickName())) {
+            ArrayList<String> card = new ArrayList<>();
+            for (int i = 0; i < e.getChosenCards().size(); i++)
+                card.add(e.getChosenCards().get(i));
 
+            SetUpMessage message = new SetUpMessage(SetUpType.CHALLENGERCARDS, card);
+            sendMessage(message);
+        }
     }
 
     @Override
     public void setCard(SetCardModelEvent e) {
-        System.out.println(e.getPlayer().getNickName());
-        System.out.println("Set card:");
-        System.out.println(e.getCardName());
+        if(e.getPlayer().getNickName().equals(getPlayer().getNickName())) {
+            ArrayList<String> card = new ArrayList<>();
+            card.add(e.getCardName());
+            SetUpMessage message = new SetUpMessage(SetUpType.CHOSENCARD, card);
+            sendMessage(message);
+        }
     }
 
     @Override
@@ -171,15 +179,24 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
     @Override
     public void fullInfo(FullInfoModelEvent e) {
 
+        System.out.println("Scatta il full info model event");
+        /*
+        InfoMessage message = new InfoMessage(e.getType(), e.getPlayers(), e.getBoard());
+        sendMessage(message);*/
     }
 
     @Override
     public void newCardsTurn(NewChoseCardTurnModelEvent e) {
-        System.out.println("Remote View: turn player:");
-        System.out.println(e.getPlayer().getNickName());
-        System.out.println("Cards:");
-        for(int i=0;i<e.getCards().size();i++)
-            System.out.println(e.getCards().get(i));
+        if(e.getPlayer().getNickName().equals(getPlayer().getNickName())) {
+            ArrayList<String> cards = new ArrayList<>();
+            for (int i = 0; i < e.getCards().size(); i++)
+                cards.add(e.getCards().get(i));
+
+            SetUpMessage message = new SetUpMessage(SetUpType.NEWTURNCARD, cards);
+            sendMessage(message);
+        }else{
+            sendMessage("it's not your turn, wait....");
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.event;
 
+import it.polimi.ingsw.message.InfoType;
 import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.Card;
 import it.polimi.ingsw.model.CardDeck;
@@ -9,13 +10,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FullInfoModelEvent extends ModelEvent {
+    private InfoType type;
     private Board board;
-    private List<Player> players;
-    private CardDeck cardDeck;
-    public FullInfoModelEvent(Player currentPlayer, List<Player> players, Board board, CardDeck cardDeck) {
+    private ArrayList<Player> players;
+
+    public FullInfoModelEvent(InfoType type, Player currentPlayer, ArrayList<Player> players, Board board) {
         super(currentPlayer);
+        this.type=type;
         this.players = players;
         this.board = board;
-        this.cardDeck = cardDeck;
+
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
+
+    public InfoType getType() {
+        return type;
     }
 }
