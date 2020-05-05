@@ -17,6 +17,10 @@ public class MoveViewEvent extends WorkerViewEvent {
     public Position getDestinationPosition() {
         return destinationPosition;
     }
+    @Override
+    public void accept(RemoteView visitor) {
+        visitor.visit(this);
+    }
 
 
 }

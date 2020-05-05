@@ -15,7 +15,7 @@ import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.server.TimeOutCheckerInterface;
 import it.polimi.ingsw.server.TimeoutCounter;
-import it.polimi.ingsw.view.event.PlaceViewEvent;
+import it.polimi.ingsw.view.event.*;
 
 public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEventListener, ChalCardsEventListener, MovementEventListener, LobbyEventListener,BuildEventListener, PlaceEventListener, EndTurnEventListener, UndoGuiEventListener, Runnable {
 
@@ -149,10 +149,11 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
 
     public void run() {
         try{
+
             socket = new Socket(ip, port);
-            startMyTimer();
             ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
             socketOut = new ObjectOutputStream(socket.getOutputStream());
+            startMyTimer();
             Thread t0 = asyncReadFromSocket(socketIn);
             t0.join();
 
@@ -163,7 +164,6 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-
             try {
                 socketOut.close();
                 socket.close();
@@ -177,7 +177,8 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
 
     @Override
     public void move(MovementGuiEvent e) {
-        OperationMessage message = new OperationMessage(Operation.MOVE, e.getStartPosition(), e.getDestinationPosition(), false);
+        //OperationMessage message = new OperationMessage(Operation.MOVE, e.getStartPosition(), e.getDestinationPosition(), false);
+        ViewEvent message = new MoveViewEvent(null, e.getStartPosition(), e.getDestinationPosition());
         asyncSend(message);
     }
 
@@ -189,53 +190,55 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
 
     @Override
     public void build(BuildGuiEvent e) {
-        OperationMessage message = new OperationMessage(Operation.BUILD, e.getStartPosition(), e.getDestinationPosition(), e.isDome());
+        /*OperationMessage message = new OperationMessage(Operation.BUILD, e.getStartPosition(), e.getDestinationPosition(), e.isDome());
         System.out.println(message.getStartPosition().getX());
         System.out.println(message.getStartPosition().getY());
         System.out.println(message.getDestPosition().getX());
         System.out.println(message.getDestPosition().getY());
 
+         */
+
+        ViewEvent message = new BuildViewEvent(null, e.getStartPosition(), e.getDestinationPosition(), e.isDome());
         asyncSend(message);
     }
 
     @Override
     public void place(PlaceGuiEvent e) {
-        OperationMessage message = new OperationMessage(Operation.PLACE, e.getPosition(), null, false);
+        ViewEvent message = new PlaceViewEvent(null, e.getPosition());
+        //OperationMessage message = new OperationMessage(Operation.PLACE, e.getPosition(), null, false);
         asyncSend(message);
     }
 
     @Override
     public void endTurn(EndTurnGuiEvent e) {
-        SetUpMessage message = new SetUpMessage(SetUpType.ENDTURN, null);
+        //SetUpMessage message = new SetUpMessage(SetUpType.ENDTURN, null);
+        ViewEvent message= new EndTurnViewEvent(null);
         asyncSend(message);
     }
 
     @Override
     public void undo(UndoGuiEvent e) {
 
-        SetUpMessage message = new SetUpMessage(SetUpType.UNDO, null);
+        //SetUpMessage message = new SetUpMessage(SetUpType.UNDO, null);
+        ViewEvent message = new UndoViewEvent(null);
         asyncSend(message);
     }
 
     @Override
     public void chalCards(ChalCardsGuiEvent e) {
-        SetUpMessage message = new SetUpMessage(SetUpType.CHALLENGERCARDS, e.getCards());
+        ViewEvent message = new ChallengerCardViewEvent(null, e.getCards());
         asyncSend(message);
     }
 
     @Override
     public void setCard(SetCardGuiEvent e) {
-        ArrayList<String> card= new ArrayList<>();
-        card.add(e.getCard());
-        SetUpMessage message = new SetUpMessage(SetUpType.CHOSENCARD, card);
+        ViewEvent message = new CardViewEvent(null, e.getCard());
         asyncSend(message);
     }
 
     @Override
     public void firstPlayer(FirstPlayerGuiEvent e) {
-        ArrayList<String> name= new ArrayList<>();
-        name.add(e.getFirstPlayer());
-        SetUpMessage message = new SetUpMessage(SetUpType.FIRSTPLAYER, name );
+        ViewEvent message = new FirstPlayerViewEvent(null, e.getFirstPlayer());
         asyncSend(message);
     }
 }

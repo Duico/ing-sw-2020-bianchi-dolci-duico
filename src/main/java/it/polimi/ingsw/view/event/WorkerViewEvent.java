@@ -19,6 +19,10 @@ public class WorkerViewEvent extends GameViewEvent {
     public Position getWorkerPosition() {
         return workerPosition;
     }
+    @Override
+    public void accept(RemoteView visitor) {
+
+    }
 
 }
 

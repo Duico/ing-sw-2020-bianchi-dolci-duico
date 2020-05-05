@@ -24,7 +24,7 @@ public class Server {
     private static final int PORT = 12345;
     private Lobby lobby;
     private ServerSocket serverSocket;
-    private ExecutorService executor = Executors.newFixedThreadPool(128);
+    private ExecutorService executor = Executors.newFixedThreadPool(100);
     private Map<ViewConnection,Player> waitingConnection = new HashMap<>();
     private ArrayList<ViewConnection> waitingGameConnection = new ArrayList<>();
 

@@ -4,9 +4,7 @@ import it.polimi.ingsw.controller.response.ControllerResponse;
 import it.polimi.ingsw.message.*;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.event.*;
-import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.server.ViewConnection;
 import it.polimi.ingsw.view.event.*;
 import java.util.ArrayList;
@@ -39,68 +37,10 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
     @Override
     public void handleEvent(Object message) {
 
-        if(message instanceof OperationMessage) {
-            OperationMessage messaggio = (OperationMessage) message;
+        if(message instanceof ViewEvent){
+            ViewEvent messaggio = (ViewEvent) message;
+            messaggio.accept(this);
 
-            if (messaggio.getType().equals(Operation.MOVE)) {
-                Position startPosition;
-                Position destPosition;
-                try {
-                    startPosition = new Position(messaggio.getStartPosition().getX(), messaggio.getStartPosition().getY());
-                    destPosition = new Position(messaggio.getDestPosition().getX(), messaggio.getDestPosition().getY());
-                    MoveViewEvent e = new MoveViewEvent(this, startPosition, destPosition);
-                    emitEvent(e);
-
-                }catch (PositionOutOfBoundsException e){
-
-                }
-
-            } else if (messaggio.getType().equals(Operation.BUILD)) {
-                Position startPosition;
-                Position destPosition;
-                boolean isDome;
-                try {
-                    startPosition = new Position(messaggio.getStartPosition().getX(), messaggio.getStartPosition().getY());
-                    destPosition = new Position(messaggio.getDestPosition().getX(), messaggio.getDestPosition().getY());
-                    isDome = messaggio.isDome();
-                    BuildViewEvent e = new BuildViewEvent(this, startPosition, destPosition, isDome);
-                    emitEvent(e);
-
-                }catch (PositionOutOfBoundsException e){
-
-                }
-
-            } else if (messaggio.getType().equals(Operation.PLACE)) {
-                Position startPosition;
-                try {
-                    startPosition = new Position(messaggio.getStartPosition().getX(), messaggio.getStartPosition().getY());
-                    PlaceViewEvent e = new PlaceViewEvent(this, startPosition);
-
-                    emitEvent(e);
-                }catch (PositionOutOfBoundsException e){
-
-                }
-            }
-
-
-        }else if(message instanceof SetUpMessage){
-            SetUpMessage messaggio = (SetUpMessage)message;
-            if (messaggio.getType() == SetUpType.ENDTURN){
-                EndTurnViewEvent e = new EndTurnViewEvent(this);
-                emitEvent(e);
-            }else if(messaggio.getType() == SetUpType.UNDO){
-            UndoViewEvent e = new UndoViewEvent(this);
-            emitEvent(e);
-            } else if(messaggio.getType() == SetUpType.CHALLENGERCARDS){
-                ChallengerCardViewEvent e = new ChallengerCardViewEvent(this, messaggio.getMessage());
-                emitEvent(e);
-            } else if(messaggio.getType() == SetUpType.CHOSENCARD){
-            CardViewEvent e = new CardViewEvent(this, messaggio.getMessage().get(0));
-            emitEvent(e);
-            } else if (messaggio.getType() == SetUpType.FIRSTPLAYER) {
-                FirstPlayerViewEvent e = new FirstPlayerViewEvent(this, messaggio.getMessage().get(0));
-                emitEvent(e);
-            }
         }
 
         else {
@@ -108,6 +48,31 @@ public class RemoteView extends ViewEventEmitter implements ViewEventListener, M
         }
     }
 
+    public void visit(PlaceViewEvent message){
+        message.setView(this);
+        emitEvent(message);
+    }
+    public void visit(UndoViewEvent message) {
+        message.setView(this);
+        emitEvent(message);}
+    public void visit(MoveViewEvent message) {
+        message.setView(this);
+        emitEvent(message);}
+    public void visit(FirstPlayerViewEvent message) {
+        message.setView(this);
+        emitEvent(message);}
+    public void visit(EndTurnViewEvent message) {
+        message.setView(this);
+        emitEvent(message);}
+    public void visit(ChallengerCardViewEvent message) {
+        message.setView(this);
+        emitEvent(message);}
+    public void visit(CardViewEvent message) {
+        message.setView(this);
+        emitEvent(message);}
+    public void visit(BuildViewEvent message) {
+        message.setView(this);
+        emitEvent(message);}
 
 
     public void eventResponse(ControllerResponse response){

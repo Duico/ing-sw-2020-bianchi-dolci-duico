@@ -9,5 +9,10 @@ public class EndTurnViewEvent extends GameViewEvent{
     public EndTurnViewEvent(RemoteView view) {
         super(view);
     }
+
+    @Override
+    public void accept(RemoteView visitor) {
+        visitor.visit(this);
+    }
 }
 

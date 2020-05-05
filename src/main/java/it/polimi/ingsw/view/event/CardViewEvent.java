@@ -14,5 +14,10 @@ public class CardViewEvent extends GameViewEvent {
     public String getCardName() {
         return cardName;
     }
+
+    @Override
+    public void accept(RemoteView visitor) {
+        visitor.visit(this);
+    }
 }
 

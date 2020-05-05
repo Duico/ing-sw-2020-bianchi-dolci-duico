@@ -17,5 +17,10 @@ public class FirstPlayerViewEvent extends GameViewEvent {
     public String getFirstPlayer() {
         return player;
     }
+
+    @Override
+    public void accept(RemoteView visitor) {
+        visitor.visit(this);
+    }
 }
 

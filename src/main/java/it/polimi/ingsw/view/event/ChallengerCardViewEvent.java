@@ -16,5 +16,10 @@ public class ChallengerCardViewEvent extends GameViewEvent {
     public List<String> getCardNamesList(){
         return this.cardNamesList;
     }
+
+    @Override
+    public void accept(RemoteView visitor) {
+        visitor.visit(this);
+    }
 }
 

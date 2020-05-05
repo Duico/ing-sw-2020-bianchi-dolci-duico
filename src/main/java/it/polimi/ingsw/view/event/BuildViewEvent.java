@@ -3,8 +3,10 @@ package it.polimi.ingsw.view.event;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.view.RemoteView;
 
+import java.io.Serializable;
 
-public class BuildViewEvent extends WorkerViewEvent {
+
+public class BuildViewEvent extends WorkerViewEvent implements Serializable {
     private Position destinationPosition;
     private boolean isDome;
 
@@ -21,6 +23,11 @@ public class BuildViewEvent extends WorkerViewEvent {
 
     public boolean isDome() {
         return isDome;
+    }
+
+    @Override
+    public void accept(RemoteView visitor) {
+        visitor.visit(this);
     }
 
 

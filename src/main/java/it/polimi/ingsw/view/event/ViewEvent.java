@@ -8,7 +8,7 @@ import it.polimi.ingsw.view.View;
 import java.io.Serializable;
 import java.rmi.Remote;
 
-public class ViewEvent implements Serializable {
+public abstract class ViewEvent implements Serializable {
     protected RemoteView view;
     public ViewEvent(RemoteView view) {
         this.view = view;
@@ -17,5 +17,11 @@ public class ViewEvent implements Serializable {
     public RemoteView getView(){
         return this.view;
     }
+
+    public void setView(RemoteView view) {
+        this.view = view;
+    }
+
+    public abstract void accept(RemoteView visitor);
 }
 
