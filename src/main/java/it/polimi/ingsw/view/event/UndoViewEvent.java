@@ -4,6 +4,7 @@ import it.polimi.ingsw.message.SetUpMessage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.view.RemoteView;
+import it.polimi.ingsw.view.ViewEventVisitor;
 
 public class UndoViewEvent extends GameViewEvent {
 
@@ -12,8 +13,8 @@ public class UndoViewEvent extends GameViewEvent {
         super(view);
     }
     @Override
-    public void accept(RemoteView visitor) {
-        visitor.visit(this);
+    public void accept(ViewEventVisitor visitor) {
+        visitor.emitEvent(this);
     }
 
 

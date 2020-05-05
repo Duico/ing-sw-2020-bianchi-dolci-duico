@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.client.cli;
 
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +9,6 @@ class ColorTest {
     @Test
     void escape() {
         Color c = Color.YELLOW_UNDERLINED;
-        assertEquals("\033[4;33mCiao\u001B[0mCiao", c.escape()+"Ciao"+c.RESET+"Ciao");
+        assertEquals("\033[4;33mCiao\u001B[0mCiao", c.escape("Ciao")+"Ciao");
     }
 }

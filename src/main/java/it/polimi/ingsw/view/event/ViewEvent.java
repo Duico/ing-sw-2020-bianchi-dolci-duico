@@ -1,12 +1,10 @@
 
 package it.polimi.ingsw.view.event;
 
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.view.RemoteView;
-import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.view.ViewEventVisitor;
 
 import java.io.Serializable;
-import java.rmi.Remote;
 
 public abstract class ViewEvent implements Serializable {
     protected RemoteView view;
@@ -22,6 +20,6 @@ public abstract class ViewEvent implements Serializable {
         this.view = view;
     }
 
-    public abstract void accept(RemoteView visitor);
+    public abstract void accept(ViewEventVisitor visitor);
 }
 

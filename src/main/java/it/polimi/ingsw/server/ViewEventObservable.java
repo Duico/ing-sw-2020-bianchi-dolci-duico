@@ -1,11 +1,12 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.view.ViewEventListener;
+import it.polimi.ingsw.view.event.ViewEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObservableConnection {
+public class ViewEventObservable {
     private final List<ViewEventListener> observers = new ArrayList<>();
 
 
@@ -22,7 +23,7 @@ public class ObservableConnection {
     }
 
 
-    protected void notify(Object message){
+    protected void eventNotify(ViewEvent message){
         synchronized (observers) {
             for(ViewEventListener observer : observers){
                 observer.handleEvent(message);

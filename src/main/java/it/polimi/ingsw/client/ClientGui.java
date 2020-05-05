@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class ClientGui extends /*Observable<LobbyViewEvent>*/ ObservableGui implements Runnable {
     public boolean creatorGame;
     public String nickName;
+    // ^ use a Player
 
     public ClientGui(){
         this.creatorGame=false;

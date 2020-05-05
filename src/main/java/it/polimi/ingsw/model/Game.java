@@ -117,13 +117,14 @@ public class Game extends ModelEventEmitter implements Serializable{
         if(cards.size() != players.size()){
             return false;
         }
+        List<Card> tempCards = new ArrayList<>();
         for(String card : cards){
             Card chosenCard = cardDeck.getCardByName(card);
             if(chosenCard == null)
                 return false;
-            chosenCards.add(chosenCard);
+            tempCards.add(chosenCard);
         }
-
+        chosenCards.addAll(tempCards);
         emitEvent( new ChosenCardsModelEvent(getCurrentPlayer(), getChosenCardsNames()) );
         return true;
     }

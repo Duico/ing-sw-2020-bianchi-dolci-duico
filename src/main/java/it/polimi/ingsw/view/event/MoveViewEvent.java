@@ -4,6 +4,7 @@ import it.polimi.ingsw.message.OperationMessage;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.view.RemoteView;
+import it.polimi.ingsw.view.ViewEventVisitor;
 
 public class MoveViewEvent extends WorkerViewEvent {
     private Position destinationPosition;
@@ -18,8 +19,8 @@ public class MoveViewEvent extends WorkerViewEvent {
         return destinationPosition;
     }
     @Override
-    public void accept(RemoteView visitor) {
-        visitor.visit(this);
+    public void accept(ViewEventVisitor visitor) {
+        visitor.emitEvent(this);
     }
 
 

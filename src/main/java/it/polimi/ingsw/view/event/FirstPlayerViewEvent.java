@@ -5,6 +5,7 @@ import it.polimi.ingsw.message.SetUpMessage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.view.RemoteView;
+import it.polimi.ingsw.view.ViewEventVisitor;
 
 public class FirstPlayerViewEvent extends GameViewEvent {
     private String player;
@@ -19,8 +20,8 @@ public class FirstPlayerViewEvent extends GameViewEvent {
     }
 
     @Override
-    public void accept(RemoteView visitor) {
-        visitor.visit(this);
+    public void accept(ViewEventVisitor visitor) {
+        visitor.emitEvent(this);
     }
 }
 

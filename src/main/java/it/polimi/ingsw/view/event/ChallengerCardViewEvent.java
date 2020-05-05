@@ -2,6 +2,7 @@
 package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.view.RemoteView;
+import it.polimi.ingsw.view.ViewEventVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +19,8 @@ public class ChallengerCardViewEvent extends GameViewEvent {
     }
 
     @Override
-    public void accept(RemoteView visitor) {
-        visitor.visit(this);
+    public void accept(ViewEventVisitor visitor) {
+        visitor.emitEvent(this);
     }
 }
 

@@ -2,17 +2,15 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.message.LobbyMessage;
+import it.polimi.ingsw.view.event.ViewEvent;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.util.NoSuchElementException;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class SocketViewConnection extends ObservableConnection implements ViewConnection, Runnable {
+public class SocketViewConnection extends ViewEventObservable implements ViewConnection, Runnable {
 
     private Socket socket;
     private ObjectOutputStream out;
@@ -27,7 +25,6 @@ public class SocketViewConnection extends ObservableConnection implements ViewCo
         this.server = server;
 
     }
-
 
     public synchronized void setActive(boolean active){
         this.active = active;
@@ -86,8 +83,9 @@ public class SocketViewConnection extends ObservableConnection implements ViewCo
                         LobbyMessage message = (LobbyMessage) inputObject;
                         checkUpRegistration(message.getNickName(), message.getNumPlayers());
                     }
-                    else{
-                        notify(inputObject);
+                    else if(inputObject instanceof ViewEvent){
+                        ViewEvent event = (ViewEvent) inputObject;
+                        eventNotify(event);
                     }
                 }
             } catch (IOException | NoSuchElementException | ClassNotFoundException e) {
@@ -124,7 +122,7 @@ public class SocketViewConnection extends ObservableConnection implements ViewCo
     public void run(){
 
         try{
-
+            //TODO remove
             socket.setSoTimeout(20000);
             out = new ObjectOutputStream(socket.getOutputStream());
             if(server.createNewGame())

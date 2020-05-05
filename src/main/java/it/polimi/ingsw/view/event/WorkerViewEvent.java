@@ -3,10 +3,11 @@ package it.polimi.ingsw.view.event;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.view.RemoteView;
+import it.polimi.ingsw.view.ViewEventVisitor;
 
 import java.io.PipedOutputStream;
 
-public class WorkerViewEvent extends GameViewEvent {
+public abstract class WorkerViewEvent extends GameViewEvent {
 
     protected Position workerPosition;
 
@@ -19,10 +20,7 @@ public class WorkerViewEvent extends GameViewEvent {
     public Position getWorkerPosition() {
         return workerPosition;
     }
-    @Override
-    public void accept(RemoteView visitor) {
-
-    }
+    public abstract void accept(ViewEventVisitor visitor);
 
 }
 

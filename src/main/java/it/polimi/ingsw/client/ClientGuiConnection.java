@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.*;
 
+import it.polimi.ingsw.client.cli.Color;
 import it.polimi.ingsw.message.*;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Position;
@@ -46,52 +47,56 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
             @Override
             public void run() {
                 try {
+                    //SORRY @Tia
+
                     while (isActive()) {
                         Object message = socketIn.readObject();
                         if(message instanceof String){
+                            System.out.println(Color.YELLOW_UNDERLINED.escape("X Tia: Implementare il visitor pattern anche nella ClientGuiConnection"));
                             System.out.println((String)message);
-                        }else if (message instanceof SetUpMessage){
-                            SetUpMessage messaggio = (SetUpMessage) message;
-                            if(messaggio.getType().equals(SetUpType.NEWTURNCARD)){
-                                System.out.println("It's your turn, chose:");
-                                for (int i=0;i<messaggio.getMessage().size();i++)
-                                    System.out.println(messaggio.getMessage().get(i));
-                            }
-                            if(messaggio.getType().equals(SetUpType.CHOSENCARD)){
-                                System.out.println("Correct chose card");
-                                for (int i=0;i<messaggio.getMessage().size();i++)
-                                    System.out.println(messaggio.getMessage().get(i));
-                            }
-                            if(messaggio.getType().equals(SetUpType.CHALLENGERCARDS)){
-                                System.out.println("Correct choses cards");
-                                for (int i=0;i<messaggio.getMessage().size();i++)
-                                    System.out.println(messaggio.getMessage().get(i));
-                            }
-                            if(messaggio.getType().equals(SetUpType.NEWTURN)){
-                                System.out.println("It's your turn, place");
-                            }
 
-                        }
-                        else if (message instanceof OperationMessage){
-                            OperationMessage messaggio = (OperationMessage)message;
-                            if (messaggio.getType().equals(Operation.PLACE)) {
-                                Position startPosition;
-                                try {
-                                    startPosition = new Position(messaggio.getStartPosition().getX(), messaggio.getStartPosition().getY());
-                                    System.out.println("you have place here");
-                                    System.out.println(messaggio.getStartPosition().getX());
-                                    System.out.println(messaggio.getStartPosition().getY());
-
-
-                                }catch (PositionOutOfBoundsException e){
-
-                                }
-                            }
-                        }
-                        else if (message instanceof ErrorMessage){
-                            ErrorMessage messaggio = (ErrorMessage) message;
-                            System.out.println(messaggio.getMessage());
-                            socketIn.close();
+//                        }else if (message instanceof SetUpMessage){
+//                            SetUpMessage messaggio = (SetUpMessage) message;
+//                            if(messaggio.getType().equals(SetUpType.NEWTURNCARD)){
+//                                System.out.println("It's your turn, chose:");
+//                                for (int i=0;i<messaggio.getMessage().size();i++)
+//                                    System.out.println(messaggio.getMessage().get(i));
+//                            }
+//                            if(messaggio.getType().equals(SetUpType.CHOSENCARD)){
+//                                System.out.println("Correct chose card");
+//                                for (int i=0;i<messaggio.getMessage().size();i++)
+//                                    System.out.println(messaggio.getMessage().get(i));
+//                            }
+//                            if(messaggio.getType().equals(SetUpType.CHALLENGERCARDS)){
+//                                System.out.println("Correct choses cards");
+//                                for (int i=0;i<messaggio.getMessage().size();i++)
+//                                    System.out.println(messaggio.getMessage().get(i));
+//                            }
+//                            if(messaggio.getType().equals(SetUpType.NEWTURN)){
+//                                System.out.println("It's your turn, place");
+//                            }
+//
+//                        }
+//                        else if (message instanceof OperationMessage){
+//                            OperationMessage messaggio = (OperationMessage)message;
+//                            if (messaggio.getType().equals(Operation.PLACE)) {
+//                                Position startPosition;
+//                                try {
+//                                    startPosition = new Position(messaggio.getStartPosition().getX(), messaggio.getStartPosition().getY());
+//                                    System.out.println("you have place here");
+//                                    System.out.println(messaggio.getStartPosition().getX());
+//                                    System.out.println(messaggio.getStartPosition().getY());
+//
+//
+//                                }catch (PositionOutOfBoundsException e){
+//
+//                                }
+//                            }
+//                        }
+//                        else if (message instanceof ErrorMessage){
+//                            ErrorMessage messaggio = (ErrorMessage) message;
+//                            System.out.println(messaggio.getMessage());
+//                            socketIn.close();
                         }
                         else {
                             throw new IllegalArgumentException();

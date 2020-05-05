@@ -1,4 +1,6 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.client.cli;
+
+import it.polimi.ingsw.model.PlayerColor;
 
 public enum Color {
     //Normal
@@ -8,6 +10,7 @@ public enum Color {
     BLUE("\u001B[34m"),
     PURPLE("\u001B[35m"),
     CYAN("\u001B[36m"),
+    GRAY("\u001B[90m"),
     WHITE("\u001B[37m"),
     //Bold
     BLACK_BOLD ( "\033[1;30m"),
@@ -17,6 +20,7 @@ public enum Color {
     BLUE_BOLD ( "\033[1;34m"),
     PURPLE_BOLD ( "\033[1;35m"),
     CYAN_BOLD ( "\033[1;36m"),
+    GRAY_BOLD("\u001B[1;90m"),
     WHITE_BOLD ( "\033[1;37m"),
     //Underlined
     BLACK_UNDERLINED( "\033[4;30m"),
@@ -26,6 +30,7 @@ public enum Color {
     BLUE_UNDERLINED ( "\033[4;34m"),
     PURPLE_UNDERLINED ( "\033[4;35m"),
     CYAN_UNDERLINED ( "\033[4;36m"),
+    GRAY_UNDERLINED("\u001B[4;90m"),
     WHITE_UNDERLINED ( "\033[4;37m");
 
 
@@ -36,7 +41,20 @@ public enum Color {
     Color(String escape) {
         this.escape = escape;
     }
-    public String escape() {
-        return escape;
+    public String escape(String message) {
+        return escape+message+RESET;
+    }
+
+    public static Color fromPlayerColor(PlayerColor playerColor, boolean bold){
+        switch(playerColor){
+            case BLUE:
+                return bold?BLUE_BOLD:BLUE;
+            case GREY:
+                return bold?GRAY_BOLD:GRAY;
+            case WHITE:
+                return bold?WHITE_BOLD:WHITE;
+            default:
+                return WHITE;
+        }
     }
 }
