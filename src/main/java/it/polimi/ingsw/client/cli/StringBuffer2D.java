@@ -1,14 +1,17 @@
 package it.polimi.ingsw.client.cli;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StringBuffer2D {
     private List<StringBuffer> rows;
-    private int initWidth;
-    StringBuffer2D(int width){
-        initWidth = width;
+    StringBuffer2D(){
         rows = new ArrayList<>(40);
+    }
+    StringBuffer2D(String initString){
+        this();
+        appendRow(0, initString);
     }
     public StringBuffer2D replace(StringBuffer2D toInsert, int startX, int startY, int endX, int endY){
         populateRows(endY);
@@ -29,6 +32,7 @@ public class StringBuffer2D {
         StringBuffer row = getRowSafe(y);
         extendRow(row, startX);
         row.insert(startX, s, 0, endX-startX);
+        //false if insert has errors
         return true;
     }
     public boolean appendRow(int y, String s){
@@ -37,10 +41,17 @@ public class StringBuffer2D {
         return true;
     }
     public boolean replaceRow(int y, String s, int startX, int endX){
+        int endIndex = Math.min(endX-startX, s.length());
+        return replaceRow(y, s, startX, endX, endIndex);
+    }
+    public boolean replaceRow(int y, String s, int startX, int endX, int endIndex){
         StringBuffer row = getRowSafe(y);
         extendRow(row, startX);
-        row.replace(startX, endX, s.substring(0, endX-startX));
+        row.replace(startX, endX, s.substring(0, endIndex));
         return true;
+    }
+    public boolean appendln(String s){
+        return appendRow(rows.size(), s);
     }
 
     public int getHeight(){
@@ -56,8 +67,8 @@ public class StringBuffer2D {
 
     //todo move downwards hierarchy
     private StringBuffer getRowSafe(int i){
-        StringBuffer row = rows.get(i);
-        if(row == null){
+        StringBuffer row;
+        while(rows.size() <= i || (row = rows.get(i)) == null){
             row = new StringBuffer();
             //row = new StringBuffer(" ".repeat(initWidth));
             rows.add(row);
@@ -75,6 +86,11 @@ public class StringBuffer2D {
     public void printOut(){
         for(StringBuffer row : rows){
             System.out.println(row);
+        }
+    }
+    public void printOut(PrintStream out){
+        for(StringBuffer row: rows){
+            out.println(row);
         }
     }
 }
