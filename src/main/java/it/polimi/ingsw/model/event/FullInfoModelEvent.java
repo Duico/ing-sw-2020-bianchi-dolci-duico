@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.event;
 
+import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.message.InfoType;
 import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.Card;
@@ -30,8 +31,12 @@ public class FullInfoModelEvent extends ModelEvent {
         return players;
     }
 
-
     public InfoType getType() {
         return type;
+    }
+
+    @Override
+    public void accept(ModelEventVisitor visitor){
+        visitor.visit(this);
     }
 }

@@ -9,10 +9,16 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.*;
 
-import it.polimi.ingsw.client.cli.Color;
+//import it.polimi.ingsw.client.cli.Color;
+import it.polimi.ingsw.client.cli.CliModelEventVisitor;
+import it.polimi.ingsw.client.cli.ControllerResponseVisitor;
+import it.polimi.ingsw.client.cli.ModelEventVisitor;
+import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
+import it.polimi.ingsw.controller.response.ControllerResponse;
 import it.polimi.ingsw.message.*;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Position;
+import it.polimi.ingsw.model.event.ModelEvent;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.server.TimeOutCheckerInterface;
 import it.polimi.ingsw.server.TimeoutCounter;
@@ -24,12 +30,19 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
     private String ip;
     private int port;
     private ObjectOutputStream socketOut;
+    private ModelEventVisitor modelVisitor;
+    private ControllerResponseVisitor controllerVisitor;
+    private SetUpMessageVisitor setUpVisitor;
 
 
-    public ClientGuiConnection(String ip, int port){
+
+
+    public ClientGuiConnection(String ip, int port, CliModelEventVisitor visitor){
         this.ip = ip;
         this.port = port;
-
+        this.modelVisitor=visitor;
+        this.controllerVisitor=visitor;
+        this.setUpVisitor=visitor;
     }
 
     private boolean active = true;
@@ -47,56 +60,30 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
             @Override
             public void run() {
                 try {
-                    //SORRY @Tia
 
                     while (isActive()) {
                         Object message = socketIn.readObject();
-                        if(message instanceof String){
-                            System.out.println(Color.YELLOW_UNDERLINED.escape("X Tia: Implementare il visitor pattern anche nella ClientGuiConnection"));
-                            System.out.println((String)message);
+                        if(message instanceof String) {
+                            String string = (String)message;
+                            if(string.equals("Ping"))
+                                asyncSend("Pong");
+                            else
+                                System.out.println((String)message);
 
-//                        }else if (message instanceof SetUpMessage){
-//                            SetUpMessage messaggio = (SetUpMessage) message;
-//                            if(messaggio.getType().equals(SetUpType.NEWTURNCARD)){
-//                                System.out.println("It's your turn, chose:");
-//                                for (int i=0;i<messaggio.getMessage().size();i++)
-//                                    System.out.println(messaggio.getMessage().get(i));
-//                            }
-//                            if(messaggio.getType().equals(SetUpType.CHOSENCARD)){
-//                                System.out.println("Correct chose card");
-//                                for (int i=0;i<messaggio.getMessage().size();i++)
-//                                    System.out.println(messaggio.getMessage().get(i));
-//                            }
-//                            if(messaggio.getType().equals(SetUpType.CHALLENGERCARDS)){
-//                                System.out.println("Correct choses cards");
-//                                for (int i=0;i<messaggio.getMessage().size();i++)
-//                                    System.out.println(messaggio.getMessage().get(i));
-//                            }
-//                            if(messaggio.getType().equals(SetUpType.NEWTURN)){
-//                                System.out.println("It's your turn, place");
-//                            }
-//
-//                        }
-//                        else if (message instanceof OperationMessage){
-//                            OperationMessage messaggio = (OperationMessage)message;
-//                            if (messaggio.getType().equals(Operation.PLACE)) {
-//                                Position startPosition;
-//                                try {
-//                                    startPosition = new Position(messaggio.getStartPosition().getX(), messaggio.getStartPosition().getY());
-//                                    System.out.println("you have place here");
-//                                    System.out.println(messaggio.getStartPosition().getX());
-//                                    System.out.println(messaggio.getStartPosition().getY());
-//
-//
-//                                }catch (PositionOutOfBoundsException e){
-//
-//                                }
-//                            }
-//                        }
-//                        else if (message instanceof ErrorMessage){
-//                            ErrorMessage messaggio = (ErrorMessage) message;
-//                            System.out.println(messaggio.getMessage());
-//                            socketIn.close();
+                        }else if(message instanceof ModelEvent) {
+                            ModelEvent event = (ModelEvent) message;
+                            event.accept(modelVisitor);
+
+
+                        }else if(message instanceof ControllerResponse){
+                            ControllerResponse event = (ControllerResponse) message;
+                            event.accept(controllerVisitor);
+
+                        }
+                        else if(message instanceof SetUpMessage){
+                            SetUpMessage event = (SetUpMessage) message;
+                            event.accept(setUpVisitor);
+
                         }
                         else {
                             throw new IllegalArgumentException();
@@ -132,7 +119,7 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
 
     }
 
-    public void startMyTimer() {
+    /*public void startMyTimer() {
 
         Timer timer = new Timer();
         TimeOutCheckerInterface timeOutChecker = () -> {
@@ -149,7 +136,7 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
             int intialDelay = 3000;
             int delta = 3000;
             timer.schedule(task, intialDelay, delta);
-    }
+    }*/
 
 
     public void run() {
@@ -158,7 +145,7 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
             socket = new Socket(ip, port);
             ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
             socketOut = new ObjectOutputStream(socket.getOutputStream());
-            startMyTimer();
+            //startMyTimer();
             Thread t0 = asyncReadFromSocket(socketIn);
             t0.join();
 
@@ -189,7 +176,7 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
 
     @Override
     public void sendLobbyEvent(LobbyGuiEvent e) {
-        LobbyMessage message = new LobbyMessage(e.getNickname(), e.getNumPlayers());
+        SignUpMessage message = new SignUpMessage(e.getNickname(), e.getNumPlayers());
         asyncSend(message);
     }
 

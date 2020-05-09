@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.controller.response.*;
 
-interface ControllerResponseVisitor {
+public interface ControllerResponseVisitor {
     void visit(FailedOperationControllerResponse r);
     void visit(FailedUndoControllerResponse r);
     void visit(IllegalCardNameControllerResponse r);

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.controller.response;
 
+import it.polimi.ingsw.client.cli.ControllerResponseVisitor;
+import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.view.event.MoveViewEvent;
 import it.polimi.ingsw.view.event.WorkerViewEvent;
@@ -24,6 +26,10 @@ public class FailedOperationControllerResponse extends ControllerResponse {
         NOT_FEASIBLE,
         NOT_CURRENT_WORKER,
         DESTINATION_NOT_EMPTY;
+    }
+
+    public void accept(ControllerResponseVisitor visitor){
+        visitor.visit(this);
     }
 }
 

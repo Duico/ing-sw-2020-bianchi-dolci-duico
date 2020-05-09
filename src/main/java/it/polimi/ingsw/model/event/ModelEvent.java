@@ -1,11 +1,12 @@
 package it.polimi.ingsw.model.event;
 
+import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.model.Player;
 
 import java.io.Serializable;
 import java.util.UUID;
 
-public class ModelEvent implements Serializable {
+public abstract class ModelEvent implements Serializable {
     protected Player player;
 
     public ModelEvent(Player player){
@@ -29,4 +30,7 @@ public class ModelEvent implements Serializable {
                 "player=" + player.getUuid() +
                 '}';
     }
+
+    public abstract void accept(ModelEventVisitor visitor);
+
 }

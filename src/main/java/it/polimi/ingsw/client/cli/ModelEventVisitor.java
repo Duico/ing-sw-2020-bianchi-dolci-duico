@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.model.event.*;
 
-interface ModelEventVisitor {
+public interface ModelEventVisitor {
     void visit(BuildWorkerModelEvent evt);
     void visit(MoveWorkerModelEvent evt);
     void visit(PlaceWorkerModelEvent evt);

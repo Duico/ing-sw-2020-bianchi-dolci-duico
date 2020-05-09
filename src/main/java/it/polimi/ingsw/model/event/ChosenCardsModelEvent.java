@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.event;
 
+import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.model.Player;
 
 import java.util.ArrayList;
@@ -15,5 +16,10 @@ public class ChosenCardsModelEvent extends UpdateModelEvent {
 
     public List<String> getChosenCards() {
         return chosenCards;
+    }
+
+    @Override
+    public void accept(ModelEventVisitor visitor){
+        visitor.visit(this);
     }
 }

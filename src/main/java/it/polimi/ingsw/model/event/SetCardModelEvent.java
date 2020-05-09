@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.event;
 
+import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.model.Player;
 
 public class SetCardModelEvent extends UpdateModelEvent {
@@ -11,5 +12,10 @@ public class SetCardModelEvent extends UpdateModelEvent {
 
     public String getCardName(){
         return this.cardName;
+    }
+
+    @Override
+    public void accept(ModelEventVisitor visitor){
+        visitor.visit(this);
     }
 }

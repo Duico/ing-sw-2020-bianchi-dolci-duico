@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.event;
 
+import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.Player;
 
@@ -21,5 +22,10 @@ public class UndoModelEvent extends UpdateModelEvent {
 
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    @Override
+    public void accept(ModelEventVisitor visitor){
+        visitor.visit(this);
     }
 }

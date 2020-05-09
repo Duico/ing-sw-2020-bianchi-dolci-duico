@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.event;
+/*package it.polimi.ingsw.model.event;
 
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TurnPhase;
@@ -17,3 +17,4 @@ public class NewChoseCardTurnModelEvent extends NewTurnModelEvent {
         return cards;
     }
 }
+*/

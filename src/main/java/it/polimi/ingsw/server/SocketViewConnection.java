@@ -1,7 +1,7 @@
 
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.message.LobbyMessage;
+import it.polimi.ingsw.message.SignUpMessage;
 import it.polimi.ingsw.view.event.ViewEvent;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
 
     private Socket socket;
     private ObjectOutputStream out;
-    private ObjectInputStream input;
+    private ObjectInputStream in;
     private Server server;
     static final int maxRetries = 10;
 
@@ -40,7 +40,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
             out.writeObject(message);
             out.flush();
         } catch(IOException e){
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
 
     }
@@ -77,11 +77,11 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
                 while (isActive()) {
                     Object inputObject = socketIn.readObject();
                     if(inputObject instanceof String){
-
+                        System.out.println((String) inputObject);
                     }
-                    else if(inputObject instanceof LobbyMessage) {
-                        LobbyMessage message = (LobbyMessage) inputObject;
-                        checkUpRegistration(message.getNickName(), message.getNumPlayers());
+                    else if(inputObject instanceof SignUpMessage) {
+                        SignUpMessage message = (SignUpMessage) inputObject;
+                        server.checkUpRegistration(message.getNickName(), message.getNumPlayers(), this);
                     }
                     else if(inputObject instanceof ViewEvent){
                         ViewEvent event = (ViewEvent) inputObject;
@@ -98,44 +98,42 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
 
 
 
-    public void checkUpRegistration(String nickName, int numPlayers){
-        if(server.getNumPlayers()==0){
-            server.addPlayer(nickName);
-            if(!server.setNumPlayers(numPlayers)) {
-                send("incorrect number of player");
-                return;
-            }
-            server.lobby(this, nickName);
-            server.adviseAllAttendances();
-            send("Attendi gli avversari");
-        } else if (server.addPlayer(nickName)) {
-               send("Attendi gli avversari");
-               server.lobby(this, nickName);
-        } else{
-            send("nickName already used");
-        }
-    }
 
+
+   /* public void startMyTimer() {
+
+        Timer timer = new Timer();
+        TimeOutCheckerInterface timeOutChecker = () -> {
+            if (isActive()){
+                send("Ping");
+                return false;
+            }else{
+                System.out.println("The connection is inactive");
+                return true;
+            }
+        };
+
+        TimerTask task = new TimeoutCounter(timeOutChecker);
+        int intialDelay = 3000;
+        int delta = 3000;
+        timer.schedule(task, intialDelay, delta);
+    }*/
+
+   public void createObjectStream()  {
+       try {
+           out = new ObjectOutputStream(socket.getOutputStream());
+           in = new ObjectInputStream(socket.getInputStream());
+       }catch(IOException e){
+           e.getMessage();
+       }
+    }
 
 
     @Override
     public void run(){
 
         try{
-            //TODO remove
-            socket.setSoTimeout(20000);
-            out = new ObjectOutputStream(socket.getOutputStream());
-            if(server.createNewGame())
-                send("Welcome, select number of player and nickname");
-            else if(!server.createNewGame() && server.getNumPlayers()==0) {
-                send("Please, attend the creation of the game....");
-                server.addWaitingGame(this);
-            }else{
-                send("Welcome, select nickname");
-            }
 
-
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             Thread t0 = asyncReadFromSocket(in);
             t0.join();
             out.close();

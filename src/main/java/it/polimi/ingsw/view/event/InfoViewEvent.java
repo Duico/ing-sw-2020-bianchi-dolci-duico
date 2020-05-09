@@ -8,9 +8,9 @@ public class InfoViewEvent extends GameViewEvent {
     public InfoViewEvent(RemoteView view) {
         super(view);
     }
+
     @Override
     public void accept(ViewEventVisitor visitor) {
-        //TODO
-        //visitor.visit(this);
+        visitor.emitEvent(this);
     }
 }

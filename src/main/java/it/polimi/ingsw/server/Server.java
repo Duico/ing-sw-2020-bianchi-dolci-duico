@@ -5,12 +5,13 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.GameViewEventListener;
 import it.polimi.ingsw.message.ErrorMessage;
 import it.polimi.ingsw.message.ErrorTyper;
+import it.polimi.ingsw.message.ServerLobbyResponse;
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.Lobby;
+import it.polimi.ingsw.model.GameSerializer;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.ModelEventListener;
-
+import it.polimi.ingsw.message.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,6 +24,7 @@ public class Server {
 
     private static final int PORT = 12345;
     private Lobby lobby;
+    private Game game;
     private ServerSocket serverSocket;
     private ExecutorService executor = Executors.newFixedThreadPool(100);
     private Map<ViewConnection,Player> waitingConnection = new HashMap<>();
@@ -30,6 +32,7 @@ public class Server {
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(PORT);
+        init();
     }
 
     public synchronized void clientCloseConnection(ViewConnection c) {
@@ -40,6 +43,8 @@ public class Server {
 
         }
         waitingConnection.clear();
+        GameSerializer serializer = new GameSerializer("./game.ser");
+        serializer.writeGame(game);
 
     }
 
@@ -50,33 +55,36 @@ public class Server {
 
 
     public synchronized void lobby(ViewConnection c, String name){
+            if(game==null) {
+            waitingConnection.put(c, new Player(name));
+            if (waitingConnection.size() == lobby.getNumPlayers()) {
 
-        waitingConnection.put(c, new Player(name));
-        if (waitingConnection.size() == lobby.getNumPlayers()) {
+                ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
+                ArrayList<Player> players = new ArrayList<>();
 
-            ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
-            ArrayList<Player> players = new ArrayList<>();
+                for (int i = 0; i < waitingConnection.size(); i++) {
+                    players.add(waitingConnection.get(viewConnections.get(i)));
+                }
 
-            for (int i = 0; i < waitingConnection.size(); i++) {
-                players.add(waitingConnection.get(viewConnections.get(i)));
+
+                ArrayList<RemoteView> remoteView = new ArrayList<>();
+                for (int i = 0; i < players.size(); i++) {
+                    remoteView.add(new RemoteView(players.get(i), viewConnections.get(i)));
+                    viewConnections.get(i).asyncSend("La partita può incominciare");
+                }
+
+                game = new Game();
+                Controller controller = new Controller(game);
+                for (int i = 0; i < remoteView.size(); i++) {
+                    remoteView.get(i).addEventListener(GameViewEventListener.class, controller);
+                    game.addEventListener(ModelEventListener.class, remoteView.get(i));
+                }
+                game.startGame(players, true);
+
+
             }
-
-
-            ArrayList<RemoteView> remoteView = new ArrayList<>();
-            for(int i=0;i<players.size();i++) {
-                remoteView.add(new RemoteView(players.get(i), viewConnections.get(i)));
-                viewConnections.get(i).asyncSend("La partita può incominciare");
-            }
-
-            Game game = new Game();
-            Controller controller = new Controller(game);
-            for(int i=0;i<remoteView.size();i++) {
-                remoteView.get(i).addEventListener(GameViewEventListener.class, controller);
-                game.addEventListener(ModelEventListener.class, remoteView.get(i));
-            }
-            game.startGame(players, true);
-
-
+        }else{
+            System.out.println("Entro nel controllo nickname persistenza");
         }
 
 
@@ -89,6 +97,9 @@ public class Server {
                 Socket newSocket = serverSocket.accept();
                 SocketViewConnection socketConnection = new SocketViewConnection(newSocket, this);
                 executor.submit(socketConnection);
+                socketConnection.createObjectStream();
+                initMessageClient(socketConnection);
+
             } catch (IOException e) {
                 System.out.println("Connection Error!");
                 System.out.println("Il server ha perso la connessione!");
@@ -96,9 +107,35 @@ public class Server {
         }
     }
 
-    public int getNumPlayers() {
-        return lobby.getNumPlayers();
+    public void initMessageClient(SocketViewConnection socketConnection){
+        if(lobby.getNumPlayers()==0)
+            socketConnection.asyncSend(new ServerLobbyResponse(ServerLobbyResponse.SingUpParameter.STARTGAME));
+        else
+            socketConnection.asyncSend(new ServerLobbyResponse(ServerLobbyResponse.SingUpParameter.NICKNAME));
     }
+
+    public void checkUpRegistration(String nickName, int numPlayers, SocketViewConnection connection){
+        if(lobby.getNumPlayers()==0){
+            lobby.addPlayer(nickName);
+            if(!lobby.setNumPlayers(numPlayers)) {
+                connection.asyncSend(new FailedSignUpMessage(FailedSignUpMessage.Reason.INVALID_NUMPLAYERS));
+                return;
+            }
+            this.lobby(connection, nickName);
+            connection.asyncSend(new ServerLobbyResponse(ServerLobbyResponse.SingUpParameter.CORRECT_SIGNUP));
+
+        } else if (lobby.addPlayer(nickName)) {
+            connection.asyncSend(new ServerLobbyResponse(ServerLobbyResponse.SingUpParameter.CORRECT_SIGNUP));
+            this.lobby(connection, nickName);
+        } else{
+            connection.asyncSend(new FailedSignUpMessage(FailedSignUpMessage.Reason.NICKNAME_ALREADY_USED));
+        }
+    }
+
+
+    /*public int getNumPlayers() {
+        return lobby.getNumPlayers();
+    }*/
 
     public synchronized boolean setNumPlayers(int numPlayers) {
         return lobby.setNumPlayers(numPlayers);
@@ -125,6 +162,7 @@ public class Server {
     public synchronized boolean createNewGame() {
         if(this.lobby==null){
             this.lobby = new Lobby();
+
             return true;
         }else{
             return false;
@@ -137,15 +175,19 @@ public class Server {
 
 
     protected void init(){
-        Lobby lobby = new Lobby("./game.ser"); //pass filename here
+        /*lobby = new Lobby("./game.ser"); //pass filename here
         Game loadedGame = lobby.persistencyLoadGame();
         if(loadedGame != null){
+            game=loadedGame;
+            System.out.println("return to game serialized");
             //PersistencyEvent p = new PersistencyEvent(loadedGame);
             //send p to client via socket
         }else{
+            createNewGame();
+            System.out.println("new Game");
             //create and start new game
-        }
-
+        }*/
+        createNewGame();
     }
 
 

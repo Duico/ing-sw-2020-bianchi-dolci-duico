@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.event;
 
+import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
 
@@ -25,5 +26,10 @@ public class MoveWorkerModelEvent extends UpdateModelEvent {
 
     public Position getPushPosition() {
         return pushPosition;
+    }
+
+    @Override
+    public void accept(ModelEventVisitor visitor){
+        visitor.visit(this);
     }
 }

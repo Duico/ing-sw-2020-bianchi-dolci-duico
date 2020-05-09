@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.event;
 
+import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.model.Player;
 
 public class PlayerDefeatModelEvent extends UpdateModelEvent {
@@ -8,4 +9,11 @@ public class PlayerDefeatModelEvent extends UpdateModelEvent {
         super(player);
         this.isUndoAvailable=isUndoAvailable;
     }
+
+    @Override
+    public void accept(ModelEventVisitor visitor){
+        visitor.visit(this);
+    }
+
+
 }

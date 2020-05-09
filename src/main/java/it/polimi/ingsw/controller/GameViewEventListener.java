@@ -13,6 +13,7 @@ public interface GameViewEventListener extends EventListener {
      void setFirstPlayer(FirstPlayerViewEvent e);
      void endTurn(EndTurnViewEvent e);
      void challengerCards(ChallengerCardViewEvent e);
+     void requiredTurnInfo(InfoViewEvent e);
 
 }
 

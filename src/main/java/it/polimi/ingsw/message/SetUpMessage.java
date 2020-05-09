@@ -1,22 +1,14 @@
 package it.polimi.ingsw.message;
 
+import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SetUpMessage implements Serializable {
-    private final SetUpType type;
-    private final ArrayList<String> message;
+public abstract class SetUpMessage implements Serializable {
 
-    public SetUpMessage(SetUpType type, ArrayList<String> message){
-        this.type=type;
-        this.message=message;
-    }
+    public SetUpMessage(){ }
 
-    public SetUpType getType() {
-        return type;
-    }
+    public abstract void accept(SetUpMessageVisitor visitor);
 
-    public ArrayList<String> getMessage() {
-        return message;
-    }
 }

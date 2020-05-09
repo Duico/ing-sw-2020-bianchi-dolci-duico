@@ -1,5 +1,8 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.GameSerializer;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.exception.NotEnoughPlayersException;
 
 import java.util.ArrayList;
@@ -11,6 +14,7 @@ public class Lobby {
     Game game;
     int numPlayers;
     private ArrayList<String> players;
+
     //ArrayList<Player> players;//fix ArrayList<String> -> ArrayList<Player>
 
     public Lobby() {

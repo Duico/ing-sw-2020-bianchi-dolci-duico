@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller.response;
 
+import it.polimi.ingsw.client.cli.ControllerResponseVisitor;
 import it.polimi.ingsw.view.event.UndoViewEvent;
 
 public class FailedUndoControllerResponse extends ControllerResponse {
@@ -11,6 +12,10 @@ public class FailedUndoControllerResponse extends ControllerResponse {
     public enum Reason{
         NOT_AVAILABLE,
         TIMER_EXPIRED
+    }
+
+    public void accept(ControllerResponseVisitor visitor){
+        visitor.visit(this);
     }
 }
 

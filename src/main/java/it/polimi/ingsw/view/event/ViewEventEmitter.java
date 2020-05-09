@@ -5,7 +5,7 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.LobbyController;
 import it.polimi.ingsw.event.EventEmitter;
 import it.polimi.ingsw.event.EventHandler;
-import it.polimi.ingsw.model.Lobby;
+import it.polimi.ingsw.server.Lobby;
 
 import java.util.EventListener;
 
