@@ -17,7 +17,6 @@ public class SignUpFailedSetUpMessage extends SetUpMessage {
     }
 
     public enum Reason{
-        NICKNAME_ALREADY_USED,
         INVALID_NICKNAME,
         INVALID_NUMPLAYERS,
     }

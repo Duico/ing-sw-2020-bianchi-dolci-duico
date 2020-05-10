@@ -117,11 +117,11 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
     @Override
     public void visit(SignUpFailedSetUpMessage message) {
         if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME)) {
-            System.out.println(Color.YELLOW_BOLD.escape("Invalid nickName"));
-        }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.NICKNAME_ALREADY_USED)) {
-            System.out.println(Color.YELLOW_BOLD.escape("NickName already used"));
-        }else {
-            System.out.println(Color.YELLOW_BOLD.escape("Incorrect num of players"));
+            out.println(CliText.INVALID_NICKNAME.toString());
+            askSetUpInfo(askNumPlayers);
+        }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS)){
+            out.println(CliText.INVALID_NUMPLAYERS.toString());
+            askSetUpInfo(askNumPlayers);
         }
 
     }
@@ -135,9 +135,11 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
     public void visit(InitSetUpMessage message) {
         if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.NICKNAME)) {
 //            System.out.println(Color.YELLOW_BOLD.escape("Welcome, enter your nickname"));
+            askNumPlayers = false;
             askSetUpInfo(false);
         }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME)) {
 //            System.out.println(Color.YELLOW_BOLD.escape("Welcome, enter your nickname and num players"));
+            askNumPlayers = true;
             askSetUpInfo(true);
         }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP)){
             out.println(CliText.CORRECT_SIGNUP.toString());

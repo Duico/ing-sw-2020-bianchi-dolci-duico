@@ -40,10 +40,16 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     private synchronized void send(Object message) {
         try {
             out.reset();
+        } catch(IOException e){
+            System.out.println(message.getClass());
+            System.out.println("Tutto ok!");
+            //e.printStackTrace();
+        }
+        try{
             out.writeObject(message);
             out.flush();
-        } catch(IOException e){
-            e.printStackTrace();
+        }catch(IOException e){
+
         }
 
     }

@@ -126,7 +126,10 @@ public class Lobby {
 
     }
 
-    public boolean setNumPlayers(@NotNull Integer numPlayers) {
+    public boolean setNumPlayers(Integer numPlayers) {
+        if(numPlayers == null){
+            return false;
+        }
         if(this.numPlayers!=null)
             return false;
         else if(2<=numPlayers && numPlayers<=3) {

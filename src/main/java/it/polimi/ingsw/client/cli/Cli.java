@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class Cli extends ClientViewEventObservable implements Runnable{
     final CliController cliController;
+    boolean askNumPlayers = false;
     Scanner in;
     PrintStream out;
     public Cli(){
@@ -32,6 +33,5 @@ public class Cli extends ClientViewEventObservable implements Runnable{
             while ((numPlayers = cliController.askNumPlayers()) == null);
         }
         emitSignUp(new SignUpMessage(playerName, numPlayers));
-
     }
 }

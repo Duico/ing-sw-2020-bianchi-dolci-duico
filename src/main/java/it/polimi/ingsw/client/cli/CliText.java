@@ -6,7 +6,10 @@ public enum CliText {
     BAD_NAME(Color.RED.escape("Nickname format is not valid")),
     BAD_NUMPLAYERS(Color.RED.escape("Insert number of players:")),
     CORRECT_SIGNUP(Color.GREEN.escape("Correct signup... wait")),
-    ENTER_COMMAND("Enter command:");
+    INVALID_NICKNAME(Color.RED.escape("Invalid nickName")),
+    INVALID_NUMPLAYERS(Color.RED.escape("Incorrect num of players")),
+    ENTER_COMMAND("Enter command:"),
+    ;
 
     CliText(String text){
         this.text = text;
