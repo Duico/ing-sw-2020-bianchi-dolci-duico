@@ -3,13 +3,16 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.GameViewEventListener;
-import it.polimi.ingsw.message.ServerLobbyResponse;
+import it.polimi.ingsw.server.message.DisconnectionSetUpMessage;
+import it.polimi.ingsw.server.message.InitSetUpMessage;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameSerializer;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.server.message.SetUpType;
+import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.ModelEventListener;
-import it.polimi.ingsw.message.*;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -37,7 +40,7 @@ public class Server {
         waitingConnection.remove(c);
         ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
         for (int i = 0; i < viewConnections.size(); i++){
-            viewConnections.get(i).asyncSend(new DisconnectionMessage(SetUpType.DISCONNECTION));
+            viewConnections.get(i).asyncSend(new DisconnectionSetUpMessage(SetUpType.DISCONNECTION));
         }
         waitingConnection.clear();
         GameSerializer serializer = new GameSerializer("./game.ser");
@@ -106,27 +109,35 @@ public class Server {
     public void initMessageClient(SocketViewConnection socketConnection){
         if(/*lobby.getNumPlayers()==0*/ lobby==null) {
             createNewGame();
-            socketConnection.asyncSend(new ServerLobbyResponse(SetUpType.SIGN_UP, ServerLobbyResponse.SignUpParameter.STARTGAME));
+            socketConnection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.STARTGAME));
         }else {
-            socketConnection.asyncSend(new ServerLobbyResponse(SetUpType.SIGN_UP, ServerLobbyResponse.SignUpParameter.NICKNAME));
+            socketConnection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.NICKNAME));
         }
     }
 
-    public void checkUpRegistration(String nickName, int numPlayers, SocketViewConnection connection){
-        if(lobby.getNumPlayers()==0){
+    public void checkUpRegistration(String nickName, Integer numPlayers, SocketViewConnection connection){
+        if(lobby.getNumPlayers()==null){
             lobby.addPlayer(nickName);
-            if(!lobby.setNumPlayers(numPlayers)) {
-                connection.asyncSend(new FailedSignUpMessage(SetUpType.SIGN_UP, FailedSignUpMessage.Reason.INVALID_NUMPLAYERS));
-                return;
-            }
+            //if(firstConnetion connection)
+            // numPlayers == null ERROR
+            //
+//            if(!lobby.setNumPlayers(numPlayers)) {
+//                connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
+//                return;
+//            }
+//            else()
+            {
+
             this.lobby(connection, nickName);
-            connection.asyncSend(new ServerLobbyResponse(SetUpType.SIGN_UP, ServerLobbyResponse.SignUpParameter.CORRECT_SIGNUP));
+            connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP));
+
+            }
 
         } else if (lobby.addPlayer(nickName)) {
-            connection.asyncSend(new ServerLobbyResponse(SetUpType.SIGN_UP, ServerLobbyResponse.SignUpParameter.CORRECT_SIGNUP));
+            connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP));
             this.lobby(connection, nickName);
         } else{
-            connection.asyncSend(new FailedSignUpMessage(SetUpType.SIGN_UP,FailedSignUpMessage.Reason.NICKNAME_ALREADY_USED));
+            connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.NICKNAME_ALREADY_USED));
         }
     }
 
@@ -135,9 +146,9 @@ public class Server {
         return lobby.getNumPlayers();
     }*/
 
-    public synchronized boolean setNumPlayers(int numPlayers) {
-        return lobby.setNumPlayers(numPlayers);
-    }
+//    public synchronized boolean setNumPlayers(int numPlayers) {
+//        return lobby.setNumPlayers(numPlayers);
+//    }
 
 
     public synchronized boolean nameAlreadyUsed(String name) {

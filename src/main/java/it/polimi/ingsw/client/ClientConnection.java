@@ -10,22 +10,20 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 //import it.polimi.ingsw.client.cli.Color;
-import it.polimi.ingsw.client.cli.CliModelEventVisitor;
 import it.polimi.ingsw.client.cli.ControllerResponseVisitor;
 import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
+import it.polimi.ingsw.client.message.SignUpListener;
+import it.polimi.ingsw.client.message.SignUpMessage;
 import it.polimi.ingsw.controller.response.ControllerResponse;
-import it.polimi.ingsw.message.*;
-import it.polimi.ingsw.model.Operation;
-import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.event.ModelEvent;
-import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
-import it.polimi.ingsw.server.TimeOutCheckerInterface;
-import it.polimi.ingsw.server.TimeoutCounter;
+import it.polimi.ingsw.server.message.PingSetUpMessage;
+import it.polimi.ingsw.server.message.SetUpMessage;
+import it.polimi.ingsw.server.message.SetUpType;
 import it.polimi.ingsw.view.ViewEventListener;
 import it.polimi.ingsw.view.event.*;
 
-public class ClientConnection implements ViewEventListener, Runnable {
+public class ClientConnection implements ViewEventListener, SignUpListener, Runnable {
 
     private Socket socket;
     private String ip;
@@ -64,11 +62,11 @@ public class ClientConnection implements ViewEventListener, Runnable {
                     while (isActive()) {
                         Object message = socketIn.readObject();
                         if(message instanceof String) {
-                            String string = (String)message;
-                            if(string.equals("Ping"))
-                                asyncSend("Pong");
-                            else
-                                System.out.println((String)message);
+//                            String string = (String)message;
+//                            if(string.equals("Ping"))
+//                                asyncSend("Pong");
+//                            else
+//                                System.out.println((String)message);
 
                         }else if(message instanceof ModelEvent) {
                             ModelEvent event = (ModelEvent) message;
@@ -88,7 +86,7 @@ public class ClientConnection implements ViewEventListener, Runnable {
                                 setActive(false);
                                 event.accept(setUpVisitor);
                             }else if(event.getSetUpType().equals(SetUpType.PING)){
-                                asyncSend(new PingMessage(SetUpType.PONG));
+                                //asyncSend(new PingSetUpMessage(SetUpType.PONG));
                             }
 
                         }
@@ -171,9 +169,14 @@ public class ClientConnection implements ViewEventListener, Runnable {
             }
         }
     }
-
+    @Override
     public void handleEvent(ViewEvent e){
         asyncSend(e);
+    }
+
+    @Override
+    public void handleEvent(SignUpMessage evt) {
+        asyncSend(evt);
     }
 
 /*

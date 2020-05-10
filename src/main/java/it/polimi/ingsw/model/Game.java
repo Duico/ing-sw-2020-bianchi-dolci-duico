@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.message.InfoType;
 import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
 
@@ -287,7 +286,7 @@ public class Game extends ModelEventEmitter implements Serializable{
         if(firstPlayer==null){
             return false;
         }
-        ModelEvent evt = new FullInfoModelEvent(InfoType.INITGAME, getCurrentPlayer(), players, board.clone());
+        ModelEvent evt = new FullInfoModelEvent(FullInfoModelEvent.InfoType.INIT_GAME, getCurrentPlayer(), players, board.clone());
         emitEvent(evt);
         //emitEvent(new NewTurnModelEvent(firstPlayer, TurnPhase.PLACE_WORKERS));
         nextTurn(firstPlayer);

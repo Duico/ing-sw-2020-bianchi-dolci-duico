@@ -1,12 +1,12 @@
-package it.polimi.ingsw.message;
+package it.polimi.ingsw.server.message;
 
 import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
 
-public class ServerLobbyResponse extends SetUpMessage {
+public class InitSetUpMessage extends SetUpMessage {
 
     private SignUpParameter response;
 
-    public ServerLobbyResponse(SetUpType setUpType, SignUpParameter response){
+    public InitSetUpMessage(SetUpType setUpType, SignUpParameter response){
         super(setUpType);
         this.response=response;
     }
@@ -25,4 +25,5 @@ public class ServerLobbyResponse extends SetUpMessage {
     public SignUpParameter getResponse() {
         return response;
     }
+
 }

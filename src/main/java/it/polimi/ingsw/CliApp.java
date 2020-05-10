@@ -3,20 +3,21 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.ViewPlayer;
 import it.polimi.ingsw.client.cli.*;
+import it.polimi.ingsw.client.message.SignUpListener;
+import it.polimi.ingsw.view.ViewEventListener;
 
 
 public class CliApp {
     public static void main( String[] args )
     {
-
-        Cli cli = new Cli();
         CliModelEventVisitor cliVisitor = new CliModelEventVisitor();
         ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, cliVisitor, cliVisitor, cliVisitor);
-        cli.addViewEventListener(clientConnection);
+        cliVisitor.addEventListener(ViewEventListener.class, clientConnection);
+        cliVisitor.addEventListener(SignUpListener.class, clientConnection);
 
-        Thread thread1 = new Thread(clientConnection);
-        thread1.start();
-        Thread thread2 = new Thread(cli);
+        Thread connectionThread = new Thread(clientConnection);
+        connectionThread.start();
+        Thread thread2 = new Thread(cliVisitor);
         thread2.start();
 
 

@@ -1,5 +1,6 @@
-package it.polimi.ingsw.client.cli;
+package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.model.event.*;
 
 public class GuiModelEventVisitor implements ModelEventVisitor {

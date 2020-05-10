@@ -1,10 +1,9 @@
 
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.message.PingMessage;
-import it.polimi.ingsw.message.SetUpMessage;
-import it.polimi.ingsw.message.SetUpType;
-import it.polimi.ingsw.message.SignUpMessage;
+import it.polimi.ingsw.server.message.PingSetUpMessage;
+import it.polimi.ingsw.server.message.SetUpType;
+import it.polimi.ingsw.client.message.SignUpMessage;
 import it.polimi.ingsw.view.event.ViewEvent;
 
 import java.io.IOException;
@@ -109,7 +108,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         Timer timer = new Timer();
         TimeOutCheckerInterface timeOutChecker = () -> {
             if (isActive()){
-                send(new PingMessage(SetUpType.PING));
+                send(new PingSetUpMessage(SetUpType.PING));
                 return false;
             }else{
                 System.out.println("The connection is inactive");
@@ -137,8 +136,8 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     public void run(){
 
         try{
-            startMyTimer();
-            socket.setSoTimeout(20000);
+            //startMyTimer();
+            //socket.setSoTimeout(20000);
             Thread t0 = asyncReadFromSocket(in);
             t0.join();
             out.close();

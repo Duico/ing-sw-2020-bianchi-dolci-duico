@@ -1,10 +1,7 @@
 package it.polimi.ingsw.model.event;
 
 import it.polimi.ingsw.client.cli.ModelEventVisitor;
-import it.polimi.ingsw.message.InfoType;
 import it.polimi.ingsw.model.Board;
-import it.polimi.ingsw.model.Card;
-import it.polimi.ingsw.model.CardDeck;
 import it.polimi.ingsw.model.Player;
 
 import java.util.ArrayList;
@@ -13,9 +10,9 @@ import java.util.List;
 public class FullInfoModelEvent extends ModelEvent {
     private InfoType type;
     private Board board;
-    private ArrayList<Player> players;
+    private List<Player> players;
 
-    public FullInfoModelEvent(InfoType type, Player currentPlayer, ArrayList<Player> players, Board board) {
+    public FullInfoModelEvent(InfoType type, Player currentPlayer, List<Player> players, Board board) {
         super(currentPlayer);
         this.type=type;
         this.players = players;
@@ -27,7 +24,7 @@ public class FullInfoModelEvent extends ModelEvent {
         return board;
     }
 
-    public ArrayList<Player> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
@@ -38,5 +35,11 @@ public class FullInfoModelEvent extends ModelEvent {
     @Override
     public void accept(ModelEventVisitor visitor){
         visitor.visit(this);
+    }
+
+    public enum InfoType{
+        UNDO,
+        INIT_GAME,
+        PERSISTENCY
     }
 }

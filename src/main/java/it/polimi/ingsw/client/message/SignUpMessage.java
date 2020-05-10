@@ -1,4 +1,4 @@
-package it.polimi.ingsw.message;
+package it.polimi.ingsw.client.message;
 import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
 
 import java.io.Serializable;
@@ -22,7 +22,7 @@ public class SignUpMessage implements Serializable {
         return nickName;
     }
 
-    public int getNumPlayers() {
+    public Integer getNumPlayers() {
         return numPlayers;
     }
 

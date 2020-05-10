@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameSerializer;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.exception.NotEnoughPlayersException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -12,7 +13,7 @@ public class Lobby {
     String persistencyFilename = "./game.ser";
     //TODO should be in a configuration file
     Game game;
-    int numPlayers;
+    Integer numPlayers;
     private ArrayList<String> players;
 
     //ArrayList<Player> players;//fix ArrayList<String> -> ArrayList<Player>
@@ -119,14 +120,14 @@ public class Lobby {
     }
 
 
-    public int getNumPlayers(){
+    public Integer getNumPlayers(){
         //if(numPlayers>=2 && numPlayers<=3){
             return numPlayers;
 
     }
 
-    public boolean setNumPlayers(int numPlayers) {
-        if(this.numPlayers!=0)
+    public boolean setNumPlayers(@NotNull Integer numPlayers) {
+        if(this.numPlayers!=null)
             return false;
         else if(2<=numPlayers && numPlayers<=3) {
             this.numPlayers = numPlayers;

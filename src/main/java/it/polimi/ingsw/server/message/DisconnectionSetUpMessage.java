@@ -1,10 +1,10 @@
-package it.polimi.ingsw.message;
+package it.polimi.ingsw.server.message;
 
 import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
 
-public class DisconnectionMessage extends SetUpMessage {
+public class DisconnectionSetUpMessage extends SetUpMessage {
 
-    public DisconnectionMessage(SetUpType setUpType) {
+    public DisconnectionSetUpMessage(SetUpType setUpType) {
         super(setUpType);
     }
 

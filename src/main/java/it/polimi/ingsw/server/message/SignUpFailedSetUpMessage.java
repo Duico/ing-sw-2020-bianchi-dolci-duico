@@ -1,12 +1,12 @@
-package it.polimi.ingsw.message;
+package it.polimi.ingsw.server.message;
 
 import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
 
-public class FailedSignUpMessage extends SetUpMessage {
+public class SignUpFailedSetUpMessage extends SetUpMessage {
 
     private Reason reason;
 
-    public FailedSignUpMessage(SetUpType setUpType, Reason reason){
+    public SignUpFailedSetUpMessage(SetUpType setUpType, Reason reason){
         super(setUpType);
         this.reason=reason;
     }

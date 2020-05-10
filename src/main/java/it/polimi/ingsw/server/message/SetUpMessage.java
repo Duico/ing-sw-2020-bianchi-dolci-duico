@@ -1,9 +1,8 @@
-package it.polimi.ingsw.message;
+package it.polimi.ingsw.server.message;
 
 import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public abstract class SetUpMessage implements Serializable {
 

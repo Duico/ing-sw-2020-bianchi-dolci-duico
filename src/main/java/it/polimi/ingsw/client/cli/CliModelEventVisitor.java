@@ -1,146 +1,148 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.controller.response.*;
-import it.polimi.ingsw.message.DisconnectionMessage;
-import it.polimi.ingsw.message.FailedSignUpMessage;
-import it.polimi.ingsw.message.ServerLobbyResponse;
+import it.polimi.ingsw.server.message.DisconnectionSetUpMessage;
+import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
+import it.polimi.ingsw.server.message.InitSetUpMessage;
 import it.polimi.ingsw.model.event.*;
 
-public class CliModelEventVisitor implements ModelEventVisitor, ControllerResponseVisitor, SetUpMessageVisitor{
+public class CliModelEventVisitor extends Cli implements ModelEventVisitor, ControllerResponseVisitor, SetUpMessageVisitor{
 
     @Override
     public void visit(BuildWorkerModelEvent evt) {
-        System.out.println("Build");
+        System.out.println(Color.YELLOW_BOLD.escape("Build"));
     }
 
     @Override
     public void visit(MoveWorkerModelEvent evt) {
-        System.out.println("Move");
+        System.out.println(Color.YELLOW_BOLD.escape("Move"));
     }
 
     @Override
     public void visit(PlaceWorkerModelEvent evt) {
-        System.out.println("Place");
+        System.out.println(Color.YELLOW_BOLD.escape("Place"));
     }
 
     @Override
     public void visit(ChosenCardsModelEvent evt) {
-        System.out.println("ChosenCard");
+        System.out.println(Color.YELLOW_BOLD.escape("ChosenCard"));
     }
 
     @Override
     public void visit(FailModelEvent evt) {
-        System.out.println("Fail");
+        System.out.println(Color.YELLOW_BOLD.escape("Fail"));
     }
 
     @Override
     public void visit(FullInfoModelEvent evt) {
-        System.out.println("FullInfo");
+        System.out.println(Color.YELLOW_BOLD.escape("FullInfo"));
     }
 
     @Override
     public void visit(NewTurnModelEvent evt) {
-        System.out.println("NewTurn");
-        System.out.println(evt.getPlayer().getNickName());
+        System.out.println(Color.YELLOW_BOLD.escape("NewTurn"));
+        System.out.println(Color.YELLOW_BOLD.escape(evt.getPlayer().getNickName()));
     }
 
     @Override
     public void visit(PlayerDefeatModelEvent evt) {
-        System.out.println("PlayerDefeat");
+        System.out.println(Color.YELLOW_BOLD.escape("PlayerDefeat"));
     }
 
     @Override
     public void visit(WinModelEvent evt) {
-        System.out.println("Win");
+        System.out.println(Color.YELLOW_BOLD.escape("Win"));
     }
 
     @Override
     public void visit(SetCardModelEvent evt) {
-        System.out.println("SetCard");
+        System.out.println(Color.YELLOW_BOLD.escape("SetCard"));
     }
 
     @Override
     public void visit(UndoModelEvent evt) {
-        System.out.println("Undo");
+        System.out.println(Color.YELLOW_BOLD.escape("Undo"));
     }
 
     @Override
     public void visit(FailedOperationControllerResponse r) {
-        System.out.println("Failed operation");
+        System.out.println(Color.YELLOW_BOLD.escape("Failed operation"));
     }
 
     @Override
     public void visit(FailedUndoControllerResponse r) {
-        System.out.println("Failed undo");
+        System.out.println(Color.YELLOW_BOLD.escape("Failed undo"));
     }
 
     @Override
     public void visit(IllegalCardNameControllerResponse r) {
-        System.out.println("illegal card name");
+        System.out.println(Color.YELLOW_BOLD.escape("illegal card name"));
     }
 
     @Override
     public void visit(IllegalCardNamesListControllerResponse r) {
-        System.out.println("illegal list of card");
+        System.out.println(Color.YELLOW_BOLD.escape("illegal list of card"));
     }
 
     @Override
     public void visit(IllegalFirstPlayerControllerResponse r) {
-        System.out.println("illegal first player");
+        System.out.println(Color.YELLOW_BOLD.escape("illegal first player"));
     }
 
     @Override
     public void visit(IllegalTurnPhaseControllerResponse r) {
-        System.out.println("illegal turn phase");
+        System.out.println(Color.YELLOW_BOLD.escape("illegal turn phase"));
     }
 
     @Override
     public void visit(RequiredOperationControllerResponse r) {
-        System.out.println("required operation");
+        System.out.println(Color.YELLOW_BOLD.escape("required operation"));
     }
 
     @Override
     public void visit(NotCurrentPlayerControllerResponse r) {
-        System.out.println("incorrectPlayer");
+        System.out.println(Color.YELLOW_BOLD.escape("incorrectPlayer"));
     }
 
     @Override
     public void visit(SuccessControllerResponse r) {
-        System.out.println("correct operation");
+        System.out.println(Color.YELLOW_BOLD.escape("correct operation"));
     }
 
     @Override
     public void visit(TurnInfoControllerResponse r) {
-        System.out.println("Turn info. Is Allowed to Move: "+r.isAllowedToMove() + "...etc");
+        System.out.println(Color.YELLOW_BOLD.escape("Turn info. Is Allowed to Move: "+r.isAllowedToMove() + "...etc"));
     }
 
     @Override
-    public void visit(FailedSignUpMessage message) {
-        if(message.getReason().equals(FailedSignUpMessage.Reason.INVALID_NICKNAME)) {
-            System.out.println("Invalid nickName");
-        }else if(message.getReason().equals(FailedSignUpMessage.Reason.NICKNAME_ALREADY_USED)) {
-            System.out.println("NickName already used");
+    public void visit(SignUpFailedSetUpMessage message) {
+        if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME)) {
+            System.out.println(Color.YELLOW_BOLD.escape("Invalid nickName"));
+        }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.NICKNAME_ALREADY_USED)) {
+            System.out.println(Color.YELLOW_BOLD.escape("NickName already used"));
         }else {
-            System.out.println("Incorrect num of players");
+            System.out.println(Color.YELLOW_BOLD.escape("Incorrect num of players"));
         }
 
     }
 
+    @Override
+    public void visit(DisconnectionSetUpMessage evt) {
+        System.out.println(Color.YELLOW_BOLD.escape("End game, player disconnected"));
+    }
 
     @Override
-    public void visit(ServerLobbyResponse message) {
-        if(message.getResponse().equals(ServerLobbyResponse.SignUpParameter.NICKNAME)) {
-            System.out.println("Welcome, enter your nickname");
-        }else if(message.getResponse().equals(ServerLobbyResponse.SignUpParameter.STARTGAME)) {
-            System.out.println("Welcome, enter your nickname and num players");
-        }else {
-            System.out.println("Correct sign up, wait....");
+    public void visit(InitSetUpMessage message) {
+        if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.NICKNAME)) {
+//            System.out.println(Color.YELLOW_BOLD.escape("Welcome, enter your nickname"));
+            askSetUpInfo(false);
+        }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME)) {
+//            System.out.println(Color.YELLOW_BOLD.escape("Welcome, enter your nickname and num players"));
+            askSetUpInfo(true);
+        }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP)){
+            out.println(CliText.CORRECT_SIGNUP.toString());
+//            System.out.println(Color.YELLOW_BOLD.escape("Correct sign up, wait...."));
         }
     }
 
-    @Override
-    public void visit(DisconnectionMessage evt) {
-        System.out.println("Disconnessione di un player, partita finita");
-
-    }
 }

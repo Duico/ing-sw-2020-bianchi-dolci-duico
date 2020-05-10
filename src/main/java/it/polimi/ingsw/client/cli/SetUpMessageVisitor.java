@@ -1,13 +1,13 @@
 package it.polimi.ingsw.client.cli;
 
-import it.polimi.ingsw.message.DisconnectionMessage;
-import it.polimi.ingsw.message.FailedSignUpMessage;
-import it.polimi.ingsw.message.ServerLobbyResponse;
+import it.polimi.ingsw.server.message.DisconnectionSetUpMessage;
+import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
+import it.polimi.ingsw.server.message.InitSetUpMessage;
 
 
 public interface SetUpMessageVisitor {
-    void visit(FailedSignUpMessage message);
-    void visit(ServerLobbyResponse evt);
-    void visit(DisconnectionMessage evt);
+    void visit(SignUpFailedSetUpMessage message);
+    void visit(InitSetUpMessage evt);
+    void visit(DisconnectionSetUpMessage evt);
 
 }
