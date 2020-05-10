@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.controller.response.*;
+import it.polimi.ingsw.message.DisconnectionMessage;
 import it.polimi.ingsw.message.FailedSignUpMessage;
-import it.polimi.ingsw.message.PingMessage;
 import it.polimi.ingsw.message.ServerLobbyResponse;
 import it.polimi.ingsw.model.event.*;
 
@@ -126,19 +126,21 @@ public class CliModelEventVisitor implements ModelEventVisitor, ControllerRespon
 
     }
 
-    @Override
-    public void visit(PingMessage message) {
-
-    }
 
     @Override
     public void visit(ServerLobbyResponse message) {
-        if(message.getResponse().equals(ServerLobbyResponse.SingUpParameter.NICKNAME)) {
+        if(message.getResponse().equals(ServerLobbyResponse.SignUpParameter.NICKNAME)) {
             System.out.println("Welcome, enter your nickname");
-        }else if(message.getResponse().equals(ServerLobbyResponse.SingUpParameter.STARTGAME)) {
+        }else if(message.getResponse().equals(ServerLobbyResponse.SignUpParameter.STARTGAME)) {
             System.out.println("Welcome, enter your nickname and num players");
         }else {
             System.out.println("Correct sign up, wait....");
         }
+    }
+
+    @Override
+    public void visit(DisconnectionMessage evt) {
+        System.out.println("Disconnessione di un player, partita finita");
+
     }
 }

@@ -6,7 +6,8 @@ public class FailedSignUpMessage extends SetUpMessage {
 
     private Reason reason;
 
-    public FailedSignUpMessage(Reason reason){
+    public FailedSignUpMessage(SetUpType setUpType, Reason reason){
+        super(setUpType);
         this.reason=reason;
     }
 

@@ -3,8 +3,6 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.GameViewEventListener;
-import it.polimi.ingsw.message.ErrorMessage;
-import it.polimi.ingsw.message.ErrorTyper;
 import it.polimi.ingsw.message.ServerLobbyResponse;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameSerializer;
@@ -39,19 +37,17 @@ public class Server {
         waitingConnection.remove(c);
         ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
         for (int i = 0; i < viewConnections.size(); i++){
-            viewConnections.get(i).asyncSend(new ErrorMessage(ErrorTyper.DISCONNECT, "La partita è terminata causa disconnessione di un player"));
-
+            viewConnections.get(i).asyncSend(new DisconnectionMessage(SetUpType.DISCONNECTION));
         }
         waitingConnection.clear();
         GameSerializer serializer = new GameSerializer("./game.ser");
         serializer.writeGame(game);
+        this.game=null;
+        this.lobby=null;
+
 
     }
 
-    public void adviseAllAttendances(){
-        for(int i=0;i<waitingGameConnection.size();i++)
-            waitingGameConnection.get(i).asyncSend("Welcome, add your nickName");
-    }
 
 
     public synchronized void lobby(ViewConnection c, String name){
@@ -96,8 +92,8 @@ public class Server {
             try {
                 Socket newSocket = serverSocket.accept();
                 SocketViewConnection socketConnection = new SocketViewConnection(newSocket, this);
-                executor.submit(socketConnection);
                 socketConnection.createObjectStream();
+                executor.submit(socketConnection);
                 initMessageClient(socketConnection);
 
             } catch (IOException e) {
@@ -108,27 +104,29 @@ public class Server {
     }
 
     public void initMessageClient(SocketViewConnection socketConnection){
-        if(lobby.getNumPlayers()==0)
-            socketConnection.asyncSend(new ServerLobbyResponse(ServerLobbyResponse.SingUpParameter.STARTGAME));
-        else
-            socketConnection.asyncSend(new ServerLobbyResponse(ServerLobbyResponse.SingUpParameter.NICKNAME));
+        if(/*lobby.getNumPlayers()==0*/ lobby==null) {
+            createNewGame();
+            socketConnection.asyncSend(new ServerLobbyResponse(SetUpType.SIGN_UP, ServerLobbyResponse.SignUpParameter.STARTGAME));
+        }else {
+            socketConnection.asyncSend(new ServerLobbyResponse(SetUpType.SIGN_UP, ServerLobbyResponse.SignUpParameter.NICKNAME));
+        }
     }
 
     public void checkUpRegistration(String nickName, int numPlayers, SocketViewConnection connection){
         if(lobby.getNumPlayers()==0){
             lobby.addPlayer(nickName);
             if(!lobby.setNumPlayers(numPlayers)) {
-                connection.asyncSend(new FailedSignUpMessage(FailedSignUpMessage.Reason.INVALID_NUMPLAYERS));
+                connection.asyncSend(new FailedSignUpMessage(SetUpType.SIGN_UP, FailedSignUpMessage.Reason.INVALID_NUMPLAYERS));
                 return;
             }
             this.lobby(connection, nickName);
-            connection.asyncSend(new ServerLobbyResponse(ServerLobbyResponse.SingUpParameter.CORRECT_SIGNUP));
+            connection.asyncSend(new ServerLobbyResponse(SetUpType.SIGN_UP, ServerLobbyResponse.SignUpParameter.CORRECT_SIGNUP));
 
         } else if (lobby.addPlayer(nickName)) {
-            connection.asyncSend(new ServerLobbyResponse(ServerLobbyResponse.SingUpParameter.CORRECT_SIGNUP));
+            connection.asyncSend(new ServerLobbyResponse(SetUpType.SIGN_UP, ServerLobbyResponse.SignUpParameter.CORRECT_SIGNUP));
             this.lobby(connection, nickName);
         } else{
-            connection.asyncSend(new FailedSignUpMessage(FailedSignUpMessage.Reason.NICKNAME_ALREADY_USED));
+            connection.asyncSend(new FailedSignUpMessage(SetUpType.SIGN_UP,FailedSignUpMessage.Reason.NICKNAME_ALREADY_USED));
         }
     }
 
@@ -149,7 +147,7 @@ public class Server {
     public synchronized boolean addPlayer(String nickName){
         if(lobby.getNumPlayers()==0){
             lobby.addPlayer(nickName);
-            //lobby.setNumPlayers(3);
+
         }else{
             if(!nameAlreadyUsed(nickName))
                 return false;
@@ -162,7 +160,6 @@ public class Server {
     public synchronized boolean createNewGame() {
         if(this.lobby==null){
             this.lobby = new Lobby();
-
             return true;
         }else{
             return false;
@@ -187,7 +184,7 @@ public class Server {
             System.out.println("new Game");
             //create and start new game
         }*/
-        createNewGame();
+        //createNewGame();
     }
 
 

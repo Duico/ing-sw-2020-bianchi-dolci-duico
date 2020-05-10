@@ -4,9 +4,10 @@ import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
 
 public class ServerLobbyResponse extends SetUpMessage {
 
-    private SingUpParameter response;
+    private SignUpParameter response;
 
-    public ServerLobbyResponse(SingUpParameter response){
+    public ServerLobbyResponse(SetUpType setUpType, SignUpParameter response){
+        super(setUpType);
         this.response=response;
     }
 
@@ -15,13 +16,13 @@ public class ServerLobbyResponse extends SetUpMessage {
         visitor.visit(this);
     }
 
-    public enum SingUpParameter {
+    public enum SignUpParameter {
         STARTGAME,
         NICKNAME,
         CORRECT_SIGNUP
     }
 
-    public SingUpParameter getResponse() {
+    public SignUpParameter getResponse() {
         return response;
     }
 }

@@ -1,6 +1,9 @@
 
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.message.PingMessage;
+import it.polimi.ingsw.message.SetUpMessage;
+import it.polimi.ingsw.message.SetUpType;
 import it.polimi.ingsw.message.SignUpMessage;
 import it.polimi.ingsw.view.event.ViewEvent;
 
@@ -9,6 +12,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.NoSuchElementException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SocketViewConnection extends ViewEventObservable implements ViewConnection, Runnable {
 
@@ -17,7 +22,6 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     private ObjectInputStream in;
     private Server server;
     static final int maxRetries = 10;
-
     private boolean active = true;
 
     public SocketViewConnection(Socket socket, Server server)  {
@@ -76,10 +80,10 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
             try {
                 while (isActive()) {
                     Object inputObject = socketIn.readObject();
-                    if(inputObject instanceof String){
+                    /*if(inputObject instanceof String){
                         System.out.println((String) inputObject);
                     }
-                    else if(inputObject instanceof SignUpMessage) {
+                    else*/ if(inputObject instanceof SignUpMessage) {
                         SignUpMessage message = (SignUpMessage) inputObject;
                         server.checkUpRegistration(message.getNickName(), message.getNumPlayers(), this);
                     }
@@ -100,12 +104,12 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
 
 
 
-   /* public void startMyTimer() {
+    public void startMyTimer() {
 
         Timer timer = new Timer();
         TimeOutCheckerInterface timeOutChecker = () -> {
             if (isActive()){
-                send("Ping");
+                send(new PingMessage(SetUpType.PING));
                 return false;
             }else{
                 System.out.println("The connection is inactive");
@@ -117,7 +121,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         int intialDelay = 3000;
         int delta = 3000;
         timer.schedule(task, intialDelay, delta);
-    }*/
+    }
 
    public void createObjectStream()  {
        try {
@@ -133,16 +137,15 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     public void run(){
 
         try{
-
+            startMyTimer();
+            socket.setSoTimeout(20000);
             Thread t0 = asyncReadFromSocket(in);
             t0.join();
             out.close();
             in.close();
-            socket.close();
         } catch (IOException | NoSuchElementException | InterruptedException e) {
             System.err.println("Error! Entra qui" + e.getMessage());
             System.out.println("ciaooo");
-
         } finally{
             close();
         }

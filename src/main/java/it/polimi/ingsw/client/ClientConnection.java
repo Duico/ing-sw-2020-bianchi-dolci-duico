@@ -80,9 +80,16 @@ public class ClientConnection implements ViewEventListener, Runnable {
                             event.accept(controllerVisitor);
 
                         }
-                        else if(message instanceof SetUpMessage){
+                        else if(message instanceof SetUpMessage) {
                             SetUpMessage event = (SetUpMessage) message;
-                            event.accept(setUpVisitor);
+                            if (event.getSetUpType().equals(SetUpType.SIGN_UP)){
+                                event.accept(setUpVisitor);
+                            }else if(event.getSetUpType().equals(SetUpType.DISCONNECTION)){
+                                setActive(false);
+                                event.accept(setUpVisitor);
+                            }else if(event.getSetUpType().equals(SetUpType.PING)){
+                                asyncSend(new PingMessage(SetUpType.PONG));
+                            }
 
                         }
                         else {
