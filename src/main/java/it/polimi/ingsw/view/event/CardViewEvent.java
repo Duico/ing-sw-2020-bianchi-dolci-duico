@@ -10,6 +10,9 @@ public class CardViewEvent extends GameViewEvent {
         super(view);
         this.cardName=cardName;
     }
+    public CardViewEvent(String cardName){
+        this(null, cardName);
+    }
 
 
     public String getCardName() {

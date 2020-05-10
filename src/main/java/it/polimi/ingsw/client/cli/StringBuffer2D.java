@@ -6,6 +6,9 @@ import java.util.List;
 
 public class StringBuffer2D {
     private List<StringBuffer> rows;
+    private int width = 0;
+    private final int maxWidth = 640;
+
     StringBuffer2D(){
         rows = new ArrayList<>(40);
     }
@@ -28,16 +31,24 @@ public class StringBuffer2D {
         }
         return this;
     }
+    public StringBuffer2D insert(StringBuffer2D toInsert, int startX, int startY){
+        return insert(toInsert, startX, startY, maxWidth);
+    }
     public boolean insertRow(int y, String s, int startX, int endX){
         StringBuffer row = getRowSafe(y);
         extendRow(row, startX);
-        row.insert(startX, s, 0, endX-startX);
+        int initWidth = row.length();
+        int insertEnd = Math.min(s.length(), endX - startX);
+        row.insert(startX, s, 0, insertEnd);
+        width = Math.max(width,  initWidth + insertEnd);
         //false if insert has errors
         return true;
     }
     public boolean appendRow(int y, String s){
         StringBuffer row = getRowSafe(y);
+        int initWidth = row.length();
         row.append(s);
+        width = Math.max(width, initWidth + s.length());
         return true;
     }
     public boolean replaceRow(int y, String s, int startX, int endX){
@@ -47,7 +58,9 @@ public class StringBuffer2D {
     public boolean replaceRow(int y, String s, int startX, int endX, int endIndex){
         StringBuffer row = getRowSafe(y);
         extendRow(row, startX);
+        int initWidth = row.length();
         row.replace(startX, endX, s.substring(0, endIndex));
+        width = Math.max(width,  initWidth + (startX - endX) + s.length());
         return true;
     }
     public boolean appendln(String s){
@@ -56,6 +69,9 @@ public class StringBuffer2D {
 
     public int getHeight(){
         return rows.size();
+    }
+    public int getWidth(){
+        return width;
     }
 
     private void extendRow(StringBuffer row, int minWidth){

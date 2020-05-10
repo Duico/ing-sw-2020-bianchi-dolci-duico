@@ -62,5 +62,5 @@ class StringBuffer2DTest {
         assertEquals("Oggi e' una magnifica giornata\n", outContent.toString());
 
     }
-
+    //TODO test 2D functions... making the assertions is too difficult
 }

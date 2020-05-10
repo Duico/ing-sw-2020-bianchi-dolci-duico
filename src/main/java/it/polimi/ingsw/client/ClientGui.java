@@ -1,13 +1,15 @@
 
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.model.Card;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.view.event.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ClientGui extends /*Observable<LobbyViewEvent>*/ ObservableGui implements Runnable {
+public class ClientGui extends /*Observable<LobbyViewEvent>*/ ClientViewEventObservable implements Runnable {
     public boolean creatorGame;
     public String nickName;
     // ^ use a Player
@@ -18,7 +20,7 @@ public class ClientGui extends /*Observable<LobbyViewEvent>*/ ObservableGui impl
 
     public void generateLobbyEvent(String userName, int numPlayer) {
 
-        notify(new LobbyGuiEvent(userName, numPlayer));
+        //notify(new LobbyGuiEvent(userName, numPlayer));
     }
 
 
@@ -26,7 +28,7 @@ public class ClientGui extends /*Observable<LobbyViewEvent>*/ ObservableGui impl
         try {
             Position startPosition = new Position(x1, y1);
             Position destPosition = new Position(x2, y2);
-            notify(new MovementGuiEvent(startPosition, destPosition));
+//            notify(new MovementGuiEvent(startPosition, destPosition));
         }catch (PositionOutOfBoundsException e){
 
         }
@@ -37,7 +39,7 @@ public class ClientGui extends /*Observable<LobbyViewEvent>*/ ObservableGui impl
         try {
             Position startPosition = new Position(x1, y1);
             Position destPosition = new Position(x2, y2);
-            notify(new BuildGuiEvent(startPosition, destPosition, false));
+//            notify(new BuildGuiEvent(startPosition, destPosition, false));
         }catch(PositionOutOfBoundsException e){
 
         }
@@ -95,29 +97,29 @@ public class ClientGui extends /*Observable<LobbyViewEvent>*/ ObservableGui impl
     }
 
     private void generateSetFirstPlayer(String player) {
-        notify(new FirstPlayerGuiEvent(player));
+        notify(new FirstPlayerViewEvent(player));
     }
 
     private void generateSetCardEvent(String card1) {
-        notify(new SetCardGuiEvent(card1));
+        notify(new CardViewEvent(card1));
     }
 
     private void generateChalCardsEvent(ArrayList<String> cards) {
-        notify(new ChalCardsGuiEvent(cards));
+        notify(new ChallengerCardViewEvent(cards));
     }
 
     private void generateUndoEven() {
-        notify(new UndoGuiEvent());
+        notify(new UndoViewEvent(null));
     }
 
     private void generateEndTurnEven() {
-        notify(new EndTurnGuiEvent());
+        notify(new EndTurnViewEvent());
     }
 
     private void generatePlaceEvent(int x, int y) {
         try {
             Position position = new Position(x, y);
-            notify(new PlaceGuiEvent(position));
+            notify(new PlaceViewEvent(position));
         }catch (PositionOutOfBoundsException e){
 
         }

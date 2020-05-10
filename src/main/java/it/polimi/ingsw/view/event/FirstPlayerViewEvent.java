@@ -14,6 +14,9 @@ public class FirstPlayerViewEvent extends GameViewEvent {
         super(view);
         this.player=player;
     }
+    public FirstPlayerViewEvent(String player){
+        this(null, player);
+    }
 
     public String getFirstPlayer() {
         return player;

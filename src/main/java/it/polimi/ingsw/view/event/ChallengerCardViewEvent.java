@@ -13,6 +13,9 @@ public class ChallengerCardViewEvent extends GameViewEvent {
         super(view);
         this.cardNamesList=cardNamesList;
     }
+    public ChallengerCardViewEvent(ArrayList<String> cardNamesList){
+        this(null, cardNamesList);
+    }
 
     public List<String> getCardNamesList(){
         return this.cardNamesList;

@@ -111,7 +111,7 @@ public class CliModelEventVisitor implements ModelEventVisitor, ControllerRespon
 
     @Override
     public void visit(TurnInfoControllerResponse r) {
-        System.out.println("Turn info");
+        System.out.println("Turn info. Is Allowed to Move: "+r.isAllowedToMove() + "...etc");
     }
 
     @Override

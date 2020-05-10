@@ -2,16 +2,25 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.ViewPlayer;
 import it.polimi.ingsw.model.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
 class BoardPrinterTest {
     private BoardPrinter boardPrinter;
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private PrintStream outPrintStream = new PrintStream(outContent);
+
     @BeforeEach
     void setUp() throws Exception{
+        outContent.reset();
+
         List<ViewPlayer> playerList = new ArrayList<>();
         String[] playerNames = {"Pippo", "Pluto", "Topolino"};
         Position[][] workersPositions = {
@@ -35,9 +44,17 @@ class BoardPrinterTest {
     }
 
     @Test
+    void displayCell() throws Exception{
+        boardPrinter.displayCell(new Position(2,3)).printOut(outPrintStream);
+        assertEquals(
+                "|         |\n" +
+                "|    \u001B[1;37mW\u001B[0m    |\n" +
+                "|    0    |\n" +
+                "|_________|\n",
+                outContent.toString());
+    }
+    @Test
     void printBoard() throws Exception{
-        boardPrinter.clear();
-        boardPrinter.printBoard();
-        //assert something
+        boardPrinter.printBoard().printOut(System.out);
     }
 }

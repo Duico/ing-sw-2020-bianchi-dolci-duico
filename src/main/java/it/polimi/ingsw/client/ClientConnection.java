@@ -22,9 +22,10 @@ import it.polimi.ingsw.model.event.ModelEvent;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.server.TimeOutCheckerInterface;
 import it.polimi.ingsw.server.TimeoutCounter;
+import it.polimi.ingsw.view.ViewEventListener;
 import it.polimi.ingsw.view.event.*;
 
-public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEventListener, ChalCardsEventListener, MovementEventListener, LobbyEventListener,BuildEventListener, PlaceEventListener, EndTurnEventListener, UndoGuiEventListener, Runnable {
+public class ClientConnection implements ViewEventListener, Runnable {
 
     private Socket socket;
     private String ip;
@@ -35,14 +36,13 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
     private SetUpMessageVisitor setUpVisitor;
 
 
-
-
-    public ClientGuiConnection(String ip, int port, CliModelEventVisitor visitor){
+//previously ClientGuiConnection
+    public ClientConnection(String ip, int port, ModelEventVisitor visitor, ControllerResponseVisitor responseVisitor, SetUpMessageVisitor setUpVisitor){
         this.ip = ip;
         this.port = port;
         this.modelVisitor=visitor;
-        this.controllerVisitor=visitor;
-        this.setUpVisitor=visitor;
+        this.controllerVisitor=responseVisitor;
+        this.setUpVisitor=setUpVisitor;
     }
 
     private boolean active = true;
@@ -165,8 +165,11 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
         }
     }
 
+    public void handleEvent(ViewEvent e){
+        asyncSend(e);
+    }
 
-
+/*
     @Override
     public void move(MovementGuiEvent e) {
         //OperationMessage message = new OperationMessage(Operation.MOVE, e.getStartPosition(), e.getDestinationPosition(), false);
@@ -182,13 +185,13 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
 
     @Override
     public void build(BuildGuiEvent e) {
-        /*OperationMessage message = new OperationMessage(Operation.BUILD, e.getStartPosition(), e.getDestinationPosition(), e.isDome());
-        System.out.println(message.getStartPosition().getX());
-        System.out.println(message.getStartPosition().getY());
-        System.out.println(message.getDestPosition().getX());
-        System.out.println(message.getDestPosition().getY());
+//        OperationMessage message = new OperationMessage(Operation.BUILD, e.getStartPosition(), e.getDestinationPosition(), e.isDome());
+//        System.out.println(message.getStartPosition().getX());
+//        System.out.println(message.getStartPosition().getY());
+//        System.out.println(message.getDestPosition().getX());
+//        System.out.println(message.getDestPosition().getY());
 
-         */
+
 
         ViewEvent message = new BuildViewEvent(null, e.getStartPosition(), e.getDestinationPosition(), e.isDome());
         asyncSend(message);
@@ -233,5 +236,8 @@ public class ClientGuiConnection implements FirstPlayerEventListener, SetCardEve
         ViewEvent message = new FirstPlayerViewEvent(null, e.getFirstPlayer());
         asyncSend(message);
     }
+
+    */
+
 }
 

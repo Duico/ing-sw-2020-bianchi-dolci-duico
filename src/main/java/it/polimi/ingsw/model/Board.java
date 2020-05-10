@@ -3,17 +3,30 @@ package it.polimi.ingsw.model;
 import java.io.Serializable;
 
 public class Board implements Cloneable, Serializable {
-    BoardCell[][] grid;
+    private BoardCell[][] grid;
+    private final int width;
+    private final int height;
 
     public Board() { //decide if throws exception or not
-        int width = Position.width;
-        int height = Position.height;
+        this(Position.width, Position.height);
+    }
+    public Board(int width, int height){
+        this.width = width;
+        this.height = height;
         grid = new BoardCell[width][height];
         for(int i=0;i<height;i++){
             for(int j=0; j<width; j++){
                 grid[i][j]= new BoardCell();
             }
         }
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public void build(Position startPosition, Position destinationPosition, boolean isDome) {

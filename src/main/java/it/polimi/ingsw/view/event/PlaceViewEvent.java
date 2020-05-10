@@ -13,6 +13,10 @@ public class PlaceViewEvent extends WorkerViewEvent implements Serializable {
         super(view,destinationPosition);
 
     }
+    public PlaceViewEvent(Position destinationPosition){
+        this(null,destinationPosition);
+
+    }
 
 
 
