@@ -140,8 +140,8 @@ public class Game extends ModelEventEmitter implements Serializable{
                     ModelEvent evt = new SetCardModelEvent(getCurrentPlayer(), nameCard);
                     emitEvent(evt);
                     chosenCards.remove(card);
-                    ModelEvent evt2 = new ChosenCardsModelEvent(getCurrentPlayer(), getChosenCardsNames());
-                    emitEvent(evt2);
+                    /*ModelEvent evt2 = new ChosenCardsModelEvent(getCurrentPlayer(), getChosenCardsNames());
+                    emitEvent(evt2);*/
 
                     if (chosenCards.size() > 0) {
                         nextTurn();
@@ -239,9 +239,12 @@ public class Game extends ModelEventEmitter implements Serializable{
         turn = new ChoseCardsTurn(player);
         //emitEvent(new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS));
         if(chosenCards.size()==0) {
-            ModelEvent evt = new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, null, cardDeck.getCardNames());
+
+            ModelEvent evt = new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, players);
+            ModelEvent evt2 = new ChosenCardsModelEvent(player, cardDeck.getCardNames());
             //ModelEvent evt = new NewChoseCardTurnModelEvent(player, TurnPhase.CHOSE_CARDS, cardDeck.getCardNames());
             emitEvent(evt);
+            emitEvent(evt2);
         }else if(chosenCards.size()==1) {
             Card card = chosenCards.get(0);
             setPlayerCard(card.getName());
@@ -249,16 +252,17 @@ public class Game extends ModelEventEmitter implements Serializable{
             //chosenCards.remove(card);
             //ModelEvent evt = new SetCardModelEvent(getCurrentPlayer(), card.getName());
             //emitEvent(evt);
-            ArrayList<String> namePlayers = new ArrayList<>();
-            for(int i=0;i<players.size();i++)
-                namePlayers.add(players.get(i).getNickName());
+
             //ModelEvent evt2 = new ChoseFirstPlayerModelEvent(player, TurnPhase.CHOSE_CARDS, namePlayers);
-            ModelEvent evt = new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, namePlayers);
+            ModelEvent evt = new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, players);
             emitEvent(evt);
         }else{
             //ModelEvent evt = new NewChoseCardTurnModelEvent(player, TurnPhase.CHOSE_CARDS, getChosenCardsNames());
-            ModelEvent evt = new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, null);
+            ModelEvent evt = new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, players);
             emitEvent(evt);
+            ModelEvent evt2 = new ChosenCardsModelEvent(getCurrentPlayer(), getChosenCardsNames());
+            emitEvent(evt2);
+
         }
     }
 

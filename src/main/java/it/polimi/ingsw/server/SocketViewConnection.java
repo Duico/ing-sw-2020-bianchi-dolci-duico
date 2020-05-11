@@ -1,8 +1,7 @@
 
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.server.message.PingSetUpMessage;
-import it.polimi.ingsw.server.message.SetUpType;
+import it.polimi.ingsw.server.message.*;
 import it.polimi.ingsw.client.message.SignUpMessage;
 import it.polimi.ingsw.view.event.ViewEvent;
 
@@ -85,10 +84,11 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
             try {
                 while (isActive()) {
                     Object inputObject = socketIn.readObject();
-                    /*if(inputObject instanceof String){
+                    if(inputObject instanceof String){
                         System.out.println((String) inputObject);
                     }
-                    else*/ if(inputObject instanceof SignUpMessage) {
+                    else if(inputObject instanceof SignUpMessage) {
+
                         SignUpMessage message = (SignUpMessage) inputObject;
                         server.checkUpRegistration(message.getNickName(), message.getNumPlayers(), this);
                     }
@@ -96,6 +96,9 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
                         ViewEvent event = (ViewEvent) inputObject;
                         eventNotify(event);
                     }
+                    /*else if(inputObject instanceof SetUpMessage){
+                        System.out.println("Arriva");
+                    }*/
                 }
             } catch (IOException | NoSuchElementException | ClassNotFoundException e) {
                 //System.err.println("Error!" + e.getMessage());
@@ -114,7 +117,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         Timer timer = new Timer();
         TimeOutCheckerInterface timeOutChecker = () -> {
             if (isActive()){
-                send(new PingSetUpMessage(SetUpType.PING));
+                asyncSend(new ConnectionMessage(ConnectionMessage.Type.PING));
                 return false;
             }else{
                 System.out.println("The connection is inactive");
@@ -124,7 +127,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
 
         TimerTask task = new TimeoutCounter(timeOutChecker);
         int intialDelay = 3000;
-        int delta = 3000;
+        int delta = 5000;
         timer.schedule(task, intialDelay, delta);
     }
 
@@ -142,8 +145,9 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     public void run(){
 
         try{
-            //startMyTimer();
-            //socket.setSoTimeout(20000);
+
+            socket.setSoTimeout(20000);
+            startMyTimer();
             Thread t0 = asyncReadFromSocket(in);
             t0.join();
             out.close();

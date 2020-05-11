@@ -3,13 +3,10 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.GameViewEventListener;
-import it.polimi.ingsw.server.message.DisconnectionSetUpMessage;
-import it.polimi.ingsw.server.message.InitSetUpMessage;
+import it.polimi.ingsw.server.message.*;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameSerializer;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.server.message.SetUpType;
-import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.ModelEventListener;
 
@@ -44,7 +41,7 @@ public class Server {
         if(hasGameStarted || isFirstConnection) {
             //ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
             for (ViewConnection connection : connections) {
-                connection.asyncSend(new DisconnectionSetUpMessage(SetUpType.DISCONNECTION));
+                connection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
             }
             connections.clear();
             waitingConnection.clear();

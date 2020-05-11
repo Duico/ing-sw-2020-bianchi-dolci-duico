@@ -17,6 +17,7 @@ import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.client.message.SignUpMessage;
 import it.polimi.ingsw.controller.response.ControllerResponse;
 import it.polimi.ingsw.model.event.ModelEvent;
+import it.polimi.ingsw.server.message.ConnectionMessage;
 import it.polimi.ingsw.server.message.PingSetUpMessage;
 import it.polimi.ingsw.server.message.SetUpMessage;
 import it.polimi.ingsw.server.message.SetUpType;
@@ -61,38 +62,37 @@ public class ClientConnection implements ViewEventListener, SignUpListener, Runn
 
                     while (isActive()) {
                         Object message = socketIn.readObject();
-                        if(message instanceof String) {
-//                            String string = (String)message;
-//                            if(string.equals("Ping"))
-//                                asyncSend("Pong");
-//                            else
-//                                System.out.println((String)message);
-
-                        }else if(message instanceof ModelEvent) {
-                            ModelEvent event = (ModelEvent) message;
-                            event.accept(modelVisitor);
+                        Thread t = new Thread( ()-> {
+                            if (message instanceof ModelEvent) {
+                                ModelEvent event = (ModelEvent) message;
+                                event.accept(modelVisitor);
 
 
-                        }else if(message instanceof ControllerResponse){
-                            ControllerResponse event = (ControllerResponse) message;
-                            event.accept(controllerVisitor);
+                            } else if (message instanceof ControllerResponse) {
+                                ControllerResponse event = (ControllerResponse) message;
+                                event.accept(controllerVisitor);
 
-                        }
-                        else if(message instanceof SetUpMessage) {
-                            SetUpMessage event = (SetUpMessage) message;
-                            if (event.getSetUpType().equals(SetUpType.SIGN_UP)){
-                                event.accept(setUpVisitor);
-                            }else if(event.getSetUpType().equals(SetUpType.DISCONNECTION)){
-                                setActive(false);
-                                event.accept(setUpVisitor);
-                            }else if(event.getSetUpType().equals(SetUpType.PING)){
-                                //asyncSend(new PingSetUpMessage(SetUpType.PONG));
+                            } else if (message instanceof SetUpMessage) {
+                                SetUpMessage event = (SetUpMessage) message;
+                                if (event.getSetUpType().equals(SetUpType.SIGN_UP)) {
+
+                                        event.accept(setUpVisitor);
+                                }
+
+                            } else if (message instanceof ConnectionMessage) {
+                                ConnectionMessage event = (ConnectionMessage) message;
+                                if (event.getType().equals(ConnectionMessage.Type.PING)) {
+                                    asyncSend(new ConnectionMessage(ConnectionMessage.Type.PONG));
+                                } else if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION)) {
+                                    setActive(false);
+                                    System.out.println("End game, player disconnected");
+                                    //event.accept(setUpVisitor);
+                                }
+                            } else {
+                                throw new IllegalArgumentException();
                             }
-
-                        }
-                        else {
-                            throw new IllegalArgumentException();
-                        }
+                        });
+                        t.start();
                     }
                 } catch (Exception e){
                     setActive(false);
@@ -119,7 +119,7 @@ public class ClientConnection implements ViewEventListener, SignUpListener, Runn
             socketOut.writeObject(message);
             socketOut.flush();
         } catch(IOException e){
-            System.err.println(e.getMessage());
+            System.out.println("tutto ok");
         }
 
     }

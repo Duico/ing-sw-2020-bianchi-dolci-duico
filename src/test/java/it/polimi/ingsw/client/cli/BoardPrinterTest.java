@@ -1,3 +1,4 @@
+/*
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.model.*;
@@ -56,4 +57,4 @@ class BoardPrinterTest {
     void printBoard() throws Exception{
         boardPrinter.printBoard().printOut(System.out);
     }
-}
+}*/
