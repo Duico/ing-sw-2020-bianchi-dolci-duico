@@ -1,7 +1,6 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.client.ClientConnection;
-import it.polimi.ingsw.client.ViewPlayer;
 import it.polimi.ingsw.client.cli.*;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.view.ViewEventListener;

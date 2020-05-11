@@ -2,8 +2,12 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.ClientViewEventObservable;
 import it.polimi.ingsw.client.message.SignUpMessage;
+import it.polimi.ingsw.model.Card;
+import it.polimi.ingsw.model.Player;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Cli extends ClientViewEventObservable implements Runnable{
@@ -34,4 +38,12 @@ public class Cli extends ClientViewEventObservable implements Runnable{
         }
         emitSignUp(new SignUpMessage(playerName, numPlayers));
     }
+    protected void printCorrectSignUp(boolean hasToWait){
+        if(hasToWait){
+            out.println(CliText.CORRECT_SIGNUP_WAIT.toString());
+        }else{
+            out.println(CliText.CORRECT_SIGNUP_LAST.toString());
+        }
+    }
+
 }

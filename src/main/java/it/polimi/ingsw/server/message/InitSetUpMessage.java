@@ -25,7 +25,8 @@ public class InitSetUpMessage extends SetUpMessage {
     public enum SignUpParameter {
         STARTGAME,
         NICKNAME,
-        CORRECT_SIGNUP
+        CORRECT_SIGNUP_WAIT,
+        CORRECT_SIGNUP_LAST
     }
 
     public SignUpParameter getResponse() {

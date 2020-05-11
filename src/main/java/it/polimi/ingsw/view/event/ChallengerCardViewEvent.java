@@ -9,11 +9,11 @@ import java.util.List;
 
 public class ChallengerCardViewEvent extends GameViewEvent {
     List<String> cardNamesList;
-    public ChallengerCardViewEvent(RemoteView view, ArrayList<String> cardNamesList) {
+    public ChallengerCardViewEvent(RemoteView view, List<String> cardNamesList) {
         super(view);
         this.cardNamesList=cardNamesList;
     }
-    public ChallengerCardViewEvent(ArrayList<String> cardNamesList){
+    public ChallengerCardViewEvent(List<String> cardNamesList){
         this(null, cardNamesList);
     }
 

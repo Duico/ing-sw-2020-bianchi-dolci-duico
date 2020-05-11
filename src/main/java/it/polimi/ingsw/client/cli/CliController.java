@@ -1,28 +1,26 @@
 package it.polimi.ingsw.client.cli;
 
-import it.polimi.ingsw.client.ViewPlayer;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class CliController {
     private boolean isHost = false;
     public String nickname;
-    List<ViewPlayer> players;
-    Board board;
-    TurnPhase turnPhase;
-    BoardPrinter bp;
-    PrintStream out;
-    Scanner stdin;
+    private Player myPlayer;
+    protected List<Player> players;
+    protected Board board;
+    protected TurnPhase turnPhase;
+    protected BoardPrinter bp;
+    private PrintStream out;
+    private Scanner stdin;
 
     public CliController(Scanner in, PrintStream out){
         board = new Board();
-        players = new ArrayList<>();
+        players = new ArrayList<Player>();
         stdin = in;
         this.out = out;
         testSetUp();
@@ -46,6 +44,19 @@ public class CliController {
         }
         return line;
     }
+    protected List<String> askChallCards(List<String> cards){
+        List<String> chosenCards = new ArrayList<>();
+        String line;
+        while( chosenCards.size() < getNumPlayers()){
+            out.print(CliText.ASK_CHALLCARD.toPrompt(cards.toString()));
+            line = stdin.nextLine().trim();
+            if(cards.contains(line)){
+                chosenCards.add(line);
+                cards.remove(line);
+            }
+        }
+        return chosenCards;
+    }
 
     public void printAll(){
         //if() turnPhase == NORMAL_TURN
@@ -53,10 +64,25 @@ public class CliController {
         bp.printAll().printOut();
     }
 
+    public boolean setTurnPhase(TurnPhase turnPhase){
+        this.turnPhase = turnPhase;
+        return true;
+    }
 
+    public Player getMyPlayer() {
+        return myPlayer;
+    }
+
+    public void setMyPlayer(Player myPlayer){
+        this.myPlayer = myPlayer;
+    }
+
+    public int getNumPlayers(){
+        return players.size();
+    }
 
     private void testSetUp() {
-        List<ViewPlayer> playerList = new ArrayList<>();
+        List<Player> playerList = new ArrayList<>();
         String[] playerNames = {"Pippo", "Pluto", "Topolino"};
 
 //            Position[][] workersPositions = {

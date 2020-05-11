@@ -1,5 +1,4 @@
 package it.polimi.ingsw.client.cli;
-import it.polimi.ingsw.client.ViewPlayer;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 
@@ -7,18 +6,18 @@ import java.util.*;
 
 public class BoardPrinter {
 
-    private final List<ViewPlayer> players;
+    private final List<Player> players;
     private final Board board;
     private int cellWidth = 2;
     private final int maxWidth = 320;
     private final String ANSI_CLS = "\u001b[2J";
 
     //advanced functionality
-    Map<Position, ViewPlayer> workersMap = new HashMap<>();
+    Map<Position, Player> workersMap = new HashMap<Position, Player>();
     boolean workersMapOK = false;
 
 
-    public BoardPrinter(Board board, List<ViewPlayer> players){
+    public BoardPrinter(Board board, List<Player> players){
         this.board = board;
         this.players = players;
     }
@@ -183,7 +182,7 @@ public class BoardPrinter {
 
         //worker line
         BoardCell cell = board.getBoardCell(position);
-        ViewPlayer workerPlayer = getPlayerFromWorkersMap(position);
+        Player workerPlayer = getPlayerFromWorkersMap(position);
         String line1 = "| ";
         line1 += " ".repeat(cellWidth);
         line1 += " "+displayWorker(workerPlayer)+" ";
@@ -236,7 +235,7 @@ public class BoardPrinter {
         return c.escape(out);
     }
 
-    private String displayWorker(ViewPlayer workerPlayer){
+    private String displayWorker(Player workerPlayer){
         String lineOut = "";
         if(workerPlayer!=null) {
             PlayerColor playerColor = workerPlayer.getColor();
@@ -254,7 +253,7 @@ public class BoardPrinter {
         StringBuffer2D sb = new StringBuffer2D();
         sb.appendln(Color.LIGHTGRAY_UNDERLINED.escape("Players"));
         sb.appendln("");
-        for(ViewPlayer player : players){
+        for(Player player : players){
             //todo
                                                                     //true if currentPlayer
             sb.appendln(Color.fromPlayerColor(player.getColor(), false).escape(player.getNickName()));
@@ -309,7 +308,7 @@ public class BoardPrinter {
         return boardSB;
     }
 
-    ViewPlayer getPlayerFromWorkersMap(Position position){
+    Player getPlayerFromWorkersMap(Position position){
         if(workersMapOK == false){
             generateWorkersMap();
             workersMapOK = true;
@@ -320,7 +319,7 @@ public class BoardPrinter {
     boolean generateWorkersMap(){
         workersMap.clear();
         int count = 0;
-        for(ViewPlayer player: players){
+        for(Player player: players){
             for(int i = 0; i<player.getNumWorkers(); i++) {
                 Position pos = player.getWorkerPosition(i);
                 if(pos!=null){

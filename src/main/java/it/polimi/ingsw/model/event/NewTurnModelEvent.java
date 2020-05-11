@@ -31,8 +31,13 @@ public class NewTurnModelEvent extends UpdateModelEvent {
         return players;
     }
 
+    public List<String> getCardDeck(){
+        return cardDeck;
+    }
+
     @Override
     public void accept(ModelEventVisitor visitor){
         visitor.visit(this);
     }
+
 }

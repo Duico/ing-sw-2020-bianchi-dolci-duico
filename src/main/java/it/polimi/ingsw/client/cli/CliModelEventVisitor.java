@@ -1,10 +1,15 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.controller.response.*;
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.server.message.DisconnectionSetUpMessage;
 import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 import it.polimi.ingsw.server.message.InitSetUpMessage;
 import it.polimi.ingsw.model.event.*;
+import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
+
+import java.util.List;
 
 public class CliModelEventVisitor extends Cli implements ModelEventVisitor, ControllerResponseVisitor, SetUpMessageVisitor{
 
@@ -40,8 +45,28 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(NewTurnModelEvent evt) {
-        System.out.println(Color.YELLOW_BOLD.escape("NewTurn"));
-        System.out.println(Color.YELLOW_BOLD.escape(evt.getPlayer().getNickName()));
+        Player player = evt.getPlayer();
+        TurnPhase turnPhase = evt.getTurnPhase();
+        if(player.equalsUuid(cliController.getMyPlayer())){
+            out.print(CliText.YOUR_TURN.toString());
+            switch (turnPhase){
+                case CHOSE_CARDS:
+                    if(evt.getCardDeck() != null){
+                        //challenger
+                        //List<String> cardsList = cliController.askChallCards(evt.getCardDeck());
+                        //emitViewEvent(new ChallengerCardViewEvent(cardsList));
+                    }else{
+                        //other players
+                    }
+                    break;
+                case PLACE_WORKERS:
+                    break;
+                case NORMAL:
+                    break;
+            }
+        }else{
+            out.printf(CliText.WAIT_TURN.toString(player.getNickName()));
+        }
     }
 
     @Override
@@ -133,6 +158,7 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(InitSetUpMessage message) {
+        boolean hasToWait;
         if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.NICKNAME)) {
 //            System.out.println(Color.YELLOW_BOLD.escape("Welcome, enter your nickname"));
             askNumPlayers = false;
@@ -141,9 +167,9 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 //            System.out.println(Color.YELLOW_BOLD.escape("Welcome, enter your nickname and num players"));
             askNumPlayers = true;
             askSetUpInfo(true);
-        }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP)){
-            out.println(CliText.CORRECT_SIGNUP.toString());
-//            System.out.println(Color.YELLOW_BOLD.escape("Correct sign up, wait...."));
+        }else if( (hasToWait = message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) ) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_LAST)) {
+            cliController.setMyPlayer(message.getPlayer());
+            printCorrectSignUp(hasToWait);
         }
     }
 

@@ -1,9 +1,8 @@
+/*
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.model.FixedArray;
-import it.polimi.ingsw.model.PlayerColor;
-import it.polimi.ingsw.model.Position;
-import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.event.PlaceWorkerModelEvent;
 import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 import it.polimi.ingsw.view.View;
 
@@ -19,19 +18,26 @@ public class ViewPlayer {
     private boolean isChallenger;
     private PlayerColor color; //TODO
 
-
-    public ViewPlayer(String nickName, PlayerColor color) {
-        this(nickName, color, 2);
-    }
-    public ViewPlayer(String nickName, PlayerColor color, int numWorkers) {
-        this.uuid = UUID.randomUUID();
-        this.nickName = nickName;
-        this.isChallenger = false;
-        this.color = color;
+    public ViewPlayer(Player player){
+        this.nickName = player.getNickName();
+        this.uuid = player.getUuid();
+        this.isChallenger = player.isChallenger();
+        this.color = player.getColor();
+        this.cardName = player.getCard().getName();
         workers = new FixedArray<>(numWorkers);
-        //
-        //this.initWorkers(numWorkers);
     }
+//    public ViewPlayer(String nickName, PlayerColor color) {
+//        this(nickName, color, 2);
+//    }
+//    public ViewPlayer(String nickName, PlayerColor color, int numWorkers) {
+//        this.uuid = UUID.randomUUID();
+//        this.nickName = nickName;
+//        this.isChallenger = false;
+//        this.color = color;
+//        workers = new FixedArray<>(numWorkers);
+//        //
+//        //this.initWorkers(numWorkers);
+//    }
 
     public String getCard() {
         return cardName;
@@ -166,3 +172,5 @@ public class ViewPlayer {
         return -1;
     }
 }
+
+*/

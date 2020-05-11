@@ -163,10 +163,13 @@ public class Server {
 
             }
             Player newPlayer = putConnection(connection, nickName);
-            connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP, newPlayer));
 
             if(lobby.getNumPlayers() != null && waitingConnection.size() >= lobby.getNumPlayers()) {
+                connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_LAST, newPlayer));
                 createNewGame();
+            }else{
+                //client has to wait
+                connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT, newPlayer));
             }
 
 //        } else if (lobby.addPlayer(nickName)) {

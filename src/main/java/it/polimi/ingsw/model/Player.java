@@ -150,6 +150,10 @@ public class Player implements Serializable, Cloneable {
                 Objects.equals(workers, player.workers);
         return eq;
     }
+    public boolean equalsUuid(Player player){
+        if (this == player) return true;
+        return Objects.equals(getUuid(), player.getUuid());
+    }
 
     @Override
     public Player clone(){

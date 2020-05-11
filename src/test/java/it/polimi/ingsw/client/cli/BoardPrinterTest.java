@@ -1,9 +1,8 @@
 package it.polimi.ingsw.client.cli;
 
-import it.polimi.ingsw.client.ViewPlayer;
 import it.polimi.ingsw.model.*;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +20,7 @@ class BoardPrinterTest {
     void setUp() throws Exception{
         outContent.reset();
 
-        List<ViewPlayer> playerList = new ArrayList<>();
+        List<Player> playerList = new ArrayList<>();
         String[] playerNames = {"Pippo", "Pluto", "Topolino"};
         Position[][] workersPositions = {
                 {new Position(1,1), new Position(2,3)},
@@ -29,7 +28,7 @@ class BoardPrinterTest {
                 {new Position(4,4), new Position(3,3)},
         };
         for(int i = 0; i<3; i++) {
-            ViewPlayer player = new ViewPlayer(playerNames[i], PlayerColor.values()[i]);
+            Player player = new Player(playerNames[i], PlayerColor.values()[i]);
             Worker worker1 = new Worker();
             worker1.addMove(workersPositions[i][0]);
             Worker worker2 = new Worker();
