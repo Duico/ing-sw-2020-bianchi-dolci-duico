@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
 
+import javax.swing.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,14 +81,10 @@ public class Game extends ModelEventEmitter implements Serializable{
         }
 
         board = new Board();
-        chosenCards = new ArrayList<>();
+        //chosenCards = new ArrayList<>();
         Player challenger = pickFirstPlayer();
         challenger.setIsChallenger(true);
         //emitEvent(new FullInfoModelEvent(challenger, players, board, cardDeck));
-
-        if(!useCards)
-            setFirstPlayer(challenger.getNickName());
-            //setFirstPlayer(challenger);
 
         initTurn(challenger);
 
@@ -124,7 +121,7 @@ public class Game extends ModelEventEmitter implements Serializable{
             tempCards.add(chosenCard);
         }
         chosenCards.addAll(tempCards);
-        ModelEvent evt = new ChosenCardsModelEvent(getCurrentPlayer(), getChosenCardsNames());
+        ModelEvent evt = new ChosenCardsModelEvent(getCurrentPlayer(), null, getChosenCardsNames());
         emitEvent(evt);
         return true;
     }
@@ -142,14 +139,17 @@ public class Game extends ModelEventEmitter implements Serializable{
                     chosenCards.remove(card);
                     /*ModelEvent evt2 = new ChosenCardsModelEvent(getCurrentPlayer(), getChosenCardsNames());
                     emitEvent(evt2);*/
-
-                    if (chosenCards.size() > 0) {
-                        nextTurn();
-                        //emitEvent(new NewChoseCardTurnModelEvent(currentPlayer,  card.getName());
-                    } else {
-                        //nextTurn();
-                        //list of players sent to challenger
-                    }
+//
+//                    if(chosenCards.size() == 1){
+//                        setPlayerCard(new SetCardModelEvent())
+//                    }
+//                    if (chosenCards.size() > 0) {
+//                        nextTurn();
+//                        //emitEvent(new NewChoseCardTurnModelEvent(currentPlayer,  card.getName());
+//                    } else {
+//                        //nextTurn();
+//                        //list of players sent to challenger
+//                    }
                     //emitEvent( new SetCardModelEvent(currentPlayer, card.getName()) );
                     return true;
                 }
@@ -167,15 +167,18 @@ public class Game extends ModelEventEmitter implements Serializable{
         return (ArrayList<Card>)chosenCards.clone();
     }
     public List<String> getChosenCardsNames(){
+        if(chosenCards==null)
+            return null;
         return chosenCards.stream().map((card -> card.getName())).collect(Collectors.toList());
     }
 
 
-    public void initTurn(Player player) {
+    public void initTurn(Player challenger) {
         if(!useCards){
-            startPlaceWorkersTurn(player);
-        }else {
-            startChoseCardsTurn(player);
+            setFirstPlayer(challenger);
+            startPlaceWorkersTurn(challenger);
+        }else{
+            startChoseCardsTurn(challenger);
             //notify
             //event for the challenger view to choose the three or two cards
         }
@@ -237,32 +240,13 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
     private void startChoseCardsTurn(Player player){
         turn = new ChoseCardsTurn(player);
-        //emitEvent(new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS));
-        if(chosenCards.size()==0) {
-
-            ModelEvent evt = new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, players);
-            ModelEvent evt2 = new ChosenCardsModelEvent(player, cardDeck.getCardNames());
-            //ModelEvent evt = new NewChoseCardTurnModelEvent(player, TurnPhase.CHOSE_CARDS, cardDeck.getCardNames());
-            emitEvent(evt);
-            emitEvent(evt2);
+        emitEvent(new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, players));
+        emitEvent(new ChosenCardsModelEvent(player, cardDeck.getCardNames(), getChosenCardsNames()));
+        if(chosenCards==null) {
+            //initialize here to distinguish first ChoseCardsTurn from last (is first when chosenCards == null)
+            chosenCards = new ArrayList<>();
         }else if(chosenCards.size()==1) {
-            Card card = chosenCards.get(0);
-            setPlayerCard(card.getName());
-            //player.setCard(card);
-            //chosenCards.remove(card);
-            //ModelEvent evt = new SetCardModelEvent(getCurrentPlayer(), card.getName());
-            //emitEvent(evt);
-
-            //ModelEvent evt2 = new ChoseFirstPlayerModelEvent(player, TurnPhase.CHOSE_CARDS, namePlayers);
-            ModelEvent evt = new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, players);
-            emitEvent(evt);
-        }else{
-            //ModelEvent evt = new NewChoseCardTurnModelEvent(player, TurnPhase.CHOSE_CARDS, getChosenCardsNames());
-            ModelEvent evt = new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, players);
-            emitEvent(evt);
-            ModelEvent evt2 = new ChosenCardsModelEvent(getCurrentPlayer(), getChosenCardsNames());
-            emitEvent(evt2);
-
+            setPlayerCard(chosenCards.get(0).getName());
         }
     }
 
@@ -285,9 +269,9 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
     */
 
-    public boolean firstTurn(String nickname) {
-        Player firstPlayer=setFirstPlayer(nickname);
-        if(firstPlayer==null){
+    public boolean firstTurn(Player player) {
+        Player firstPlayer = setFirstPlayer(player);
+        if(firstPlayer == null){
             return false;
         }
         ModelEvent evt = new FullInfoModelEvent(FullInfoModelEvent.InfoType.INIT_GAME, getCurrentPlayer(), players, board.clone());
@@ -297,12 +281,18 @@ public class Game extends ModelEventEmitter implements Serializable{
         return true;
     }
 
-    private Player setFirstPlayer(String nickName){
-        for(int i=0;i<players.size();i++)
-            if(players.get(i).getNickName().equals(nickName)) {
-                this.firstPlayer = players.get(i);
-                return firstPlayer;
+    private Player setFirstPlayer(Player player){
+//        for(int i=0;i<players.size();i++)
+//            if(players.get(i).getNickName().equals(nickName)) {
+//                this.firstPlayer = players.get(i);
+//                return firstPlayer;
+//            }
+        for(Player p: players){
+            if(p.equalsUuid(player)){
+                this.firstPlayer = p;
+                return p;
             }
+        }
         return null;
     }
 

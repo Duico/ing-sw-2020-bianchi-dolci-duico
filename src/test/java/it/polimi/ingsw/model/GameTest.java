@@ -58,7 +58,7 @@ class GameTest {
 
         game.setPlayerCard("Athena");
         //game.firstTurn(player0);
-        game.firstTurn(player0.getNickName());
+        game.firstTurn(player0);
 
     }
 
@@ -299,7 +299,7 @@ class GameTest {
         assertEquals(0, game.getChosenCards().size());
         assertFalse(game.isSetFirstPlayer());
 
-        game.firstTurn(player0.getNickName());
+        game.firstTurn(player0);
         assertTrue(game.isSetFirstPlayer());
         game.nextTurn();
 
@@ -541,7 +541,7 @@ class GameTest {
         System.out.println(game.getCurrentPlayer().getCard().getName());
 
         //game.firstTurn(player0);
-        game.firstTurn(player0.getNickName());
+        game.firstTurn(player0);
         game.nextTurn();
 
         assertEquals(game.getTurnPhase(), TurnPhase.PLACE_WORKERS);
@@ -657,7 +657,7 @@ class GameTest {
         //game.setPlayerCard("Hephaestus");
         assertEquals(game.getTurnPhase(), TurnPhase.CHOSE_CARDS);
         //game.firstTurn(player0);
-        game.firstTurn(player0.getNickName());
+        game.firstTurn(player0);
         game.nextTurn();
 
         assertEquals(game.getTurnPhase(), TurnPhase.PLACE_WORKERS);

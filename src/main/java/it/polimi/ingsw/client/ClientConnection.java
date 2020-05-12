@@ -66,8 +66,6 @@ public class ClientConnection implements ViewEventListener, SignUpListener, Runn
                             if (message instanceof ModelEvent) {
                                 ModelEvent event = (ModelEvent) message;
                                 event.accept(modelVisitor);
-
-
                             } else if (message instanceof ControllerResponse) {
                                 ControllerResponse event = (ControllerResponse) message;
                                 event.accept(controllerVisitor);
@@ -88,8 +86,10 @@ public class ClientConnection implements ViewEventListener, SignUpListener, Runn
                                     System.out.println("End game, player disconnected");
                                     //event.accept(setUpVisitor);
                                 }
+                            } else if(message instanceof String){
+                                System.err.println(message);
                             } else {
-                                throw new IllegalArgumentException();
+                                throw new IllegalArgumentException(message.getClass().toString());
                             }
                         });
                         t.start();

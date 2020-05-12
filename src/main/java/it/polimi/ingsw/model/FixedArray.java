@@ -96,10 +96,10 @@ public class FixedArray<T> implements Serializable {
         return super.equals(obj);
     }
 
-    public FixedArray<T> clone(){
-        FixedArray<T> fixedArray = null;
+    public FixedArray<?> clone(){
+        FixedArray<?> fixedArray = null;
         try{
-            fixedArray = (FixedArray<T>) super.clone();
+            fixedArray = (FixedArray<?>) super.clone();
         }catch(CloneNotSupportedException e){
             throw new RuntimeException("Clone not supported in FixedArray");
         }

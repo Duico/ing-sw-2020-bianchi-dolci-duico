@@ -1,6 +1,8 @@
 package it.polimi.ingsw.client.cli;
 
+import it.polimi.ingsw.client.ClientViewEventObservable;
 import it.polimi.ingsw.controller.response.*;
+import it.polimi.ingsw.model.Card;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.server.message.DisconnectionSetUpMessage;
@@ -8,6 +10,7 @@ import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 import it.polimi.ingsw.server.message.InitSetUpMessage;
 import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
+import it.polimi.ingsw.view.event.FirstPlayerViewEvent;
 
 import java.util.List;
 
@@ -30,7 +33,22 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(ChosenCardsModelEvent evt) {
-        System.out.println(Color.YELLOW_BOLD.escape("ChosenCard"));
+        //System.out.println(Color.YELLOW_BOLD.escape("Chosen Cards"));
+        List<String> cardDeck = evt.getCardDeck();
+        List<String> cards = evt.getChosenCards();
+        if(cards == null){ //pick cards
+            if(cardDeck != null){
+                askChallCards(cardDeck);
+            }else{
+                //error
+            }
+        }else if(cards.size() == 1){
+            //server will automatically pick last card for you
+            //ASK firstPlayer
+            askFirstPlayer();
+        }else if(cards.size() > 1){
+            askCard(cards);
+        }
     }
 
     @Override
@@ -47,21 +65,17 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
     public void visit(NewTurnModelEvent evt) {
         Player player = evt.getPlayer();
         TurnPhase turnPhase = evt.getTurnPhase();
+        cliController.setTurnPhase(turnPhase);
         if(player.equalsUuid(cliController.getMyPlayer())){
             out.print(CliText.YOUR_TURN.toString());
             switch (turnPhase){
                 case CHOSE_CARDS:
-                    if(evt.getCardDeck() != null){
-                        //challenger
-                        //List<String> cardsList = cliController.askChallCards(evt.getCardDeck());
-                        //emitViewEvent(new ChallengerCardViewEvent(cardsList));
-                    }else{
-                        //other players
-                    }
+                    cliController.setPlayers(evt.getPlayers());
                     break;
                 case PLACE_WORKERS:
-                    break;
                 case NORMAL:
+                    //do nothing (cliController.setTurnPhase is enough)
+                    //wait for command to be input
                     break;
             }
         }else{
@@ -81,7 +95,8 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(SetCardModelEvent evt) {
-        System.out.println(Color.YELLOW_BOLD.escape("SetCard"));
+        out.print(CliText.SET_CARD.toString(evt.getCardName(), evt.getPlayer().getNickName()));
+        cliController.setPlayerCard(evt.getPlayer(), evt.getCardName());
     }
 
     @Override
@@ -126,6 +141,7 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(NotCurrentPlayerControllerResponse r) {
+        System.err.println(r.getEvent().getClass());
         System.out.println(Color.YELLOW_BOLD.escape("incorrectPlayer"));
     }
 

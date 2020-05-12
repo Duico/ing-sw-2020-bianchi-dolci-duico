@@ -95,7 +95,6 @@ public class Controller implements GameViewEventListener {
     }
 
     public void setPlayerCard(CardViewEvent message){
-        System.out.println("Almeno arrivo nel controller");
         RemoteView view = message.getView();
         String cardName = message.getCardName();
         if(checkIsWrongPlayer(message)){
@@ -110,7 +109,9 @@ public class Controller implements GameViewEventListener {
             return;
         }
         //view.eventResponse(new SuccessControllerResponse(message));
-        //game.nextTurn();
+
+        //Put back here again
+        game.nextTurn();
     }
 
     public void setFirstPlayer(FirstPlayerViewEvent message){
@@ -138,7 +139,7 @@ public class Controller implements GameViewEventListener {
             //^^DONE
             //^^wrongTurnPhase should do
 
-        //the next turn is set in game.setFirstPlayer
+        //the next turn is set in game.firstTurn
         if(!game.firstTurn(message.getFirstPlayer())){
             view.sendMessage("incorrect setting");
             ControllerResponse response = new IllegalFirstPlayerControllerResponse(message, IllegalFirstPlayerControllerResponse.Reason.NON_EXISTENT);

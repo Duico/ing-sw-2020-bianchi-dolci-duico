@@ -2,10 +2,13 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.model.*;
 
+import javax.swing.*;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class CliController {
     private boolean isHost = false;
@@ -16,12 +19,14 @@ public class CliController {
     protected TurnPhase turnPhase;
     protected BoardPrinter bp;
     private PrintStream out;
+    private InputStream in;
     private Scanner stdin;
 
-    public CliController(Scanner in, PrintStream out){
+    public CliController(InputStream in, PrintStream out){
+        this.in = in;
         board = new Board();
         players = new ArrayList<Player>();
-        stdin = in;
+        stdin = new Scanner(in);
         this.out = out;
         testSetUp();
     }
@@ -35,6 +40,31 @@ public class CliController {
         }
         return line;
     }
+    public Player askFirstPlayer(){
+        StringBuilder playersLine = new StringBuilder();
+        boolean isFirst = true;
+        for(Player player: players){
+            if(player.equalsUuid(myPlayer)){
+                break;
+            }
+            playersLine.append(isFirst ? "" : ", " + player.getNickName());
+            isFirst = false;
+        }
+        out.print(CliText.ASK_FIRSTPLAYER.toPrompt(playersLine.toString()));
+        final String line = stdin.nextLine().trim();
+        if(!line.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$")){
+            out.println(CliText.BAD_NAME);
+            return null;
+        }
+        //check if line is in players
+        List<Player> matchingPlayers;
+
+        if((matchingPlayers = players.stream().filter( (p)-> (p.getNickName() == line)).collect(Collectors.toList()) ).size() == 0){
+            out.println(CliText.BAD_PLAYERNAME.toString(line));
+            return null;
+        }
+        return matchingPlayers.get(0);
+    }
     public Integer askNumPlayers(){
         out.print(CliText.ASK_NUMPLAYERS.toPrompt());
         Integer line = stdin.nextInt();
@@ -47,15 +77,34 @@ public class CliController {
     protected List<String> askChallCards(List<String> cards){
         List<String> chosenCards = new ArrayList<>();
         String line;
+        stdin = new Scanner(in);
         while( chosenCards.size() < getNumPlayers()){
             out.print(CliText.ASK_CHALLCARD.toPrompt(cards.toString()));
+            while(!stdin.hasNextLine()) {
+
+            }
             line = stdin.nextLine().trim();
-            if(cards.contains(line)){
+            if (cards.contains(line)) {
                 chosenCards.add(line);
                 cards.remove(line);
+            } else {
+                out.print(CliText.BAD_CARD.toString(cards.toString()));
             }
+
         }
         return chosenCards;
+    }
+    public String askCard(List<String> chosenCards) {
+        String line;
+        out.print(CliText.ASK_CARD.toPrompt(chosenCards.toString()));
+//        while(!stdin.hasNextLine()) {
+//
+//        }
+        line = stdin.nextLine().trim();
+        if (!chosenCards.contains(line)) {
+            out.print(CliText.BAD_CARD.toPrompt(chosenCards.toString()));
+        }
+        return line;
     }
 
     public void printAll(){
@@ -108,5 +157,29 @@ public class CliController {
 //        }
 
 
+    }
+
+    public void setPlayers(List<Player> players) {
+        if(players != null) {
+            this.players = players;
+        }
+    }
+
+    public boolean setPlayerCard(Player player, String cardName) {
+        Player playerReference;
+        if((playerReference = getPlayerByUuid(player)) == null){
+            return false;
+        }else{
+            playerReference.setCardName(cardName);
+            return true;
+        }
+    }
+
+    private Player getPlayerByUuid(Player searchPlayer){
+        for(Player player: players){
+            if(player.equalsUuid(player))
+                return player;
+        }
+        return null;
     }
 }
