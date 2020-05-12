@@ -51,6 +51,7 @@ public class CliController {
             isFirst = false;
         }
         out.print(CliText.ASK_FIRSTPLAYER.toPrompt(playersLine.toString()));
+        resetStdin();
         final String line = stdin.nextLine().trim();
         if(!line.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$")){
             out.println(CliText.BAD_NAME);
@@ -65,6 +66,11 @@ public class CliController {
         }
         return matchingPlayers.get(0);
     }
+
+    private void resetStdin() {
+        stdin = new Scanner(in);
+    }
+
     public Integer askNumPlayers(){
         out.print(CliText.ASK_NUMPLAYERS.toPrompt());
         Integer line = stdin.nextInt();
@@ -77,16 +83,17 @@ public class CliController {
     protected List<String> askChallCards(List<String> cards){
         List<String> chosenCards = new ArrayList<>();
         String line;
-        stdin = new Scanner(in);
+        int numPlayers = getNumPlayers();
+        if(numPlayers < 2) throw new RuntimeException("Players not set in the cliController");
         while( chosenCards.size() < getNumPlayers()){
-            out.print(CliText.ASK_CHALLCARD.toPrompt(cards.toString()));
-            while(!stdin.hasNextLine()) {
-
-            }
+            resetStdin();
+            CliText cliText = (chosenCards.size()==0)?CliText.ASK_CHALLCARD_FIRST:CliText.ASK_CHALLCARD_MORE;
+            out.print(cliText.toPrompt(cards.toString()));
             line = stdin.nextLine().trim();
             if (cards.contains(line)) {
                 chosenCards.add(line);
                 cards.remove(line);
+                out.print(CliText.OK_CHALLCARD().toString(line));
             } else {
                 out.print(CliText.BAD_CARD.toString(cards.toString()));
             }
@@ -97,9 +104,7 @@ public class CliController {
     public String askCard(List<String> chosenCards) {
         String line;
         out.print(CliText.ASK_CARD.toPrompt(chosenCards.toString()));
-//        while(!stdin.hasNextLine()) {
-//
-//        }
+        resetStdin();
         line = stdin.nextLine().trim();
         if (!chosenCards.contains(line)) {
             out.print(CliText.BAD_CARD.toPrompt(chosenCards.toString()));
@@ -159,7 +164,8 @@ public class CliController {
 
     }
 
-    public void setPlayers(List<Player> players) {
+    public void setPlayersIfNotSet(List<Player> players) {
+        System.err.println("Setting numplayers");
         if(players != null) {
             this.players = players;
         }

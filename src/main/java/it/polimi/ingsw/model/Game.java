@@ -241,6 +241,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     private void startChoseCardsTurn(Player player){
         turn = new ChoseCardsTurn(player);
         emitEvent(new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, players));
+        //it is FUNDAMENTAL that NuwTurnModelEvent is emitted before
         emitEvent(new ChosenCardsModelEvent(player, cardDeck.getCardNames(), getChosenCardsNames()));
         if(chosenCards==null) {
             //initialize here to distinguish first ChoseCardsTurn from last (is first when chosenCards == null)

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.cli;
 
 import java.util.List;
+import java.util.Random;
 
 public enum CliText {
     ASK_NAME("Insert your nickname:"),
@@ -13,7 +14,11 @@ public enum CliText {
     YOUR_TURN(Color.YELLOW.escape("Your turn to play.")),
     WAIT_TURN(Color.YELLOW.escape("%s's turn to play. Wait...")),
     YOUR_TURN_COMMAND("Your turn to play. Enter command:"),
-    ASK_CHALLCARD("Chose one card from the deck %s:"),
+    ASK_CHALLCARD_FIRST("Chose one card from the deck %s:"),
+    ASK_CHALLCARD_MORE("Chose another card from the deck %s:"),
+    OK_CHALLCARD1(Color.YELLOW.escape("%s, nice pick")),
+    OK_CHALLCARD2(Color.YELLOW.escape("%s, good choice")),
+    OK_CHALLCARD3(Color.YELLOW.escape("Oh, %s... well chosen")),
     //BAD_CHALLCARD(Color.RED.escape("Invalid card name, chose from %s:")),
     ASK_CARD("Chose one of the cards selected by the Challenger %s:"),
     BAD_CARD(Color.RED.escape("Invalid card name, chose one of %s:")),
@@ -23,6 +28,11 @@ public enum CliText {
     INVALID_NUMPLAYERS(Color.RED.escape("Incorrect num of players")),
     ENTER_COMMAND("Enter command:"),
     ;
+
+    static CliText OK_CHALLCARD(){
+        CliText[] phrases = {OK_CHALLCARD1, OK_CHALLCARD2, OK_CHALLCARD3};
+        return phrases[(new Random()).nextInt(phrases.length)];
+    }
 
 
     CliText(String text){
