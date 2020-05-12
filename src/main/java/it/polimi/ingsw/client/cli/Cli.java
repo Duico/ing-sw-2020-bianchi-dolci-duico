@@ -17,6 +17,7 @@ import java.util.Scanner;
 public class Cli extends ClientViewEventObservable implements Runnable{
     final CliController cliController;
     boolean askNumPlayers = false;
+    Object askFirstPlayerLock = new Object();
     InputStream in;
     PrintStream out;
     public Cli(){
@@ -62,6 +63,13 @@ public class Cli extends ClientViewEventObservable implements Runnable{
             out.println(CliText.CORRECT_SIGNUP_WAIT.toString());
         }else{
             out.println(CliText.CORRECT_SIGNUP_LAST.toString());
+        }
+    }
+
+    protected void printAll(){
+        synchronized (out) {
+            cliController.printAll();
+            out.print(CliText.YOUR_TURN_COMMAND);
         }
     }
 

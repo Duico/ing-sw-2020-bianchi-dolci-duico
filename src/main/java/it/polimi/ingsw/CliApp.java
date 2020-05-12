@@ -14,10 +14,21 @@ public class CliApp {
         cliVisitor.addEventListener(ViewEventListener.class, clientConnection);
         cliVisitor.addEventListener(SignUpListener.class, clientConnection);
 
-        Thread connectionThread = new Thread(clientConnection);
-        connectionThread.start();
-        Thread thread2 = new Thread(cliVisitor);
-        thread2.start();
+        //Thread connectionThread = new Thread(clientConnection);
+        clientConnection.run();
+//        connectionThread.start();
+//        try{
+//            connectionThread.join();
+//        }catch (InterruptedException e){
+//            e.printStackTrace();
+//        }
+//        Thread thread2 = new Thread(cliVisitor);
+//        //thread2.start();
+//        try{
+//            thread2.join();
+//        }catch (InterruptedException e){
+//            e.printStackTrace();
+//        }
 
 
         /*

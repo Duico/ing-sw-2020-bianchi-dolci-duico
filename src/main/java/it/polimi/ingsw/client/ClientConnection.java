@@ -119,30 +119,10 @@ public class ClientConnection implements ViewEventListener, SignUpListener, Runn
             socketOut.writeObject(message);
             socketOut.flush();
         } catch(IOException e){
-            System.out.println("tutto ok");
+            System.out.println(e);
         }
 
     }
-
-    /*public void startMyTimer() {
-
-        Timer timer = new Timer();
-        TimeOutCheckerInterface timeOutChecker = () -> {
-            if (isActive()){
-                send("ping");
-                return false;
-            }else{
-                System.out.println("The connection is inactive");
-                return true;
-            }
-        };
-
-            TimerTask task = new TimeoutCounter(timeOutChecker);
-            int intialDelay = 3000;
-            int delta = 3000;
-            timer.schedule(task, intialDelay, delta);
-    }*/
-
 
     public void run() {
         try{
@@ -178,76 +158,6 @@ public class ClientConnection implements ViewEventListener, SignUpListener, Runn
     public void handleEvent(SignUpMessage evt) {
         asyncSend(evt);
     }
-
-/*
-    @Override
-    public void move(MovementGuiEvent e) {
-        //OperationMessage message = new OperationMessage(Operation.MOVE, e.getStartPosition(), e.getDestinationPosition(), false);
-        ViewEvent message = new MoveViewEvent(null, e.getStartPosition(), e.getDestinationPosition());
-        asyncSend(message);
-    }
-
-    @Override
-    public void sendLobbyEvent(LobbyGuiEvent e) {
-        SignUpMessage message = new SignUpMessage(e.getNickname(), e.getNumPlayers());
-        asyncSend(message);
-    }
-
-    @Override
-    public void build(BuildGuiEvent e) {
-//        OperationMessage message = new OperationMessage(Operation.BUILD, e.getStartPosition(), e.getDestinationPosition(), e.isDome());
-//        System.out.println(message.getStartPosition().getX());
-//        System.out.println(message.getStartPosition().getY());
-//        System.out.println(message.getDestPosition().getX());
-//        System.out.println(message.getDestPosition().getY());
-
-
-
-        ViewEvent message = new BuildViewEvent(null, e.getStartPosition(), e.getDestinationPosition(), e.isDome());
-        asyncSend(message);
-    }
-
-    @Override
-    public void place(PlaceGuiEvent e) {
-        ViewEvent message = new PlaceViewEvent(null, e.getPosition());
-        //OperationMessage message = new OperationMessage(Operation.PLACE, e.getPosition(), null, false);
-        asyncSend(message);
-    }
-
-    @Override
-    public void endTurn(EndTurnGuiEvent e) {
-        //SetUpMessage message = new SetUpMessage(SetUpType.ENDTURN, null);
-        ViewEvent message= new EndTurnViewEvent(null);
-        asyncSend(message);
-    }
-
-    @Override
-    public void undo(UndoGuiEvent e) {
-
-        //SetUpMessage message = new SetUpMessage(SetUpType.UNDO, null);
-        ViewEvent message = new UndoViewEvent(null);
-        asyncSend(message);
-    }
-
-    @Override
-    public void chalCards(ChalCardsGuiEvent e) {
-        ViewEvent message = new ChallengerCardViewEvent(null, e.getCards());
-        asyncSend(message);
-    }
-
-    @Override
-    public void setCard(SetCardGuiEvent e) {
-        ViewEvent message = new CardViewEvent(null, e.getCard());
-        asyncSend(message);
-    }
-
-    @Override
-    public void firstPlayer(FirstPlayerGuiEvent e) {
-        ViewEvent message = new FirstPlayerViewEvent(null, e.getFirstPlayer());
-        asyncSend(message);
-    }
-
-    */
 
 }
 

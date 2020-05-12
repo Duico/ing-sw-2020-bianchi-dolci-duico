@@ -29,6 +29,9 @@ public class RemoteView extends View implements ViewEventListener, ModelEventLis
         return player;
     }*/
 
+    public void sendMessage(String message){
+        //sendMessage(message)
+    }
     public void sendMessage(Object message){
         viewConnection.asyncSend(message);
     }

@@ -28,7 +28,6 @@ public class CliController {
         players = new ArrayList<Player>();
         stdin = new Scanner(in);
         this.out = out;
-        testSetUp();
     }
 
     public String askName(){
@@ -45,9 +44,9 @@ public class CliController {
         boolean isFirst = true;
         for(Player player: players){
             if(player.equalsUuid(myPlayer)){
-                break;
+                continue;
             }
-            playersLine.append(isFirst ? "" : ", " + player.getNickName());
+            playersLine.append( (isFirst ? "" : ", ") + player.getNickName() );
             isFirst = false;
         }
         out.print(CliText.ASK_FIRSTPLAYER.toPrompt(playersLine.toString()));
@@ -60,7 +59,7 @@ public class CliController {
         //check if line is in players
         List<Player> matchingPlayers;
 
-        if((matchingPlayers = players.stream().filter( (p)-> (p.getNickName() == line)).collect(Collectors.toList()) ).size() == 0){
+        if((matchingPlayers = players.stream().filter( (p)-> (p.getNickName().equals(line)) ).collect(Collectors.toList()) ).size() == 0){
             out.println(CliText.BAD_PLAYERNAME.toString(line));
             return null;
         }
@@ -107,7 +106,8 @@ public class CliController {
         resetStdin();
         line = stdin.nextLine().trim();
         if (!chosenCards.contains(line)) {
-            out.print(CliText.BAD_CARD.toPrompt(chosenCards.toString()));
+            out.print(CliText.BAD_CARD.toString(chosenCards.toString()));
+            line = null;
         }
         return line;
     }
@@ -115,7 +115,8 @@ public class CliController {
     public void printAll(){
         //if() turnPhase == NORMAL_TURN
         bp = new BoardPrinter(board, players);
-        bp.printAll().printOut();
+        out.print(" "+System.lineSeparator()+System.lineSeparator());
+        bp.printAll().printOut(out);
     }
 
     public boolean setTurnPhase(TurnPhase turnPhase){
@@ -165,7 +166,6 @@ public class CliController {
     }
 
     public void setPlayersIfNotSet(List<Player> players) {
-        System.err.println("Setting numplayers");
         if(players != null) {
             this.players = players;
         }
@@ -178,6 +178,15 @@ public class CliController {
         }else{
             playerReference.setCardName(cardName);
             return true;
+        }
+    }
+
+    public String getPlayerCard(Player player){
+        Player playerReference = getPlayerByUuid(player);
+        if(playerReference != null){
+            return playerReference.getCardName();
+        }else{
+            return null;
         }
     }
 

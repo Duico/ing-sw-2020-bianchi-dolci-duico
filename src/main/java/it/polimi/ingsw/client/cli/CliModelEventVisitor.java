@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.controller.response.*;
+import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.server.message.DisconnectionSetUpMessage;
@@ -28,14 +29,14 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
     }
 
     @Override
-    public void visit(ChosenCardsModelEvent evt) {
+    synchronized public void visit(ChosenCardsModelEvent evt) {
         //System.out.println(Color.YELLOW_BOLD.escape("Chosen Cards"));
         List<String> cardDeck = evt.getCardDeck();
         List<String> cards = evt.getChosenCards();
         Player player = evt.getPlayer();
-        System.err.println(evt);
-        System.err.println("Event's player:"+ evt.getPlayer().getUuid());
-        System.err.println("My player"+cliController.getMyPlayer().getUuid());
+//        System.err.println(evt);
+//        System.err.println("Event's player:"+ evt.getPlayer().getUuid());
+//        System.err.println("My player"+cliController.getMyPlayer().getUuid());
 
         if(!player.equalsUuid(cliController.getMyPlayer())){
             //not my turn
@@ -50,7 +51,16 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
         }else if(cards.size() == 1){
             //server will automatically pick last card for you
             //ASK firstPlayer
-            askFirstPlayer();
+            synchronized(askFirstPlayerLock) {
+                try {
+                    while (cliController.getPlayerCard(cliController.getMyPlayer()) == null) {
+                        askFirstPlayerLock.wait();
+                    }
+                    askFirstPlayer();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }else if(cards.size() > 1){
             askCard(cards);
         }
@@ -64,7 +74,9 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(FullInfoModelEvent evt) {
-        System.out.println(Color.YELLOW_BOLD.escape("FullInfo"));
+        cliController.board = evt.getBoard();
+        cliController.players = evt.getPlayers();
+        cliController.printAll();
     }
 
     @Override
@@ -74,7 +86,9 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
         cliController.setTurnPhase(turnPhase);
         cliController.setPlayersIfNotSet(evt.getPlayers());
         if(player.equalsUuid(cliController.getMyPlayer())){
-            out.print(CliText.YOUR_TURN.toString());
+            synchronized (out) {
+                out.print(CliText.YOUR_TURN.toString());
+            }
             switch (turnPhase){
                 case CHOSE_CARDS:
                     break;
@@ -102,8 +116,11 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(SetCardModelEvent evt) {
-        out.print(CliText.SET_CARD.toString(evt.getCardName(), evt.getPlayer().getNickName()));
-        cliController.setPlayerCard(evt.getPlayer(), evt.getCardName());
+        synchronized (askFirstPlayerLock) {
+            out.print("\r\n" + CliText.SET_CARD.toString(evt.getCardName(), evt.getPlayer().getNickName()));
+            cliController.setPlayerCard(evt.getPlayer(), evt.getCardName());
+            askFirstPlayerLock.notifyAll();
+        }
     }
 
     @Override
@@ -154,7 +171,7 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(SuccessControllerResponse r) {
-        System.out.println(Color.YELLOW_BOLD.escape("correct operation"));
+        System.out.println(Color.YELLOW_BOLD.escape("\ncorrect operation"));
     }
 
     @Override
