@@ -19,6 +19,13 @@ public class CliController {
 
 
     protected List<Player> players;
+
+    protected boolean isTurnOK;
+    protected Player choseCardPlayer;
+    private List<String> cards;
+
+
+    private List<String> cardDeck;
     protected Board board;
     protected TurnPhase turnPhase;
     protected BoardPrinter bp;
@@ -43,6 +50,7 @@ public class CliController {
         return currentPlayer;
     }
 
+
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
@@ -62,6 +70,22 @@ public class CliController {
             out.print(" " + System.lineSeparator() + System.lineSeparator());
             bp.printAll().printOut(out);
         }
+    }
+
+    public List<String> getCardDeck() {
+        return cardDeck;
+    }
+
+    public void setCardDeck(List<String> cardDeck) {
+        this.cardDeck = cardDeck;
+    }
+
+    public List<String> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<String> cards) {
+        this.cards = cards;
     }
 
     public boolean setTurnPhase(TurnPhase turnPhase){

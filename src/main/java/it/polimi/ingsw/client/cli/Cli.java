@@ -2,30 +2,29 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.ClientViewEventObservable;
 import it.polimi.ingsw.client.message.SignUpMessage;
-import it.polimi.ingsw.model.Card;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.view.event.CardViewEvent;
 import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
 import it.polimi.ingsw.view.event.FirstPlayerViewEvent;
 
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import static it.polimi.ingsw.model.TurnPhase.*;
-
 public class Cli extends ClientViewEventObservable implements Runnable{
     final CliController cliController;
     boolean askNumPlayers = false;
-    Object askFirstPlayerLock = new Object();
     boolean hasPrintedTurnMessage = false;
     InputStream in;
     Scanner stdin;
     final PrintStream out;
+    boolean waitingForInput;
+    StringWriter infoString = new StringWriter();
+    PrintWriter infoOut = new PrintWriter(infoString);
+
     public Cli(){
         in = System.in;
         out = System.out;
@@ -41,40 +40,99 @@ public class Cli extends ClientViewEventObservable implements Runnable{
         //cliController.printAll();
     }
 
-    protected void askSetUpInfo(boolean askNumPlayers) {
+    protected void askSetUpInfo(boolean askNumPlayers){
         String playerName;
         Integer numPlayers = null;
-        while( (playerName = promptName() ) ==null);
-        if(askNumPlayers) {
-            while ((numPlayers = promptNumPlayers()) == null);
+        synchronized (out) {
+            while (waitingForInput == true) {
+                try {
+                    out.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+            waitingForInput = true;
+            while ((playerName = promptName()) == null) ;
+            if (askNumPlayers) {
+                while ((numPlayers = promptNumPlayers()) == null) ;
+            }
+            emitSignUp(new SignUpMessage(playerName, numPlayers));
+            waitingForInput = false;
+            out.notifyAll();
         }
-        emitSignUp(new SignUpMessage(playerName, numPlayers));
     }
 
-    protected void askFirstPlayer() throws InterruptedException {
+    protected void askFirstPlayer() {
         //synchronized (out) {
         //    if (!hasPrintedTurnMessage)
         //        wait();
+        synchronized (out) {
+            while (waitingForInput == true) {
+                try {
+                    out.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+            waitingForInput = true;
             Player player;
             while ((player = promptFirstPlayer()) == null) ;
             emitViewEvent(new FirstPlayerViewEvent(player));
-        //    hasPrintedTurnMessage = false;
-        //}
+            //    hasPrintedTurnMessage = false;
+            //}
+            waitingForInput = false;
+            out.notifyAll();
+        }
     }
     protected void askCard(List<String> chosenCards){
-        String cardName;
-        while( (cardName = promptCard(chosenCards)) == null);
-        emitViewEvent(new CardViewEvent(cardName));
+        synchronized (out) {
+            while (waitingForInput == true) {
+                try {
+                    out.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            waitingForInput = true;
+            String cardName;
+            while ((cardName = promptCard(chosenCards)) == null) ;
+            emitViewEvent(new CardViewEvent(cardName));
+            waitingForInput = false;
+            out.notifyAll();
+        }
     }
     protected void askChallCards(List<String> cardDeck){
-        List<String> challCards = promptChallCards(cardDeck);
-        emitViewEvent(new ChallengerCardViewEvent(challCards));
+        synchronized (out) {
+            while (waitingForInput == true) {
+                try {
+                    out.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            waitingForInput = true;
+            List<String> challCards = promptChallCards(cardDeck);
+            emitViewEvent(new ChallengerCardViewEvent(challCards));
+
+            waitingForInput = false;
+            out.notifyAll();
+        }
     }
     protected void printCorrectSignUp(boolean hasToWait){
-        if(hasToWait){
-            out.println(CliText.CORRECT_SIGNUP_WAIT.toString());
-        }else{
-            out.println(CliText.CORRECT_SIGNUP_LAST.toString());
+        synchronized (out) {
+            while (waitingForInput == true) {
+                try {
+                    out.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (hasToWait) {
+                out.println(CliText.CORRECT_SIGNUP_WAIT.toString());
+            } else {
+                out.println(CliText.CORRECT_SIGNUP_LAST.toString());
+            }
         }
     }
 //
@@ -88,23 +146,72 @@ public class Cli extends ClientViewEventObservable implements Runnable{
 //        }
 //    }
 
-    protected void nextTurn(boolean myTurn) {
+    protected void nextOperation(boolean isNewTurn, boolean myTurn) {
 //        boolean myTurn = cliController.getCurrentPlayer().equalsUuid(cliController.getCurrentPlayer());
-        if(myTurn) {
-            out.println();
-            out.print(CliText.YOUR_TURN.toString());
-        }else{
-            out.println();
-            out.print(CliText.WAIT_TURN.toString(cliController.getCurrentPlayer().getNickName()));
+        synchronized (cliController) {
+            while (cliController.getTurnPhase().equals(TurnPhase.CHOSE_CARDS) && cliController.isTurnOK == false) {
+               try{
+                cliController.wait();
+               }catch (InterruptedException e){
+                   e.printStackTrace();
+               }
+            }
         }
+
+        if(isNewTurn) {
+            if (myTurn) {
+                out.println();
+                out.print(CliText.YOUR_TURN.toString());
+            } else {
+                out.println();
+                out.print(CliText.WAIT_TURN.toString(cliController.getCurrentPlayer().getNickName()));
+            }
+        }
+        out.print(infoString.getBuffer());
+        //TODO
+        infoString = new StringWriter();
+        infoOut = new PrintWriter(infoString);
+
         switch (cliController.getTurnPhase()) {
             case CHOSE_CARDS:
-                //cliController.printAll();
+                if(myTurn) {
+                    printChoseCards();
+                }
                 break;
             case PLACE_WORKERS:
             case NORMAL:
+                //distinguish between your turn and other player's
                 cliController.printAll();
                 break;
+        }
+    }
+
+    private void printChoseCards(){
+        List<String> cards = cliController.getCards();
+        List<String> cardDeck = cliController.getCardDeck();
+//        if(!cliController.getMyPlayer().equalsUuid(cliController.choseCardPlayer)){
+//            return;
+//        }
+        System.err.println(cards);
+        System.err.println(cardDeck);
+        if(cards == null){ //pick cards
+            if(cardDeck != null){
+                askChallCards(cardDeck);
+            }else{
+                //error
+            }
+        }else if(cards.size() == 1){
+            //server will automatically pick last card for you
+            //ASK firstPlayer
+//            synchronized(askFirstPlayerLock) {
+//                    while (cliController.getPlayerCard(cliController.getMyPlayer()) == null) {
+//                        askFirstPlayerLock.wait();
+//                    }
+            askFirstPlayer();
+
+
+        }else if(cards.size() > 1){
+            askCard(cards);
         }
     }
 
@@ -147,6 +254,7 @@ public class Cli extends ClientViewEventObservable implements Runnable{
 
     private Integer promptNumPlayers(){
         out.print(CliText.ASK_NUMPLAYERS.toPrompt());
+        resetStdin();
         Integer line = stdin.nextInt();
         if(line<2 || line >3){
             out.println(CliText.BAD_NUMPLAYERS);
@@ -161,9 +269,9 @@ public class Cli extends ClientViewEventObservable implements Runnable{
         int numPlayers = cliController.getNumPlayers();
         if(numPlayers < 2) throw new RuntimeException("Players not set in the cliController");
         while( chosenCards.size() < numPlayers){
-            resetStdin();
             CliText cliText = (chosenCards.size()==0)?CliText.ASK_CHALLCARD_FIRST:CliText.ASK_CHALLCARD_MORE;
             out.print(cliText.toPrompt(cards.toString()));
+            resetStdin();
             line = stdin.nextLine().trim();
             if (cards.contains(line)) {
                 chosenCards.add(line);
