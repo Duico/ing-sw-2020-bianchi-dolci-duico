@@ -276,10 +276,11 @@ public class Game extends ModelEventEmitter implements Serializable{
         if(firstPlayer == null){
             return false;
         }
-        ModelEvent evt = new FullInfoModelEvent(FullInfoModelEvent.InfoType.INIT_GAME, getCurrentPlayer(), players, board.clone());
-        emitEvent(evt);
         //emitEvent(new NewTurnModelEvent(firstPlayer, TurnPhase.PLACE_WORKERS));
         nextTurn(firstPlayer);
+        //moved below
+        ModelEvent evt = new FullInfoModelEvent(FullInfoModelEvent.InfoType.INIT_GAME, getCurrentPlayer(), players, board.clone());
+        emitEvent(evt);
         return true;
     }
 

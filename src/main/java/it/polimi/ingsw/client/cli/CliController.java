@@ -14,6 +14,10 @@ public class CliController {
     private boolean isHost = false;
     public String nickname;
     private Player myPlayer;
+
+    private Player currentPlayer;
+
+
     protected List<Player> players;
     protected Board board;
     protected TurnPhase turnPhase;
@@ -22,6 +26,10 @@ public class CliController {
     private InputStream in;
     private Scanner stdin;
 
+    /*
+      All ask functions HAVE to be moved to another class
+
+     */
     public CliController(InputStream in, PrintStream out){
         this.in = in;
         board = new Board();
@@ -30,98 +38,38 @@ public class CliController {
         this.out = out;
     }
 
-    public String askName(){
-        out.print(CliText.ASK_NAME.toPrompt());
-        String line = stdin.nextLine().trim();
-        if(!line.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$")){
-            out.println(CliText.BAD_NAME);
-            return null;
-        }
-        return line;
-    }
-    public Player askFirstPlayer(){
-        StringBuilder playersLine = new StringBuilder();
-        boolean isFirst = true;
-        for(Player player: players){
-            if(player.equalsUuid(myPlayer)){
-                continue;
-            }
-            playersLine.append( (isFirst ? "" : ", ") + player.getNickName() );
-            isFirst = false;
-        }
-        out.print(CliText.ASK_FIRSTPLAYER.toPrompt(playersLine.toString()));
-        resetStdin();
-        final String line = stdin.nextLine().trim();
-        if(!line.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$")){
-            out.println(CliText.BAD_NAME);
-            return null;
-        }
-        //check if line is in players
-        List<Player> matchingPlayers;
 
-        if((matchingPlayers = players.stream().filter( (p)-> (p.getNickName().equals(line)) ).collect(Collectors.toList()) ).size() == 0){
-            out.println(CliText.BAD_PLAYERNAME.toString(line));
-            return null;
-        }
-        return matchingPlayers.get(0);
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 
-    private void resetStdin() {
-        stdin = new Scanner(in);
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 
-    public Integer askNumPlayers(){
-        out.print(CliText.ASK_NUMPLAYERS.toPrompt());
-        Integer line = stdin.nextInt();
-        if(line<2 || line >3){
-            out.println(CliText.BAD_NUMPLAYERS);
-            return null;
-        }
-        return line;
+    public List<Player> getPlayers() {
+        return players;
     }
-    protected List<String> askChallCards(List<String> cards){
-        List<String> chosenCards = new ArrayList<>();
-        String line;
-        int numPlayers = getNumPlayers();
-        if(numPlayers < 2) throw new RuntimeException("Players not set in the cliController");
-        while( chosenCards.size() < getNumPlayers()){
-            resetStdin();
-            CliText cliText = (chosenCards.size()==0)?CliText.ASK_CHALLCARD_FIRST:CliText.ASK_CHALLCARD_MORE;
-            out.print(cliText.toPrompt(cards.toString()));
-            line = stdin.nextLine().trim();
-            if (cards.contains(line)) {
-                chosenCards.add(line);
-                cards.remove(line);
-                out.print(CliText.OK_CHALLCARD().toString(line));
-            } else {
-                out.print(CliText.BAD_CARD.toString(cards.toString()));
-            }
 
-        }
-        return chosenCards;
-    }
-    public String askCard(List<String> chosenCards) {
-        String line;
-        out.print(CliText.ASK_CARD.toPrompt(chosenCards.toString()));
-        resetStdin();
-        line = stdin.nextLine().trim();
-        if (!chosenCards.contains(line)) {
-            out.print(CliText.BAD_CARD.toString(chosenCards.toString()));
-            line = null;
-        }
-        return line;
+    public void setPlayers(List<Player> players) {
+        this.players = players;
     }
 
     public void printAll(){
-        //if() turnPhase == NORMAL_TURN
-        bp = new BoardPrinter(board, players);
-        out.print(" "+System.lineSeparator()+System.lineSeparator());
-        bp.printAll().printOut(out);
+        synchronized (out) {
+            //if() turnPhase == NORMAL_TURN
+            bp = new BoardPrinter(board, players);
+            out.print(" " + System.lineSeparator() + System.lineSeparator());
+            bp.printAll().printOut(out);
+        }
     }
 
     public boolean setTurnPhase(TurnPhase turnPhase){
         this.turnPhase = turnPhase;
         return true;
+    }
+    public TurnPhase getTurnPhase() {
+        return turnPhase;
     }
 
     public Player getMyPlayer() {
@@ -197,4 +145,6 @@ public class CliController {
         }
         return null;
     }
+
+
 }

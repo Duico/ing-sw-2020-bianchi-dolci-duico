@@ -1,4 +1,6 @@
-package it.polimi.ingsw.server;
+package it.polimi.ingsw;
+
+import it.polimi.ingsw.server.Server;
 
 import java.io.IOException;
 

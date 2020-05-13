@@ -34,7 +34,7 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
         List<String> cardDeck = evt.getCardDeck();
         List<String> cards = evt.getChosenCards();
         Player player = evt.getPlayer();
-//        System.err.println(evt);
+        System.err.println(evt);
 //        System.err.println("Event's player:"+ evt.getPlayer().getUuid());
 //        System.err.println("My player"+cliController.getMyPlayer().getUuid());
 
@@ -76,32 +76,35 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
     public void visit(FullInfoModelEvent evt) {
         cliController.board = evt.getBoard();
         cliController.players = evt.getPlayers();
-        cliController.printAll();
     }
 
     @Override
     public void visit(NewTurnModelEvent evt) {
-        Player player = evt.getPlayer();
-        TurnPhase turnPhase = evt.getTurnPhase();
-        cliController.setTurnPhase(turnPhase);
-        cliController.setPlayersIfNotSet(evt.getPlayers());
-        if(player.equalsUuid(cliController.getMyPlayer())){
-            synchronized (out) {
-                out.print(CliText.YOUR_TURN.toString());
-            }
-            switch (turnPhase){
-                case CHOSE_CARDS:
-                    break;
-                case PLACE_WORKERS:
-                case NORMAL:
-                    //do nothing (cliController.setTurnPhase is enough)
-                    //wait for command to be input
-                    break;
-            }
-        }else{
-
-            out.printf(CliText.WAIT_TURN.toString(player.getNickName()));
-        }
+        //synchronized (out) {
+            Player player = evt.getPlayer();
+            TurnPhase turnPhase = evt.getTurnPhase();
+            cliController.setTurnPhase(turnPhase);
+            cliController.setPlayersIfNotSet(evt.getPlayers());
+            cliController.setCurrentPlayer(player);
+            boolean myTurn = player.equalsUuid(cliController.getMyPlayer());
+//            if (player.equalsUuid(cliController.getMyPlayer())) {
+//                myTurn = true;
+//                switch (turnPhase) {
+//                    case CHOSE_CARDS:
+//                        break;
+//                    case PLACE_WORKERS:
+//                    case NORMAL:
+//                        //do nothing (cliController.setTurnPhase is enough)
+//                        //wait for command to be input
+//                        break;
+//                }
+//            } else {
+//                myTurn = false;
+//            }
+            //hasPrintedTurnMessage = true;
+            //out.notifyAll();
+            nextTurn(myTurn);
+        //}
     }
 
     @Override
@@ -117,7 +120,15 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
     @Override
     public void visit(SetCardModelEvent evt) {
         synchronized (askFirstPlayerLock) {
-            out.print("\r\n" + CliText.SET_CARD.toString(evt.getCardName(), evt.getPlayer().getNickName()));
+            CliText cliText;
+            if(cliController.getMyPlayer().equalsUuid(evt.getPlayer())){
+                cliText = CliText.SET_CARD_OWN;
+            }else{
+                cliText = CliText.SET_CARD_OTHER;
+            }
+            out.println();
+            out.print(cliText.toString(evt.getCardName(), evt.getPlayer().getNickName()));
+
             cliController.setPlayerCard(evt.getPlayer(), evt.getCardName());
             askFirstPlayerLock.notifyAll();
         }
