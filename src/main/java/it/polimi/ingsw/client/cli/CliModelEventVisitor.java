@@ -33,13 +33,14 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
         List<String> cardDeck = evt.getCardDeck();
         List<String> cards = evt.getChosenCards();
         Player player = evt.getPlayer();
-        System.err.println("ChosenCards "+evt.toString());
+//        System.err.println("ChosenCards "+evt.toString());
+
 //        System.err.println(evt);
 //        System.err.println("Event's player:"+ evt.getPlayer().getUuid());
 //        System.err.println("My player"+cliController.getMyPlayer().getUuid());
         cliController.setCards(cards);
         cliController.setCardDeck(cardDeck);
-        cliController.choseCardPlayer = evt.getPlayer();
+//        cliController.choseCardPlayer = evt.getPlayer();
         //TODO REMOVE
         synchronized (cliController) {
             cliController.isTurnOK = true;
@@ -91,7 +92,7 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
             cliController.setPlayersIfNotSet(evt.getPlayers());
             cliController.setCurrentPlayer(player);
             boolean myTurn = player.equalsUuid(cliController.getMyPlayer());
-            System.err.println("NewTurn "+evt.toString());
+//            System.err.println("NewTurn "+evt.toString());
 
 
 
@@ -131,7 +132,9 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(SetCardModelEvent evt) {
-        System.err.println("SetCard "+evt.toString());
+        cliController.setPlayerCard(evt.getPlayer(), evt.getCardName());
+
+//        System.err.println("SetCard "+evt.toString());
 
         CliText cliText;
         if(cliController.getMyPlayer().equalsUuid(evt.getPlayer())){
@@ -139,10 +142,19 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
         }else{
             cliText = CliText.SET_CARD_OTHER;
         }
-        infoOut.println();
-        infoOut.print(cliText.toString(evt.getCardName(), evt.getPlayer().getNickName()));
 
-        cliController.setPlayerCard(evt.getPlayer(), evt.getCardName());
+        //TODO generalize
+        synchronized (out) {
+            while (waitingForInput == true) {
+                try {
+                    out.wait();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+            infoOut.println();
+            infoOut.print(cliText.toString(evt.getCardName(), evt.getPlayer().getNickName()));
+        }
 //        askFirstPlayerLock.notifyAll();
 
     }

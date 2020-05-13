@@ -21,7 +21,6 @@ public class CliController {
     protected List<Player> players;
 
     protected boolean isTurnOK;
-    protected Player choseCardPlayer;
     private List<String> cards;
 
 
@@ -29,20 +28,14 @@ public class CliController {
     protected Board board;
     protected TurnPhase turnPhase;
     protected BoardPrinter bp;
-    private PrintStream out;
-    private InputStream in;
-    private Scanner stdin;
 
     /*
       All ask functions HAVE to be moved to another class
 
      */
     public CliController(InputStream in, PrintStream out){
-        this.in = in;
         board = new Board();
         players = new ArrayList<Player>();
-        stdin = new Scanner(in);
-        this.out = out;
     }
 
 
@@ -63,13 +56,8 @@ public class CliController {
         this.players = players;
     }
 
-    public void printAll(){
-        synchronized (out) {
-            //if() turnPhase == NORMAL_TURN
-            bp = new BoardPrinter(board, players);
-            out.print(" " + System.lineSeparator() + System.lineSeparator());
-            bp.printAll().printOut(out);
-        }
+    public BoardPrinter printAll(){
+        return bp = new BoardPrinter(board, players);
     }
 
     public List<String> getCardDeck() {

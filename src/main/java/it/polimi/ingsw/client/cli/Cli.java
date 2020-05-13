@@ -22,12 +22,14 @@ public class Cli extends ClientViewEventObservable implements Runnable{
     Scanner stdin;
     final PrintStream out;
     boolean waitingForInput;
-    StringWriter infoString = new StringWriter();
-    PrintWriter infoOut = new PrintWriter(infoString);
+   // StringWriter infoString = new StringWriter();
+   // PrintWriter infoOut = new PrintWriter(infoString);
+    PrintStream infoOut;
 
     public Cli(){
         in = System.in;
         out = System.out;
+        infoOut = out;
         resetStdin();
         cliController = new CliController(in, out);
     }
@@ -167,10 +169,10 @@ public class Cli extends ClientViewEventObservable implements Runnable{
                 out.print(CliText.WAIT_TURN.toString(cliController.getCurrentPlayer().getNickName()));
             }
         }
-        out.print(infoString.getBuffer());
-        //TODO
-        infoString = new StringWriter();
-        infoOut = new PrintWriter(infoString);
+//        out.print(infoString.getBuffer());
+//        //TODO
+//        infoString = new StringWriter();
+//        infoOut = new PrintWriter(infoString);
 
         switch (cliController.getTurnPhase()) {
             case CHOSE_CARDS:
@@ -181,7 +183,7 @@ public class Cli extends ClientViewEventObservable implements Runnable{
             case PLACE_WORKERS:
             case NORMAL:
                 //distinguish between your turn and other player's
-                cliController.printAll();
+                printAll();
                 break;
         }
     }
@@ -192,8 +194,7 @@ public class Cli extends ClientViewEventObservable implements Runnable{
 //        if(!cliController.getMyPlayer().equalsUuid(cliController.choseCardPlayer)){
 //            return;
 //        }
-        System.err.println(cards);
-        System.err.println(cardDeck);
+
         if(cards == null){ //pick cards
             if(cardDeck != null){
                 askChallCards(cardDeck);
@@ -214,7 +215,20 @@ public class Cli extends ClientViewEventObservable implements Runnable{
             askCard(cards);
         }
     }
-
+    private void printAll() {
+        synchronized (out){
+//        while (waitingForInput == true) {
+//            try {
+//                out.wait();
+//            }catch (InterruptedException e){
+//                e.printStackTrace();
+//            }
+//        }
+            BoardPrinter bp = cliController.printAll();
+            out.print(" " + System.lineSeparator() + System.lineSeparator());
+            bp.printAll().printOut(out);
+        }
+    }
     private String promptName(){
         out.print(CliText.ASK_NAME.toPrompt());
         resetStdin();
