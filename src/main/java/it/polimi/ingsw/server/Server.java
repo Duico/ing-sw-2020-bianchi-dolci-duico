@@ -35,22 +35,25 @@ public class Server {
     }
 
     public synchronized void clientCloseConnection(ViewConnection c) {
-        waitingConnection.remove(c);
-        boolean isFirstConnection = c == getFirstConnection();
-        connections.remove(c);
-        if(hasGameStarted || isFirstConnection) {
-            //ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
-            for (ViewConnection connection : connections) {
-                connection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
+        if(waitingConnection.containsKey(c)) {
+            waitingConnection.remove(c);
+            boolean isFirstConnection = c == getFirstConnection();
+            connections.remove(c);
+            if (hasGameStarted || isFirstConnection) {
+                //ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
+                for (ViewConnection connection : connections) {
+                    connection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
+                }
+                connections.clear();
+                waitingConnection.clear();
+                GameSerializer serializer = new GameSerializer("./game.ser");
+                serializer.writeGame(game);
+                this.game = null;
+                this.lobby = null;
+                hasGameStarted = false;
+            } else {
+                //client disconnected from lobby
             }
-            connections.clear();
-            waitingConnection.clear();
-            GameSerializer serializer = new GameSerializer("./game.ser");
-            serializer.writeGame(game);
-            this.game = null;
-            this.lobby = null;
-        }else{
-            //client disconnected from lobby
         }
 
     }
@@ -65,6 +68,7 @@ public class Server {
     public synchronized void createNewGame(){
             if(game==null) {
             //if (waitingConnection.size() == lobby.getNumPlayers()) {
+                System.out.println(waitingConnection.size());
                 Integer numPlayers = lobby.getNumPlayers();
 
                 ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
@@ -87,8 +91,13 @@ public class Server {
                             initPlayer(viewConnection, controller, players, remoteViews);
                             numPlayers--;
                         }
-                    }else{
-                        viewConnection.asyncSend(new DisconnectionSetUpMessage(SetUpType.TOO_MANY_PLAYERS));
+                    }else if(viewConnection != firstConnection){
+                        waitingConnection.remove(viewConnection);
+                        connections.remove(viewConnection);
+                        viewConnection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
+                        //viewConnections.remove(viewConnection);
+                        //waitingConnection.remove(viewConnection);
+                        //clientCloseConnection(viewConnection);
                         //viewConnection.closeConnection();
                     }
                 }
@@ -144,16 +153,17 @@ public class Server {
     }
 
     public void checkUpRegistration(String nickName, Integer numPlayers, SocketViewConnection connection){
-            if(!lobby.addPlayer(nickName)){
+        if(!hasGameStarted) {
+            if (!lobby.addPlayer(nickName)) {
                 connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME));
                 return;
             }
-            if(connection == getFirstConnection()){
-                 if(numPlayers == null){
+            if (connection == getFirstConnection()) {
+                if (numPlayers == null) {
                     connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
                     return;
-                 }
-                if(!lobby.setNumPlayers(numPlayers)) {
+                }
+                if (!lobby.setNumPlayers(numPlayers)) {
                     connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
                     return;
                 }
@@ -161,13 +171,16 @@ public class Server {
             }
             Player newPlayer = putConnection(connection, nickName);
 
-            if(lobby.getNumPlayers() != null && waitingConnection.size() >= lobby.getNumPlayers()) {
+            if (lobby.getNumPlayers() != null && waitingConnection.size() >= lobby.getNumPlayers()) {
                 connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_LAST, newPlayer));
                 createNewGame();
-            }else{
+            } else {
                 //client has to wait
                 connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT, newPlayer));
             }
+        }else{
+            connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.GAME_ALREADY_START));
+        }
 
 //        } else if (lobby.addPlayer(nickName)) {
 //            connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP));

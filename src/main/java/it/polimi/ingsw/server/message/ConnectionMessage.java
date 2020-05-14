@@ -10,7 +10,8 @@ public class ConnectionMessage implements Serializable {
     public enum Type{
         PING,
         PONG,
-        DISCONNECTION
+        DISCONNECTION,
+        DISCONNECTION_TOO_MANY_PLAYERS
     }
 
     public Type getType(){
