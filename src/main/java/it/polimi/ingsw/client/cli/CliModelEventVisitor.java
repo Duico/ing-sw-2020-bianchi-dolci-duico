@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.controller.response.*;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.server.message.DisconnectionSetUpMessage;
 import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
@@ -15,16 +16,34 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
     @Override
     public void visit(BuildWorkerModelEvent evt) {
         System.out.println(Color.YELLOW_BOLD.escape("Build"));
+        Player player = evt.getPlayer();
+        Position startPosition = evt.getStartPosition();
+        Position buildPosition = evt.getDestinationPosition();
+        boolean isDome = evt.isDome();
+        cliController.buildWorker(startPosition, buildPosition, isDome);
     }
 
     @Override
     public void visit(MoveWorkerModelEvent evt) {
         System.out.println(Color.YELLOW_BOLD.escape("Move"));
+        Player player = evt.getPlayer();
+        Position startPosition = evt.getStartPosition();
+        Position destinationPosition = evt.getDestinationPosition();
+        Position pushPostion = evt.getPushPosition();
+        if(pushPostion!=null){
+            cliController.moveWorker(destinationPosition, pushPostion);
+        }
+        cliController.moveWorker(startPosition, destinationPosition);
+
     }
 
     @Override
     public void visit(PlaceWorkerModelEvent evt) {
-        System.out.println(Color.YELLOW_BOLD.escape("Place"));
+        Player player = evt.getPlayer();
+        //evt.getPlacePosition();
+        //TEMP
+        cliController.updatePlayer(player);
+        nextOperation();
     }
 
     @Override
@@ -135,26 +154,18 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
         cliController.setPlayerCard(evt.getPlayer(), evt.getCardName());
 
 //        System.err.println("SetCard "+evt.toString());
-
-        CliText cliText;
-        if(cliController.getMyPlayer().equalsUuid(evt.getPlayer())){
-            cliText = CliText.SET_CARD_OWN;
-        }else{
-            cliText = CliText.SET_CARD_OTHER;
-        }
-
-        //TODO generalize
-        synchronized (out) {
-            while (waitingForInput == true) {
-                try {
-                    out.wait();
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
+        lockOut( () -> {
+            CliText cliText;
+            if(cliController.getMyPlayer().equalsUuid(evt.getPlayer())){
+                cliText = CliText.SET_CARD_OWN;
+            }else{
+                cliText = CliText.SET_CARD_OTHER;
             }
-            infoOut.println();
-            infoOut.print(cliText.toString(evt.getCardName(), evt.getPlayer().getNickName()));
-        }
+
+            //TODO generalize
+                infoOut.println();
+                infoOut.print(cliText.toString(evt.getCardName(), evt.getPlayer().getNickName()));
+        });
 //        askFirstPlayerLock.notifyAll();
 
     }
@@ -167,6 +178,7 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
     @Override
     public void visit(FailedOperationControllerResponse r) {
         System.out.println(Color.YELLOW_BOLD.escape("Failed operation"));
+        nextOperation();
     }
 
     @Override
@@ -181,7 +193,7 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(IllegalCardNamesListControllerResponse r) {
-        System.out.println(Color.YELLOW_BOLD.escape("illegal list of card"));
+        System.out.println(Color.YELLOW_BOLD.escape("illegal list of cards"));
     }
 
     @Override
@@ -201,13 +213,12 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(NotCurrentPlayerControllerResponse r) {
-        System.err.println(r.getEvent().getClass());
         System.out.println(Color.YELLOW_BOLD.escape("incorrectPlayer"));
     }
 
     @Override
     public void visit(SuccessControllerResponse r) {
-        System.out.println(Color.YELLOW_BOLD.escape("\ncorrect operation"));
+        System.out.println(Color.YELLOW_BOLD.escape("\nSuccessful operation"));
     }
 
     @Override
@@ -229,7 +240,7 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
 
     @Override
     public void visit(DisconnectionSetUpMessage evt) {
-        System.out.println(Color.YELLOW_BOLD.escape("End game, player disconnected"));
+        System.out.println(Color.YELLOW_BOLD.escape(System.lineSeparator()+"End game, player disconnected"));
     }
 
     @Override
@@ -247,7 +258,7 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
             cliController.setMyPlayer(message.getPlayer());
             printCorrectSignUp(hasToWait);
             //TODO REMOVE
-            //cliController.choseCardTurnOK = true;
+            //cliController.isTurnOK = true;
         }
 
     }

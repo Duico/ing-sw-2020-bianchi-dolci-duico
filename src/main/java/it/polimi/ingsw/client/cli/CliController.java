@@ -5,9 +5,7 @@ import it.polimi.ingsw.model.*;
 import javax.swing.*;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CliController {
@@ -29,6 +27,10 @@ public class CliController {
     protected TurnPhase turnPhase;
     protected BoardPrinter bp;
 
+    //advanced functionality
+    Map<Position, Player> workersMap = new HashMap<Position, Player>();
+    boolean workersMapOK = false;
+
     /*
       All ask functions HAVE to be moved to another class
 
@@ -38,6 +40,9 @@ public class CliController {
         players = new ArrayList<Player>();
     }
 
+    public boolean isMyTurn(){
+       return getCurrentPlayer().equalsUuid(getMyPlayer());
+    }
 
     public Player getCurrentPlayer() {
         return currentPlayer;
@@ -56,8 +61,30 @@ public class CliController {
         this.players = players;
     }
 
-    public BoardPrinter printAll(){
-        return bp = new BoardPrinter(board, players);
+    public void updatePlayer(Player player){
+        for(int i=0; i<players.size(); ++i){
+            Player oldPlayer = players.get(i);
+            if(oldPlayer.equalsUuid(player)){
+                players.set(i, player);
+                break;
+            }
+        }
+    }
+    //TODO
+    public boolean moveWorker(Position startPosition, Position destPosition){
+        return false;
+    }
+//    TODO
+    public boolean buildWorker(Position workerPosition, Position buildPosition, boolean isDome){
+        //board .build() is too complex for the Client
+        board.build(workerPosition, buildPosition, isDome);
+        return false;
+    }
+    public BoardPrinter createBoardPrinter(){
+        //TODO
+        //move generateWorkersMap
+        generateWorkersMap();
+        return bp = new BoardPrinter(board, players, workersMap);
     }
 
     public List<String> getCardDeck() {
@@ -94,6 +121,14 @@ public class CliController {
 
     public int getNumPlayers(){
         return players.size();
+    }
+    public Integer getBoardWidth(){
+        if(board == null) return null;
+        return board.getWidth();
+    }
+    public Integer getBoardHeight(){
+        if(board == null) return null;
+        return board.getHeight();
     }
 
     private void testSetUp() {
@@ -156,6 +191,22 @@ public class CliController {
                 return player;
         }
         return null;
+    }
+
+    boolean generateWorkersMap(){
+        workersMap.clear();
+        int count = 0;
+        for(Player player: players){
+            for(int i = 0; i<player.getNumWorkers(); i++) {
+                Position pos = player.getWorkerPosition(i);
+                if(pos!=null){
+                    workersMap.put(pos, player);
+                    count++;
+                }
+            }
+        }
+        if(count>0) return true;
+        else return false;
     }
 
 

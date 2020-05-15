@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.view.event.CardViewEvent;
 import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
 import it.polimi.ingsw.view.event.FirstPlayerViewEvent;
+import it.polimi.ingsw.view.event.ViewEvent;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,10 +18,12 @@ import java.util.stream.Collectors;
 public class Cli extends ClientViewEventObservable implements Runnable{
     final CliController cliController;
     boolean askNumPlayers = false;
-    boolean hasPrintedTurnMessage = false;
+    //boolean hasPrintedTurnMessage = false;
     InputStream in;
     Scanner stdin;
     final PrintStream out;
+    BoardPrinter bp;
+    Integer BPcellWidth = 2;
     boolean waitingForInput;
    // StringWriter infoString = new StringWriter();
    // PrintWriter infoOut = new PrintWriter(infoString);
@@ -30,8 +33,9 @@ public class Cli extends ClientViewEventObservable implements Runnable{
         in = System.in;
         out = System.out;
         infoOut = out;
-        resetStdin();
+        stdin = new Scanner(in);
         cliController = new CliController(in, out);
+        waitingForInput = false;
     }
 
     @Override
@@ -43,99 +47,46 @@ public class Cli extends ClientViewEventObservable implements Runnable{
     }
 
     protected void askSetUpInfo(boolean askNumPlayers){
-        String playerName;
-        Integer numPlayers = null;
-        synchronized (out) {
-            while (waitingForInput == true) {
-                try {
-                    out.wait();
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
-            waitingForInput = true;
+        lockOut( () -> {
+            String playerName;
+            Integer numPlayers = null;
             while ((playerName = promptName()) == null) ;
             if (askNumPlayers) {
                 while ((numPlayers = promptNumPlayers()) == null) ;
             }
             emitSignUp(new SignUpMessage(playerName, numPlayers));
-            waitingForInput = false;
-            out.notifyAll();
-        }
+        });
     }
 
     protected void askFirstPlayer() {
-        //synchronized (out) {
-        //    if (!hasPrintedTurnMessage)
-        //        wait();
-        synchronized (out) {
-            while (waitingForInput == true) {
-                try {
-                    out.wait();
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
-            waitingForInput = true;
+        lockOut( () -> {
             Player player;
             while ((player = promptFirstPlayer()) == null) ;
             emitViewEvent(new FirstPlayerViewEvent(player));
-            //    hasPrintedTurnMessage = false;
-            //}
-            waitingForInput = false;
-            out.notifyAll();
-        }
+        });
     }
     protected void askCard(List<String> chosenCards){
-        synchronized (out) {
-            while (waitingForInput == true) {
-                try {
-                    out.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            waitingForInput = true;
+        lockOut( () -> {
             String cardName;
             while ((cardName = promptCard(chosenCards)) == null) ;
             emitViewEvent(new CardViewEvent(cardName));
-            waitingForInput = false;
-            out.notifyAll();
-        }
+        });
     }
     protected void askChallCards(List<String> cardDeck){
-        synchronized (out) {
-            while (waitingForInput == true) {
-                try {
-                    out.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            waitingForInput = true;
+        lockOut( () -> {
             List<String> challCards = promptChallCards(cardDeck);
             emitViewEvent(new ChallengerCardViewEvent(challCards));
-
-            waitingForInput = false;
-            out.notifyAll();
-        }
+        });
     }
-    protected void printCorrectSignUp(boolean hasToWait){
-        synchronized (out) {
-            while (waitingForInput == true) {
-                try {
-                    out.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
 
+    protected void printCorrectSignUp(boolean hasToWait){
+        lockOut( () -> {
             if (hasToWait) {
                 out.println(CliText.CORRECT_SIGNUP_WAIT.toString());
             } else {
                 out.println(CliText.CORRECT_SIGNUP_LAST.toString());
             }
-        }
+        });
     }
 //
 //    protected void printAll() {
@@ -147,7 +98,9 @@ public class Cli extends ClientViewEventObservable implements Runnable{
 //            //hasPrintedTurnMessage = false;
 //        }
 //    }
-
+    protected void nextOperation(){
+        nextOperation(false, cliController.isMyTurn());
+    }
     protected void nextOperation(boolean isNewTurn, boolean myTurn) {
 //        boolean myTurn = cliController.getCurrentPlayer().equalsUuid(cliController.getCurrentPlayer());
         synchronized (cliController) {
@@ -183,7 +136,7 @@ public class Cli extends ClientViewEventObservable implements Runnable{
             case PLACE_WORKERS:
             case NORMAL:
                 //distinguish between your turn and other player's
-                printAll();
+                printAll(myTurn);
                 break;
         }
     }
@@ -191,47 +144,106 @@ public class Cli extends ClientViewEventObservable implements Runnable{
     private void printChoseCards(){
         List<String> cards = cliController.getCards();
         List<String> cardDeck = cliController.getCardDeck();
+        //NOTE: no lockOut here because it is already in the single functions
+
 //        if(!cliController.getMyPlayer().equalsUuid(cliController.choseCardPlayer)){
 //            return;
 //        }
-
-        if(cards == null){ //pick cards
-            if(cardDeck != null){
-                askChallCards(cardDeck);
-            }else{
-                //error
-            }
-        }else if(cards.size() == 1){
-            //server will automatically pick last card for you
-            //ASK firstPlayer
+            if (cards == null) { //pick cards
+                if (cardDeck != null) {
+                    askChallCards(cardDeck);
+                } else {
+                    //error
+                }
+            } else if (cards.size() == 1) {
+                //server will automatically pick last card for you
+                //ASK firstPlayer
 //            synchronized(askFirstPlayerLock) {
 //                    while (cliController.getPlayerCard(cliController.getMyPlayer()) == null) {
 //                        askFirstPlayerLock.wait();
 //                    }
-            askFirstPlayer();
+                askFirstPlayer();
 
 
-        }else if(cards.size() > 1){
-            askCard(cards);
-        }
+            } else if (cards.size() > 1) {
+                askCard(cards);
+            }
     }
-    private void printAll() {
-        synchronized (out){
-//        while (waitingForInput == true) {
-//            try {
-//                out.wait();
-//            }catch (InterruptedException e){
-//                e.printStackTrace();
-//            }
-//        }
-            BoardPrinter bp = cliController.printAll();
+    private void printAll(){
+        printAll(cliController.isMyTurn());
+    }
+    private void printAll(boolean myTurn) {
+        lockOut( () -> {
+            bp = cliController.createBoardPrinter();
+            bp.setCellWidth(BPcellWidth);
             out.print(" " + System.lineSeparator() + System.lineSeparator());
             bp.printAll().printOut(out);
+        });
+        askCommand(myTurn);
+    }
+    protected void askCommand(boolean myTurn){
+        //lockOut( () -> {
+            String cmd;
+            while ((cmd = promptCommand(myTurn)) == null || !executeCommand(myTurn, cmd));
+        //});
+    }
+    private String promptCommand(boolean myTurn){
+        CliText promptText = myTurn?CliText.YOUR_TURN_COMMAND:CliText.ENTER_COMMAND;
+        out.print(promptText.toPrompt());
+        String line = null;
+
+        //needed to avoid Exception below
+        synchronized (out) {
+            line = stdin.nextLine().trim();
         }
+        if(!line.matches("^([A-Za-z\\-\\+][A-Za-z0-9\\-\\+]{0,60}\\s{0,3}){1,6}$")){
+            out.println(CliText.BAD_COMMAND);
+            return null;
+        }
+        return line;
+    }
+//    Exception in thread "Thread-44" java.lang.IndexOutOfBoundsException: end
+//    at java.base/java.util.regex.Matcher.region(Matcher.java:1515)
+//    at java.base/java.util.Scanner.findPatternInBuffer(Scanner.java:1089)
+//    at java.base/java.util.Scanner.findWithinHorizon(Scanner.java:1791)
+//    at java.base/java.util.Scanner.nextLine(Scanner.java:1649)
+//    at it.polimi.ingsw.client.cli.Cli.promptCommand(Cli.java:193)
+//    at it.polimi.ingsw.client.cli.Cli.askCommand(Cli.java:185)
+//    at it.polimi.ingsw.client.cli.Cli.printAll(Cli.java:180)
+//    at it.polimi.ingsw.client.cli.Cli.nextOperation(Cli.java:137)
+//    at it.polimi.ingsw.client.cli.CliModelEventVisitor.visit(CliModelEventVisitor.java:181)
+//    at it.polimi.ingsw.controller.response.FailedOperationControllerResponse.accept(FailedOperationControllerResponse.java:32)
+//    at it.polimi.ingsw.client.ClientConnection$1.lambda$run$0(ClientConnection.java:71)
+//    at java.base/java.lang.Thread.run(Thread.java:830)
+
+    private boolean executeCommand(boolean myTurn, String cmd){
+        CommandParser commandParser;
+        ViewEvent event = null;
+        if(cmd.equals("+")){
+            BPcellWidth++;
+        }else if(cmd.equals("-")){
+            BPcellWidth--;
+        }else{
+            commandParser = new CommandParser(cliController);
+            event = commandParser.parse(cmd);
+            if(event == null){
+                out.println(CliText.BAD_COMMAND);
+                return false;
+            }else{
+              emitViewEvent(event);
+            }
+        }
+        //printAll on WorkerModelEvent
+        //TODO remove
+        if(event == null){
+            printAll(myTurn);
+        }
+        return true;
     }
     private String promptName(){
         out.print(CliText.ASK_NAME.toPrompt());
         resetStdin();
+        //if(!stdin.hasNextLine())
         String line = stdin.nextLine().trim();
         if(!line.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$")){
             out.println(CliText.BAD_NAME);
@@ -269,9 +281,18 @@ public class Cli extends ClientViewEventObservable implements Runnable{
     private Integer promptNumPlayers(){
         out.print(CliText.ASK_NUMPLAYERS.toPrompt());
         resetStdin();
+        while(!stdin.hasNextInt()) {
+
+        }
+//            out.println(CliText.BAD_NUMPLAYERS_STRING);
+//            return null;
+
         Integer line = stdin.nextInt();
+        //burn a line
+        if(stdin.hasNextLine())
+            stdin.nextLine();
         if(line<2 || line >3){
-            out.println(CliText.BAD_NUMPLAYERS);
+            out.println(CliText.BAD_NUMPLAYERS_INT);
             return null;
         }
         return line;
@@ -310,9 +331,42 @@ public class Cli extends ClientViewEventObservable implements Runnable{
         return line;
     }
 
-
+/*
+    For some reason new Scanner still leaks old input;
+ */
     private void resetStdin() {
-        stdin = new Scanner(in);
+//        try {
+//            in.skip(in.available());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        stdin = new Scanner(in);
     }
-
+/*    protected void lockOut(){
+        synchronized (out) {
+            while (waitingForInput == true) {
+                try {
+                    out.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }*/
+    //TODO use something else than Runnable
+    protected void lockOut(Runnable task) {
+        synchronized (out) {
+            while (waitingForInput == true) {
+                try {
+                    out.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            waitingForInput = true;
+            task.run();
+            waitingForInput = false;
+            out.notifyAll();
+        }
+    }
 }

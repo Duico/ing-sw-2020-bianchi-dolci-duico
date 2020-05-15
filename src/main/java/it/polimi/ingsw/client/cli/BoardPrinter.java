@@ -8,18 +8,15 @@ public class BoardPrinter {
 
     private final List<Player> players;
     private final Board board;
+    private final Map<Position, Player> workersMap;
     private int cellWidth = 2;
     private final int maxWidth = 320;
     private final String ANSI_CLS = "\u001b[2J";
 
-    //advanced functionality
-    Map<Position, Player> workersMap = new HashMap<Position, Player>();
-    boolean workersMapOK = false;
-
-
-    public BoardPrinter(Board board, List<Player> players){
+    public BoardPrinter(Board board, List<Player> players, Map<Position, Player> workersMap){
         this.board = board;
         this.players = players;
+        this.workersMap = workersMap;
     }
     public void clear(){
         System.out.print(ANSI_CLS);
@@ -262,11 +259,11 @@ public class BoardPrinter {
     }
 
     public StringBuffer2D printHelp(boolean showDescription){
-        final int commandWidth = 17;
+        final int commandWidth = 18;
         StringBuffer2D cmd = new StringBuffer2D();
         List<CommandTuple> commands = new ArrayList<>();
         commands.add(new CommandTuple("move A1 B1", "move worker in A1 to B1"));
-        commands.add(new CommandTuple("build A1 B2", "build in B2 with worker in A1"));
+        commands.add(new CommandTuple("build A1 B2 [dome]", "build in B2 with worker in A1"));
         commands.add(new CommandTuple("place A1", "place worker in A1"));
         commands.add(new CommandTuple("end", "end current turn"));
         commands.add(new CommandTuple("undo", "undo last operation"));
@@ -277,7 +274,7 @@ public class BoardPrinter {
         cmd.appendln(Color.LIGHTGRAY_UNDERLINED.escape("Commands usage"));
         cmd.appendln("");
         for(CommandTuple t : commands){
-            cmd.appendln( t.getCommand() + " ".repeat(commandWidth - t.getCommand().length()) + (showDescription?Color.CYAN.escape( t.getDescription() ):""));
+            cmd.appendln( t.getCommand() + " ".repeat(Math.max(0, commandWidth - t.getCommand().length())) + (showDescription?Color.CYAN.escape( t.getDescription() ):""));
 
         }
         return cmd;
@@ -303,33 +300,17 @@ public class BoardPrinter {
         //HARDCODED 20
         int startX = boardSB.getWidth() + 2 + 20;
         int playersMaxWidth = 40;
-        boardSB.insert(printPlayers(), startX, getActualHeight(), startX + playersMaxWidth);
-        boardSB.insert(printHelp(cellWidth>=2), startX, getActualHeight() + 6, maxWidth);
+        boardSB.insert(printPlayers(), startX, getActualHeight()-2, startX + playersMaxWidth);
+        boardSB.insert(printHelp(cellWidth>=2), startX, getActualHeight() + 4, maxWidth);
         return boardSB;
     }
 
     Player getPlayerFromWorkersMap(Position position){
-        if(workersMapOK == false){
-            generateWorkersMap();
-            workersMapOK = true;
-        }
+        //if(workersMapOK == false){
+//            generateWorkersMap();
+//            workersMapOK = true;
+        //}
         return workersMap.get(position);
-    }
-
-    boolean generateWorkersMap(){
-        workersMap.clear();
-        int count = 0;
-        for(Player player: players){
-            for(int i = 0; i<player.getNumWorkers(); i++) {
-                Position pos = player.getWorkerPosition(i);
-                if(pos!=null){
-                    workersMap.put(pos, player);
-                    count++;
-                }
-            }
-        }
-        if(count>0) return true;
-        else return false;
     }
 
 }

@@ -1,6 +1,7 @@
 
 package it.polimi.ingsw.view.event;
 import it.polimi.ingsw.model.Position;
+import it.polimi.ingsw.model.event.BuildWorkerModelEvent;
 import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.ViewEventVisitor;
 
@@ -16,7 +17,9 @@ public class BuildViewEvent extends WorkerViewEvent implements Serializable {
         this.destinationPosition= destinationPosition;
         this.isDome=isDome;
     }
-
+    public BuildViewEvent(Position workerPosition, Position destinationPosition, boolean isDome){
+        this(null, workerPosition, destinationPosition, isDome);
+    }
 
     public Position getDestinationPosition() {
         return destinationPosition;

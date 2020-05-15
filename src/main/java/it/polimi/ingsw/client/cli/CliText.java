@@ -8,12 +8,12 @@ public enum CliText {
     ASK_NUMPLAYERS("Insert number of players:"),
     BAD_NAME(Color.RED.escape("Nickname format is not valid")),
     BAD_PLAYERNAME(Color.RED.escape("There is no player with nickname \"%s\"")),
-    BAD_NUMPLAYERS(Color.RED.escape("Insert number of players:")),
+    BAD_NUMPLAYERS_INT(Color.RED.escape("Number of players must be between 2 and 3:")),
+    BAD_NUMPLAYERS_STRING(Color.RED.escape("I can only understand base-10 numbers... sorry.")),
     CORRECT_SIGNUP_WAIT(Color.GREEN.escape("Correct signup... wait for the other players")),
     CORRECT_SIGNUP_LAST(Color.GREEN.escape("Correct signup. Starting new game.")),
     YOUR_TURN(Color.YELLOW.escape("Your turn to play.")),
     WAIT_TURN(Color.YELLOW.escape("%s's turn to play. Wait...")),
-    YOUR_TURN_COMMAND("Your turn to play. Enter command:"),
     ASK_CHALLCARD_FIRST("Chose one card from the deck %s:"),
     ASK_CHALLCARD_MORE("Chose another card from the deck %s:"),
     OK_CHALLCARD1(Color.YELLOW.escape("%s, nice pick.")),
@@ -28,6 +28,8 @@ public enum CliText {
     INVALID_NICKNAME(Color.RED.escape("Invalid nickName")),
     INVALID_NUMPLAYERS(Color.RED.escape("Incorrect num of players")),
     ENTER_COMMAND("Enter command:"),
+    YOUR_TURN_COMMAND("Your turn to play. Enter command:"),
+    BAD_COMMAND(Color.RED.escape("Not a valid command.")),
     ;
 
     static CliText OK_CHALLCARD(){

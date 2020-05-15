@@ -11,6 +11,9 @@ public class MoveViewEvent extends WorkerViewEvent {
         super(view, workerPosition);
         this.destinationPosition= destinationPosition;
     }
+    public MoveViewEvent(Position workerPosition, Position destinationPosition){
+        this(null, workerPosition, destinationPosition);
+    }
 
 
     public Position getDestinationPosition() {
