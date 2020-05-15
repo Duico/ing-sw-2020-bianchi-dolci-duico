@@ -234,6 +234,8 @@ public class CliModelEventVisitor extends Cli implements ModelEventVisitor, Cont
         }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS)){
             out.println(CliText.INVALID_NUMPLAYERS.toString());
             askSetUpInfo(askNumPlayers);
+        }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.GAME_ALREADY_START)){
+            out.println(CliText.GAME_ALREADY_START.toString());
         }
 
     }

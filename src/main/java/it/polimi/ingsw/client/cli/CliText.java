@@ -27,6 +27,7 @@ public enum CliText {
     ASK_FIRSTPLAYER("Chose the Start Player [%s]:"),
     INVALID_NICKNAME(Color.RED.escape("Invalid nickName")),
     INVALID_NUMPLAYERS(Color.RED.escape("Incorrect num of players")),
+    GAME_ALREADY_START(Color.RED.escape("Game already start, wait the end of the game...")),
     ENTER_COMMAND("Enter command:"),
     YOUR_TURN_COMMAND("Your turn to play. Enter command:"),
     BAD_COMMAND(Color.RED.escape("Not a valid command.")),
