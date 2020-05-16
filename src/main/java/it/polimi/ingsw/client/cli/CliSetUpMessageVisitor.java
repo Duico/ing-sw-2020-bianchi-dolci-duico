@@ -65,20 +65,19 @@ public class CliSetUpMessageVisitor implements SetUpMessageVisitor {
                     inputHandler.clearReadLines();
                     String line = null;
                     String playerName;
+                    do{
                     cli.print(CliText.ASK_NAME.toPrompt());
                     line = cli.pollLine();
-                    while((playerName = promptName(line)) == null) {
-                        line = cli.pollLine();
-                    }
+                    }while((playerName = promptName(line)) == null);
 
 //                    ask numPlayers (println)
                     inputHandler.clearReadLines();
                     Integer numPlayers;
-                    cli.print(CliText.ASK_NUMPLAYERS.toPrompt());
-                    line = cli.pollLine();
-                    while((numPlayers = promptNumPlayers(line)) == null) {
+                    do {
+                        cli.print(CliText.ASK_NUMPLAYERS.toPrompt());
                         line = cli.pollLine();
-                    }
+                    }while((numPlayers = promptNumPlayers(line)) == null);
+
                     System.err.println(playerName);
                     System.err.println(numPlayers);
                     //cli.emitSignUp
