@@ -5,9 +5,11 @@ import it.polimi.ingsw.server.message.InitSetUpMessage;
 import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 
 import java.io.PrintStream;
+import java.util.Scanner;
 
 public class CliSetUpMessageVisitor implements SetUpMessageVisitor {
     private PrintStream out = System.out;
+    private CliInputHandler inputHandler;
 
     private CliController cliController;
     public CliSetUpMessageVisitor(CliController cliController){
@@ -18,6 +20,18 @@ public class CliSetUpMessageVisitor implements SetUpMessageVisitor {
     public void visit(SignUpFailedSetUpMessage message) {
         if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME)) {
             out.println(CliText.INVALID_NICKNAME.toString());
+
+
+//            inputHandler.clearReadLines();
+//            new Thread( () -> {
+//                synchronized (inputHandler) {
+//                    String line;
+//                    while ((line = inputHandler.pollReadLines()) == null) {
+//                        inputHandler.wait();
+//                    }
+//                    exec
+//                }
+//            });
             //askSetUpInfo(askNumPlayers);
         }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS)){
             out.println(CliText.INVALID_NUMPLAYERS.toString());

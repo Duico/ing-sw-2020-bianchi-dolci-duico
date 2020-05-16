@@ -22,17 +22,17 @@ public class CliApp {
         cliInputHandler.addEventListener(ViewEventListener.class, clientConnection);
         cliInputHandler.addEventListener(SignUpListener.class, clientConnection);
 
-        Thread connectionThread = new Thread(clientConnection);
         Thread cliMessageReaderThread = new Thread(cliMessageReader);
         Thread cliInputHandlerThread = new Thread(cliInputHandler);
         //clientConnection.run();
         cliMessageReaderThread.start();
         cliInputHandlerThread.start();
-        connectionThread.start();
+        clientConnection.run();
+//        connectionThread.start();
         try{
             cliMessageReaderThread.join();
             cliInputHandlerThread.join();
-            connectionThread.join();
+//            connectionThread.join();
         }catch (InterruptedException e){
             e.printStackTrace();
         }

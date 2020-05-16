@@ -17,18 +17,17 @@ public class CliMessageReader implements Runnable{
     }
     @Override
     public void run(){
-        synchronized (clientConnection){
+        while(clientConnection.isActive()) {
             GameMessage message;
-            while ( (message = clientConnection.pollReadMessages() ) == null){
-                try {
-                    clientConnection.wait();
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
+//            while ( (message = clientConnection.pollReadMessages() ) == null){
+//                try {
+//                    clientConnection.wait();
+//                } catch (InterruptedException e){
+//                    e.printStackTrace();
+//                }
+//            }
+            message = clientConnection.pollReadMessages();
             message.accept(gameMessageVisitor);
-
-
         }
     }
 }

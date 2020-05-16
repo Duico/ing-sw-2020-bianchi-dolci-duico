@@ -71,6 +71,8 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
 
     @Override
     public void asyncSend(final Object message){
+        //TODO make single-threaded
+
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
