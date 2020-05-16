@@ -35,7 +35,7 @@ public class CliController {
       All ask functions HAVE to be moved to another class
 
      */
-    public CliController(InputStream in, PrintStream out){
+    public CliController(){
         board = new Board();
         players = new ArrayList<Player>();
     }

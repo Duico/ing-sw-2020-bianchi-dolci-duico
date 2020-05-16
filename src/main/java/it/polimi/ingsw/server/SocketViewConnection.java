@@ -71,12 +71,12 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
 
     @Override
     public void asyncSend(final Object message){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
                 send(message);
-            }
-        }).start();
+//            }
+//        }).start();
     }
 
     public Thread asyncReadFromSocket(final ObjectInputStream socketIn){
@@ -143,7 +143,6 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
 
     @Override
     public void run(){
-
         try{
 
             socket.setSoTimeout(20000);
@@ -158,9 +157,6 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         } finally{
             close();
         }
-
-
-
     }
 
 

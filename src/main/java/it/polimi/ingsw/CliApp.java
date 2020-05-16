@@ -1,27 +1,42 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.client.ClientConnection;
+import it.polimi.ingsw.client.GameMessageVisitor;
 import it.polimi.ingsw.client.cli.*;
 import it.polimi.ingsw.client.message.SignUpListener;
+import it.polimi.ingsw.server.message.GameMessage;
 import it.polimi.ingsw.view.ViewEventListener;
+
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class CliApp {
     public static void main( String[] args )
     {
-        CliModelEventVisitor cliVisitor = new CliModelEventVisitor();
-        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, cliVisitor, cliVisitor, cliVisitor);
-        cliVisitor.addEventListener(ViewEventListener.class, clientConnection);
-        cliVisitor.addEventListener(SignUpListener.class, clientConnection);
+//        Queue<Object> toSendMessages = new LinkedBlockingQueue<>();
+        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345);
+        CliController cliController = new CliController();
+        CliMessageReader cliMessageReader = new CliMessageReader(clientConnection, cliController);
+        CliInputHandler cliInputHandler = new CliInputHandler();
+        cliInputHandler.addEventListener(ViewEventListener.class, clientConnection);
+        cliInputHandler.addEventListener(SignUpListener.class, clientConnection);
 
-        //Thread connectionThread = new Thread(clientConnection);
-        clientConnection.run();
-//        connectionThread.start();
-//        try{
-//            connectionThread.join();
-//        }catch (InterruptedException e){
-//            e.printStackTrace();
-//        }
+        Thread connectionThread = new Thread(clientConnection);
+        Thread cliMessageReaderThread = new Thread(cliMessageReader);
+        Thread cliInputHandlerThread = new Thread(cliInputHandler);
+        //clientConnection.run();
+        cliMessageReaderThread.start();
+        cliInputHandlerThread.start();
+        connectionThread.start();
+        try{
+            cliMessageReaderThread.join();
+            cliInputHandlerThread.join();
+            connectionThread.join();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
 //        Thread thread2 = new Thread(cliVisitor);
 //        //thread2.start();
 //        try{
