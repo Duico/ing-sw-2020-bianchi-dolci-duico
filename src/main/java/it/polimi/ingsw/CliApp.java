@@ -17,8 +17,9 @@ public class CliApp {
 //        Queue<Object> toSendMessages = new LinkedBlockingQueue<>();
         ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345);
         CliController cliController = new CliController();
-        CliMessageReader cliMessageReader = new CliMessageReader(clientConnection, cliController);
         CliInputHandler cliInputHandler = new CliInputHandler();
+        Cli cli = new Cli(cliInputHandler);
+        CliMessageReader cliMessageReader = new CliMessageReader(cli, clientConnection, cliController);
         cliInputHandler.addEventListener(ViewEventListener.class, clientConnection);
         cliInputHandler.addEventListener(SignUpListener.class, clientConnection);
 

@@ -6,10 +6,12 @@ import it.polimi.ingsw.model.event.ModelEvent;
 import it.polimi.ingsw.server.message.SetUpMessage;
 
 public class CliGameMessageVisitor extends GameMessageVisitor {
-    public CliGameMessageVisitor(CliController cliController){
+    private Cli cli;
+    public CliGameMessageVisitor(Cli cli, CliController cliController){
+        this.cli = cli;
         this.modelEventVisitor = new CliModelEventVisitor(cliController);
         this.controllerResponseVisitor = new CliControllerResponseVisitor(cliController);
-        this.setUpMessageVisitor = new CliSetUpMessageVisitor(cliController);
+        this.setUpMessageVisitor = new CliSetUpMessageVisitor(cli, cliController);
     }
 
 }

@@ -12,16 +12,25 @@ public class CliInputHandler extends ClientViewEventEmitter implements Runnable{
     }
     @Override
     public void run(){
-        Scanner stdin = new Scanner(System.in);
-        while (stdin.hasNextLine()){
-            readLines.add(stdin.nextLine());
-            System.out.println("got it!");
+        while (true) {
+                Scanner stdin = new Scanner(System.in);
+                //while (stdin.hasNextLine()) {
+                readLines.add(stdin.nextLine());
+            synchronized (this) {
+                    this.notifyAll();
+            }
+                    System.err.println("readLines.size() = "+readLines.size());
+                //}
         }
     }
     public String pollReadLines(){
-        return readLines.poll();
+        synchronized (this) {
+            return readLines.poll();
+        }
     }
     public void clearReadLines(){
-        readLines.clear();
+        synchronized (this) {
+            readLines.clear();
+        }
     }
 }

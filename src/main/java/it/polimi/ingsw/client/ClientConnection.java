@@ -22,8 +22,8 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
 //    private ModelEventVisitor modelVisitor;
 //    private ControllerResponseVisitor controllerVisitor;
 //    private SetUpMessageVisitor setUpVisitor;
-    private Queue<Object> toSend = new LinkedBlockingQueue<>();
-    private Queue<GameMessage> gameMessages = new LinkedBlockingQueue<>();
+    private final Queue<Object> toSend = new LinkedBlockingQueue<>();
+    private final Queue<GameMessage> gameMessages = new LinkedBlockingQueue<>();
 
 
 //previously ClientGuiConnection
@@ -142,7 +142,6 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
                     } else if (message instanceof ConnectionMessage) {
                         ConnectionMessage event = (ConnectionMessage) message;
                         if (event.getType().equals(ConnectionMessage.Type.PING)) {
-                            System.out.println("PONG");
                             send(new ConnectionMessage(ConnectionMessage.Type.PONG));
                         } else if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION)) {
                             setActive(false);

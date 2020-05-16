@@ -1,50 +1,117 @@
-//package it.polimi.ingsw.client.cli;
-//
-//import it.polimi.ingsw.client.message.SignUpMessage;
-//import it.polimi.ingsw.model.Player;
-//import it.polimi.ingsw.model.TurnPhase;
-//import it.polimi.ingsw.view.event.CardViewEvent;
-//import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
-//import it.polimi.ingsw.view.event.FirstPlayerViewEvent;
-//import it.polimi.ingsw.view.event.ViewEvent;
-//
-//import java.io.*;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Scanner;
-//import java.util.stream.Collectors;
-//
-//public class Cli /*extends ClientViewEventObservable*/ implements Runnable{
-//    final CliController cliController;
-//    boolean askNumPlayers = false;
-//    //boolean hasPrintedTurnMessage = false;
+package it.polimi.ingsw.client.cli;
+
+import it.polimi.ingsw.client.message.SignUpMessage;
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.TurnPhase;
+import it.polimi.ingsw.view.event.CardViewEvent;
+import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
+import it.polimi.ingsw.view.event.FirstPlayerViewEvent;
+import it.polimi.ingsw.view.event.ViewEvent;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+
+public class Cli /*extends ClientViewEventObservable*/ implements Runnable{
+    final CliController cliController;
+    boolean askNumPlayers = false;
+    //boolean hasPrintedTurnMessage = false;
 //    InputStream in;
 //    Scanner stdin;
-//    final PrintStream out;
-//    BoardPrinter bp;
-//    Integer BPcellWidth = 2;
-//    boolean waitingForInput;
-//   // StringWriter infoString = new StringWriter();
-//   // PrintWriter infoOut = new PrintWriter(infoString);
-//    PrintStream infoOut;
-//
-//    public Cli(){
-//        in = System.in;
-//        out = System.out;
-//        infoOut = out;
-//        stdin = new Scanner(in);
-//        cliController = new CliController(in, out);
-//        waitingForInput = false;
+    final PrintStream out;
+    BoardPrinter bp;
+    Integer BPcellWidth = 2;
+    boolean waitingForInput;
+    final CliInputHandler inputHandler;
+    private final ExecutorService executorPool = Executors.newCachedThreadPool();
+
+   // StringWriter infoString = new StringWriter();
+   // PrintWriter infoOut = new PrintWriter(infoString);
+    PrintStream infoOut;
+
+    public Cli(CliInputHandler inputHandler){
+        this.inputHandler = inputHandler; //todo TEMP
+        out = System.out;
+        infoOut = out;
+        cliController = new CliController();
+        waitingForInput = false;
+    }
+
+    @Override
+    public void run(){
+        //  prompt for the user's name
+        //askSetUpInfo(true);
+
+        //cliController.printAll();
+    }
+
+    protected void execInputRequest(InputHandlerLambda lambda){
+//        synchronized (inputHandler) {
+        executorPool.submit( () -> {
+            lambda.execute(inputHandler);
+        });
+//        }
+    }
+
+//    protected void handleInput(LineConsumer lambda){
+//            new Thread( () -> {
+//                synchronized (inputHandler) {
+//                    inputHandler.clearReadLines();
+//                    String line;
+//                    while ((line = inputHandler.pollReadLines()) == null) {
+//                        try {
+//                            inputHandler.wait();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    lambda.consumeLine(line);
+//                }
+//            });
 //    }
-//
-//    @Override
-//    public void run(){
-//        //  prompt for the user's name
-//        //askSetUpInfo(true);
-//
-//        //cliController.printAll();
+
+    protected String pollLine() {
+        synchronized (inputHandler) {
+            String line;
+            while ((line = inputHandler.pollReadLines()) == null) {
+                try {
+                    inputHandler.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return line;
+        }
+    }
+
+
+    public void println(Object o){
+        //?? in a separate thread??
+        out.println(o);
+    }
+    public void print(Object o){
+        //?? in a separate thread??
+        out.print(o);
+    }
+//    protected String pollLine (Runnable lambda){
+//        String line;
+//        new Thread( () -> {
+//            synchronized (inputHandler) {
+//                inputHandler.clearReadLines();
+//                while (inputHandler.pollReadLines() == null) {
+//                    inputHandler.wait();
+//                }
+//            return line;
+//            }
+//        }).join();
+//        inputHandler.pollReadLines();
 //    }
-//
+
 //    protected void askSetUpInfo(boolean askNumPlayers){
 //        lockOut( () -> {
 //            String playerName;
@@ -192,9 +259,8 @@
 //        String line = null;
 //
 //        //needed to avoid Exception below
-//        synchronized (out) {
-//            line = stdin.nextLine().trim();
-//        }
+//        pollLine();
+//
 //        if(!line.matches("^([A-Za-z\\-\\+][A-Za-z0-9\\-\\+]{0,60}\\s{0,3}){1,6}$")){
 //            out.println(CliText.BAD_COMMAND);
 //            return null;
@@ -329,43 +395,5 @@
 //        }
 //        return line;
 //    }
-//
-///*
-//    For some reason new Scanner still leaks old input;
-// */
-//    private void resetStdin() {
-////        try {
-////            in.skip(in.available());
-////        } catch (IOException e) {
-////            e.printStackTrace();
-////        }
-////        stdin = new Scanner(in);
-//    }
-///*    protected void lockOut(){
-//        synchronized (out) {
-//            while (waitingForInput == true) {
-//                try {
-//                    out.wait();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }*/
-//    //TODO use something else than Runnable
-//    protected void lockOut(Runnable task) {
-//        synchronized (out) {
-//            while (waitingForInput == true) {
-//                try {
-//                    out.wait();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            waitingForInput = true;
-//            task.run();
-//            waitingForInput = false;
-//            out.notifyAll();
-//        }
-//    }
-//}
+
+}

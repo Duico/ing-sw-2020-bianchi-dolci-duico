@@ -7,12 +7,14 @@ import it.polimi.ingsw.server.message.GameMessage;
 public class CliMessageReader implements Runnable{
     private ClientConnection clientConnection;
     private GameMessageVisitor gameMessageVisitor;
+    //TODO remove
+    private Cli cli;
 
-    public CliMessageReader(ClientConnection clientConnection, CliController cliController){
+    public CliMessageReader(Cli cli, ClientConnection clientConnection, CliController cliController){
         this.clientConnection = clientConnection;
 //        If needed, pass via constructor
 //        this.gameMessageVisitor = gameMessageVisitor;
-        this.gameMessageVisitor = new CliGameMessageVisitor(cliController);
+        this.gameMessageVisitor = new CliGameMessageVisitor(cli, cliController);
 
     }
     @Override
