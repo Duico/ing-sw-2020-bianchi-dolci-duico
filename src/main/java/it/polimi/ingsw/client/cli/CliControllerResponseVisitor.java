@@ -1,10 +1,13 @@
 package it.polimi.ingsw.client.cli;
 
+import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.controller.response.*;
 
-public class CliControllerResponseVisitor implements ControllerResponseVisitor {
+public class CliControllerResponseVisitor extends ClientEventEmitter implements ControllerResponseVisitor {
+    private Cli cli;
     private CliModel cliModel;
-    public CliControllerResponseVisitor(CliModel cliModel){
+    public CliControllerResponseVisitor(Cli cli, CliModel cliModel){
+        this.cli = cli;
         this.cliModel = cliModel;
     }
 

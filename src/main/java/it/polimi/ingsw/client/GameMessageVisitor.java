@@ -11,6 +11,11 @@ public abstract class GameMessageVisitor {
     protected ModelEventVisitor modelEventVisitor;
     protected ControllerResponseVisitor controllerResponseVisitor;
     protected SetUpMessageVisitor setUpMessageVisitor;
+    public GameMessageVisitor(ModelEventVisitor modelEventVisitor, ControllerResponseVisitor controllerResponseVisitor, SetUpMessageVisitor setUpMessageVisitor){
+        this.modelEventVisitor = modelEventVisitor;
+        this.controllerResponseVisitor = controllerResponseVisitor;
+        this.setUpMessageVisitor = setUpMessageVisitor;
+    }
 
     public void visit(ModelEvent evt) {
         evt.accept(modelEventVisitor);

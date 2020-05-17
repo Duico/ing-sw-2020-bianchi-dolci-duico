@@ -11,19 +11,29 @@ public class CliApp {
     public static void main( String[] args )
     {
 //        Queue<Object> toSendMessages = new LinkedBlockingQueue<>();
+        Cli cli = new Cli();
         CliModel cliModel = new CliModel();
-        CliInputHandler cliInputHandler = new CliInputHandler();
-        Cli cli = new Cli(cliInputHandler);
-        GameMessageVisitor gameMessageVisitor = new CliGameMessageVisitor(cli, cliModel);
+
+        //create visitors for all event types
+        CliModelEventVisitor modelEventVisitor = new CliModelEventVisitor(cli, cliModel);
+        CliControllerResponseVisitor controllerResponseVisitor = new CliControllerResponseVisitor(cli, cliModel);
+        CliSetUpMessageVisitor setUpMessageVisitor = new CliSetUpMessageVisitor(cli, cliModel);
+
+        GameMessageVisitor gameMessageVisitor = new CliGameMessageVisitor(cli, modelEventVisitor, controllerResponseVisitor, setUpMessageVisitor);
         ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, gameMessageVisitor);
 
 
         //CliMessageReader cliMessageReader = new CliMessageReader(cli, clientConnection, cliController);
-        cliInputHandler.addEventListener(ViewEventListener.class, clientConnection);
-        cliInputHandler.addEventListener(SignUpListener.class, clientConnection);
+        setUpMessageVisitor.addEventListener(ViewEventListener.class, clientConnection);
+        setUpMessageVisitor.addEventListener(SignUpListener.class, clientConnection);
+        controllerResponseVisitor.addEventListener(ViewEventListener.class, clientConnection);
+        controllerResponseVisitor.addEventListener(SignUpListener.class, clientConnection);
+        modelEventVisitor.addEventListener(ViewEventListener.class, clientConnection);
+        modelEventVisitor.addEventListener(SignUpListener.class, clientConnection);
+
 
         //Thread cliMessageReaderThread = new Thread(cliMessageReader);
-        Thread cliInputHandlerThread = new Thread(cliInputHandler);
+        Thread cliInputHandlerThread = new Thread(cli);
         //clientConnection.run();
         //cliMessageReaderThread.start();
         cliInputHandlerThread.start();

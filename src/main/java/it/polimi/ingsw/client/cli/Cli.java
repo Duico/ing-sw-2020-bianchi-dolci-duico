@@ -1,12 +1,12 @@
 package it.polimi.ingsw.client.cli;
 
 import java.io.*;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
-public class Cli /*extends ClientViewEventObservable*/ implements Runnable{
-    final CliModel cliModel;
-    boolean askNumPlayers = false;
+public class Cli implements Runnable{
     //boolean hasPrintedTurnMessage = false;
 //    InputStream in;
 //    Scanner stdin;
@@ -14,35 +14,45 @@ public class Cli /*extends ClientViewEventObservable*/ implements Runnable{
     BoardPrinter bp;
     Integer BPcellWidth = 2;
     boolean waitingForInput;
-    final CliInputHandler inputHandler;
+    final CliInputHandler inputHandler = new CliInputHandler();
+//    private Queue<CliRunnable> cliRunnableQueue = new LinkedBlockingQueue<>();
     private final ExecutorService executorPool = Executors.newCachedThreadPool();
 
    // StringWriter infoString = new StringWriter();
    // PrintWriter infoOut = new PrintWriter(infoString);
     PrintStream infoOut;
 
-    public Cli(CliInputHandler inputHandler){
-        this.inputHandler = inputHandler; //todo TEMP
+    public Cli(){
+        //this.inputHandler = inputHandler; //todo TEMP
         out = System.out;
         infoOut = out;
-        cliModel = new CliModel();
+//        cliModel = new CliModel();
         waitingForInput = false;
     }
 
     @Override
-    public void run(){
-        //  prompt for the user's name
-        //askSetUpInfo(true);
-
-        //cliController.printAll();
+    public void run() {
+        inputHandler.run();
     }
 
-    protected void execInputRequest(InputHandlerLambda lambda){
-//        synchronized (inputHandler) {
+//    protected void execInputRequest(CliLambda lambda){
+//        //passing this to the runnable
+//        executorPool.submit( () -> {
+//            lambda.execute(this);
+//        });
+//
+//    }
+    protected void execAsyncInputRequest(CliRunnable cliRunnable){
+        //passing this to the runnable
+        executorPool.submit(cliRunnable::run);
+    }
+    protected void execInputRequest(CliRunnable cliRunnable){
+        //passing this to the runnable
         executorPool.submit( () -> {
-            lambda.execute(inputHandler);
+            synchronized (this){
+                cliRunnable.run();
+            }
         });
-//        }
     }
 
 //    protected void handleInput(LineConsumer lambda){
@@ -75,6 +85,9 @@ public class Cli /*extends ClientViewEventObservable*/ implements Runnable{
             return line;
         }
     }
+    public void clearReadLines(){
+        inputHandler.clearReadLines();
+    }
 
 
     public void println(Object o){
@@ -85,6 +98,7 @@ public class Cli /*extends ClientViewEventObservable*/ implements Runnable{
         //?? in a separate thread??
         out.print(o);
     }
+
 //    protected String pollLine (Runnable lambda){
 //        String line;
 //        new Thread( () -> {

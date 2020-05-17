@@ -125,7 +125,7 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
     }
 
     private class ObjectInputRunnable implements Runnable{
-        private ObjectInputStream socketIn;
+        private final ObjectInputStream socketIn;
         public ObjectInputRunnable(ObjectInputStream socketIn){
             this.socketIn = socketIn;
         }
@@ -200,7 +200,7 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
         }
     }
     private class ObjectOutputRunnable implements Runnable{
-        private ObjectOutputStream socketOut;
+        private final ObjectOutputStream socketOut;
         public ObjectOutputRunnable(ObjectOutputStream socketOut){
             this.socketOut = socketOut;
         }
@@ -214,9 +214,7 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
                         while ((message = toSend.poll()) == null){
                             toSend.wait();
                         }
-                        if (message != null) {
                             send(message);
-                        }
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

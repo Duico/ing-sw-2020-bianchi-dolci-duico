@@ -9,7 +9,7 @@ import it.polimi.ingsw.view.event.ViewEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientViewEventEmitter extends EventEmitter {
+public class ClientEventEmitter extends EventEmitter {
 //    private final List<ViewEventListener> listeners = new ArrayList<>();
 
 //    public void addViewEventListener(ViewEventListener listener){
