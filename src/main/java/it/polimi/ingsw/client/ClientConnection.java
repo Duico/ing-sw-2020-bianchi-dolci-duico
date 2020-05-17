@@ -227,7 +227,7 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
                 socketOut.writeObject(message);
                 socketOut.flush();
             } catch(IOException e){
-                System.out.println(e);
+                e.printStackTrace();
             }
 
         }

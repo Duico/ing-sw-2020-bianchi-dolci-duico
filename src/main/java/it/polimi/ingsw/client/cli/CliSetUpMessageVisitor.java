@@ -45,8 +45,6 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
             cli.clearReadLines();
             String playerName;
             while ((playerName = promptName()) == null);
-
-//                    ask numPlayers (println)
             Integer numPlayers = null;
             if (askNumPlayers) {
                 cli.clearReadLines();
@@ -68,8 +66,13 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
         //check valid
         cli.print(CliText.ASK_NUMPLAYERS.toPrompt());
         String line = cli.pollLine();
-        Integer num = Integer.parseInt(line);
-
+        Integer num = 0;
+        try {
+            num = Integer.parseInt(line);
+        }catch (NumberFormatException e){
+            cli.println(CliText.BAD_NUMPLAYERS_STRING);
+            return null;
+        }
         if(num<2 || num >3){
             cli.println(CliText.BAD_NUMPLAYERS_INT);
             return null;

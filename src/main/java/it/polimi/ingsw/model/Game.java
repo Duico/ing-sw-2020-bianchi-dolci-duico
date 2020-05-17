@@ -165,7 +165,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
     public ArrayList<Card> getChosenCards() {
-        return (ArrayList<Card>)chosenCards.clone();
+        return (ArrayList<Card>) chosenCards.clone();
     }
     public List<String> getChosenCardsNames(){
         if(chosenCards==null)
@@ -242,14 +242,17 @@ public class Game extends ModelEventEmitter implements Serializable{
     private void startChoseCardsTurn(Player player){
         turn = new ChoseCardsTurn(player);
         emitEvent(new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, players));
+        List<String> old_chosenCards = getChosenCardsNames();
         //it is FUNDAMENTAL that NuwTurnModelEvent is emitted before
-        emitEvent(new ChosenCardsModelEvent(player, cardDeck.getCardNames(), getChosenCardsNames()));
         if(chosenCards==null) {
             //initialize here to distinguish first ChoseCardsTurn from last (is first when chosenCards == null)
             chosenCards = new ArrayList<>();
         }else if(chosenCards.size()==1) {
+            //automatically set last card
+            //setPlayerCard here to notify player before asking first player
             setPlayerCard(chosenCards.get(0).getName());
         }
+        emitEvent(new ChosenCardsModelEvent(player, cardDeck.getCardNames(), old_chosenCards));
     }
 
     //TODO: Chiedere ad ale
@@ -300,10 +303,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
     public boolean isSetFirstPlayer(){
-        if(firstPlayer==null)
-            return false;
-        else
-            return true;
+        return firstPlayer != null;
     }
 
     private Player pickFirstPlayer() {

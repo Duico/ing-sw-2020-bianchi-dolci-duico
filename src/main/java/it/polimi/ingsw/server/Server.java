@@ -35,26 +35,32 @@ public class Server {
     }
 
     public synchronized void clientCloseConnection(ViewConnection c) {
-        if(waitingConnection.containsKey(c)) {
-            waitingConnection.remove(c);
-            boolean isFirstConnection = c == getFirstConnection();
-            connections.remove(c);
-            if (hasGameStarted || isFirstConnection) {
-                //ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
-                for (ViewConnection connection : connections) {
-                    connection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
-                }
-                connections.clear();
-                waitingConnection.clear();
-                GameSerializer serializer = new GameSerializer("./game.ser");
-                serializer.writeGame(game);
-                this.game = null;
-                this.lobby = null;
-                hasGameStarted = false;
+        boolean isFirstConnection = c == getFirstConnection();
+            if (isFirstConnection || (waitingConnection.containsKey(c) && hasGameStarted)) {
+//                if(waitingConnection.containsKey(c)) {
+                    waitingConnection.remove(c);
+                    connections.remove(c);
+
+                    //ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
+                    for (ViewConnection connection : connections) {
+                        connection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
+                    }
+                    connections.clear();
+                    waitingConnection.clear();
+                    GameSerializer serializer = new GameSerializer("./game.ser");
+                    serializer.writeGame(game);
+                    this.game = null;
+                    this.lobby = null;
+                    System.out.println("game, lobby set to null");
+                    hasGameStarted = false;
             } else {
                 //client disconnected from lobby
+//                if(waitingConnection.containsKey(c)) {
+                    waitingConnection.remove(c);
+                    connections.remove(c);
+//                }
             }
-        }
+
 
     }
 
@@ -225,6 +231,7 @@ public class Server {
 
     public synchronized boolean createNewLobby() {
         if(this.lobby==null){
+            System.out.println("Instantiating new Lobby obj");
             this.lobby = new Lobby();
             return true;
         }else{

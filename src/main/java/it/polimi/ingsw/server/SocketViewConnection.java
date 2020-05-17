@@ -138,7 +138,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
            out = new ObjectOutputStream(socket.getOutputStream());
            in = new ObjectInputStream(socket.getInputStream());
        }catch(IOException e){
-           e.getMessage();
+           e.printStackTrace();
        }
     }
 
