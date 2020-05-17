@@ -4,34 +4,33 @@ import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.GameMessageVisitor;
 import it.polimi.ingsw.client.cli.*;
 import it.polimi.ingsw.client.message.SignUpListener;
-import it.polimi.ingsw.server.message.GameMessage;
 import it.polimi.ingsw.view.ViewEventListener;
-
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class CliApp {
     public static void main( String[] args )
     {
 //        Queue<Object> toSendMessages = new LinkedBlockingQueue<>();
-        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345);
-        CliController cliController = new CliController();
+        CliModel cliModel = new CliModel();
         CliInputHandler cliInputHandler = new CliInputHandler();
         Cli cli = new Cli(cliInputHandler);
-        CliMessageReader cliMessageReader = new CliMessageReader(cli, clientConnection, cliController);
+        GameMessageVisitor gameMessageVisitor = new CliGameMessageVisitor(cli, cliModel);
+        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, gameMessageVisitor);
+
+
+        //CliMessageReader cliMessageReader = new CliMessageReader(cli, clientConnection, cliController);
         cliInputHandler.addEventListener(ViewEventListener.class, clientConnection);
         cliInputHandler.addEventListener(SignUpListener.class, clientConnection);
 
-        Thread cliMessageReaderThread = new Thread(cliMessageReader);
+        //Thread cliMessageReaderThread = new Thread(cliMessageReader);
         Thread cliInputHandlerThread = new Thread(cliInputHandler);
         //clientConnection.run();
-        cliMessageReaderThread.start();
+        //cliMessageReaderThread.start();
         cliInputHandlerThread.start();
         clientConnection.run();
 //        connectionThread.start();
         try{
-            cliMessageReaderThread.join();
+            //cliMessageReaderThread.join();
             cliInputHandlerThread.join();
 //            connectionThread.join();
         }catch (InterruptedException e){

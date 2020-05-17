@@ -8,7 +8,7 @@ import java.io.PrintStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CliController {
+public class CliModel {
     private boolean isHost = false;
     public String nickname;
     private Player myPlayer;
@@ -35,7 +35,7 @@ public class CliController {
       All ask functions HAVE to be moved to another class
 
      */
-    public CliController(){
+    public CliModel(){
         board = new Board();
         players = new ArrayList<Player>();
     }

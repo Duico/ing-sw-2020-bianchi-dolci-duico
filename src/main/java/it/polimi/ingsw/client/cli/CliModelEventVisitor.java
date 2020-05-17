@@ -3,9 +3,9 @@ package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.model.event.*;
 
 public class CliModelEventVisitor implements ModelEventVisitor {
-    private CliController cliController;
-    public CliModelEventVisitor(CliController cliController){
-        this.cliController = cliController;
+    private CliModel cliModel;
+    public CliModelEventVisitor(CliModel cliModel){
+        this.cliModel = cliModel;
     }
 
     @Override

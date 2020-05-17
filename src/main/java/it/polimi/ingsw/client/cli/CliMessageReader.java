@@ -1,3 +1,4 @@
+/*
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.ClientConnection;
@@ -33,3 +34,4 @@ public class CliMessageReader implements Runnable{
         }
     }
 }
+*/

@@ -1,24 +1,11 @@
 package it.polimi.ingsw.client.cli;
 
-import it.polimi.ingsw.client.message.SignUpMessage;
-import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.TurnPhase;
-import it.polimi.ingsw.view.event.CardViewEvent;
-import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
-import it.polimi.ingsw.view.event.FirstPlayerViewEvent;
-import it.polimi.ingsw.view.event.ViewEvent;
-
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 public class Cli /*extends ClientViewEventObservable*/ implements Runnable{
-    final CliController cliController;
+    final CliModel cliModel;
     boolean askNumPlayers = false;
     //boolean hasPrintedTurnMessage = false;
 //    InputStream in;
@@ -38,7 +25,7 @@ public class Cli /*extends ClientViewEventObservable*/ implements Runnable{
         this.inputHandler = inputHandler; //todo TEMP
         out = System.out;
         infoOut = out;
-        cliController = new CliController();
+        cliModel = new CliModel();
         waitingForInput = false;
     }
 

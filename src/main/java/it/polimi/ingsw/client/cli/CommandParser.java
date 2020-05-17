@@ -5,9 +5,9 @@ import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.view.event.*;
 
 public class CommandParser {
-    CliController cliController;
-    public CommandParser(CliController cliController) {
-        this.cliController = cliController;
+    CliModel cliModel;
+    public CommandParser(CliModel cliModel) {
+        this.cliModel = cliModel;
     }
     public ViewEvent parse(String cmd){
         cmd = cmd.toLowerCase();
@@ -53,8 +53,8 @@ public class CommandParser {
         }
         char letter = positionString.charAt(0);
         int number = Integer.parseInt(positionString.substring(1));
-        Integer boardWidth = cliController.getBoardWidth();
-        Integer boardHeight = cliController.getBoardHeight();
+        Integer boardWidth = cliModel.getBoardWidth();
+        Integer boardHeight = cliModel.getBoardHeight();
         if(boardHeight == null || boardWidth == null) throw new RuntimeException("board not set in cliController");
 //        int maxLetterUpper = 'A'+ Math.max(0, boardWidth-1);
         int maxLetterLower = 'a'+ Math.max(0, boardHeight-1);

@@ -4,16 +4,13 @@ import it.polimi.ingsw.server.message.DisconnectionSetUpMessage;
 import it.polimi.ingsw.server.message.InitSetUpMessage;
 import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 
-import java.io.PrintStream;
-import java.util.Scanner;
-
 public class CliSetUpMessageVisitor implements SetUpMessageVisitor {
     private final Cli cli;
-    private CliController cliController;
+    private CliModel cliModel;
 
-    public CliSetUpMessageVisitor(Cli cli, CliController cliController){
+    public CliSetUpMessageVisitor(Cli cli, CliModel cliModel){
         this.cli = cli;
-        this.cliController = cliController;
+        this.cliModel = cliModel;
     }
 
     @Override
@@ -95,6 +92,7 @@ public class CliSetUpMessageVisitor implements SetUpMessageVisitor {
 //            askNumPlayers = true;
 //            askSetUpInfo(true);
         }else if( (hasToWait = message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) ) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_LAST)) {
+//            cli.print(CliText.ASK_NAME.toPrompt());
 //            cliController.setMyPlayer(message.getPlayer());
 //            printCorrectSignUp(hasToWait);
             //TODO REMOVE

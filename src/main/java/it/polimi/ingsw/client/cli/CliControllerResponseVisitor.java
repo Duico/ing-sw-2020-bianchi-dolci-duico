@@ -3,9 +3,9 @@ package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.controller.response.*;
 
 public class CliControllerResponseVisitor implements ControllerResponseVisitor {
-    private CliController cliController;
-    public CliControllerResponseVisitor(CliController cliController){
-        this.cliController = cliController;
+    private CliModel cliModel;
+    public CliControllerResponseVisitor(CliModel cliModel){
+        this.cliModel = cliModel;
     }
 
     @Override

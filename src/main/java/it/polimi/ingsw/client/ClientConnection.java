@@ -24,12 +24,16 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
 //    private SetUpMessageVisitor setUpVisitor;
     private final Queue<Object> toSend = new LinkedBlockingQueue<>();
     private final Queue<GameMessage> gameMessages = new LinkedBlockingQueue<>();
+    private GameMessageVisitor gameMessageVisitor;
+    //TODO remove
+
 
 
 //previously ClientGuiConnection
-    public ClientConnection(String ip, int port){
+    public ClientConnection(String ip, int port, GameMessageVisitor gameMessageVisitor){
         this.ip = ip;
         this.port = port;
+        this.gameMessageVisitor = gameMessageVisitor;
 //        this.toSend = toSend;
 //        this.readMessages = readMessages;
     }
@@ -83,11 +87,14 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
             ObjectOutputStream socketOut = new ObjectOutputStream(outputStream);
             Thread objectInputThread = new Thread(new ObjectInputRunnable(socketIn));
             Thread objectOutputThread = new Thread(new ObjectOutputRunnable(socketOut));
+            Thread messageReader = new Thread(new CliMessageReader());
 
             objectInputThread.start();
             objectOutputThread.start();
+            messageReader.start();
             objectInputThread.join();
             objectOutputThread.join();
+            messageReader.join();
 //            Thread t0 = asyncRead...;
 //            t0.join();
 
@@ -228,5 +235,42 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
         }
     }
 
+    private class CliMessageReader implements Runnable{
+       /* private ClientConnection clientConnection;
+        private GameMessageVisitor gameMessageVisitor;
+        //TODO remove
+        private Cli cli;*/
+
+        public CliMessageReader(/*Cli cli, ClientConnection clientConnection, CliController cliController*/){
+           // this.clientConnection = clientConnection;
+//        If needed, pass via constructor
+//        this.gameMessageVisitor = gameMessageVisitor;
+            //this.gameMessageVisitor = new CliGameMessageVisitor(cli, cliController);
+
+        }
+        @Override
+        public void run(){
+            while(isActive()) {
+                GameMessage message;
+                /*synchronized (gameMessages) {
+                    while ( (message = pollReadMessages() ) == null){
+                        try {
+                            gameMessages.wait();
+                        } catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
+                    }*/
+
+                //Synchronized inside pollReadMessages()
+                message = pollReadMessages();
+                message.accept(gameMessageVisitor);
+                }
+
+
+            }
+        }
 }
+
+
+
 
