@@ -19,7 +19,7 @@ public class CliInputHandler extends ClientEventEmitter implements Runnable{
             synchronized (this) {
                     this.notify();
             }
-                    System.err.println("readLines.size() = "+readLines.size());
+//                    System.err.println("readLines.size() = "+readLines.size());
                 //}
         }
     }

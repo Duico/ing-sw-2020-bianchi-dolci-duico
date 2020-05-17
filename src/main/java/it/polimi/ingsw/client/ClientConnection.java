@@ -263,8 +263,6 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
                 message = pollReadMessages();
                 message.accept(gameMessageVisitor);
                 }
-
-
             }
         }
 }

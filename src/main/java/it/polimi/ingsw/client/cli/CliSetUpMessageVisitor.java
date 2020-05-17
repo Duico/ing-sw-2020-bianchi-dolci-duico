@@ -28,30 +28,14 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
     }
 
     @Override
-    public void visit(DisconnectionSetUpMessage evt) {
-        cli.println(Color.YELLOW_BOLD.escape(System.lineSeparator()+"End game, player disconnected"));
-    }
-
-    @Override
     public void visit(InitSetUpMessage message) {
-        boolean hasToWait;
-
         if((askNumPlayers = message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME)) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.NICKNAME)) {
-//            cli.println(Color.YELLOW_BOLD.escape("Welcome, enter your nickname and num players"));
             cli.execInputRequest(askSetUpInfo(askNumPlayers));
 
-        }else if( (hasToWait = message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) ) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_LAST)) {
-            if (hasToWait) {
-                cli.println(CliText.CORRECT_SIGNUP_WAIT.toString());
-            } else {
-                cli.println(CliText.CORRECT_SIGNUP_LAST.toString());
-            }
-
-//            cli.print(CliText.ASK_NAME.toPrompt());
-//            cliController.setMyPlayer(message.getPlayer());
-//            printCorrectSignUp(hasToWait);
-            //TODO REMOVE
-            //cliController.isTurnOK = true;
+        }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_LAST)) {
+            boolean playerHasToWait = message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT);
+            cliModel.setMyPlayer(message.getPlayer());
+            printCorrectSignUp(playerHasToWait);
         }
 
     }
@@ -59,36 +43,31 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
     private CliRunnable askSetUpInfo(boolean askNumPlayers) {
         return () -> {
             cli.clearReadLines();
-            String line = null;
             String playerName;
-            do {
-//                synchronized (cli){
-                cli.print(CliText.ASK_NAME.toPrompt());
-                line = cli.pollLine();
-//                }
-            } while ((playerName = promptName(line)) == null);
+            while ((playerName = promptName()) == null);
 
 //                    ask numPlayers (println)
             Integer numPlayers = null;
             if (askNumPlayers) {
                 cli.clearReadLines();
-                do {
-                    cli.print(CliText.ASK_NUMPLAYERS.toPrompt());
-                    line = cli.pollLine();
-                } while ((numPlayers = promptNumPlayers(line)) == null);
+                while ((numPlayers = promptNumPlayers()) == null);
             }
             emitSignUp(new SignUpMessage(playerName, numPlayers));
         };
     }
-    private String promptName(String line){
+    private String promptName(){
+        cli.print(CliText.ASK_NAME.toPrompt());
+        String line = cli.pollLine();
         if(!line.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$")){
             cli.println(CliText.BAD_NAME);
             return null;
         }
         return line;
     }
-    private Integer promptNumPlayers(String line){
+    private Integer promptNumPlayers(){
         //check valid
+        cli.print(CliText.ASK_NUMPLAYERS.toPrompt());
+        String line = cli.pollLine();
         Integer num = Integer.parseInt(line);
 
         if(num<2 || num >3){
@@ -96,5 +75,12 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
             return null;
         }
         return num;
+    }
+    private void printCorrectSignUp(boolean hasToWait){
+        if (hasToWait) {
+            cli.println(CliText.CORRECT_SIGNUP_WAIT.toString());
+        } else {
+            cli.println(CliText.CORRECT_SIGNUP_LAST.toString());
+        }
     }
 }

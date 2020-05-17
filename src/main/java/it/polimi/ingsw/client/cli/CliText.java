@@ -31,6 +31,7 @@ public enum CliText {
     ENTER_COMMAND("Enter command:"),
     YOUR_TURN_COMMAND("Your turn to play. Enter command:"),
     BAD_COMMAND(Color.RED.escape("Not a valid command.")),
+    PLAYER_DISCONNECTED(Color.RED.escape("End game, player disconnected")),
     ;
 
     static CliText OK_CHALLCARD(){
