@@ -23,8 +23,8 @@ public class CliModel {
 
 
     private List<String> cardDeck;
-    protected Board board;
-    protected TurnPhase turnPhase;
+    private Board board;
+    private TurnPhase turnPhase;
     protected BoardPrinter bp;
 
     //advanced functionality
@@ -59,6 +59,10 @@ public class CliModel {
 
     public void setPlayers(List<Player> players) {
         this.players = players;
+    }
+
+    public void setBoard(Board board){
+        this.board = board;
     }
 
     public void updatePlayer(Player player){

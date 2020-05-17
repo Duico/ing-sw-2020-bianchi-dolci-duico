@@ -11,16 +11,11 @@ public class BoardPrinter {
     private final Map<Position, Player> workersMap;
     private int cellWidth = 2;
     private final int maxWidth = 320;
-    private final String ANSI_CLS = "\u001b[2J";
 
     public BoardPrinter(Board board, List<Player> players, Map<Position, Player> workersMap){
         this.board = board;
         this.players = players;
         this.workersMap = workersMap;
-    }
-    public void clear(){
-        System.out.print(ANSI_CLS);
-        //System.out.flush();
     }
 
     public int getCellWidth() {
@@ -259,7 +254,7 @@ public class BoardPrinter {
     }
 
     public StringBuffer2D printHelp(boolean showDescription){
-        final int commandWidth = 18;
+        final int commandWidth = 19;
         StringBuffer2D cmd = new StringBuffer2D();
         List<CommandTuple> commands = new ArrayList<>();
         commands.add(new CommandTuple("move A1 B1", "move worker in A1 to B1"));
@@ -295,13 +290,19 @@ public class BoardPrinter {
             return description;
         }
     }
-    public StringBuffer2D printAll() {
+    public StringBuffer2D printAll(String infoMessage) {
         StringBuffer2D boardSB = printBoard();
         //HARDCODED 20
         int startX = boardSB.getWidth() + 2 + 20;
         int playersMaxWidth = 40;
-        boardSB.insert(printPlayers(), startX, getActualHeight()-2, startX + playersMaxWidth);
-        boardSB.insert(printHelp(cellWidth>=2), startX, getActualHeight() + 4, maxWidth);
+        //print players
+        boardSB.insert(printPlayers(), startX, 1, startX + playersMaxWidth);
+        //print help on commands
+        boardSB.insert(printHelp(cellWidth>=2), startX, cellWidth+3, maxWidth);
+        //print infoMessage
+        StringBuffer2D infoSB = new StringBuffer2D();
+        infoSB.appendln(infoMessage);
+        boardSB.insert(infoSB, startX, boardSB.getHeight()-2, maxWidth);
         return boardSB;
     }
 

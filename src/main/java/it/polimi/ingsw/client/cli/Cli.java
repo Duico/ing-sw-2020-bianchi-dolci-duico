@@ -12,10 +12,12 @@ public class Cli implements Runnable{
 //    Scanner stdin;
     final PrintStream out;
     BoardPrinter bp;
-    Integer BPcellWidth = 2;
+    private Integer BPcellWidth = 2;
     boolean waitingForInput;
     final CliInputHandler inputHandler = new CliInputHandler();
-//    private Queue<CliRunnable> cliRunnableQueue = new LinkedBlockingQueue<>();
+    private final String ANSI_CLS = "\u001b[2J";
+
+    //    private Queue<CliRunnable> cliRunnableQueue = new LinkedBlockingQueue<>();
     private final ExecutorService executorPool = Executors.newCachedThreadPool();
 
    // StringWriter infoString = new StringWriter();
@@ -33,6 +35,22 @@ public class Cli implements Runnable{
     @Override
     public void run() {
         inputHandler.run();
+    }
+
+    public void clear(){
+        System.out.print(ANSI_CLS);
+        //System.out.flush();
+    }
+
+    public Integer getBPcellWidth() {
+        return BPcellWidth;
+    }
+
+    public void increaseBPcellWidth() {
+        BPcellWidth = Math.min( 10, Math.max(0, BPcellWidth++));
+    }
+    public void decreaseBPcellWidth() {
+        BPcellWidth = Math.min( 10, Math.max(0, BPcellWidth--));
     }
 
 //    protected void execInputRequest(CliLambda lambda){
