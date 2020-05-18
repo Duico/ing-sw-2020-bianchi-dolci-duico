@@ -30,6 +30,7 @@ public class CliModel {
     //advanced functionality
     Map<Position, Player> workersMap = new HashMap<Position, Player>();
     boolean workersMapOK = false;
+    private String lastInfoMessage;
 
     /*
       All ask functions HAVE to be moved to another class
@@ -213,5 +214,10 @@ public class CliModel {
         else return false;
     }
 
-
+    public void setLastInfoMessage(String infoMessage) {
+        this.lastInfoMessage = infoMessage;
+    }
+    public String getLastInfoMessage(){
+        return lastInfoMessage;
+    }
 }

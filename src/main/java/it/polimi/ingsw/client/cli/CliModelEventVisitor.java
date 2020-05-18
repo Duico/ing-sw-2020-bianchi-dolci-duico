@@ -285,11 +285,18 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
         return line;
     }
 
+    private void printAll(){
+        printAll(cliModel.isMyTurn(), cliModel.getLastInfoMessage());
+    }
+    private void printAll(boolean myTurn){
+        printAll(myTurn, cliModel.getLastInfoMessage());
+    }
     private void printAll(String infoMessage){
         printAll(cliModel.isMyTurn(), infoMessage);
     }
     private void printAll(boolean myTurn, String infoMessage) {
 //        return () -> {
+            cliModel.setLastInfoMessage(infoMessage);
             BoardPrinter bp = cliModel.createBoardPrinter();
             cli.printAll(bp, myTurn, infoMessage);
             //command is read by another thread
@@ -338,10 +345,10 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
         ViewEvent event = null;
         if(cmd.equals("+")){
             cli.increaseBPcellWidth();
-            printAll("Increased size");
+            printAll();
         }else if(cmd.equals("-")){
             cli.decreaseBPcellWidth();
-            printAll("Decreased size");
+            printAll();
         }else{
             commandParser = new CommandParser(cliModel);
             event = commandParser.parseEvent(cmd);
