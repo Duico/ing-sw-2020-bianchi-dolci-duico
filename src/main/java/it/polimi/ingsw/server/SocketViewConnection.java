@@ -90,7 +90,6 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
                         System.out.println((String) inputObject);
                     }
                     else if(inputObject instanceof SignUpMessage) {
-
                         SignUpMessage message = (SignUpMessage) inputObject;
                         server.checkUpRegistration(message.getNickName(), message.getNumPlayers(), this);
                     }

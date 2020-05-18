@@ -17,6 +17,7 @@ public class SignUpFailedSetUpMessage extends SetUpMessage {
     }
 
     public enum Reason{
+        NULL_LOBBY,
         INVALID_NICKNAME,
         INVALID_NUMPLAYERS,
         GAME_ALREADY_START

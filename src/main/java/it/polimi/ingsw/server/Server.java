@@ -159,6 +159,11 @@ public class Server {
     }
 
     public void checkUpRegistration(String nickName, Integer numPlayers, SocketViewConnection connection){
+        if(lobby == null){
+            System.out.println("NULL lobby!!!");
+            connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.NULL_LOBBY));
+            return;
+        }
         if(!hasGameStarted) {
             if (!lobby.addPlayer(nickName)) {
                 connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME));

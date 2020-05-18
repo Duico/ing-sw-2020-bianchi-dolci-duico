@@ -40,6 +40,13 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
 
     }
 
+    @Override
+    public void visit(ConnectionMessage connectionMessage) {
+        if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION) || connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
+            cli.shutdown();
+        }
+    }
+
     private CliRunnable askSetUpInfo(boolean askNumPlayers) {
         return () -> {
             cli.clearReadLines();

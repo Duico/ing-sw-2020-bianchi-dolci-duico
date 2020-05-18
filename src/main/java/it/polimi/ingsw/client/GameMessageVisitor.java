@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
 import it.polimi.ingsw.controller.response.ControllerResponse;
 import it.polimi.ingsw.model.event.ModelEvent;
+import it.polimi.ingsw.server.message.ConnectionMessage;
 import it.polimi.ingsw.server.message.SetUpMessage;
 
 public abstract class GameMessageVisitor {
@@ -28,4 +29,6 @@ public abstract class GameMessageVisitor {
     public void visit(SetUpMessage evt) {
         evt.accept(setUpMessageVisitor);
     }
+
+    public void visit(ConnectionMessage evt) { evt.accept(setUpMessageVisitor);}
 }

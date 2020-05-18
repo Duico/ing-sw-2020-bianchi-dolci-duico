@@ -146,14 +146,15 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
                             gameMessages.add((GameMessage) message);
                             gameMessages.notifyAll();
                         }
-                    } else if (message instanceof ConnectionMessage) {
-                        ConnectionMessage event = (ConnectionMessage) message;
-                        if (event.getType().equals(ConnectionMessage.Type.PING)) {
-                            send(new ConnectionMessage(ConnectionMessage.Type.PONG));
-                        } else if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION)) {
-                            setActive(false);
-                            System.out.println("End game, player disconnected");
-                            //event.accept(setUpVisitor);
+                         if (message instanceof ConnectionMessage) {
+                            ConnectionMessage event = (ConnectionMessage) message;
+                            if (event.getType().equals(ConnectionMessage.Type.PING)) {
+                                send(new ConnectionMessage(ConnectionMessage.Type.PONG));
+                            } else if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION)) {
+                                System.out.println("End game, player disconnected");
+                                setActive(false);
+                                //event.accept(setUpVisitor);
+                            }
                         }
                         //TODO remove
                     } else if (message instanceof String) {
@@ -192,6 +193,12 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
 
             } catch (Exception e){
                 setActive(false);
+            }finally {
+                try {
+                    socketIn.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 //            }
 //        });
@@ -207,8 +214,8 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
         @Override
         public void run() {
             //syncronized wait on toSend
-            while (isActive()) {
                 try {
+            while (isActive()) {
                     synchronized (toSend) {
                         Object message;
                         while ((message = toSend.poll()) == null){
@@ -216,10 +223,17 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
                         }
                             send(message);
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
-            }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }finally {
+                    try {
+                        socketOut.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
         }
         private synchronized void send(Object message) {
             try {

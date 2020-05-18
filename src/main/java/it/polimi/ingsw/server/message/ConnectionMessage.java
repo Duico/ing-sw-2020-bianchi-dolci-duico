@@ -1,8 +1,10 @@
 package it.polimi.ingsw.server.message;
 
-import java.io.Serializable;
+import it.polimi.ingsw.client.GameMessageVisitor;
+import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
 
-public class ConnectionMessage implements Serializable {
+
+public class ConnectionMessage extends GameMessage {
     private Type type;
     public ConnectionMessage(Type type){
         this.type=type;
@@ -18,5 +20,12 @@ public class ConnectionMessage implements Serializable {
         return this.type;
     }
 
+    @Override
+    public void accept(GameMessageVisitor visitor) {
+        visitor.visit(this);
+    }
 
+    public void accept(SetUpMessageVisitor visitor){
+        visitor.visit(this);
+    }
 }

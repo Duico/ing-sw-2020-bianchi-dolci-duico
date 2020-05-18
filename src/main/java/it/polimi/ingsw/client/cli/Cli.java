@@ -1,24 +1,23 @@
 package it.polimi.ingsw.client.cli;
 
 import java.io.*;
-import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class Cli implements Runnable{
     //boolean hasPrintedTurnMessage = false;
 //    InputStream in;
 //    Scanner stdin;
     final PrintStream out;
-    BoardPrinter bp;
     private Integer BPcellWidth = 2;
-    boolean waitingForInput;
+
+
+    private boolean isAwaitingInput;
     final CliInputHandler inputHandler = new CliInputHandler();
     private final String ANSI_CLS = "\u001b[2J";
 
     //    private Queue<CliRunnable> cliRunnableQueue = new LinkedBlockingQueue<>();
-    private final ExecutorService executorPool = Executors.newCachedThreadPool();
+    private final ExecutorService inputRequestsPool = Executors.newCachedThreadPool();
 
    // StringWriter infoString = new StringWriter();
    // PrintWriter infoOut = new PrintWriter(infoString);
@@ -29,7 +28,7 @@ public class Cli implements Runnable{
         out = System.out;
         infoOut = out;
 //        cliModel = new CliModel();
-        waitingForInput = false;
+        isAwaitingInput = false;
     }
 
     @Override
@@ -53,6 +52,13 @@ public class Cli implements Runnable{
         BPcellWidth = Math.min( 10, Math.max(0, BPcellWidth--));
     }
 
+    public boolean isAwaitingInput() {
+        return isAwaitingInput;
+    }
+
+    public void setAwaitingInput(boolean awaitingInput) {
+        isAwaitingInput = awaitingInput;
+    }
 //    protected void execInputRequest(CliLambda lambda){
 //        //passing this to the runnable
 //        executorPool.submit( () -> {
@@ -62,15 +68,20 @@ public class Cli implements Runnable{
 //    }
     protected void execAsyncInputRequest(CliRunnable cliRunnable){
         //passing this to the runnable
-        executorPool.submit(cliRunnable::run);
+        inputRequestsPool.submit(cliRunnable::run);
     }
     protected void execInputRequest(CliRunnable cliRunnable){
         //passing this to the runnable
-        executorPool.submit( () -> {
+        inputRequestsPool.submit( () -> {
             synchronized (this){
                 cliRunnable.run();
             }
         });
+    }
+//TODO
+    protected void shutdown(){
+        inputRequestsPool.shutdown();
+        inputRequestsPool.shutdownNow();
     }
 
 //    protected void handleInput(LineConsumer lambda){
@@ -97,7 +108,8 @@ public class Cli implements Runnable{
                 try {
                     inputHandler.wait();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.err.println("Richiesta di input interrotta.");
+                    //e.printStackTrace();
                 }
             }
             return line;

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.ClientEventEmitter;
-import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.event.*;
@@ -113,11 +112,13 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 //            }
             //hasPrintedTurnMessage = true;
             //out.notifyAll();
-            if (myTurn) {
-                cli.print(System.lineSeparator() + CliText.YOUR_TURN.toString());
-            } else {
-                cli.print(System.lineSeparator() + CliText.WAIT_TURN.toString(cliModel.getCurrentPlayer().getNickName()));
-            }
+
+        //printed inside printAll
+//            if (myTurn) {
+//                cli.print(System.lineSeparator() + CliText.YOUR_TURN.toString());
+//            } else {
+//                cli.print(System.lineSeparator() + CliText.WAIT_TURN.toString(cliModel.getCurrentPlayer().getNickName()));
+//            }
             nextOperation(myTurn);
     }
 
@@ -165,13 +166,16 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 //        infoString = new StringWriter();
 //        infoOut = new PrintWriter(infoString);
 
+            String turnText = myTurn?CliText.YOUR_TURN.toString():CliText.WAIT_TURN.toString(cliModel.getCurrentPlayer().getNickName());
         switch (cliModel.getTurnPhase()) {
-//            case CHOSE_CARDS:
-//                break;
+            case CHOSE_CARDS:
+                cli.print(System.lineSeparator() + turnText);
+                break;
             case PLACE_WORKERS:
             case NORMAL:
                 //distinguish between your turn and other player's
-                cli.execAsyncInputRequest(printAll(myTurn, Color.RED_BOLD.escape("ABCDEFGHILMNOPRSTU")));
+                printAll(myTurn, turnText);
+                awaitCommands();
 //                println("NEW TURN");
                 break;
         }
@@ -281,56 +285,79 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
         return line;
     }
 
-    private CliRunnable printAll(String infoMessage){
-        return printAll(cliModel.isMyTurn(), infoMessage);
+    private void printAll(String infoMessage){
+        printAll(cliModel.isMyTurn(), infoMessage);
     }
-    private CliRunnable printAll(boolean myTurn, String infoMessage) {
-        return () -> {
+    private void printAll(boolean myTurn, String infoMessage) {
+//        return () -> {
             BoardPrinter bp = cliModel.createBoardPrinter();
             bp.setCellWidth(cli.getBPcellWidth());
             cli.print(" " + System.lineSeparator() + System.lineSeparator());
             //cli has to print this
             bp.printAll(infoMessage).printOut();
             //TODO command prompt HERE
+            CliText promptText = myTurn?CliText.YOUR_TURN_COMMAND:CliText.ENTER_COMMAND;
+            cli.print(promptText.toPrompt());
             //todo separate thread
-            askCommand(myTurn);
-        };
+            //askCommand();
+//        };
     }
-    protected void askCommand(boolean myTurn){
-        //lockOut( () -> {
-            String cmd;
-            while ((cmd = promptCommand(myTurn)) == null || !executeCommand(myTurn, cmd));
-        //});
+//    protected CliRunnable askCommand(){
+//        return () -> {
+//            String cmd;
+//            while ((cmd = promptCommand(cliModel.isMyTurn())) == null || !executeCommand(cliModel.isMyTurn(), cmd));
+//        };
+//        //});
+//    }
+    private void awaitCommands() {
+        if(!cli.isAwaitingInput()) {
+            CliRunnable inputGetter = () -> {
+                while (true) {
+                    String cmd;
+                    while ((cmd = readCommand()) == null || !executeCommand(cliModel.isMyTurn(), cmd));
+                }
+                //cli.setAwaitingInput(false) on exit
+            };
+            cli.setAwaitingInput(true);
+            cli.execAsyncInputRequest(inputGetter);
+        }
+    }
+    private String readCommand(){
+        String line;
+
+        //needed to avoid Exception below
+        line = cli.pollLine();
+
+        if(!line.matches("^([A-Za-z\\-\\+][A-Za-z0-9\\-\\+]{0,60}\\s{0,3}){1,6}$")){
+            printAll(CliText.BAD_COMMAND.toString());
+//            cli.println(CliText.BAD_COMMAND);
+            return null;
+        }
+        return line;
     }
     private String promptCommand(boolean myTurn){
         CliText promptText = myTurn?CliText.YOUR_TURN_COMMAND:CliText.ENTER_COMMAND;
         cli.print(promptText.toPrompt());
-        String line = null;
-
-        //needed to avoid Exception below
-        cli.pollLine();
-
-        if(!line.matches("^([A-Za-z\\-\\+][A-Za-z0-9\\-\\+]{0,60}\\s{0,3}){1,6}$")){
-            cli.println(CliText.BAD_COMMAND);
-            return null;
-        }
-        return line;
+        return readCommand();
     }
     private boolean executeCommand(boolean myTurn, String cmd){
         CommandParser commandParser;
         ViewEvent event = null;
         if(cmd.equals("+")){
             cli.increaseBPcellWidth();
+            printAll("Increased size");
         }else if(cmd.equals("-")){
             cli.decreaseBPcellWidth();
+            printAll("Decreased size");
         }else{
             commandParser = new CommandParser(cliModel);
-            event = commandParser.parse(cmd);
+            event = commandParser.parseEvent(cmd);
             if(event == null){
-                cli.println(CliText.BAD_COMMAND);
+                printAll(CliText.BAD_COMMAND.toString());
+//                cli.execInputRequest(printAll);
                 return false;
             }else{
-              emitViewEvent(event);
+                emitViewEvent(event);
             }
         }
         //printAll on WorkerModelEvent

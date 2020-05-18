@@ -9,7 +9,7 @@ public class CommandParser {
     public CommandParser(CliModel cliModel) {
         this.cliModel = cliModel;
     }
-    public ViewEvent parse(String cmd){
+    public ViewEvent parseEvent(String cmd){
         cmd = cmd.toLowerCase();
         String[] words = cmd.split( "\\s{1,3}");
         String mainCommand = words[0];
