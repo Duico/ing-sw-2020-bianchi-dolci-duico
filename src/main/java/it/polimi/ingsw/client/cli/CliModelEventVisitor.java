@@ -322,13 +322,15 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
             cli.execAsyncInputRequest(inputGetter);
         }
     }
-    private String readCommand(){
+    private String readCommand() {
         String line;
 
         //needed to avoid Exception below
-        line = cli.pollLine();
+        line = cli.pollLine().trim();
 
-        if(!line.matches("^([A-Za-z\\-\\+][A-Za-z0-9\\-\\+]{0,60}\\s{0,3}){1,6}$")){
+        if (line.equals("")) {
+            return null;
+        } else if(!line.matches("^([A-Za-z\\-\\+][A-Za-z0-9\\-\\+]{0,60}\\s{0,3}){1,6}$")){
             printAll(CliText.BAD_COMMAND.toString());
 //            cli.println(CliText.BAD_COMMAND);
             return null;
