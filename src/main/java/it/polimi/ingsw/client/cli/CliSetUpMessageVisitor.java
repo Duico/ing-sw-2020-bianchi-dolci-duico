@@ -88,9 +88,9 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
     }
     private void printCorrectSignUp(boolean hasToWait){
         if (hasToWait) {
-            cli.println(CliText.CORRECT_SIGNUP_WAIT.toString());
+            cli.print(CliText.CORRECT_SIGNUP_WAIT.toString());
         } else {
-            cli.println(CliText.CORRECT_SIGNUP_LAST.toString());
+            cli.print(CliText.CORRECT_SIGNUP_LAST.toString());
         }
     }
 }

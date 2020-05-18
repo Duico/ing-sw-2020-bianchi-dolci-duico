@@ -197,4 +197,13 @@ public class Player implements Serializable, Cloneable {
         }
         return -1;
     }
+
+    public boolean setWorkerPosition(int i, Position destPosition) {
+        try{
+            workers.get(i).addMove(destPosition);
+            return true;
+        }catch (IndexOutOfBoundsException e){
+            return false;
+        }
+    }
 }

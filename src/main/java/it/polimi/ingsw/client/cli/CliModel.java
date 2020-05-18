@@ -77,6 +77,13 @@ public class CliModel {
     }
     //TODO
     public boolean moveWorker(Position startPosition, Position destPosition){
+        for(Player player: players){
+            Integer workerId = player.getWorkerId(startPosition);
+            if(workerId == null){
+                return false;
+            }
+            return player.setWorkerPosition(workerId, destPosition);
+        }
         return false;
     }
 //    TODO

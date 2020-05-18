@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.controller.response.*;
 import it.polimi.ingsw.model.Operation;
+import it.polimi.ingsw.model.TurnPhase;
 
 public class CliControllerResponseVisitor extends ClientEventEmitter implements ControllerResponseVisitor {
     private Cli cli;
@@ -61,7 +62,11 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
 
     @Override
     public void visit(SuccessControllerResponse r) {
-        cli.println(Color.YELLOW_BOLD.escape("\nSuccessful operation"));
+        if(cliModel.getTurnPhase().equals(TurnPhase.CHOSE_CARDS)) {
+            cli.println(System.lineSeparator() + CliText.SUCCESSFUL_OPERATION.toString());
+        }else{
+//            printAll(CliText.SUCCESSFUL_OPERATION.toString());
+        }
     }
 
     @Override

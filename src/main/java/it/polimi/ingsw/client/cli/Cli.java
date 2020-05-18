@@ -138,6 +138,7 @@ public class Cli implements Runnable {
     }
 
     public void printAll(BoardPrinter bp, boolean myTurn, String infoMessage) {
+            clear();
             bp.setCellWidth(getBPcellWidth());
             print(" "+System.lineSeparator()+System.lineSeparator());
             print(bp.printAll(infoMessage));

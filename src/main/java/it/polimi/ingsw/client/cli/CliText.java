@@ -12,8 +12,9 @@ public enum CliText {
     BAD_NUMPLAYERS_STRING(Color.RED.escape("I can only understand base-10 numbers... sorry.")),
     CORRECT_SIGNUP_WAIT(Color.GREEN.escape("Correct signup... wait for the other players")),
     CORRECT_SIGNUP_LAST(Color.GREEN.escape("Correct signup. Starting new game.")),
-    YOUR_TURN(Color.YELLOW.escape("Your turn to play.")),
-    WAIT_TURN(Color.YELLOW.escape("%s's turn to play. Wait...")),
+    YOUR_TURN(Color.YELLOW_UNDERLINED.escape("Your turn to play.")),
+    WAIT_TURN(Color.YELLOW_BOLD.escape("%s")+Color.YELLOW.escape("'s turn to play. Wait...")),
+    WAIT_TURN_RED(Color.RED_BOLD.escape("%s")+Color.RED.escape("'s turn: commands are discarded. Wait...")),
     ASK_CHALLCARD_FIRST("Chose one card from the deck %s:"),
     ASK_CHALLCARD_MORE("Chose another card from the deck %s:"),
     OK_CHALLCARD1(Color.YELLOW.escape("%s, nice pick.")),
@@ -31,9 +32,10 @@ public enum CliText {
     ENTER_COMMAND("Enter command:"),
     YOUR_TURN_COMMAND("Your turn to play. Enter command:"),
     BAD_COMMAND(Color.RED.escape("Not a valid command.")),
+    SUCCESSFUL_OPERATION(Color.YELLOW_BOLD.escape("Successful operation")),
     PLAYER_DISCONNECTED(Color.RED.escape("End game, player disconnected")),
-    WORKERS_ALREADY_PLACE(Color.RED.escape("You have already placed all your workers")),
-    PLACE_DESTINATION_NOT_EMPTY(Color.RED.escape("Destination place not empty"));
+    WORKERS_ALREADY_PLACE(Color.RED.escape("You have already placed all of your workers")),
+    PLACE_DESTINATION_NOT_EMPTY(Color.RED.escape("Place destination is not empty")),
     ;
 
     static CliText OK_CHALLCARD(){

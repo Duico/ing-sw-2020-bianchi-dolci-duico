@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.view.event.*;
@@ -25,7 +26,14 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     @Override
     public void visit(MoveWorkerModelEvent evt) {
-
+        Position startPosition = evt.getStartPosition();
+        Position destinationPosition = evt.getDestinationPosition();
+        Position pushPosition = evt.getPushPosition();
+        Player player = evt.getPlayer();
+        cliModel.moveWorker(destinationPosition, pushPosition);
+        cliModel.moveWorker(startPosition, destinationPosition);
+//        cliModel.updatePlayer(player);
+        nextOperation();
     }
 
     @Override
@@ -168,10 +176,10 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 //        infoString = new StringWriter();
 //        infoOut = new PrintWriter(infoString);
 
-            String turnText = myTurn?CliText.YOUR_TURN.toString():CliText.WAIT_TURN.toString(cliModel.getCurrentPlayer().getNickName());
+        String turnText = myTurn?CliText.YOUR_TURN.toString():CliText.WAIT_TURN.toString(cliModel.getCurrentPlayer().getNickName());
         switch (cliModel.getTurnPhase()) {
             case CHOSE_CARDS:
-                cli.print(System.lineSeparator() + turnText);
+                cli.print(System.lineSeparator().repeat(2) + turnText);
                 break;
             case PLACE_WORKERS:
             case NORMAL:
@@ -364,7 +372,7 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
                 if (myTurn) {
                     emitViewEvent(event);
                 }else{
-                    printAll(CliText.WAIT_TURN.toString(cliModel.getCurrentPlayer().getNickName()));
+                    printAll(CliText.WAIT_TURN_RED.toString(cliModel.getCurrentPlayer().getNickName()));
                 }
             }
         }
