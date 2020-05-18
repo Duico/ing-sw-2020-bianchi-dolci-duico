@@ -28,6 +28,10 @@ public class FailedOperationControllerResponse extends ControllerResponse {
         DESTINATION_NOT_EMPTY;
     }
 
+    public Reason getReason(){
+        return reason;
+    }
+
     public void accept(ControllerResponseVisitor visitor){
         visitor.visit(this);
     }

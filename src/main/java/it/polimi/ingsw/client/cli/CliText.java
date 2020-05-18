@@ -32,6 +32,8 @@ public enum CliText {
     YOUR_TURN_COMMAND("Your turn to play. Enter command:"),
     BAD_COMMAND(Color.RED.escape("Not a valid command.")),
     PLAYER_DISCONNECTED(Color.RED.escape("End game, player disconnected")),
+    WORKERS_ALREADY_PLACE(Color.RED.escape("You have already placed all your workers")),
+    PLACE_DESTINATION_NOT_EMPTY(Color.RED.escape("Destination place not empty"));
     ;
 
     static CliText OK_CHALLCARD(){

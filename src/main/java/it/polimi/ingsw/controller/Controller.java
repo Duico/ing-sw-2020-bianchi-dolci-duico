@@ -218,6 +218,7 @@ public class Controller implements GameViewEventListener {
         if(!game.isAnyWorkerNotPlaced()){
             view.sendMessage("You have already place all the workers");
             view.eventResponse(new FailedOperationControllerResponse(message, Operation.PLACE, FailedOperationControllerResponse.Reason.NOT_FEASIBLE));
+            return;
         }
 
 

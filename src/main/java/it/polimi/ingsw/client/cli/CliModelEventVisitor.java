@@ -30,7 +30,9 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     @Override
     public void visit(PlaceWorkerModelEvent evt) {
-
+        Player player = evt.getPlayer();
+        cliModel.updatePlayer(player);
+        nextOperation();
     }
 
     @Override
@@ -359,7 +361,11 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 //                cli.execInputRequest(printAll);
                 return false;
             }else{
-                emitViewEvent(event);
+                if (myTurn) {
+                    emitViewEvent(event);
+                }else{
+                    printAll(CliText.WAIT_TURN.toString(cliModel.getCurrentPlayer().getNickName()));
+                }
             }
         }
         //printAll on WorkerModelEvent
