@@ -99,11 +99,11 @@ public class StringBuffer2D {
         return true;
     }
 
-    public void printOut(){
-        for(StringBuffer row : rows){
-            System.out.println(row);
-        }
-    }
+//    public void printOut(){
+//        for(StringBuffer row : rows){
+//            System.out.println(row);
+//        }
+//    }
     public void printOut(PrintStream out){
         for(StringBuffer row: rows){
             out.println(row);

@@ -244,7 +244,9 @@ public class BoardPrinter {
     public StringBuffer2D printPlayers(){
         StringBuffer2D sb = new StringBuffer2D();
         sb.appendln(Color.LIGHTGRAY_UNDERLINED.escape("Players"));
-        sb.appendln("");
+        if(cellWidth >= 3) {
+            sb.appendln("");
+        }
         for(Player player : players){
             //todo
                                                                     //true if currentPlayer
@@ -267,7 +269,9 @@ public class BoardPrinter {
 
 
         cmd.appendln(Color.LIGHTGRAY_UNDERLINED.escape("Commands usage"));
-        cmd.appendln("");
+        if(cellWidth >= 3) {
+            cmd.appendln("");
+        }
         for(CommandTuple t : commands){
             cmd.appendln( t.getCommand() + " ".repeat(Math.max(0, commandWidth - t.getCommand().length())) + (showDescription?Color.CYAN.escape( t.getDescription() ):""));
 
@@ -298,7 +302,7 @@ public class BoardPrinter {
         //print players
         boardSB.insert(printPlayers(), startX, 1, startX + playersMaxWidth);
         //print help on commands
-        boardSB.insert(printHelp(cellWidth>=2), startX, cellWidth+3, maxWidth);
+        boardSB.insert(printHelp(cellWidth>=2), startX, (cellWidth >= 3)?6:5, maxWidth);
         //print infoMessage
         StringBuffer2D infoSB = new StringBuffer2D();
         infoSB.appendln(infoMessage);

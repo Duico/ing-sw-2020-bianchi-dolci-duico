@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class CliModelEventVisitor extends ClientEventEmitter implements ModelEventVisitor {
     private Cli cli;
-    private CliModel cliModel;
+    private final CliModel cliModel;
     public CliModelEventVisitor(Cli cli, CliModel cliModel){
         this.cli = cli;
         this.cliModel = cliModel;
@@ -291,15 +291,8 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
     private void printAll(boolean myTurn, String infoMessage) {
 //        return () -> {
             BoardPrinter bp = cliModel.createBoardPrinter();
-            bp.setCellWidth(cli.getBPcellWidth());
-            cli.print(" " + System.lineSeparator() + System.lineSeparator());
-            //cli has to print this
-            bp.printAll(infoMessage).printOut();
-            //TODO command prompt HERE
-            CliText promptText = myTurn?CliText.YOUR_TURN_COMMAND:CliText.ENTER_COMMAND;
-            cli.print(promptText.toPrompt());
-            //todo separate thread
-            //askCommand();
+            cli.printAll(bp, myTurn, infoMessage);
+            //command is read by another thread
 //        };
     }
 //    protected CliRunnable askCommand(){

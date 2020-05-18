@@ -3,6 +3,7 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.GameViewEventListener;
+import it.polimi.ingsw.model.PlayerColor;
 import it.polimi.ingsw.server.message.*;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameSerializer;

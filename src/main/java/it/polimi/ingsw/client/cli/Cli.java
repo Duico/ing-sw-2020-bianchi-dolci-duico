@@ -4,14 +4,12 @@ import java.io.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Cli implements Runnable{
+public class Cli implements Runnable {
     //boolean hasPrintedTurnMessage = false;
 //    InputStream in;
 //    Scanner stdin;
     final PrintStream out;
     private Integer BPcellWidth = 2;
-
-
     private boolean isAwaitingInput;
     final CliInputHandler inputHandler = new CliInputHandler();
     private final String ANSI_CLS = "\u001b[2J";
@@ -19,11 +17,11 @@ public class Cli implements Runnable{
     //    private Queue<CliRunnable> cliRunnableQueue = new LinkedBlockingQueue<>();
     private final ExecutorService inputRequestsPool = Executors.newCachedThreadPool();
 
-   // StringWriter infoString = new StringWriter();
-   // PrintWriter infoOut = new PrintWriter(infoString);
+    // StringWriter infoString = new StringWriter();
+    // PrintWriter infoOut = new PrintWriter(infoString);
     PrintStream infoOut;
 
-    public Cli(){
+    public Cli() {
         //this.inputHandler = inputHandler; //todo TEMP
         out = System.out;
         infoOut = out;
@@ -36,7 +34,7 @@ public class Cli implements Runnable{
         inputHandler.run();
     }
 
-    public void clear(){
+    public void clear() {
         System.out.print(ANSI_CLS);
         //System.out.flush();
     }
@@ -46,10 +44,11 @@ public class Cli implements Runnable{
     }
 
     public void increaseBPcellWidth() {
-        BPcellWidth = Math.min( 10, Math.max(0, BPcellWidth++));
+        BPcellWidth = Math.min(10, Math.max(0, ++BPcellWidth));
     }
+
     public void decreaseBPcellWidth() {
-        BPcellWidth = Math.min( 10, Math.max(0, BPcellWidth--));
+        BPcellWidth = Math.min(10, Math.max(0, --BPcellWidth));
     }
 
     public boolean isAwaitingInput() {
@@ -59,27 +58,30 @@ public class Cli implements Runnable{
     public void setAwaitingInput(boolean awaitingInput) {
         isAwaitingInput = awaitingInput;
     }
-//    protected void execInputRequest(CliLambda lambda){
+
+    //    protected void execInputRequest(CliLambda lambda){
 //        //passing this to the runnable
 //        executorPool.submit( () -> {
 //            lambda.execute(this);
 //        });
 //
 //    }
-    protected void execAsyncInputRequest(CliRunnable cliRunnable){
+    protected void execAsyncInputRequest(CliRunnable cliRunnable) {
         //passing this to the runnable
         inputRequestsPool.submit(cliRunnable::run);
     }
-    protected void execInputRequest(CliRunnable cliRunnable){
+
+    protected void execInputRequest(CliRunnable cliRunnable) {
         //passing this to the runnable
-        inputRequestsPool.submit( () -> {
-            synchronized (this){
+        inputRequestsPool.submit(() -> {
+            synchronized (this) {
                 cliRunnable.run();
             }
         });
     }
-//TODO
-    protected void shutdown(){
+
+    //TODO
+    protected void shutdown() {
         inputRequestsPool.shutdown();
         inputRequestsPool.shutdownNow();
     }
@@ -115,19 +117,35 @@ public class Cli implements Runnable{
             return line;
         }
     }
-    public void clearReadLines(){
+
+    public void clearReadLines() {
         inputHandler.clearReadLines();
     }
 
 
-    public void println(Object o){
+    public void println(Object o) {
         //?? in a separate thread??
         out.println(o);
     }
-    public void print(Object o){
+
+    public void print(Object o) {
         //?? in a separate thread??
         out.print(o);
     }
+
+    public void print(StringBuffer2D sb) {
+        sb.printOut(out);
+    }
+
+    public void printAll(BoardPrinter bp, boolean myTurn, String infoMessage) {
+            bp.setCellWidth(getBPcellWidth());
+            print(" "+System.lineSeparator()+System.lineSeparator());
+            print(bp.printAll(infoMessage));
+            //TODO command prompt HERE
+            CliText promptText = myTurn ? CliText.YOUR_TURN_COMMAND : CliText.ENTER_COMMAND;
+            print(promptText.toPrompt());
+    }
+
 
 //    protected String pollLine (Runnable lambda){
 //        String line;

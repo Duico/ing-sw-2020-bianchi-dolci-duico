@@ -16,21 +16,23 @@ public class Player implements Serializable, Cloneable {
     private PlayerColor color; //TODO
 
 
-    public Player(String nickName, PlayerColor color) {
+    public Player(String nickName) {
         this.uuid = UUID.randomUUID();
         this.nickName = nickName;
-        this.isChallenger = false;
-        this.color = color;
-        //
+        this.isChallenger = false;//
         //this.initWorkers(numWorkers);
     }
 
-    //TODO remove
-    public Player(String nickName){
-        this(nickName, PlayerColor.randomEnum());
+//    //TODO remove
+//    public Player(String nickName){
+//        this(nickName, PlayerColor.randomEnum());
+//    }
+
+    public void setColor(PlayerColor color) {
+        this.color = color;
     }
 
-//    private void initWorkers(int numWorkers){
+    //    private void initWorkers(int numWorkers){
 //        for(int i=0; i < numWorkers; i++){
 //            workers.add(new Worker());
 //        }

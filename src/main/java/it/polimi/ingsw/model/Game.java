@@ -76,8 +76,11 @@ public class Game extends ModelEventEmitter implements Serializable{
             dealDefaultCard(numPlayers);
         }
 
+        int n = 0;
         for(Player player: players){
+           player.setColor(PlayerColor.fromInt(n));
            player.initWorkers(numWorkers);
+           ++n;
         }
 
         board = new Board();

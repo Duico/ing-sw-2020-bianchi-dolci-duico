@@ -6,7 +6,7 @@ import it.polimi.ingsw.server.message.*;
 
 public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpMessageVisitor {
     private final Cli cli;
-    private CliModel cliModel;
+    private final CliModel cliModel;
     private boolean askNumPlayers;
 
     public CliSetUpMessageVisitor(Cli cli, CliModel cliModel){
