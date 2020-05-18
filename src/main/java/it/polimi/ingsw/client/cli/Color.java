@@ -54,10 +54,10 @@ public enum Color {
                 return bold?BLUE_BOLD:BLUE;
             case GRAY:
                 return bold? LIGHTGRAY_BOLD:LIGHTGRAY;
-            case WHITE:
+            case YELLOW:
                 return bold?YELLOW_BOLD:YELLOW;
             default:
-                return LIGHTGRAY;
+                return bold? WHITE_BOLD:WHITE;
         }
     }
 }
