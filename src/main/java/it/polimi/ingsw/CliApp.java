@@ -3,6 +3,8 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.GameMessageVisitor;
 import it.polimi.ingsw.client.cli.*;
+import it.polimi.ingsw.client.event.ClientConnectionEvent;
+import it.polimi.ingsw.client.event.ClientConnectionEventListener;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.view.ViewEventListener;
 
@@ -21,7 +23,7 @@ public class CliApp {
 
         GameMessageVisitor gameMessageVisitor = new CliGameMessageVisitor(cli, modelEventVisitor, controllerResponseVisitor, setUpMessageVisitor);
         ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, gameMessageVisitor);
-
+        clientConnection.addEventListener(ClientConnectionEventListener.class, cli);
 
         //CliMessageReader cliMessageReader = new CliMessageReader(cli, clientConnection, cliController);
         setUpMessageVisitor.addEventListener(ViewEventListener.class, clientConnection);

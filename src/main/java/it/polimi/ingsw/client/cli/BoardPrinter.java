@@ -183,11 +183,11 @@ public class BoardPrinter {
         sb.appendln(line1);
 
         //level line
-        String line2 = "| ";
+        String line2 = "|";
         line2 += " ".repeat(cellWidth);
-        line2 += " "+displayLevel(cell.getLevel(), cell.hasDome());
+        line2 += displayLevel(cell.getLevel(), cell.hasDome());
         line2 += " ".repeat(cellWidth);
-        line2 += " |";
+        line2 += "|";
         sb.appendln(line2);
 
         //row first lines
@@ -202,27 +202,52 @@ public class BoardPrinter {
     private String displayLevel(Level level, boolean hasDome){
         String out = "";
         Color c = Color.LIGHTGRAY;
-        switch (level){
-            case EMPTY:
-                out += "0";
-                break;
-            case BASE:
-                out += "1";
-                break;
-            case MID:
-                out += "2";
-                break;
-            case TOP:
-                out += "3";
-                c = Color.RED;
-                break;
-        }
+        if(cellWidth<2){
+            out += "  ";
+            switch (level){
+                case EMPTY:
+                    out += "0";
+                    break;
+                case BASE:
+                    out += "1";
+                    break;
+                case MID:
+                    out += "2";
+                    break;
+                case TOP:
+                    out += "3";
+                    c = Color.RED;
+                    break;
+            }
 
-        if(hasDome){
-            out += "D";
-            c = Color.BLUE;
-        }else {
+            if(hasDome){
+                out += "D";
+                c = Color.BLUE;
+            }else {
+                out += " ";
+            }
             out += " ";
+        }else{
+            if(hasDome){
+                out += "DOME ";
+                c = Color.BLUE;
+            }else{
+                switch(level){
+                    case EMPTY:
+                        out += "EMPTY";
+                        break;
+                    case BASE:
+                        out += "BASE ";
+                        break;
+                    case MID:
+                        out += " MID ";
+                        break;
+                    case TOP:
+                        out += " TOP ";
+                        c = Color.RED;
+                        break;
+                }
+            }
         }
         return c.escape(out);
     }
@@ -243,16 +268,30 @@ public class BoardPrinter {
 
     public StringBuffer2D printPlayers(){
         StringBuffer2D sb = new StringBuffer2D();
-        sb.appendln(Color.LIGHTGRAY_UNDERLINED.escape("Players"));
+        int playerWidth = 15;
+        String playerHeader = "Players";
+        String godHeader = "God Card";
+        sb.appendln(Color.LIGHTGRAY_UNDERLINED.escape(playerHeader)+" ".repeat(playerWidth-playerHeader.length())+Color.LIGHTGRAY_UNDERLINED.escape(godHeader));
         if(cellWidth >= 3) {
             sb.appendln("");
         }
         for(Player player : players){
             //todo
+            String playerName = resizedPlayerName(player.getNickName(), playerWidth);
                                                                     //true if currentPlayer
-            sb.appendln(Color.fromPlayerColor(player.getColor(), false).escape(player.getNickName()));
+            sb.appendln(Color.fromPlayerColor(player.getColor(), false).escape(playerName)+player.getCardName());
         }
         return sb;
+    }
+    private String resizedPlayerName(String name, int width){
+        String result;
+        Integer numSpaces = width-name.length();
+        if(numSpaces<2){
+            result = name.substring(0, width-4) + "... ";
+        }else{
+            result = name + " ".repeat(numSpaces);
+        }
+        return result;
     }
 
     public StringBuffer2D printHelp(boolean showDescription){
@@ -298,7 +337,7 @@ public class BoardPrinter {
         StringBuffer2D boardSB = printBoard();
         //HARDCODED 20
         int startX = boardSB.getWidth() + 2 + 20;
-        int playersMaxWidth = 40;
+        int playersMaxWidth = 80;
         //print players
         boardSB.insert(printPlayers(), startX, 1, startX + playersMaxWidth);
         //print help on commands

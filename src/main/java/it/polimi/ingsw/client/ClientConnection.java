@@ -2,18 +2,23 @@ package it.polimi.ingsw.client;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 //import it.polimi.ingsw.client.cli.Color;
+import it.polimi.ingsw.client.event.ClientConnectionEvent;
+import it.polimi.ingsw.client.event.ClientConnectionEventListener;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.client.message.SignUpMessage;
+import it.polimi.ingsw.server.TimeOutCheckerInterface;
+import it.polimi.ingsw.server.TimeoutCounter;
 import it.polimi.ingsw.server.message.*;
 import it.polimi.ingsw.view.ViewEventListener;
 import it.polimi.ingsw.view.event.*;
 
-public class ClientConnection implements ViewEventListener, SignUpListener /*, Runnable*/ {
+public class ClientConnection extends ClientConnectionEventEmitter implements ViewEventListener, SignUpListener /*, Runnable*/ {
 
     private Socket socket;
     private String ip;
@@ -80,7 +85,8 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
         try{
 
             socket = new Socket(ip, port);
-            //startMyTimer();
+            socket.setSoTimeout(6000);
+            startPingTimer();
             InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = socket.getOutputStream();
             ObjectInputStream socketIn = new ObjectInputStream(inputStream);
@@ -97,13 +103,8 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
             messageReader.join();
 //            Thread t0 = asyncRead...;
 //            t0.join();
-
-        } catch(NoSuchElementException e){
-            System.out.println("Connection closed from the client side");
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.OBJECT_IO_EXCEPTION));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
@@ -114,6 +115,25 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
             }
         }
     }
+
+    public void startPingTimer() {
+        Timer timer = new Timer();
+        TimeOutCheckerInterface timeOutChecker = () -> {
+            if (isActive()){
+                send(new ConnectionMessage(ConnectionMessage.Type.PONG));
+                return false;
+            }else{
+                emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.PING_FAIL));
+                return true;
+            }
+        };
+
+        TimerTask task = new TimeoutCounter(timeOutChecker);
+        int intialDelay = 5000;
+        int delta = 5000;
+        timer.schedule(task, intialDelay, delta);
+    }
+
     @Override
     public void handleEvent(ViewEvent e){
         send(e);
@@ -149,10 +169,10 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
                          if (message instanceof ConnectionMessage) {
                             ConnectionMessage event = (ConnectionMessage) message;
                             if (event.getType().equals(ConnectionMessage.Type.PING)) {
-                                send(new ConnectionMessage(ConnectionMessage.Type.PONG));
+//                                send(new ConnectionMessage(ConnectionMessage.Type.PONG));
                             } else if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION)) {
-                                System.out.println("End game, player disconnected");
                                 setActive(false);
+                                emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.DISCONNECTION));
                                 //event.accept(setUpVisitor);
                             }
                         }
@@ -206,6 +226,10 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
 //        return t;
         }
     }
+    private void emitEvent(ClientConnectionEvent evt){
+        executeEventListeners(ClientConnectionEventListener.class, (listener) -> listener.handleEvent(evt) );
+    }
+
     private class ObjectOutputRunnable implements Runnable{
         private final ObjectOutputStream socketOut;
         public ObjectOutputRunnable(ObjectOutputStream socketOut){
@@ -215,34 +239,37 @@ public class ClientConnection implements ViewEventListener, SignUpListener /*, R
         public void run() {
             //syncronized wait on toSend
                 try {
-            while (isActive()) {
-                    synchronized (toSend) {
-                        Object message;
-                        while ((message = toSend.poll()) == null){
-                            toSend.wait();
-                        }
+                    while (isActive()) {
+                        synchronized (toSend) {
+                            Object message;
+                            while ((message = toSend.poll()) == null) {
+                                toSend.wait();
+                            }
                             send(message);
+                        }
                     }
-                }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }finally {
-                    try {
-                        socketOut.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                } catch (SocketException e){
+                    emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.SOCKET_EXCEPTION));
+                } catch (IOException e) {
+                    emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.IO_EXCEPTION));
+                } catch (InterruptedException e) {
+                    emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.INTERRUPTED));
+                }finally {
+                        try {
+                            socketOut.close();
+                        } catch (IOException e) {
+                            emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.CLOSE_IO_EXCEPTION));
+                        }
                     }
-                }
         }
-        private synchronized void send(Object message) {
-            try {
+        private synchronized void send(Object message) throws IOException{
+//            try {
                 socketOut.reset();
                 socketOut.writeObject(message);
                 socketOut.flush();
-            } catch(IOException e){
-                e.printStackTrace();
-            }
+//            } catch(IOException e){
+//                e.printStackTrace();
+//            }
 
         }
     }

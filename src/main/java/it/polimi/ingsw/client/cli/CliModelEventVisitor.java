@@ -109,6 +109,8 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
         Player player = evt.getPlayer();
             TurnPhase turnPhase = evt.getTurnPhase();
             cliModel.setTurnPhase(turnPhase);
+            //use before setPlayersIfNotSet
+            cliModel.updatePlayer(player);
             cliModel.setPlayersIfNotSet(evt.getPlayers());
             cliModel.setCurrentPlayer(player);
             boolean myTurn = player.equalsUuid(cliModel.getMyPlayer());

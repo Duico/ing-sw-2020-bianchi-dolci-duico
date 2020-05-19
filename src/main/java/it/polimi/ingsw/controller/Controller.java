@@ -165,6 +165,10 @@ public class Controller implements GameViewEventListener {
             view.sendMessage("incorrect player");
             return;
         }
+        if(checkIsWrongTurnPhase(message, TurnPhase.NORMAL)){
+            view.sendMessage("incorrect turn phase");
+            return;
+        }
         if(!isCurrentWorkerId(message)){
             view.sendMessage("incorrect Worker");
             ControllerResponse response = new FailedOperationControllerResponse(message, Operation.MOVE, FailedOperationControllerResponse.Reason.NOT_CURRENT_WORKER);
@@ -174,10 +178,6 @@ public class Controller implements GameViewEventListener {
 
         Position destinationPosition = message.getDestinationPosition();
 
-        if(checkIsWrongTurnPhase(message, TurnPhase.NORMAL)){
-            view.sendMessage("incorrect turn phase");
-            return;
-        }
 
         if(!game.isAllowedToMove(workerPosition)){
             view.sendMessage("you are not allowed to move");
@@ -249,6 +249,10 @@ public class Controller implements GameViewEventListener {
             view.sendMessage("incorrect player");
             return;
         }
+        if(checkIsWrongTurnPhase(message, TurnPhase.NORMAL)){
+            view.sendMessage("incorrect turn phase");
+            return;
+        }
         if(!isCurrentWorkerId(workerPosition)){
             view.sendMessage("incorrect Worker");
             ControllerResponse response = new FailedOperationControllerResponse(message, Operation.BUILD, FailedOperationControllerResponse.Reason.NOT_CURRENT_WORKER);
@@ -258,11 +262,6 @@ public class Controller implements GameViewEventListener {
 
         Position destinationPosition = message.getDestinationPosition();
         boolean isDome = message.isDome();
-
-        if(checkIsWrongTurnPhase(message, TurnPhase.NORMAL)){
-            view.sendMessage("incorrect turn phase");
-            return;
-        }
 
         if(!game.isAllowedToBuild()){
             view.sendMessage("you are not allowed to build");

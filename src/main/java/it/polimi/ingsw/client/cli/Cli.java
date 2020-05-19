@@ -1,10 +1,13 @@
 package it.polimi.ingsw.client.cli;
 
+import it.polimi.ingsw.client.event.ClientConnectionEvent;
+import it.polimi.ingsw.client.event.ClientConnectionEventListener;
+
 import java.io.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Cli implements Runnable {
+public class Cli implements ClientConnectionEventListener, Runnable {
     //boolean hasPrintedTurnMessage = false;
 //    InputStream in;
 //    Scanner stdin;
@@ -21,7 +24,7 @@ public class Cli implements Runnable {
     // PrintWriter infoOut = new PrintWriter(infoString);
     PrintStream infoOut;
 
-    public Cli() {
+    public Cli(){
         //this.inputHandler = inputHandler; //todo TEMP
         out = System.out;
         infoOut = out;
@@ -82,8 +85,9 @@ public class Cli implements Runnable {
 
     //TODO
     protected void shutdown() {
-        inputRequestsPool.shutdown();
-        inputRequestsPool.shutdownNow();
+//        inputRequestsPool.shutdown();
+//        inputRequestsPool.shutdownNow();
+        System.exit(0);
     }
 
 //    protected void handleInput(LineConsumer lambda){
@@ -145,6 +149,12 @@ public class Cli implements Runnable {
             //TODO command prompt HERE
             CliText promptText = myTurn ? CliText.YOUR_TURN_COMMAND : CliText.ENTER_COMMAND;
             print(promptText.toPrompt());
+    }
+
+    @Override
+    public void handleEvent(ClientConnectionEvent evt) {
+        System.err.print(evt.getReason().toString());
+//        System.exit(0);
     }
 
 

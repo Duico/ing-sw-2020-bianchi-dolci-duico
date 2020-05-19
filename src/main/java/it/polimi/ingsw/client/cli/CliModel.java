@@ -67,6 +67,9 @@ public class CliModel {
     }
 
     public void updatePlayer(Player player) {
+        if(players == null){
+            return;
+        }
         for (int i = 0; i < players.size(); ++i) {
             Player oldPlayer = players.get(i);
             if (oldPlayer.equalsUuid(player)) {

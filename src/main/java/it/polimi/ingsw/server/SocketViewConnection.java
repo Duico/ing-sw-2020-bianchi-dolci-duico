@@ -113,8 +113,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
 
 
 
-    public void startMyTimer() {
-
+    public void startPingTimer() {
         Timer timer = new Timer();
         TimeOutCheckerInterface timeOutChecker = () -> {
             if (isActive()){
@@ -127,8 +126,8 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         };
 
         TimerTask task = new TimeoutCounter(timeOutChecker);
-        int intialDelay = 3000;
-        int delta = 5000;
+        int intialDelay = 2000;
+        int delta = 2500;
         timer.schedule(task, intialDelay, delta);
     }
 
@@ -146,13 +145,14 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     public void run(){
         try{
 
-            socket.setSoTimeout(20000);
-            startMyTimer();
+            socket.setSoTimeout(15000);
+            startPingTimer();
             Thread t0 = asyncReadFromSocket(in);
             t0.join();
             out.close();
             in.close();
         } catch (IOException | NoSuchElementException | InterruptedException e) {
+            //TODO change text
             System.err.println("Error! Entra qui" + e.getMessage());
             System.out.println("ciaooo");
         } finally{
