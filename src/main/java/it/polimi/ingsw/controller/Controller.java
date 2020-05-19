@@ -53,6 +53,7 @@ public class Controller implements GameViewEventListener {
             ControllerResponse response = new RequiredOperationControllerResponse(message, Operation.MOVE);
             view.eventResponse(response);
             advanceTurn = false;
+            return;
         }
 
         if(game.isRequiredToBuild()) {
@@ -60,11 +61,15 @@ public class Controller implements GameViewEventListener {
             ControllerResponse response = new RequiredOperationControllerResponse(message, Operation.BUILD);
             view.eventResponse(response);
             advanceTurn = false;
+            return;
         }
 
         if(game.isAnyWorkerNotPlaced()){
             view.sendMessage("you have to set the worker on the board");
+            ControllerResponse response = new RequiredOperationControllerResponse(message, Operation.PLACE);
+            view.eventResponse(response);
             advanceTurn = false;
+            return;
         }
 
         if(advanceTurn) {
@@ -151,7 +156,7 @@ public class Controller implements GameViewEventListener {
     }
 
     public void move(MoveViewEvent message){
-        System.out.println("controller");
+
         RemoteView view = message.getView();
         Position workerPosition = message.getWorkerPosition();
 

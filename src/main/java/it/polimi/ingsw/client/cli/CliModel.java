@@ -66,31 +66,85 @@ public class CliModel {
         this.board = board;
     }
 
-    public void updatePlayer(Player player){
-        for(int i=0; i<players.size(); ++i){
+    public void updatePlayer(Player player) {
+        for (int i = 0; i < players.size(); ++i) {
             Player oldPlayer = players.get(i);
-            if(oldPlayer.equalsUuid(player)){
+            if (oldPlayer.equalsUuid(player)) {
                 players.set(i, player);
                 break;
             }
         }
     }
-    //TODO
+
+    public void placeWorker(Position placePosition){
+        Worker newWorker = new Worker();
+        board.setWorker(newWorker, placePosition);
+    }
+
+    /*//TODO
     public boolean moveWorker(Position startPosition, Position destPosition){
         for(Player player: players){
             Integer workerId = player.getWorkerId(startPosition);
             if(workerId == null){
+                System.out.println("Entro qui");
                 return false;
             }
-            return player.setWorkerPosition(workerId, destPosition);
+
+   //         return player.setWorkerPosition(workerId, destPosition);
+             player.setWorkerPosition(workerId, destPosition);
+        }
+        return false;
+    }*/
+
+    public boolean moveWorker(Position startPosition, Position destPosition, Position pushPosition, Player playerEvent){
+        if(pushPosition==null) {
+            for (Player player : players) {
+                Integer workerId = player.getWorkerId(startPosition);
+                if (workerId == null) {
+
+                    return false;
+                }
+
+                //         return player.setWorkerPosition(workerId, destPosition);
+                player.setWorkerPosition(workerId, destPosition);
+            }
+        }else {
+            for (Player player : players) {
+                Integer workerId = player.getWorkerId(startPosition);
+                if (workerId == null) {
+                    System.out.println("Entro qui nel false worker ID");
+                    return false;
+                }
+                player.setWorkerPosition(workerId, destPosition);
+
+            }
+
+            for (Player player : players) {
+                if (!player.equalsUuid(playerEvent)) {
+                    Integer workerId = player.getWorkerId(destPosition);
+                    if (workerId == null) {
+                        System.out.println("Entro qui nel false worker ID");
+                        return false;
+                    }
+                    player.setWorkerPosition(workerId, pushPosition);
+
+                }
+            }
         }
         return false;
     }
+
+    public void moveBoard(Position startPosition, Position destPosition, Position pushPosition){
+        board.putWorkers(startPosition, destPosition, pushPosition);
+    }
+
+
 //    TODO
     public boolean buildWorker(Position workerPosition, Position buildPosition, boolean isDome){
         //board .build() is too complex for the Client
+
         board.build(workerPosition, buildPosition, isDome);
-        return false;
+        return true;
     }
     public BoardPrinter createBoardPrinter(){
         //TODO

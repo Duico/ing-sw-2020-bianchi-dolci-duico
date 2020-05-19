@@ -21,7 +21,11 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     @Override
     public void visit(BuildWorkerModelEvent evt) {
-
+        Position startPosition = evt.getStartPosition();
+        Position destinationPosition = evt.getDestinationPosition();
+        boolean isDome = evt.isDome();
+        cliModel.buildWorker(startPosition, destinationPosition, isDome);
+        nextOperation();
     }
 
     @Override
@@ -30,8 +34,9 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
         Position destinationPosition = evt.getDestinationPosition();
         Position pushPosition = evt.getPushPosition();
         Player player = evt.getPlayer();
-        cliModel.moveWorker(destinationPosition, pushPosition);
-        cliModel.moveWorker(startPosition, destinationPosition);
+        //cliModel.moveWorker(destinationPosition, pushPosition);
+        cliModel.moveWorker(startPosition, destinationPosition, pushPosition, player);
+        cliModel.moveBoard(startPosition, destinationPosition, pushPosition);
 //        cliModel.updatePlayer(player);
         nextOperation();
     }
@@ -40,6 +45,7 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
     public void visit(PlaceWorkerModelEvent evt) {
         Player player = evt.getPlayer();
         cliModel.updatePlayer(player);
+        cliModel.placeWorker(evt.getPlacePosition());
         nextOperation();
     }
 

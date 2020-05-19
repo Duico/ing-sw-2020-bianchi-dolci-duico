@@ -22,6 +22,26 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
             } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.DESTINATION_NOT_EMPTY)){
                 printAll(CliText.PLACE_DESTINATION_NOT_EMPTY.toString());
             }
+        }else if(r.getOperation().equals(Operation.MOVE)){
+            if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_CURRENT_WORKER)){
+                printAll(CliText.NOT_CURRENT_WORKER.toString());
+            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_ALLOWED)){
+                printAll(CliText.NOT_ALLOWED_TO_MOVE.toString());
+            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.BLOCKED_BY_OPPONENT)){
+                printAll(CliText.BLOCKED_MOVE.toString());
+            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_FEASIBLE)){
+                printAll(CliText.NOT_FEASIBLE_MOVE.toString());
+            }
+
+        } else if(r.getOperation().equals(Operation.BUILD)){
+            if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_CURRENT_WORKER)){
+                printAll(CliText.NOT_CURRENT_WORKER.toString());
+            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_ALLOWED)){
+                printAll(CliText.NOT_ALLOWED_TO_BUILD.toString());
+            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_FEASIBLE)){
+                printAll(CliText.NOT_FEASIBLE_BUILD.toString());
+            }
+
         }
     }
 
@@ -52,7 +72,14 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
 
     @Override
     public void visit(RequiredOperationControllerResponse r) {
-        cli.println(Color.YELLOW_BOLD.escape("required operation"));
+        if(r.getRequiredOperation().equals(Operation.MOVE)){
+            printAll(CliText.REQUIRED_MOVE.toString());
+        } else if(r.getRequiredOperation().equals(Operation.BUILD)){
+            printAll(CliText.REQUIRED_BUILD.toString());
+        } else if(r.getRequiredOperation().equals(Operation.PLACE)){
+            printAll(CliText.REQUIRED_PLACE.toString());
+        }
+
     }
 
     @Override

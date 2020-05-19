@@ -36,6 +36,16 @@ public enum CliText {
     PLAYER_DISCONNECTED(Color.RED.escape("End game, player disconnected")),
     WORKERS_ALREADY_PLACE(Color.RED.escape("You have already placed all of your workers")),
     PLACE_DESTINATION_NOT_EMPTY(Color.RED.escape("Place destination is not empty")),
+    NOT_CURRENT_WORKER(Color.RED.escape("Operation with not current worker")),
+    NOT_ALLOWED_TO_MOVE(Color.RED.escape("You are not allowed to move")),
+    NOT_ALLOWED_TO_BUILD(Color.RED.escape("You are not allowed to build")),
+    BLOCKED_MOVE(Color.RED.escape("This movement is blocked")),
+    NOT_FEASIBLE_MOVE(Color.RED.escape("Is not a feasible movement")),
+    NOT_FEASIBLE_BUILD(Color.RED.escape("Is not a feasible build")),
+    REQUIRED_MOVE(Color.RED.escape("Is required a movement before end turn")),
+    REQUIRED_BUILD(Color.RED.escape("Is required a build before end turn")),
+    REQUIRED_PLACE(Color.RED.escape("Place all the workers before end turn"))
+
     ;
 
     static CliText OK_CHALLCARD(){
