@@ -394,6 +394,9 @@ public class Game extends ModelEventEmitter implements Serializable{
         turn.boardBuild(board, startPosition, destinationPosition, isDome);
         ModelEvent evt = new BuildWorkerModelEvent(getCurrentPlayer(), startPosition, destinationPosition, isDome);
         emitEvent(evt);
+        //TODO investigate
+        //checkHasLost is false beacuse the undo is still available
+        //when the time for undoing is over we should check again (if currentTurn == savedTurn) for checkHasLost
         if(checkHasLost() && players.size()==1) {
             ModelEvent evt2 = new WinModelEvent(players.get(0));
             emitEvent(evt2);

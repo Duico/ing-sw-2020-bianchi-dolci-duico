@@ -89,11 +89,11 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
 
     @Override
     public void visit(SuccessControllerResponse r) {
-        if(cliModel.getTurnPhase().equals(TurnPhase.CHOSE_CARDS)) {
-            cli.println(System.lineSeparator() + CliText.SUCCESSFUL_OPERATION.toString());
-        }else{
-//            printAll(CliText.SUCCESSFUL_OPERATION.toString());
-        }
+//        if(cliModel.getTurnPhase().equals(TurnPhase.CHOSE_CARDS)) {
+//            cli.println(System.lineSeparator() + CliText.SUCCESSFUL_OPERATION.toString());
+//        }else{
+////            printAll(CliText.SUCCESSFUL_OPERATION.toString());
+//        }
     }
 
     @Override

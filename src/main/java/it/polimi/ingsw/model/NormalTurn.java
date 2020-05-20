@@ -24,7 +24,14 @@ public class NormalTurn extends Turn {
 
     @Override
     public boolean isAllowedToMove(){
-        return isAllowedToMove(currentPlayer.getWorkerPosition(currentWorkerId));
+        //TODO not the best solution
+        if(currentWorkerId >=0){
+            return isAllowedToMove(currentPlayer.getWorkerPosition(currentWorkerId));
+        }else{
+            Card card = currentPlayer.getCard();
+            boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(0, 0);
+            return isAllowedToMove;
+        }
     }
 
     @Override
@@ -91,7 +98,15 @@ public class NormalTurn extends Turn {
 
     @Override
     public boolean isAllowedToBuild(){
-        return isAllowedToBuild(currentPlayer.getWorkerPosition(currentWorkerId));
+    //TODO improve
+      if(currentWorkerId >=0) {
+          return isAllowedToBuild(currentPlayer.getWorkerPosition(currentWorkerId));
+      }else {
+          Card card = currentPlayer.getCard();
+          //any operation is the same
+          boolean isAllowedToBuild = card.getBuildStrategy().isAllowedToBuild(0, 0, Operation.MOVE);
+          return isAllowedToBuild;
+      }
     }
 
     @Override

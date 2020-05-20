@@ -36,7 +36,7 @@ public enum CliText {
     PLAYER_DISCONNECTED(Color.RED.escape("End game, player disconnected")),
     WORKERS_ALREADY_PLACE(Color.RED.escape("You have already placed all of your workers")),
     PLACE_DESTINATION_NOT_EMPTY(Color.RED.escape("Place destination is not empty")),
-    NOT_CURRENT_WORKER(Color.RED.escape("Operation with non current worker")),
+    NOT_CURRENT_WORKER(Color.RED.escape("You can't move/build with that worker")),
     NOT_ALLOWED_TO_MOVE(Color.RED.escape("You are not allowed to move")),
     NOT_ALLOWED_TO_BUILD(Color.RED.escape("You are not allowed to build")),
     BLOCKED_MOVE(Color.RED.escape("This movement is blocked")),
