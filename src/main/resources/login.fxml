@@ -17,18 +17,18 @@
       </ImageView>
       <Pane layoutX="254.0" layoutY="205.0" prefHeight="236.0" prefWidth="262.0">
          <children>
-            <ImageView fitHeight="236.0" fitWidth="273.0" layoutX="-5.0">
-               <image>
-                  <Image url="@pane.png" />
-               </image>
-            </ImageView>
-            <TextField fx:id="textfield" layoutX="18.0" layoutY="48.0"  prefHeight="34.0" prefWidth="226.0" promptText="Insert here your username:" />
-            <CheckBox fx:id="twoPlayers" layoutX="123.0" layoutY="102.0" mnemonicParsing="false" />
-            <TextField layoutX="161.0" layoutY="97.0" mouseTransparent="true" prefHeight="25.0" prefWidth="75.0" text="2 PLAYERS" />
-            <CheckBox fx:id="threePlayers" layoutX="123.0" layoutY="140.0" mnemonicParsing="false"/>
-            <TextField layoutX="161.0" layoutY="136.0" mouseTransparent="true" prefHeight="25.0" prefWidth="75.0" text="3 PLAYERS" />
-            <Button fx:id="start" layoutX="85.0" layoutY="180.0" mnemonicParsing="false" mouseTransparent="false" onAction="#startGame" text="Start Game" />
-         </children>
-      </Pane>
-   </children>
+   <ImageView fitHeight="236.0" fitWidth="273.0" layoutX="-5.0">
+      <image>
+         <Image url="@pane.png" />
+      </image>
+   </ImageView>
+   <TextField fx:id="textfield" layoutX="18.0" layoutY="48.0"  prefHeight="34.0" prefWidth="226.0" promptText="Insert here your username:" />
+   <CheckBox fx:id="twoPlayers" layoutX="123.0" layoutY="102.0" mnemonicParsing="false" />
+   <TextField layoutX="161.0" layoutY="97.0" mouseTransparent="true" prefHeight="25.0" prefWidth="75.0" text="2 PLAYERS" />
+   <CheckBox fx:id="threePlayers" layoutX="123.0" layoutY="140.0" mnemonicParsing="false"/>
+   <TextField layoutX="161.0" layoutY="136.0" mouseTransparent="true" prefHeight="25.0" prefWidth="75.0" text="3 PLAYERS" />
+   <Button fx:id="start" layoutX="85.0" layoutY="180.0" mnemonicParsing="false" mouseTransparent="false" onAction="#startGame" text="Start Game" />
+</children>
+</Pane>
+        </children>
 </Pane>
