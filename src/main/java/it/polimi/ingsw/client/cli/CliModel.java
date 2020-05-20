@@ -12,10 +12,7 @@ public class CliModel {
     private boolean isHost = false;
     public String nickname;
     private Player myPlayer;
-
     private Player currentPlayer;
-
-
     protected List<Player> players;
 
     protected boolean isTurnOK;

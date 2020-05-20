@@ -44,6 +44,8 @@ public class CommandParser {
             return new PlaceViewEvent(destPosition);
         }else if(mainCommand.equals("end") || mainCommand.equals("endturn") && numArgs==1){
             return new EndTurnViewEvent();
+        } else if(mainCommand.equals("undo") && numArgs==1){
+            return new UndoViewEvent();
         }
         return null;
     }

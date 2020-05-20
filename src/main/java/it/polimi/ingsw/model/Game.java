@@ -342,13 +342,16 @@ public class Game extends ModelEventEmitter implements Serializable{
             throw new IllegalTurnPhaseException();
 
         backupUndo();
+        boolean isWinner = turn.isWinningMove(board,startPosition,destinationPosition);
         Position pushDestPosition = turn.boardMove(board, startPosition, destinationPosition);
         ModelEvent evt = new MoveWorkerModelEvent(getCurrentPlayer(), startPosition, destinationPosition, pushDestPosition);
         emitEvent(evt);
-        if(turn.isWinningMove(board,startPosition,destinationPosition)) {
+
+        if(isWinner){
             ModelEvent evt2 = new WinModelEvent(getCurrentPlayer());
             emitEvent(evt2);
         }
+
         if(checkHasLost() && players.size()==1) {
             ModelEvent evt3 = new WinModelEvent(players.get(0));
             emitEvent(evt3);

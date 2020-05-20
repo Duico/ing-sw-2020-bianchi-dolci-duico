@@ -147,7 +147,12 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     @Override
     public void visit(WinModelEvent evt) {
-
+        Player winner = evt.getPlayer();
+        if(cliModel.getMyPlayer().getUuid().equals(winner.getUuid())) {
+            printAll(CliText.WINNER.toString());
+        } else{
+            printAll(CliText.LOSER.toString(winner.getNickName()));
+        }
     }
 
     @Override
@@ -173,6 +178,11 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     @Override
     public void visit(UndoModelEvent evt) {
+       for (Player player : evt.getPlayers())
+           cliModel.updatePlayer(player);
+
+       cliModel.setBoard(evt.getBoard());
+       nextOperation();
 
     }
     protected void nextOperation(){
