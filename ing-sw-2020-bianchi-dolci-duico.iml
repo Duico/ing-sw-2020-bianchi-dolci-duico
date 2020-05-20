@@ -22,7 +22,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Desktop/progetto softeng/librerie 3d obj/jimObjModelImporterJFX.jar!/" />
+          <root url="jar://$MODULE_DIR$/jimObjModelImporterJFX.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
