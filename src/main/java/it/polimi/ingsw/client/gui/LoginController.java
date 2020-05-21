@@ -29,17 +29,18 @@ public class LoginController {
 
     @FXML
     protected void initialize() {
-           setVisibleChoiceBox();
+           setVisibleChoiceBox(true);
     }
 
     public void onConnection(boolean askNumPlayers){
         if(askNumPlayers)
-            setVisibleChoiceBox();
+            setVisibleChoiceBox(true);
         //stampa
     }
 
-    public void setVisibleChoiceBox(){
-        choiceBox.setVisible(true);
+    public void setVisibleChoiceBox(boolean set){
+        System.out.println("ciao");
+        choiceBox.setVisible(set);
     }
 
 
@@ -128,6 +129,6 @@ public class LoginController {
 
     public void setVisible(ActionEvent actionEvent) {
         if(this.isVisibleChoiceBox)
-            setVisibleChoiceBox();
+            setVisibleChoiceBox(true);
     }
     }
