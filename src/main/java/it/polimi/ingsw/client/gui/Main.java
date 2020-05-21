@@ -7,9 +7,12 @@ public class Main extends Application {
 
 
 
+
     @Override
     public void start(Stage stage) throws Exception {
         LoginController login = new LoginController();
+
+//        Scene scene = login.loginScene();
         stage.setScene(login.loginScene());
         stage.sizeToScene();
         stage.setResizable(false);

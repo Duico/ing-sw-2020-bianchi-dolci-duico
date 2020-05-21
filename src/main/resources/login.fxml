@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -22,12 +22,10 @@
          <Image url="@pane.png" />
       </image>
    </ImageView>
-   <TextField fx:id="textfield" layoutX="18.0" layoutY="48.0"  prefHeight="34.0" prefWidth="226.0" promptText="Insert here your username:" />
-   <CheckBox fx:id="twoPlayers" layoutX="123.0" layoutY="102.0" mnemonicParsing="false" />
-   <TextField layoutX="161.0" layoutY="97.0" mouseTransparent="true" prefHeight="25.0" prefWidth="75.0" text="2 PLAYERS" />
-   <CheckBox fx:id="threePlayers" layoutX="123.0" layoutY="140.0" mnemonicParsing="false"/>
-   <TextField layoutX="161.0" layoutY="136.0" mouseTransparent="true" prefHeight="25.0" prefWidth="75.0" text="3 PLAYERS" />
+   <TextField fx:id="textfield" layoutX="18.0" layoutY="48.0" onAction="#setVisible" prefHeight="34.0" prefWidth="226.0" promptText="Insert here your username:" />
    <Button fx:id="start" layoutX="85.0" layoutY="180.0" mnemonicParsing="false" mouseTransparent="false" onAction="#startGame" text="Start Game" />
+            <Label layoutX="184.0" layoutY="102.0" />
+            <ChoiceBox fx:id="choiceBox" layoutX="56.0" layoutY="118.0" onMouseClicked="#showNumPlayers" prefWidth="150.0" visible="false" />
 </children>
 </Pane>
         </children>
