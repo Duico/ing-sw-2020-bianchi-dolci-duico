@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.cli;
+package it.polimi.ingsw.client;
 import it.polimi.ingsw.controller.response.*;
 
 public interface ControllerResponseVisitor {

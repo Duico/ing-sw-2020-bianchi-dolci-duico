@@ -1,10 +1,9 @@
 package it.polimi.ingsw.model.event;
 
-import it.polimi.ingsw.client.cli.ModelEventVisitor;
+import it.polimi.ingsw.client.ModelEventVisitor;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.TurnPhase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NewTurnModelEvent extends UpdateModelEvent {

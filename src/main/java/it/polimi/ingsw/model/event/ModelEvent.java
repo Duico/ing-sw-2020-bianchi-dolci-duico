@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.event;
 
 import it.polimi.ingsw.client.GameMessageVisitor;
-import it.polimi.ingsw.client.cli.ModelEventVisitor;
+import it.polimi.ingsw.client.ModelEventVisitor;
 import it.polimi.ingsw.server.message.GameMessage;
 import it.polimi.ingsw.model.Player;
 

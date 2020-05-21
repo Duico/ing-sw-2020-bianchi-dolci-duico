@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.ClientEventEmitter;
+import it.polimi.ingsw.client.SetUpMessageVisitor;
 import it.polimi.ingsw.client.message.*;
 import it.polimi.ingsw.server.message.*;
 

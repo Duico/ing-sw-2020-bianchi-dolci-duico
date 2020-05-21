@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

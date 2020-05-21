@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.message;
 
-import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
+import it.polimi.ingsw.client.SetUpMessageVisitor;
 import it.polimi.ingsw.model.Player;
 
 public class InitSetUpMessage extends SetUpMessage {
