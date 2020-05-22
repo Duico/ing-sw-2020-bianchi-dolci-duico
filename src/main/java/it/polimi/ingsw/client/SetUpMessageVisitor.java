@@ -11,5 +11,4 @@ public interface SetUpMessageVisitor {
     //To inform the cli about the state of the connection
     void visit(ConnectionMessage connectionMessage);
 //    void visit(DisconnectionSetUpMessage evt);
-
 }

@@ -1,39 +1,39 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.ClientConnection;
+import it.polimi.ingsw.client.GameMessageVisitor;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.Timer;
-
 public class Main extends Application {
-
-    LoginController login = new LoginController();
-
-    public void timer(LoginController login) {
-        java.util.Timer timer = new Timer();
-        int delta = 5000;
-        timer.schedule(new java.util.TimerTask() {
-            @Override
-            public void run() {
-                login.setVisibleChoiceBox(false);
-            }
-        }, delta);
-
-    }
-
-
     @Override
     public void start(Stage stage) throws Exception {
-        LoginController login = new LoginController();
-//        Scene scene = login.loginScene();
-        stage.setScene(login.loginScene());
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/login.fxml"));
+        //or use .setLocation
+
+        Parent login = fxmlLoader.load();
+        Scene scene = new Scene(login);
+
+        stage.setScene(scene);
+        LoginController controller = fxmlLoader.getController();
 //        login.setVisibleChoiceBox(false);
+        //TEMP
+        GameMessageVisitor guiLoginGameMessageVisitor = new GuiLoginGameMessageVisitor(new GuiModelEventVisitor(), new GuiControllerResponseVisitor(), new GuiLoginSetUpMessageVisitor(controller));
+        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, guiLoginGameMessageVisitor);
+        new Thread( clientConnection::start ).start();
+
         stage.sizeToScene();
         stage.setResizable(false);
         stage.show();
-        timer(login);
-    }
 
+
+        controller.setVisibleChoiceBox(false);
+
+    }
 
 
     public static void main(String[] args) {

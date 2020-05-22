@@ -1,5 +1,10 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.SetUpMessageVisitor;
+import it.polimi.ingsw.server.message.ConnectionMessage;
+import it.polimi.ingsw.server.message.InitSetUpMessage;
+import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,22 +19,28 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Timer;
 
 public class LoginController {
 
     private boolean isVisibleChoiceBox;
 
+    @FXML
     public TextField textfield;
+    @FXML
     public Button start;
+    @FXML
     public ChoiceBox choiceBox;
 
+    public Runnable testLambda;
 
     public LoginController(){
     }
 
     @FXML
     protected void initialize() {
-           setVisibleChoiceBox(true);
+        initChoiceBox();
+        setVisibleChoiceBox(true);
     }
 
     public void onConnection(boolean askNumPlayers){
@@ -83,11 +94,11 @@ public class LoginController {
     }
 
 
-    public Scene loginScene() throws IOException {
-        Parent page = FXMLLoader.load(getClass().getResource("/login.fxml"));
-        Scene scene = new Scene(page);
-        return scene;
-    }
+//    public Scene loginScene() throws IOException {
+//        Parent page = FXMLLoader.load(getClass().getResource("/login.fxml"));
+//        Scene scene = new Scene(page);
+//        return scene;
+//    }
 
     public void launchChooseCard() throws IOException {
         ChooseCardController chooseCard = new ChooseCardController();
@@ -122,13 +133,14 @@ public class LoginController {
     }
 
 
-    @FXML
-    private void showNumPlayers(MouseEvent mouseEvent) {
-        initChoiceBox();
-    }
+//    @FXML
+//    private void showNumPlayers(MouseEvent mouseEvent) {
+//
+//    }
 
     public void setVisible(ActionEvent actionEvent) {
         if(this.isVisibleChoiceBox)
             setVisibleChoiceBox(true);
     }
-    }
+
+}

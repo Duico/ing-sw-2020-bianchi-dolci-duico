@@ -3,7 +3,6 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.GameMessageVisitor;
 import it.polimi.ingsw.client.cli.*;
-import it.polimi.ingsw.client.event.ClientConnectionEvent;
 import it.polimi.ingsw.client.event.ClientConnectionEventListener;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.view.ViewEventListener;
@@ -39,7 +38,7 @@ public class CliApp {
         //clientConnection.run();
         //cliMessageReaderThread.start();
         cliInputHandlerThread.start();
-        clientConnection.run();
+        clientConnection.start();
 //        connectionThread.start();
         try{
             //cliMessageReaderThread.join();
