@@ -7,25 +7,33 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="770.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.gui.LoginController">
    <children>
       <ImageView fitHeight="480.0" fitWidth="770.0">
          <image>
-            <Image url="@copertina.jpg" />
+            <Image url="@/textures/copertina.jpg" />
          </image>
       </ImageView>
-      <Pane layoutX="254.0" layoutY="205.0" prefHeight="236.0" prefWidth="262.0">
+      <Pane fx:id="loginPane" layoutX="254.0" layoutY="205.0" prefHeight="236.0" prefWidth="262.0">
          <children>
    <ImageView fitHeight="236.0" fitWidth="273.0" layoutX="-5.0">
       <image>
-         <Image url="@pane.png" />
+         <Image url="@/textures/pane.png" />
       </image>
    </ImageView>
-   <TextField fx:id="textfield" layoutX="18.0" layoutY="48.0" onAction="#setVisible" prefHeight="34.0" prefWidth="226.0" promptText="Insert here your username:" />
+   <TextField fx:id="textfield" layoutX="18.0" layoutY="48.0" prefHeight="34.0" prefWidth="226.0" promptText="Insert here your username:" />
    <Button fx:id="start" layoutX="85.0" layoutY="180.0" mnemonicParsing="false" mouseTransparent="false" onAction="#startGame" text="Start Game" />
             <Label layoutX="184.0" layoutY="102.0" />
-            <ChoiceBox fx:id="choiceBox" layoutX="56.0" layoutY="118.0" prefWidth="150.0" visible="false" />
+             <ChoiceBox fx:id="choiceBox" layoutX="56.0" layoutY="118.0" prefWidth="150.0" visible="false" />
+            <Label fx:id="message" layoutX="18.0" layoutY="94.0" />
+            <Label layoutX="18.0" layoutY="23.0" text="Insert here your username:" />
+            <Label fx:id="waitLabel" layoutX="-68.0" layoutY="83.0" text="WAIT FOR OTHER PLAYERS" textAlignment="CENTER" textFill="#1c1b1b" visible="false">
+               <font>
+                  <Font size="38.0" />
+               </font>
+            </Label>
 </children>
 </Pane>
         </children>

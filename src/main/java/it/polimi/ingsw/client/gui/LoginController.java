@@ -1,29 +1,18 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.client.SetUpMessageVisitor;
-import it.polimi.ingsw.server.message.ConnectionMessage;
-import it.polimi.ingsw.server.message.InitSetUpMessage;
-import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
-import javafx.application.Platform;
+import it.polimi.ingsw.client.ClientEventEmitter;
+import it.polimi.ingsw.client.message.SignUpMessage;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Timer;
 
-public class LoginController {
+public class LoginController extends ClientEventEmitter {
 
-    private boolean isVisibleChoiceBox;
 
     @FXML
     public TextField textfield;
@@ -31,8 +20,37 @@ public class LoginController {
     public Button start;
     @FXML
     public ChoiceBox choiceBox;
+    @FXML
+    public Label message;
+    @FXML
+    public Label waitLabel;
+    @FXML
+    public Pane loginPane;
 
-    public Runnable testLambda;
+    private int numPlayers;
+    private String username;
+
+
+    public void setMessage(String message){
+        this.message.setText(message);
+    }
+
+    public void setNumPlayers(int n){
+        this.numPlayers= n;
+    }
+
+    public int getNumPlayers(){
+        return this.numPlayers;
+    }
+
+    public void setUsername(String name){
+        this.username=name;
+    }
+
+    public String getUsername(){
+        return this.username;
+    }
+
 
     public LoginController(){
     }
@@ -41,19 +59,31 @@ public class LoginController {
     protected void initialize() {
         initChoiceBox();
         setVisibleChoiceBox(true);
+        waitLabel.setStyle("-fx-background-color:white;");
     }
 
-    public void onConnection(boolean askNumPlayers){
-        if(askNumPlayers)
-            setVisibleChoiceBox(true);
-        //stampa
-    }
+
 
     public void setVisibleChoiceBox(boolean set){
-        System.out.println("ciao");
         choiceBox.setVisible(set);
     }
 
+    public void askSetUpInfo(boolean askNumPlayers){
+        if(askNumPlayers){
+            setMessage("Select number of players:");
+            setVisibleChoiceBox(true);
+        }else{
+            setMessage("Wait for the Challenger");
+            setVisibleChoiceBox(false);
+        }
+    }
+
+    public void correctSignUp(boolean waitOtherPlayers){
+        if(waitOtherPlayers){
+            loginPane.setVisible(false);
+            waitLabel.setVisible(true);
+        }
+    }
 
     public void initChoiceBox(){
         String twoPlayers="2 PLAYERS";
@@ -63,7 +93,8 @@ public class LoginController {
 
     private int checkValidStart(){
         //check if username is ok
-        if(textfield.getText().length()!=0){    //esempio
+        String insert = textfield.getText().trim();
+        if(insert.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$")){    //esempio
             if(choiceBox.getValue().toString().equals("2 PLAYERS")){
                 System.out.println("2");
                 Manager.getInstance().setNumPlayers(2);
@@ -82,16 +113,6 @@ public class LoginController {
         return 3;
     }
 
-
-    public void setInvisibleLabels(){
-        choiceBox.setVisible(false);
-    }
-
-    public void usernameAlreadyUsed(){
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText("This usename is already used!");
-        alert.showAndWait();
-    }
 
 
 //    public Scene loginScene() throws IOException {
@@ -113,10 +134,10 @@ public class LoginController {
 
 
     public void startGame(ActionEvent actionEvent) throws Exception {
-        System.out.println(choiceBox.getValue().toString());
+
         if(checkValidStart()==1)
         {
-            //emitEvent(username, numPLayers)
+            emitSignUp(new SignUpMessage(username, numPlayers));
         }
         else if(checkValidStart()==2){
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -132,15 +153,5 @@ public class LoginController {
 
     }
 
-
-//    @FXML
-//    private void showNumPlayers(MouseEvent mouseEvent) {
-//
-//    }
-
-    public void setVisible(ActionEvent actionEvent) {
-        if(this.isVisibleChoiceBox)
-            setVisibleChoiceBox(true);
-    }
 
 }

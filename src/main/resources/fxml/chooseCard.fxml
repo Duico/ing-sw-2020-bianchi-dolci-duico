@@ -39,7 +39,7 @@
          <graphic>
             <ImageView fx:id="buttonImage" fitHeight="63.0" fitWidth="118.0" visible="false">
                <image>
-                  <Image url="@button-play-normal.png" />
+                  <Image url="@/textures/button-play-normal.png" />
                </image>
             </ImageView>
          </graphic>

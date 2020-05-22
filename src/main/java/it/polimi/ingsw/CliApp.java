@@ -21,7 +21,7 @@ public class CliApp {
         CliSetUpMessageVisitor setUpMessageVisitor = new CliSetUpMessageVisitor(cli, cliModel);
 
         GameMessageVisitor gameMessageVisitor = new CliGameMessageVisitor(cli, modelEventVisitor, controllerResponseVisitor, setUpMessageVisitor);
-        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, gameMessageVisitor);
+        ClientConnection clientConnection = new ClientConnection("3.19.114.185", 17168, gameMessageVisitor);
         clientConnection.addEventListener(ClientConnectionEventListener.class, cli);
 
         //CliMessageReader cliMessageReader = new CliMessageReader(cli, clientConnection, cliController);

@@ -95,7 +95,7 @@ public class ChooseCardController {
 
 
     private ImageView image(String name){
-        ImageView imageView = new ImageView(name+".png");
+        ImageView imageView = new ImageView("textures/"+name+".png");
         imageView.setFitHeight(150);
         imageView.setFitWidth(100);
         return imageView;
@@ -163,7 +163,7 @@ public class ChooseCardController {
 
 
     public Scene chooseCardScene() throws IOException {
-        Parent page = FXMLLoader.load(getClass().getResource("/chooseCard.fxml"));
+        Parent page = FXMLLoader.load(getClass().getResource("/fxml/chooseCard.fxml"));
         Scene scene = new Scene(page);
         return scene;
     }
