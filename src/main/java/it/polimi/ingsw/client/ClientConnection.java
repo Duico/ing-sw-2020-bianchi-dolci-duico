@@ -109,7 +109,9 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
             e.printStackTrace();
         } finally {
             try {
-                socket.close();
+                if(socket != null) {
+                    socket.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
