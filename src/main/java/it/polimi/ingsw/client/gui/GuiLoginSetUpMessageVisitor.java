@@ -54,19 +54,12 @@ public class GuiLoginSetUpMessageVisitor implements SetUpMessageVisitor {
 
     @Override
     public void visit(ConnectionMessage connectionMessage) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
             if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
-                Platform.runLater(()->{
-                    alert.setHeaderText("End game, player disconnected");
-                    alert.showAndWait();
-                    //close window
-                });
+                loginController.alert("End game, player disconnected");
+                //CLOSE
             }else if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
-                Platform.runLater(()->{
-                    alert.setHeaderText("You have been kicked from the game, because there are too many players.");
-                    alert.showAndWait();
-                    //close window
-                });
+                loginController.alert("You have been kicked from the game, because there are too many players.");
+                //CLOSE
             }
     }
 }

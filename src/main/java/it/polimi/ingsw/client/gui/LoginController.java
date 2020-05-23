@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.client.message.SignUpMessage;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,9 +28,13 @@ public class LoginController extends ClientEventEmitter {
     @FXML
     public Pane loginPane;
 
+    private boolean isAskNumPlayers;
     private int numPlayers;
     private String username;
 
+    public void setIsAskNumPlayers(boolean isAskNumPlayers){
+        this.isAskNumPlayers=isAskNumPlayers;
+    }
 
     public void setMessage(String message){
         this.message.setText(message);
@@ -72,9 +77,11 @@ public class LoginController extends ClientEventEmitter {
         if(askNumPlayers){
             setMessage("Select number of players:");
             setVisibleChoiceBox(true);
+            setIsAskNumPlayers(true);
         }else{
             setMessage("Wait for the Challenger");
             setVisibleChoiceBox(false);
+            setIsAskNumPlayers(false);
         }
     }
 
@@ -91,26 +98,53 @@ public class LoginController extends ClientEventEmitter {
         choiceBox.setItems(FXCollections.observableArrayList(twoPlayers,threePlayers));
     }
 
-    private int checkValidStart(){
+    private Integer checkChoiceBox(){
+        if(choiceBox.getValue().toString().equals("2 PLAYERS")){
+//            System.out.println("2");
+            return 2;
+        }else if(choiceBox.getValue().toString().equals("3 PLAYERS")){
+//            System.out.println("3");
+            return 3;
+        }else{
+            Platform.runLater(()->{
+                alert("You must select one option!");
+            });
+            return null;
+        }
+    }
+
+    private void checkValidStart(){
         //check if username is ok
         String insert = textfield.getText().trim();
-        if(insert.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$")){    //esempio
-            if(choiceBox.getValue().toString().equals("2 PLAYERS")){
-                System.out.println("2");
-                Manager.getInstance().setNumPlayers(2);
-//                Manager.getInstance().setUsername(textfield.getText());
-//                Manager.getInstance().addPlayer(textfield.getText());
-                return 1;
-            }else if(choiceBox.getValue().toString().equals("3 PLAYERS")){
-                System.out.println("3");
-                Manager.getInstance().setNumPlayers(3);
-//                Manager.getInstance().setUsername(textfield.getText());
-//                Manager.getInstance().addPlayer(textfield.getText());
-                return 1;
-            }else
-                return 2;
+        boolean checkUsername =insert.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$");
+        if(isAskNumPlayers){
+            if(checkUsername) {
+                Integer choiceBoxNumPlayers = checkChoiceBox();
+                if(choiceBoxNumPlayers==null){
+                    username=null;
+                }
+                else {
+                    username = insert;
+                    if(choiceBoxNumPlayers==2 || choiceBoxNumPlayers==3){
+                        emitSignUp(new SignUpMessage(username, choiceBoxNumPlayers));
+                    }
+                }
+
+
+            }else{
+                alert("Invalid username!");
+            }
+
+        }else{
+            if(checkUsername){
+                username=insert;
+                emitSignUp(new SignUpMessage(username));
+
+            }else{
+                alert("Invalid username!");
+            }
         }
-        return 3;
+
     }
 
 
@@ -135,23 +169,16 @@ public class LoginController extends ClientEventEmitter {
 
     public void startGame(ActionEvent actionEvent) throws Exception {
 
-        if(checkValidStart()==1)
-        {
-            emitSignUp(new SignUpMessage(username, numPlayers));
-        }
-        else if(checkValidStart()==2){
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setHeaderText("You must one option!");
-            alert.showAndWait();
-        }
-        else if(checkValidStart()==3){
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setHeaderText("Invalid Username!");
-            alert.showAndWait();
-        }
-
+       checkValidStart();
 
     }
 
 
+    public void alert(String message){
+        Platform.runLater(()->{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setHeaderText(message);
+            alert.showAndWait();
+        });
+    }
 }
