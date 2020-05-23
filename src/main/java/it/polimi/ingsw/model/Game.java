@@ -1,13 +1,16 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.client.event.ClientConnectionEvent;
 import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
+import it.polimi.ingsw.server.TimeOutCheckerInterface;
+import it.polimi.ingsw.server.TimeoutCounter;
+import it.polimi.ingsw.server.message.ConnectionMessage;
 
 import javax.swing.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.Timer;
 import java.util.stream.Collectors;
 
 /**
@@ -138,7 +141,8 @@ public class Game extends ModelEventEmitter implements Serializable{
                 if (card.getName().equals(nameCard)) {
                     Player currentPlayer = turn.getCurrentPlayer();
                     currentPlayer.setCard(card);
-                    ModelEvent evt = new SetCardModelEvent(getCurrentPlayer(), nameCard);
+                    //ModelEvent evt = new SetCardModelEvent(getCurrentPlayer(), nameCard);
+                    ModelEvent evt = new SetCardModelEvent(getCurrentPlayer(), card);
                     emitEvent(evt);
                     chosenCards.remove(card);
                     /*ModelEvent evt2 = new ChosenCardsModelEvent(getCurrentPlayer(), getChosenCardsNames());
@@ -342,6 +346,7 @@ public class Game extends ModelEventEmitter implements Serializable{
             throw new IllegalTurnPhaseException();
 
         backupUndo();
+        startTimerUndo();
         boolean isWinner = turn.isWinningMove(board,startPosition,destinationPosition);
         Position pushDestPosition = turn.boardMove(board, startPosition, destinationPosition);
         ModelEvent evt = new MoveWorkerModelEvent(getCurrentPlayer(), startPosition, destinationPosition, pushDestPosition);
@@ -352,10 +357,11 @@ public class Game extends ModelEventEmitter implements Serializable{
             emitEvent(evt2);
         }
 
+        /*
         if(checkHasLost() && players.size()==1) {
             ModelEvent evt3 = new WinModelEvent(players.get(0));
             emitEvent(evt3);
-        }
+        }*/
     }
 
     public boolean isAllowedToMove(){
@@ -394,16 +400,17 @@ public class Game extends ModelEventEmitter implements Serializable{
         if(turn.getPhase() != TurnPhase.NORMAL)
             throw new IllegalTurnPhaseException();
         backupUndo();
+        startTimerUndo();
         turn.boardBuild(board, startPosition, destinationPosition, isDome);
         ModelEvent evt = new BuildWorkerModelEvent(getCurrentPlayer(), startPosition, destinationPosition, isDome);
         emitEvent(evt);
         //TODO investigate
         //checkHasLost is false beacuse the undo is still available
         //when the time for undoing is over we should check again (if currentTurn == savedTurn) for checkHasLost
-        if(checkHasLost() && players.size()==1) {
+        /*if(checkHasLost() && players.size()==1) {
             ModelEvent evt2 = new WinModelEvent(players.get(0));
             emitEvent(evt2);
-        }
+        }*/
 
     }
 
@@ -413,6 +420,7 @@ public class Game extends ModelEventEmitter implements Serializable{
         if(turn.getPhase() != TurnPhase.PLACE_WORKERS)
             throw new IllegalTurnPhaseException();
         backupUndo();
+        startTimerUndo();
 
         int workerId = turn.boardPlace(board, placePosition);
         if(workerId>=0) {
@@ -452,17 +460,28 @@ public class Game extends ModelEventEmitter implements Serializable{
 
 
     public boolean checkHasLost(){
+
         if(hasLost()){
-            System.out.println("entro nell'has lost");
+
             //notify view
             Player currentPlayer = turn.getCurrentPlayer();
             for(int i=0; i<numWorkers; i++){
                 Position workerPosition = currentPlayer.getWorkerPosition(i);
                 board.removeWorker(workerPosition);
             }
-            ModelEvent evt = new PlayerDefeatModelEvent(getCurrentPlayer(), false);
-            emitEvent(evt);
+            Player nextPlayer = this.getNextPlayer();
             players.remove(currentPlayer);
+            if(players.size()==1) {
+                ModelEvent evt2 = new WinModelEvent(players.get(0));
+                emitEvent(evt2);
+            }else {
+                ModelEvent evt = new PlayerDefeatModelEvent(getCurrentPlayer(), false);
+                emitEvent(evt);
+                nextTurn(nextPlayer);
+            }
+            //Control if he has lost then if there is another player emit win event
+
+
             return true;
         }
         return false;
@@ -569,4 +588,19 @@ public class Game extends ModelEventEmitter implements Serializable{
 //        }
 //        return newGame;
 //    }
+
+    public void startTimerUndo() {
+        java.util.Timer timer = new Timer();
+        int delta = 5000;
+        timer.schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                turn.isUndoAvailable = false;
+                checkHasLost();
+            }
+        }, delta);
+
+    }
+
+    
 }

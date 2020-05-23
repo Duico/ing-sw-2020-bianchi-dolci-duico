@@ -335,6 +335,26 @@ public class NormalTurn extends Turn {
         return false;
     }
 
+    /*@Override
+    boolean isLoseCondition(Board board) {
+        Player currentPlayer = this.getCurrentPlayer();
+        boolean loseCondition = true;
+        if(this.isSetCurrentWorker()){
+            Position currentWorkerPosition = currentPlayer.getWorkerPosition(currentWorkerId);
+            loseCondition = cannotMakeRequiredOperation(board, currentWorkerPosition); //&& loseCondition
+
+        }else {//first operation of the turn can have workerId not set
+            for (int workerId = 0; workerId < currentPlayer.getNumWorkers(); workerId++) {
+                Position workerPosition = currentPlayer.getWorkerPosition(workerId);
+                loseCondition = cannotMakeRequiredOperation(board, workerPosition);
+                if(!loseCondition)
+                    return false;
+            }
+        }
+        return loseCondition;
+    }
+    */
+
     @Override
     boolean isLoseCondition(Board board) {
         Player currentPlayer = this.getCurrentPlayer();

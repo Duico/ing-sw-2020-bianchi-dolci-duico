@@ -142,6 +142,9 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     @Override
     public void visit(PlayerDefeatModelEvent evt) {
+        Player playerDefeat = evt.getPlayer();
+        cliModel.removePlayer(playerDefeat);
+        printAll();
 
     }
 
@@ -157,10 +160,21 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     @Override
     public void visit(SetCardModelEvent evt) {
-        cliModel.setPlayerCard(evt.getPlayer(), evt.getCardName());
+        /*System.out.println(evt.getPlayer().getNickName());
+        System.out.println(evt.getPlayer().getCard().getName());*/
+        cliModel.setPlayerCard(evt.getPlayer(), evt.getCard());
         boolean isOwnCard = cliModel.getMyPlayer().equalsUuid(evt.getPlayer());
+        CliText cliText;
+        if(isOwnCard){
+            cliText = CliText.SET_CARD_OWN;
+        }else{
+            cliText = CliText.SET_CARD_OTHER;
+        }
+        //cliModel.updatePlayer(evt.getPlayer());
+        cli.print(System.lineSeparator() + cliText.toString(evt.getCard().getName(), evt.getPlayer().getNickName()));
 
-        cli.execInputRequest( () -> {
+
+        /*cli.execInputRequest( () -> {
         CliText cliText;
             if(isOwnCard){
                 cliText = CliText.SET_CARD_OWN;
@@ -170,8 +184,8 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
             //TODO generalize
             //ORIGINALLY infoOut instead of cli
-                cli.print(System.lineSeparator() + cliText.toString(evt.getCardName(), evt.getPlayer().getNickName()));
-        });
+                //cli.print(System.lineSeparator() + cliText.toString(evt.getCardName(), evt.getPlayer().getNickName()));
+        });*/
 //        askFirstPlayerLock.notifyAll();
 
     }

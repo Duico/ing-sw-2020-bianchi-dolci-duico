@@ -47,7 +47,7 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
 
     @Override
     public void visit(FailedUndoControllerResponse r) {
-        cli.println(Color.YELLOW_BOLD.escape("Failed undo"));
+        printAll(CliText.UNDO_NOT_AVAILABLE.toString());
     }
 
     @Override
