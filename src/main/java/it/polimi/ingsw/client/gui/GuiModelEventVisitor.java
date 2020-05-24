@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ModelEventVisitor;
+import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.event.*;
 
 public class GuiModelEventVisitor extends ModelEventVisitor {
@@ -36,7 +37,9 @@ public class GuiModelEventVisitor extends ModelEventVisitor {
 
     @Override
     public void visit(NewTurnModelEvent evt) {
-
+        if(evt.getTurnPhase().equals(TurnPhase.CHOSE_CARDS)){
+            //load scene chooseCard fxml
+        }
     }
 
     @Override

@@ -29,12 +29,12 @@
              <ChoiceBox fx:id="choiceBox" layoutX="56.0" layoutY="118.0" prefWidth="150.0" visible="false" />
             <Label fx:id="message" layoutX="18.0" layoutY="94.0" />
             <Label layoutX="18.0" layoutY="23.0" text="Insert here your username:" />
-            <Label fx:id="waitLabel" layoutX="-68.0" layoutY="83.0" text="WAIT FOR OTHER PLAYERS" textAlignment="CENTER" textFill="#1c1b1b" visible="false">
-               <font>
-                  <Font size="38.0" />
-               </font>
-            </Label>
 </children>
 </Pane>
+      <Label fx:id="waitLabel" layoutX="120.0" layoutY="200.0" prefHeight="55.0" prefWidth="534.0" text="WAIT FOR OTHER PLAYERS" textAlignment="CENTER" textFill="#1c1b1b" visible="false">
+         <font>
+            <Font size="38.0" />
+         </font>
+      </Label>
         </children>
 </Pane>

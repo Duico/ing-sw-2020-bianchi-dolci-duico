@@ -78,17 +78,27 @@ public class LoginController extends ClientEventEmitter {
             setVisibleChoiceBox(true);
             setIsAskNumPlayers(true);
         }else{
-            setMessage("Wait for the Challenger");
+//            setMessage("Wait for the Challenger");
             setVisibleChoiceBox(false);
             setIsAskNumPlayers(false);
         }
     }
 
     public void correctSignUp(boolean waitOtherPlayers){
+        loginPane.setVisible(false);
+
         if(waitOtherPlayers){
-            loginPane.setVisible(false);
-            waitLabel.setVisible(true);
+            Platform.runLater(()->{
+//                waitLabel.setText("Waiting for other Players");
+            });
+        }else {
+            Platform.runLater(()->{
+//                waitLabel.setText("Waiting for other Players");
+
+            });
         }
+
+        waitLabel.setVisible(true);
     }
 
     public void initChoiceBox(){
@@ -99,15 +109,11 @@ public class LoginController extends ClientEventEmitter {
 
     private Integer checkChoiceBox(){
         if(choiceBox.getValue().toString().equals("2 PLAYERS")){
-//            System.out.println("2");
             return 2;
         }else if(choiceBox.getValue().toString().equals("3 PLAYERS")){
-//            System.out.println("3");
             return 3;
         }else{
-            Platform.runLater(()->{
-                alert("You must select one option!");
-            });
+            alert("You must select one option!");
             return null;
         }
     }
@@ -124,7 +130,11 @@ public class LoginController extends ClientEventEmitter {
                 }
                 else {
                     username = insert;
-                    if(choiceBoxNumPlayers==2 || choiceBoxNumPlayers==3){
+                    if(choiceBoxNumPlayers==2){
+//                        System.out.println("signupmessage"+" "+username+choiceBoxNumPlayers);
+                        emitSignUp(new SignUpMessage(username, choiceBoxNumPlayers));
+                    }else if(choiceBoxNumPlayers==3){
+//                        System.out.println("signupmessage"+" "+username+choiceBoxNumPlayers);
                         emitSignUp(new SignUpMessage(username, choiceBoxNumPlayers));
                     }
                 }
@@ -137,6 +147,7 @@ public class LoginController extends ClientEventEmitter {
         }else{
             if(checkUsername){
                 username=insert;
+                System.out.println("signupmessage"+" "+username);
                 emitSignUp(new SignUpMessage(username));
 
             }else{
