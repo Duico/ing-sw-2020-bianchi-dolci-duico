@@ -2,18 +2,13 @@ package it.polimi.ingsw.client;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 //import it.polimi.ingsw.client.cli.Color;
 import it.polimi.ingsw.client.event.ClientConnectionEvent;
-import it.polimi.ingsw.client.event.ClientConnectionEventListener;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.client.message.SignUpMessage;
-import it.polimi.ingsw.server.SocketViewConnection;
 import it.polimi.ingsw.server.TimeOutCheckerInterface;
 import it.polimi.ingsw.server.TimeoutCounter;
 import it.polimi.ingsw.server.message.*;

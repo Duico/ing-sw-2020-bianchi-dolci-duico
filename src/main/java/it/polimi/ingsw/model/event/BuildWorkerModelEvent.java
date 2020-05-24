@@ -1,10 +1,8 @@
 package it.polimi.ingsw.model.event;
 
-import it.polimi.ingsw.client.cli.ModelEventVisitor;
+import it.polimi.ingsw.client.ModelEventVisitor;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
-
-import java.util.UUID;
 
 public class BuildWorkerModelEvent extends WorkerModelEvent {
     private Position destinationPosition;

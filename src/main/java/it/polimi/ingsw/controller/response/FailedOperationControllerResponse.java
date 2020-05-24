@@ -1,9 +1,7 @@
 package it.polimi.ingsw.controller.response;
 
-import it.polimi.ingsw.client.cli.ControllerResponseVisitor;
-import it.polimi.ingsw.client.cli.ModelEventVisitor;
+import it.polimi.ingsw.client.ControllerResponseVisitor;
 import it.polimi.ingsw.model.Operation;
-import it.polimi.ingsw.view.event.MoveViewEvent;
 import it.polimi.ingsw.view.event.WorkerViewEvent;
 
 public class FailedOperationControllerResponse extends ControllerResponse {

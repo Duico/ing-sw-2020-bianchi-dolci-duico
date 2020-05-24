@@ -1,12 +1,7 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.event.ClientConnectionEvent;
-import it.polimi.ingsw.client.event.ClientConnectionEventListener;
-import it.polimi.ingsw.controller.response.ControllerResponse;
-import it.polimi.ingsw.model.event.ModelEvent;
 import it.polimi.ingsw.server.message.ConnectionMessage;
-import it.polimi.ingsw.server.message.GameMessage;
-import it.polimi.ingsw.server.message.SetUpMessage;
 
 import java.io.*;
 import java.util.concurrent.ExecutorService;

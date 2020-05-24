@@ -1,12 +1,9 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.client.ClientConnection;
-import it.polimi.ingsw.client.GameMessageVisitor;
+import it.polimi.ingsw.client.MessageVisitor;
 import it.polimi.ingsw.client.cli.*;
-import it.polimi.ingsw.client.event.ClientConnectionEvent;
-import it.polimi.ingsw.client.event.ClientConnectionEventListener;
-import it.polimi.ingsw.client.message.SignUpListener;
-import it.polimi.ingsw.view.ViewEventListener;
+import it.polimi.ingsw.client.event.MessageListener;
 
 
 public class CliApp {
@@ -21,8 +18,9 @@ public class CliApp {
 //        CliControllerResponseVisitor controllerResponseVisitor = new CliControllerResponseVisitor(cli, cliModel);
 //        CliSetUpMessageVisitor setUpMessageVisitor = new CliSetUpMessageVisitor(cli, cliModel);
 
-        GameMessageVisitor gameMessageVisitor = new CliGameMessageVisitor(cli, cliModel);
-        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, gameMessageVisitor);
+        MessageVisitor gameMessageVisitor = new CliMessageVisitor(cli, cliModel);
+        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345);
+        clientConnection.addEventListener(MessageListener.class, gameMessageVisitor);
 //        clientConnection.addEventListener(ClientConnectionEventListener.class, cli);
         gameMessageVisitor.addSignUpListener(clientConnection);
         gameMessageVisitor.addViewEventListener(clientConnection);

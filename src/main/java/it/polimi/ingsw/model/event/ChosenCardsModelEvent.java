@@ -1,9 +1,8 @@
 package it.polimi.ingsw.model.event;
 
-import it.polimi.ingsw.client.cli.ModelEventVisitor;
+import it.polimi.ingsw.client.ModelEventVisitor;
 import it.polimi.ingsw.model.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChosenCardsModelEvent extends UpdateModelEvent {
