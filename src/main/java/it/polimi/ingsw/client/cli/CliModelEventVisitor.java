@@ -143,8 +143,13 @@ public class CliModelEventVisitor extends ModelEventVisitor {
     @Override
     public void visit(PlayerDefeatModelEvent evt) {
         Player playerDefeat = evt.getPlayer();
+        if(cliModel.getMyPlayer().getUuid().equals(playerDefeat.getUuid())) {
+            printAll(CliText.LOSER_BLOCK.toString());
+        } else{
+            printAll(CliText.ADVISE_LOSER_BLOCK.toString(playerDefeat.getNickName()));
+        }
         cliModel.removePlayer(playerDefeat);
-        printAll();
+
 
     }
 

@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.cli.ControllerResponseVisitor;
 import it.polimi.ingsw.client.cli.ModelEventVisitor;
 import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
+import it.polimi.ingsw.client.event.ClientConnectionEventListener;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.controller.response.ControllerResponse;
 import it.polimi.ingsw.model.event.ModelEvent;
@@ -12,7 +13,7 @@ import it.polimi.ingsw.view.ViewEventListener;
 
 import java.util.EventListener;
 
-public abstract class GameMessageVisitor {
+public abstract class GameMessageVisitor implements ClientConnectionEventListener {
     protected ModelEventVisitor modelEventVisitor;
     protected ControllerResponseVisitor controllerResponseVisitor;
     protected SetUpMessageVisitor setUpMessageVisitor;

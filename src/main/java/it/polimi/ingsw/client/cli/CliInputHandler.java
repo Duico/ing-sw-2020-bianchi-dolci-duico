@@ -33,4 +33,10 @@ public class CliInputHandler extends ClientEventEmitter implements Runnable{
             readLines.clear();
         }
     }
+
+    protected void shutdown() {
+//        inputRequestsPool.shutdown();
+//        inputRequestsPool.shutdownNow();
+        System.exit(0);
+    }
 }

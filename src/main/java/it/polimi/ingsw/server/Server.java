@@ -101,7 +101,7 @@ public class Server {
                     }else if(viewConnection != firstConnection){
                         waitingConnection.remove(viewConnection);
                         connections.remove(viewConnection);
-                        viewConnection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
+                        viewConnection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS));
                         //viewConnections.remove(viewConnection);
                         //waitingConnection.remove(viewConnection);
                         //clientCloseConnection(viewConnection);
