@@ -64,7 +64,6 @@ public class LoginController extends ClientEventEmitter {
     protected void initialize() {
         initChoiceBox();
         setVisibleChoiceBox(true);
-        waitLabel.setStyle("-fx-background-color:white;");
     }
 
 
