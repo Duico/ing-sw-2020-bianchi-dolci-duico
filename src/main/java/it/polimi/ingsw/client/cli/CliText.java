@@ -47,6 +47,8 @@ public enum CliText {
     REQUIRED_PLACE(Color.RED.escape("Place all the workers before end turn")),
     WINNER(Color.GREEN_UNDERLINED.escape("You are the winner, my best compliments")),
     LOSER(Color.RED_BOLD.escape("%s")+Color.RED.escape(" wins, end game")),
+    LOSER_BLOCK(Color.RED.escape("You are blocked, end game for you")),
+    ADVISE_LOSER_BLOCK(Color.RED_BOLD.escape("%s")+Color.RED.escape(" loses, end game for him")),
     UNDO_NOT_AVAILABLE(Color.RED.escape("Undo not available"))
 
     ;

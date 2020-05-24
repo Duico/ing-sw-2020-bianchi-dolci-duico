@@ -13,9 +13,10 @@ public class ClientConnectionEvent {
         IO_EXCEPTION,
         INTERRUPTED,
         CLOSE_IO_EXCEPTION,
-        DISCONNECTION,
         PING_FAIL,
         OBJECT_IO_EXCEPTION,
+        ERROR_ON_THE_SOCKET,
+        CONNECTION_LOST
         ;
     }
 
