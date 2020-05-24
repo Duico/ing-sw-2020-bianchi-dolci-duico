@@ -111,7 +111,7 @@ class GameTest {
             assertNotEquals(null, players.get(i).getCard());
             assertEquals("Default", players.get(i).getCard().getName());
         }
-        assertEquals(0,game.getChosenCards().size());
+
         assertTrue(game.isSetFirstPlayer());
         assertEquals(TurnPhase.PLACE_WORKERS, game.getTurnPhase());
 

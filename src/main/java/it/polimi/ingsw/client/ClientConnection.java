@@ -106,7 +106,6 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         } finally {
             try {
                 if(socket != null) {
-                    System.out.println("chiusura socket");
                     socket.close();
                 }
             } catch (IOException e) {
@@ -123,6 +122,13 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                 return false;
             }else{
                 emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.PING_FAIL));
+                try {
+                    if(socket != null) {
+                        socket.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return true;
             }
         };
@@ -225,9 +231,14 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                             while ((message = toSend.poll()) == null) {
                                 toSend.wait();
                             }
-                            send(message);
+                            if (isActive()) {
+                                send(message);
+                            }
                         }
                     }
+
+                    System.out.println("Esco dal thread out message ");
+
                 } catch (IOException e) {
                     emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.IO_EXCEPTION));
                 } catch (InterruptedException e) {
