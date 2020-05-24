@@ -2,6 +2,7 @@
 package it.polimi.ingsw.client.gui;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
+import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import javafx.event.EventHandler;
@@ -28,7 +29,7 @@ import javafx.scene.transform.*;
 import java.net.URL;
 
 
-public class MainController {
+public class MainController extends ClientEventEmitter {
 
     private final static int WIDTH = 900;
     private final static int HEIGHT = 500;

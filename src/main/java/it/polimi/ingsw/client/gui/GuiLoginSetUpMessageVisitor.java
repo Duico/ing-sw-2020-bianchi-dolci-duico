@@ -28,6 +28,7 @@ public class GuiLoginSetUpMessageVisitor extends GuiSetUpMessageVisitor {
     @Override
     public void visit(InitSetUpMessage message) {
             if((askNumPlayers = message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME)) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.NICKNAME)) {
+                loginController.setAskNumPlayers(askNumPlayers);
                 Platform.runLater( ()-> {
                     loginController.askSetUpInfo(askNumPlayers);
                 });

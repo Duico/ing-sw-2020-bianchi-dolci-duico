@@ -4,6 +4,8 @@ import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.event.MessageListener;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.event.Message;
+import it.polimi.ingsw.view.ViewEventListener;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -16,6 +18,7 @@ import java.net.URL;
 
 public class SceneManager implements SceneEventListener {
     private final Stage stage;
+    private SceneEvent.SceneType currentSceneType;
     private final ClientConnection clientConnection;
     private FXMLLoader fxmlLoader = new FXMLLoader();
 
@@ -25,22 +28,40 @@ public class SceneManager implements SceneEventListener {
     }
     @Override
     public void handleEvent(SceneEvent evt) {
-        if(evt.getSceneType().equals(SceneEvent.SceneType.LOGIN)){
+        if(evt.getSceneType().equals(this.currentSceneType)){
+            return;
+        }
+            loadScene(evt.getSceneType());
+    }
+
+    private void loadScene(SceneEvent.SceneType sceneType) {
+        if(sceneType.equals(SceneEvent.SceneType.LOGIN)){
             LoginController loginController = new LoginController();
-            showFXMLScene(getClass().getResource("/fxml/login.fxml"), loginController);
-            GuiMessageVisitor guiMessageVisitor = new GuiLoginMessageVisitor(loginController);
-            clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
             loginController.addEventListener(SignUpListener.class,clientConnection);
-
-        }else if(evt.getSceneType().equals(SceneEvent.SceneType.CHOSE_CARDS)){
-            ChooseCardController chooseCardController = new ChooseCardController();
-            showFXMLScene(getClass().getResource("/fxml/chooseCard.fxml"), chooseCardController);
-            GuiMessageVisitor guiMessageVisitor = new GuiChooseCardMessageVisitor(chooseCardController);
+            loginController.addEventListener(ViewEventListener.class, clientConnection);
+            GuiMessageVisitor guiMessageVisitor = new GuiLoginMessageVisitor(loginController);
+            guiMessageVisitor.addSceneEventListener(this);
             clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
-            chooseCardController.addEventListener(SignUpListener.class,clientConnection);
+            Platform.runLater( () -> showFXMLScene(getClass().getResource("/fxml/login.fxml"), loginController));
 
-        }else if(evt.getSceneType().equals(SceneEvent.SceneType.MAIN)){
-            showMainScene();
+        }else if(sceneType.equals(SceneEvent.SceneType.CHOSE_CARDS)){
+            ChooseCardController chooseCardController = new ChooseCardController();
+            chooseCardController.addEventListener(SignUpListener.class, clientConnection);
+            chooseCardController.addEventListener(ViewEventListener.class, clientConnection);
+            GuiMessageVisitor guiMessageVisitor = new GuiChooseCardMessageVisitor(chooseCardController);
+            guiMessageVisitor.addSceneEventListener(this);
+            clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
+            Platform.runLater( () -> showFXMLScene(getClass().getResource("/fxml/chooseCard.fxml"), chooseCardController));
+
+        }else if(sceneType.equals(SceneEvent.SceneType.MAIN)){
+            MainController mainController = new MainController();
+            //TODO
+            showMainScene(mainController);
+            GuiMessageVisitor guiMessageVisitor = new GuiMainMessageVisitor(mainController);
+            guiMessageVisitor.addSceneEventListener(this);
+            clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
+            mainController.addEventListener(SignUpListener.class, clientConnection);
+            mainController.addEventListener(ViewEventListener.class, clientConnection);
         }
     }
 
@@ -63,8 +84,7 @@ public class SceneManager implements SceneEventListener {
         stage.show();
     }
 
-    public void showMainScene(){
-        MainController mainController = new MainController();
+    public void showMainScene(MainController mainController){
 //        for(int i = 0; i< GuiModel.getInstance().getNumPlayers(); i++)
 //            GuiModel.getInstance().addCard(chosenCardsChallenger.get(i));
         stage.setScene(mainController.gameScene());

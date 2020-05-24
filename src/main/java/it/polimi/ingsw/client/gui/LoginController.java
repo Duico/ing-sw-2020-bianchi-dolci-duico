@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class LoginController extends ClientEventEmitter {
 
@@ -28,12 +29,12 @@ public class LoginController extends ClientEventEmitter {
     @FXML
     public Pane loginPane;
 
-    private boolean isAskNumPlayers;
+    private Optional<Boolean> askNumPlayers = Optional.empty();
     private int numPlayers;
     private String username;
 
-    public void setIsAskNumPlayers(boolean isAskNumPlayers){
-        this.isAskNumPlayers=isAskNumPlayers;
+    public void setAskNumPlayers(boolean askNumPlayers){
+        this.askNumPlayers = Optional.of(askNumPlayers);
     }
 
     public void setMessage(String message){
@@ -76,11 +77,11 @@ public class LoginController extends ClientEventEmitter {
         if(askNumPlayers){
             setMessage("Select number of players:");
             setVisibleChoiceBox(true);
-            setIsAskNumPlayers(true);
+//            setIsAskNumPlayers(true);
         }else{
 //            setMessage("Wait for the Challenger");
             setVisibleChoiceBox(false);
-            setIsAskNumPlayers(false);
+//            setIsAskNumPlayers(false);
         }
     }
 
@@ -121,8 +122,11 @@ public class LoginController extends ClientEventEmitter {
     private void checkValidStart(){
         //check if username is ok
         String insert = textfield.getText().trim();
-        boolean checkUsername =insert.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$");
-        if(isAskNumPlayers){
+        boolean checkUsername = insert.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$");
+        if(askNumPlayers.equals(Optional.empty())){
+            return;
+        }
+        if(askNumPlayers.get()){
             if(checkUsername) {
                 Integer choiceBoxNumPlayers = checkChoiceBox();
                 if(choiceBoxNumPlayers==null){

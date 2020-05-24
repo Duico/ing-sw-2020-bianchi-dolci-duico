@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.model.event.*;
 
 public class GuiLoginModelEventVisitor extends GuiModelEventVisitor {
+
     @Override
     public void visit(BuildWorkerModelEvent evt) {
 
@@ -36,7 +37,7 @@ public class GuiLoginModelEventVisitor extends GuiModelEventVisitor {
     @Override
     public void visit(NewTurnModelEvent evt) {
         //load chooseCard scene
-
+        sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CHOSE_CARDS));
     }
 
     @Override
