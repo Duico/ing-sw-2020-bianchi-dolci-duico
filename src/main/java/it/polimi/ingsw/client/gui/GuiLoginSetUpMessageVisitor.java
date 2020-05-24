@@ -1,12 +1,10 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.SetUpMessageVisitor;
-import it.polimi.ingsw.client.cli.CliText;
 import it.polimi.ingsw.server.message.ConnectionMessage;
 import it.polimi.ingsw.server.message.InitSetUpMessage;
 import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
 
 public class GuiLoginSetUpMessageVisitor implements SetUpMessageVisitor {
 
@@ -19,22 +17,12 @@ public class GuiLoginSetUpMessageVisitor implements SetUpMessageVisitor {
 
     @Override
     public void visit(SignUpFailedSetUpMessage message) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
             if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME)) {
-                Platform.runLater(()->{
-                    alert.setHeaderText(CliText.INVALID_NICKNAME.toString());
-                    alert.showAndWait();
-                });
+                loginController.alert("Invalid nickName");
             }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS)){
-                Platform.runLater(()->{
-                    alert.setHeaderText(CliText.INVALID_NUMPLAYERS.toString());
-                    alert.showAndWait();
-                });
+                loginController.alert("Incorrect num of players");
             }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.GAME_ALREADY_START)){
-                Platform.runLater(()->{
-                    alert.setHeaderText(CliText.GAME_ALREADY_STARTED.toString());
-                    alert.showAndWait();
-                });
+               loginController.alert("Game already started, wait the end of the game...");
             }
     }
 
@@ -46,9 +34,8 @@ public class GuiLoginSetUpMessageVisitor implements SetUpMessageVisitor {
                 });
             }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_LAST)) {
                 boolean waitOtherPlayers=message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT);
-                Platform.runLater( ()-> {
-                    loginController.correctSignUp(waitOtherPlayers);
-                });
+                System.out.println("correct sign up");
+                loginController.correctSignUp(waitOtherPlayers);
             }
     }
 

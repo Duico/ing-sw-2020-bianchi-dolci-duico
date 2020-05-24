@@ -1,5 +1,8 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.client.ClientEventEmitter;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,15 +19,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ChooseCardController {
-
+public class ChooseCardController extends ClientEventEmitter {
 
     @FXML
-    public Button loadButton;
-
     public Label title;
-
-    public Label loadTitle;
 
     public ImageView buttonImage;
 
@@ -36,39 +34,45 @@ public class ChooseCardController {
 
     public Label choosePlayerLabel;
 
-    public CheckBox choosePlayer1;
+    public ChoiceBox chooseFirstPlayer;
 
-    public CheckBox choosePlayer2;
+    public Label waitLabel;
+
+    public Button chooseFirstPlayerButton;
 
     //get players from event on LoadButton click
     private ArrayList<String> players= new ArrayList<>();
-    private String firstPlayer;
+    private ArrayList<String> opponents= new ArrayList<>();
 
 
 
     private int numSelectedCards=0;
-    private boolean isChallenger=true;
+    private boolean isChallenger;
 
     private ArrayList<String> cardDeck = new ArrayList<>();
     private String chosenCard=null;
     private ArrayList<String> chosenCardsChallenger = new ArrayList<>();
 
 
-    private int numPlayers=Manager.getInstance().getNumPlayers();
+    private int numPlayers;
 
     public ChooseCardController(){}
 
 
-
-    private void setFirstPlayer(String name){
-        this.firstPlayer=name;
+    public void setIsChallenger(boolean isChallenger){
+        this.isChallenger=isChallenger;
     }
 
+    public void initChoiceBox(){
+        chooseFirstPlayer.setItems(FXCollections.observableArrayList(opponents));
+    }
 
-    private void initChosenCardsChallenger(){
-        chosenCardsChallenger.add("Hephaestus");
-        chosenCardsChallenger.add("Pan");
-        chosenCardsChallenger.add("Artemis");
+    public void setOpponents(ArrayList<String > players){
+        opponents.addAll(players);
+    }
+
+    public void initChosenCardsChallenger(ArrayList<String> cards){
+        chosenCardsChallenger.addAll(cards);
     }
 
     private void initCardDeck(){
@@ -83,16 +87,21 @@ public class ChooseCardController {
         cardDeck.add("Prometheus");
     }
 
-    private void initPlayers(){
-        players.add(Manager.getInstance().getUsername());
-        players.add("player1");
-        Manager.getInstance().addPlayer("player1");
-        players.add("player2");
-        Manager.getInstance().addPlayer("player2");
+    public void initCardDeck(ArrayList<String> cards){
+        cardDeck.addAll(cards);
     }
 
+    private void initPlayers(ArrayList<String> player){
+        players.addAll(player);
+    }
 
+    public void setNumPlayers(int n){
+        this.numPlayers=n;
+    }
 
+    public int getNumPlayers(){
+        return this.numPlayers;
+    }
 
     private ImageView image(String name){
         ImageView imageView = new ImageView("textures/"+name+".png");
@@ -103,7 +112,7 @@ public class ChooseCardController {
 
 
 
-    private void initGridChallenger(){
+    public void initGridChallenger(){
         for(int i=0;i<cardDeck.size();i++)
             cards.add(image(cardDeck.get(i)),i,0);
     }
@@ -168,10 +177,38 @@ public class ChooseCardController {
         return scene;
     }
 
-    public void loadCards(ActionEvent actionEvent) {
+    private void hideCards(){
+        chooseText.setVisible(false);
+        title.setVisible(false);
+        startButton.setVisible(false);
+        cards.setVisible(false);
+        startButton.setVisible(false);
+        buttonImage.setVisible(false);
+    }
 
-        loadTitle.setVisible(false);
-        loadButton.setVisible(false);
+    //challenger
+    public void waitChooseCards(){
+        hideCards();
+        waitLabel.setText("WAIT FOR OTHER PLAYERS");
+        waitLabel.setVisible(true);
+    }
+
+    //not challenger
+    public void waitForChallenger(){
+        hideCards();
+        waitLabel.setText("WAIT FOR THE CHALLENGER");
+        waitLabel.setVisible(true);
+    }
+
+    //challenger
+    public void showChooseFirstPlayer(){
+        waitLabel.setVisible(false);
+        chooseFirstPlayerButton.setVisible(true);
+        choosePlayerLabel.setVisible(true);
+        chooseFirstPlayer.setVisible(true);
+    }
+
+    public void loadCards(ArrayList<String> allCards) {
         chooseText.setVisible(true);
         chooseText.setMouseTransparent(true);
         title.setVisible(true);
@@ -179,21 +216,16 @@ public class ChooseCardController {
         startButton.setVisible(true);
         buttonImage.setVisible(true);
 
-        initCardDeck();
+        initCardDeck(allCards);
 
         //FOR CHALLENGER PLAYER
         if(isChallenger)
         {
-            initPlayers();
-            title.setText("CHOOSE "+Manager.getInstance().getNumPlayers()+" CARDS!");
-            if(Manager.getInstance().getNumPlayers()==3)
+            int numPlayers=getNumPlayers();
+            title.setText("CHOOSE "+numPlayers+" CARDS!");
+            if(numPlayers==3)
             {
-                choosePlayerLabel.setVisible(true);
-                choosePlayer1.setVisible(true);
-                //sto ipotizzando che l'username del current player sia inserito in posizione 0 di players
-                choosePlayer1.setText(players.get(1));
-                choosePlayer2.setVisible(true);
-                choosePlayer2.setText(players.get(2));
+                initChoiceBox();
 
             }
 
@@ -206,8 +238,6 @@ public class ChooseCardController {
         //FOR NOT CHALLENGER PLAYERS
         if(!isChallenger)
         {
-            initPlayers();
-            initChosenCardsChallenger();
             initGridNotChallenger(chosenCardsChallenger);
             addGridEventNotChallenger();
         }
@@ -217,88 +247,74 @@ public class ChooseCardController {
 
     }
 
-    private int checkValidStartChallenger(){
-        if(numSelectedCards==numPlayers && numPlayers==2)
-            return 1;
+    private void checkValidStartChallenger(){
+        if(numSelectedCards==numPlayers && numPlayers==2) {
+                //ready to play
+        }
         else if(numSelectedCards==numPlayers && numPlayers==3){
-            if (choosePlayer1.isSelected() && !choosePlayer2.isSelected()) {
-                setFirstPlayer(choosePlayer1.getText());
-                return 1;
-            } else if (!choosePlayer1.isSelected() && choosePlayer2.isSelected()){
-                setFirstPlayer(choosePlayer2.getText());
-                return 1;
-            }
-            else if(choosePlayer1.isSelected() && choosePlayer2.isSelected())
-                return 2;
-            else
-                return 3;
+            if (chooseFirstPlayer.getValue().toString()!=null) {
+                //emitEvent firstPlayer
+            }else
+                alert("You must select one player!");
         }else
-            return 4;
+            alert("Check if you have selected cards and one player!");
 
     }
 
-    private boolean checkValidStart(){
+    private void checkValidStart(){
         if(chosenCard==null)
-            return false;
-        return true;
-    }
-
-    public void startGame(ActionEvent actionEvent) throws Exception {
-        //challenger needs to get chosen card from event before start
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        if(isChallenger) {
-            switch (checkValidStartChallenger()){
-                case 1:
-                    Game game = new Game();
-                    for(int i=0;i<Manager.getInstance().getNumPlayers();i++)
-                        Manager.getInstance().addCard(chosenCardsChallenger.get(i));
-                    Stage stage = new Stage();
-                    stage.setScene(game.gameScene());
-                    Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-                    stage.setX(primaryScreenBounds.getMinX());
-                    stage.setY(primaryScreenBounds.getMinY());
-                    stage.setWidth(primaryScreenBounds.getWidth());
-                    stage.setHeight(primaryScreenBounds.getHeight());
-                    stage.show();
-                    ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
-                    break;
-                case 2:
-                    alert.setHeaderText("You can select only one first player!");
-                    alert.showAndWait();
-                    break;
-                case 3:
-                    alert.setHeaderText("You must select one player!");
-                    alert.showAndWait();
-                    break;
-                case 4:
-                    alert.setHeaderText("Check if you have selected cards and one player!");
-                    alert.showAndWait();
-                    break;
-            }
-        }else
-        {
-            if(checkValidStart()){
-                for(int i=0;i<Manager.getInstance().getNumPlayers();i++)
-                    Manager.getInstance().addCard(chosenCardsChallenger.get(i));
-                    Manager.getInstance().setChosenCard(chosenCard);
-                    Game game = new Game();
-                    Stage stage = new Stage();
-                    stage.setScene(game.gameScene());
-                    Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-                    stage.setX(primaryScreenBounds.getMinX());
-                    stage.setY(primaryScreenBounds.getMinY());
-                    stage.setWidth(primaryScreenBounds.getWidth());
-                    stage.setHeight(primaryScreenBounds.getHeight());
-                    stage.show();
-                    ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
-                }else
-                {
-                    alert.setHeaderText("Choose a Card!");
-                    alert.showAndWait();
-                }
-
+            alert("Choose a Card!");
+        else{
+//            for(int i=0;i<Manager.getInstance().getNumPlayers();i++)
+//                Manager.getInstance().addCard(chosenCardsChallenger.get(i));
+            //send chosen card
         }
 
-
     }
+
+
+    public void sendCards(ActionEvent actionEvent){
+        if(isChallenger)
+            checkValidStartChallenger();
+        else
+            checkValidStart();
+    }
+
+
+
+
+
+    public void alert(String message){
+        Platform.runLater(()->{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setHeaderText(message);
+            alert.showAndWait();
+        });
+    }
+
+    private String getFirstPlayer(){
+        return chooseFirstPlayer.getValue().toString();
+    }
+
+    public void sendFirstPlayer(ActionEvent actionEvent) {
+        //emitEvent first Player
+    }
+
+
+    public void launchGame(){
+        Game game = new Game();
+        for(int i=0;i<Manager.getInstance().getNumPlayers();i++)
+            Manager.getInstance().addCard(chosenCardsChallenger.get(i));
+        Stage stage = new Stage();
+        stage.setScene(game.gameScene());
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX(primaryScreenBounds.getMinX());
+        stage.setY(primaryScreenBounds.getMinY());
+        stage.setWidth(primaryScreenBounds.getWidth());
+        stage.setHeight(primaryScreenBounds.getHeight());
+        stage.show();
+//        ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
+    }
+
+
 }
