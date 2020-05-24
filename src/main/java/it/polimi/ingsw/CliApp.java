@@ -1,9 +1,11 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.client.ClientConnection;
-import it.polimi.ingsw.client.MessageVisitor;
+import it.polimi.ingsw.client.GameMessageVisitor;
 import it.polimi.ingsw.client.cli.*;
-import it.polimi.ingsw.client.event.MessageListener;
+import it.polimi.ingsw.client.event.ClientConnectionEventListener;
+import it.polimi.ingsw.client.message.SignUpListener;
+import it.polimi.ingsw.view.ViewEventListener;
 
 
 public class CliApp {
@@ -18,9 +20,8 @@ public class CliApp {
 //        CliControllerResponseVisitor controllerResponseVisitor = new CliControllerResponseVisitor(cli, cliModel);
 //        CliSetUpMessageVisitor setUpMessageVisitor = new CliSetUpMessageVisitor(cli, cliModel);
 
-        MessageVisitor gameMessageVisitor = new CliMessageVisitor(cli, cliModel);
-        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345);
-        clientConnection.addEventListener(MessageListener.class, gameMessageVisitor);
+        GameMessageVisitor gameMessageVisitor = new CliGameMessageVisitor(cli, cliModel);
+        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, gameMessageVisitor);
 //        clientConnection.addEventListener(ClientConnectionEventListener.class, cli);
         gameMessageVisitor.addSignUpListener(clientConnection);
         gameMessageVisitor.addViewEventListener(clientConnection);
@@ -33,7 +34,7 @@ public class CliApp {
         //clientConnection.run();
         //cliMessageReaderThread.start();
         cliInputHandlerThread.start();
-        clientConnection.run();
+        clientConnection.start();
 //        connectionThread.start();
         try{
             //cliMessageReaderThread.join();
@@ -71,5 +72,31 @@ public class CliApp {
         }
         */
     }
-
+//
+//    static BoardPrinter testSetUp() {
+//        List<ViewPlayer> playerList = new ArrayList<>();
+//        String[] playerNames = {"Pippo", "Pluto", "Topolino"};
+//        try {
+//            Position[][] workersPositions = {
+//                    {new Position(1, 1), new Position(2, 3)},
+//                    {new Position(2, 0), new Position(3, 0)},
+//                    {new Position(4, 4), new Position(3, 3)},
+//            };
+//            for(int i = 0; i<3; i++) {
+//                ViewPlayer player = new ViewPlayer(playerNames[i], PlayerColor.values()[i]);
+//                Worker worker1 = new Worker();
+//                worker1.addMove(workersPositions[i][0]);
+//                Worker worker2 = new Worker();
+//                worker2.addMove(workersPositions[i][1]);
+//                player.addWorker(worker1);
+//                player.addWorker(worker2);
+//                playerList.add(player);
+//            }
+//            Board newBoard = new Board();
+//            return new BoardPrinter(newBoard, playerList);
+//        }catch(PositionOutOfBoundsException e){
+//
+//        }
+//        return null;
+//    }
 }
