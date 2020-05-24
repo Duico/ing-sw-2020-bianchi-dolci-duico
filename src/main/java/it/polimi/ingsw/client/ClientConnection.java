@@ -75,7 +75,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         }
     }
 
-    public void run() {
+    public void start() {
         try {
 
             socket = new Socket(ip, port);

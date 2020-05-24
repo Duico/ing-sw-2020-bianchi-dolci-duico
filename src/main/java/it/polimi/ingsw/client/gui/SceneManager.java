@@ -25,17 +25,15 @@ public class SceneManager implements SceneEventListener {
     @Override
     public void handleEvent(SceneEvent evt) {
         if(evt.getSceneType().equals(SceneEvent.SceneType.LOGIN)){
-            showFXMLScene(getClass().getResource("/fxml/login.fxml"));
             LoginController loginController = new LoginController();
-            fxmlLoader.setController(loginController);
+            showFXMLScene(getClass().getResource("/fxml/login.fxml"), loginController);
             GuiMessageVisitor guiMessageVisitor = new GuiLoginMessageVisitor(loginController);
             clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
             loginController.addEventListener(SignUpListener.class,clientConnection);
 
         }else if(evt.getSceneType().equals(SceneEvent.SceneType.CHOSE_CARDS)){
-            showFXMLScene(getClass().getResource("/fxml/chooseCard.fxml"));
             ChooseCardController chooseCardController = new ChooseCardController();
-            fxmlLoader.setController(chooseCardController);
+            showFXMLScene(getClass().getResource("/fxml/chooseCard.fxml"), chooseCardController);
             GuiMessageVisitor guiMessageVisitor = new GuiChooseCardMessageVisitor(chooseCardController);
             clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
             chooseCardController.addEventListener(SignUpListener.class,clientConnection);
@@ -45,23 +43,23 @@ public class SceneManager implements SceneEventListener {
         }
     }
 
-    public Object showFXMLScene(URL resource){
-        fxmlLoader = new FXMLLoader(resource);
-        Parent login = null;
+    public void showFXMLScene(URL resource, Object controller){
+        fxmlLoader = new FXMLLoader();
+        fxmlLoader.setController(controller);
         fxmlLoader.setLocation(resource);
+        Parent login = null;
         try {
             login = fxmlLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return;
         }
         Scene scene = new Scene(login);
         stage.setScene(scene);
-        Object fxmlController = fxmlLoader.getController();
+
         stage.sizeToScene();
         stage.setResizable(false);
         stage.show();
-        return fxmlController;
     }
 
     public void showMainScene(){
