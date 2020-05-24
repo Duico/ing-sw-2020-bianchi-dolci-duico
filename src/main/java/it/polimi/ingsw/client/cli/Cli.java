@@ -88,8 +88,8 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
     //TODO
     protected void shutdown() {
 //        inputRequestsPool.shutdown();
-        inputRequestsPool.shutdownNow();
-//        System.exit(0);
+//        inputRequestsPool.shutdownNow();
+        System.exit(0);
     }
 
 //    protected void handleInput(LineConsumer lambda){
@@ -184,7 +184,6 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
     @Override
     public void handleEvent(ClientConnectionEvent evt) {
         System.err.print(evt.getReason().toString());
-        clear();
 //        System.exit(0);
     }
 

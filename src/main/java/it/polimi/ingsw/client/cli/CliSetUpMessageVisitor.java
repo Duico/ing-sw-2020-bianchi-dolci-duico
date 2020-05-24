@@ -45,10 +45,10 @@ public class CliSetUpMessageVisitor extends SetUpMessageVisitor {
         if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
             //cli.printClientConnectionEvent(connectionMessage);
             cli.print(System.lineSeparator() + "End game, player disconnected...Press to close");
-            //cli.shutdown();
+            cli.shutdown();
         }else if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
             cli.print(System.lineSeparator() + "You have been kicked from the game, because there are too many players.");
-            //cli.shutdown();
+            cli.shutdown();
         }
     }
 

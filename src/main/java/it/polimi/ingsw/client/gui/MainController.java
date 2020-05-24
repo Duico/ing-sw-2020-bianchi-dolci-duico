@@ -84,6 +84,7 @@ public class MainController {
         initBoard();
         Cube sea = new Cube(200, 200, 0.4, Color.BLUE, "/textures/sea.jpg");
         sea.getTransforms().add(new Translate(0, 0, 3.5));
+        //this.board must refer to this one
         Cube board = new Cube(boardSize, boardSize, 0.001, Color.DARKKHAKI);
         board.getTransforms().add(new Translate(0, 0, 1));
         addOnClickEventBoard(board);
@@ -289,7 +290,8 @@ public class MainController {
         return center;
     }
 
-
+//    setLevel(Level level, boolean isDome, Position)
+//    moveWorker()
 
 //    private void placeWorker1(double x, double y, double z){
 //        String workerUrl = "models/MaleBuilder_Blue.obj";
@@ -620,6 +622,8 @@ public class MainController {
                 //PUSH MOVE//
 
                 pushMove(startPosition, destPosition);
+//                TODO
+//                GuiManager.move(startPosition, destPosition);
                 printBoard();
                 isSelectedWorker=false;
 
@@ -657,7 +661,7 @@ public class MainController {
     }
 
     public void build(Position start, Position destination, boolean isDome){
-        Cell destCell =board[destination.getX()][destination.getY()];
+        Cell destCell = board[destination.getX()][destination.getY()];
 
             if(destCell.getCoordinate().getCenterZ()==Dimension.EMPTY.getHeight())
             {
@@ -828,20 +832,20 @@ public class MainController {
         background.setPrefSize(650, 650);
 
 
-        Label username1 = new Label(Manager.getInstance().getPlayer(0));
+        Label username1 = new Label(GuiModel.getInstance().getPlayer(0));
         username1.setFont(new Font("Arial", 20));
 //        username1.setTextFill(Color.WHITE);
         username1.setStyle("-fx-background-color:white;");
-        Pane cardImage1 = new Pane(cardImage(Manager.getInstance().getCard(0)));
+        Pane cardImage1 = new Pane(cardImage(GuiModel.getInstance().getCard(0)));
 
         //manca il collegamento tra carta scelta e players corrispondente
         //TODO
 
-        Label username2 = new Label(Manager.getInstance().getPlayer(1));
+        Label username2 = new Label(GuiModel.getInstance().getPlayer(1));
         username2.setFont(new Font("Arial", 20));
 //        username2.setTextFill(Color.WHITE);
         username2.setStyle("-fx-background-color:white;");
-        Pane cardImage2 = new Pane(cardImage(Manager.getInstance().getCard(1)));
+        Pane cardImage2 = new Pane(cardImage(GuiModel.getInstance().getCard(1)));
 
 
 
@@ -863,15 +867,15 @@ public class MainController {
 
         VBox vbPlayers = new VBox(5);
         vbPlayers.setPadding(new Insets(10,10,10,10));
-        if(Manager.getInstance().getNumPlayers()==3){
-            Label username3 = new Label(Manager.getInstance().getPlayer(2));
+        if(GuiModel.getInstance().getNumPlayers()==3){
+            Label username3 = new Label(GuiModel.getInstance().getPlayer(2));
             username3.setFont(new Font("Arial", 20));
 //            username3.setTextFill(Color.WHITE);
             username3.setStyle("-fx-background-color:white;");
-            Pane cardImage3 = new Pane(cardImage(Manager.getInstance().getCard(2)));
+            Pane cardImage3 = new Pane(cardImage(GuiModel.getInstance().getCard(2)));
             vbPlayers.getChildren().addAll(username1, cardImage1, username2, cardImage2, username3, cardImage3);
         }
-        else if(Manager.getInstance().getNumPlayers()==2)
+        else if(GuiModel.getInstance().getNumPlayers()==2)
             vbPlayers.getChildren().addAll(username1, cardImage1, username2, cardImage2);
 
 

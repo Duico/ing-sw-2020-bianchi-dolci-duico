@@ -20,14 +20,9 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
     private Socket socket;
     private String ip;
     private int port;
-//    private ObjectOutputStream socketOut;
-//    private ModelEventVisitor modelVisitor;
-//    private ControllerResponseVisitor controllerVisitor;
-//    private SetUpMessageVisitor setUpVisitor;
     private final Queue<Object> toSend = new LinkedBlockingQueue<>();
     private final Queue<GameMessage> gameMessages = new LinkedBlockingQueue<>();
 //    private GameMessageVisitor gameMessageVisitor;
-    //TODO remove
 
 
 
@@ -84,7 +79,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         try {
 
             socket = new Socket(ip, port);
-            socket.setSoTimeout(6000);
+            socket.setSoTimeout(5500);
             startPingTimer();
             InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = socket.getOutputStream();
@@ -133,8 +128,8 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         };
 
         TimerTask task = new TimeoutCounter(timeOutChecker);
-        int intialDelay = 5000;
-        int delta = 5000;
+        int intialDelay = 1500;
+        int delta = 2000;
         timer.schedule(task, intialDelay, delta);
     }
 
@@ -174,7 +169,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                             ConnectionMessage event = (ConnectionMessage) message;
                              if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION) || event.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)) {
                                  setActive(false);
-                                 System.out.println("LA metto io a false 1");
+//                                 System.out.println("LA metto io a false 1");
                                  //event.accept(setUpVisitor);
                              }
 
@@ -192,38 +187,11 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                     } else {
                         throw new IllegalArgumentException(message.getClass().toString());
                     }
-//                    if (message instanceof ModelEvent) {
-//                        ModelEvent event = (ModelEvent) message;
-//                        event.accept(modelVisitor);
-//                    } else if (message instanceof ControllerResponse) {
-//                        ControllerResponse event = (ControllerResponse) message;
-//                        event.accept(controllerVisitor);
-//
-//                    } else if (message instanceof SetUpMessage) {
-//                        SetUpMessage event = (SetUpMessage) message;
-//                        if (event.getSetUpType().equals(SetUpType.SIGN_UP)) {
-//                            event.accept(setUpVisitor);
-//                        }
-//
-//                    } else if (message instanceof ConnectionMessage) {
-//                        ConnectionMessage event = (ConnectionMessage) message;
-//                        if (event.getType().equals(ConnectionMessage.Type.PING)) {
-//                            asyncSend(new ConnectionMessage(ConnectionMessage.Type.PONG));
-//                        } else if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION)) {
-//                            setActive(false);
-//                            System.out.println("End game, player disconnected");
-//                            //event.accept(setUpVisitor);
-//                        }
-//                    } else if(message instanceof String){
-//                        System.err.println(message);
-//                    } else {
-//                        throw new IllegalArgumentException(message.getClass().toString());
-//                    }
                 }
 
             } catch (Exception e){
                 setActive(false);
-                System.out.println("LA metto io a false 2");
+//                System.out.println("LA metto io a false 2");
             }finally {
                 try {
                     socketIn.close();
@@ -260,7 +228,6 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                             send(message);
                         }
                     }
-                    System.out.println("Esco dal thread out message ");
                 } catch (IOException e) {
                     emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.IO_EXCEPTION));
                 } catch (InterruptedException e) {
@@ -316,7 +283,6 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                 //message.accept(gameMessageVisitor);
                 emitEvent(message);
                 }
-            System.out.println("Esco dal thread cli message reader");
             }
 
         }

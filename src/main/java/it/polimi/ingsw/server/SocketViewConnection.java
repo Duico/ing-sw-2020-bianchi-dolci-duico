@@ -126,8 +126,8 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         };
 
         TimerTask task = new TimeoutCounter(timeOutChecker);
-        int intialDelay = 2000;
-        int delta = 2500;
+        int intialDelay = 5000;
+        int delta = 5000;
         timer.schedule(task, intialDelay, delta);
     }
 
@@ -145,7 +145,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     public void run(){
         try{
 
-            socket.setSoTimeout(15000);
+            socket.setSoTimeout(2500);
             startPingTimer();
             Thread t0 = asyncReadFromSocket(in);
             t0.join();

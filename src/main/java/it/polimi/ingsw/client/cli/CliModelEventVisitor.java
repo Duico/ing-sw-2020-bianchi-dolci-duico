@@ -69,31 +69,6 @@ public class CliModelEventVisitor extends ModelEventVisitor {
                 printChoseCards();
             }
         }
-//        cliController.choseCardPlayer = evt.getPlayer();
-//        if(!player.equalsUuid(cliController.getMyPlayer())){
-//            //not my turn
-//            return;
-//        }
-//        if(cards == null){ //pick cards
-//            if(cardDeck != null){
-//                askChallCards(cardDeck);
-//            }else{
-//                //error
-//            }
-//        }else if(cards.size() == 1){
-//            //server will automatically pick last card for you
-//            //ASK firstPlayer
-////            synchronized(askFirstPlayerLock) {
-////                    while (cliController.getPlayerCard(cliController.getMyPlayer()) == null) {
-////                        askFirstPlayerLock.wait();
-////                    }
-//                    askFirstPlayer();
-//
-//
-//        }else if(cards.size() > 1){
-//            askCard(cards);
-//        }
-
     }
 
     @Override

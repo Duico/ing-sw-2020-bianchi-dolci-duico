@@ -320,8 +320,8 @@ public class ChooseCardController extends ClientEventEmitter {
 
     public void launchGame(){
         MainController mainController = new MainController();
-        for(int i=0;i<Manager.getInstance().getNumPlayers();i++)
-            Manager.getInstance().addCard(chosenCardsChallenger.get(i));
+        for(int i = 0; i< GuiModel.getInstance().getNumPlayers(); i++)
+            GuiModel.getInstance().addCard(chosenCardsChallenger.get(i));
         Stage stage = new Stage();
         stage.setScene(mainController.gameScene());
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
