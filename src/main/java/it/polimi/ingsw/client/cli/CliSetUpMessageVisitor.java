@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.cli;
 
-import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.client.SetUpMessageVisitor;
 import it.polimi.ingsw.client.message.*;
 import it.polimi.ingsw.server.message.*;
@@ -44,11 +43,12 @@ public class CliSetUpMessageVisitor extends SetUpMessageVisitor {
     @Override
     public void visit(ConnectionMessage connectionMessage) {
         if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
-            cli.print(System.lineSeparator() + "End game, player disconnected");
-            cli.shutdown();
+            //cli.printClientConnectionEvent(connectionMessage);
+            cli.print(System.lineSeparator() + "End game, player disconnected...Press to close");
+            //cli.shutdown();
         }else if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
             cli.print(System.lineSeparator() + "You have been kicked from the game, because there are too many players.");
-            cli.shutdown();
+            //cli.shutdown();
         }
     }
 

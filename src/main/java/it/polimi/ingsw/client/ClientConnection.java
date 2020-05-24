@@ -2,14 +2,11 @@ package it.polimi.ingsw.client;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 //import it.polimi.ingsw.client.cli.Color;
 import it.polimi.ingsw.client.event.ClientConnectionEvent;
-import it.polimi.ingsw.client.event.ClientConnectionEventListener;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.client.message.SignUpMessage;
 import it.polimi.ingsw.server.TimeOutCheckerInterface;
@@ -29,16 +26,16 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
 //    private SetUpMessageVisitor setUpVisitor;
     private final Queue<Object> toSend = new LinkedBlockingQueue<>();
     private final Queue<GameMessage> gameMessages = new LinkedBlockingQueue<>();
-    private GameMessageVisitor gameMessageVisitor;
+//    private GameMessageVisitor gameMessageVisitor;
     //TODO remove
 
 
 
 //previously ClientGuiConnection
-    public ClientConnection(String ip, int port, GameMessageVisitor gameMessageVisitor){
+    public ClientConnection(String ip, int port/*, GameMessageVisitor gameMessageVisitor*/){
         this.ip = ip;
         this.port = port;
-        this.gameMessageVisitor = gameMessageVisitor;
+        //this.gameMessageVisitor = gameMessageVisitor;
 //        this.toSend = toSend;
 //        this.readMessages = readMessages;
     }
@@ -77,12 +74,14 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                     e.printStackTrace();
                 }
             }
+
             return message;
+
         }
     }
 
-    public void start() {
-        try{
+    public void run() {
+        try {
 
             socket = new Socket(ip, port);
             socket.setSoTimeout(6000);
@@ -103,13 +102,18 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
             messageReader.join();
 //            Thread t0 = asyncRead...;
 //            t0.join();
+
         } catch (IOException e) {
-            emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.OBJECT_IO_EXCEPTION));
-        } catch (InterruptedException e) {
+            emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.ERROR_ON_THE_SOCKET));
+        }
+         catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             try {
-                socket.close();
+                if(socket != null) {
+                    System.out.println("chiusura socket");
+                    socket.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -168,13 +172,19 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                         }
                          if (message instanceof ConnectionMessage) {
                             ConnectionMessage event = (ConnectionMessage) message;
-                            if (event.getType().equals(ConnectionMessage.Type.PING)) {
+                             if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION) || event.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)) {
+                                 setActive(false);
+                                 System.out.println("LA metto io a false 1");
+                                 //event.accept(setUpVisitor);
+                             }
+
+                            /*if (event.getType().equals(ConnectionMessage.Type.PING)) {
 //                                send(new ConnectionMessage(ConnectionMessage.Type.PONG));
                             } else if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION)) {
+                                //emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.DISCONNECTION));
                                 setActive(false);
-                                emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.DISCONNECTION));
                                 //event.accept(setUpVisitor);
-                            }
+                            }*/
                         }
                         //TODO remove
                     } else if (message instanceof String) {
@@ -213,6 +223,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
 
             } catch (Exception e){
                 setActive(false);
+                System.out.println("LA metto io a false 2");
             }finally {
                 try {
                     socketIn.close();
@@ -226,9 +237,10 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
 //        return t;
         }
     }
-    private void emitEvent(ClientConnectionEvent evt){
+
+    /*private void emitEvent(ClientConnectionEvent evt){
         executeEventListeners(ClientConnectionEventListener.class, (listener) -> listener.handleEvent(evt) );
-    }
+    }*/
 
     private class ObjectOutputRunnable implements Runnable{
         private final ObjectOutputStream socketOut;
@@ -248,8 +260,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                             send(message);
                         }
                     }
-                } catch (SocketException e){
-                    emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.SOCKET_EXCEPTION));
+                    System.out.println("Esco dal thread out message ");
                 } catch (IOException e) {
                     emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.IO_EXCEPTION));
                 } catch (InterruptedException e) {
@@ -302,9 +313,12 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
 
                 //Synchronized inside pollReadMessages()
                 message = pollReadMessages();
-                message.accept(gameMessageVisitor);
+                //message.accept(gameMessageVisitor);
+                emitEvent(message);
                 }
+            System.out.println("Esco dal thread cli message reader");
             }
+
         }
 }
 

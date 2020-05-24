@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.cli;
 
-import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.client.ControllerResponseVisitor;
 import it.polimi.ingsw.controller.response.*;
 import it.polimi.ingsw.model.Operation;
@@ -47,7 +46,7 @@ public class CliControllerResponseVisitor extends ControllerResponseVisitor {
 
     @Override
     public void visit(FailedUndoControllerResponse r) {
-        cli.println(Color.YELLOW_BOLD.escape("Failed undo"));
+        printAll(CliText.UNDO_NOT_AVAILABLE.toString());
     }
 
     @Override

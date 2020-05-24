@@ -1,20 +1,21 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.event.ClientConnectionEvent;
-import it.polimi.ingsw.client.event.ClientConnectionEventListener;
+import it.polimi.ingsw.server.message.ConnectionMessage;
 
 import java.io.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Cli implements ClientConnectionEventListener, Runnable {
+public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
     //boolean hasPrintedTurnMessage = false;
 //    InputStream in;
 //    Scanner stdin;
     final PrintStream out;
     private Integer BPcellWidth = 2;
     private boolean isAwaitingInput;
-    final CliInputHandler inputHandler = new CliInputHandler();
+    //final CliInputHandler inputHandler = new CliInputHandler();
+    final CliInputHandler inputHandler;
     private final String ANSI_CLS = "\u001b[2J";
 
     //    private Queue<CliRunnable> cliRunnableQueue = new LinkedBlockingQueue<>();
@@ -29,6 +30,7 @@ public class Cli implements ClientConnectionEventListener, Runnable {
         out = System.out;
         infoOut = out;
 //        cliModel = new CliModel();
+        this.inputHandler= new CliInputHandler();
         isAwaitingInput = false;
     }
 
@@ -137,6 +139,8 @@ public class Cli implements ClientConnectionEventListener, Runnable {
         out.print(o);
     }
 
+
+
     public void print(StringBuffer2D sb) {
         sb.printOut(out);
     }
@@ -151,12 +155,45 @@ public class Cli implements ClientConnectionEventListener, Runnable {
             print(promptText.toPrompt());
     }
 
+    public void printClientConnectionEvent(ConnectionMessage evt){
+
+        System.err.print(evt.getType().toString());
+        //inputHandler.shutdown();
+    }
+
+    public void printClientConnectionEvent(ClientConnectionEvent evt){
+
+        if(evt.getReason().equals(ClientConnectionEvent.Reason.ERROR_ON_THE_SOCKET)){
+            System.err.print("Error on the connection with the server! Please, retry..");
+        } else if(evt.getReason().equals(ClientConnectionEvent.Reason.CONNECTION_LOST)){
+            System.err.print("The connection with the server is lost....");
+        } else if(evt.getReason().equals(ClientConnectionEvent.Reason.PING_FAIL)){
+            System.err.print("The connection with the server is lost....");
+        } else if(evt.getReason().equals(ClientConnectionEvent.Reason.IO_EXCEPTION)){
+            System.err.print("IO exception....");
+        } else if(evt.getReason().equals(ClientConnectionEvent.Reason.INTERRUPTED)){
+            System.err.print("interrupted....");
+        } else if(evt.getReason().equals(ClientConnectionEvent.Reason.SOCKET_EXCEPTION)){
+            System.err.print("socket exception....");
+        }
+
+        //inputHandler.shutdown();
+    }
+
+    /*
     @Override
     public void handleEvent(ClientConnectionEvent evt) {
         System.err.print(evt.getReason().toString());
         clear();
 //        System.exit(0);
     }
+
+    @Override
+    public void handleEvent(GameMessage evt) {
+
+    }*/
+
+
 
 
 //    protected String pollLine (Runnable lambda){

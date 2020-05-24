@@ -9,6 +9,9 @@ public class UndoViewEvent extends GameViewEvent {
     public UndoViewEvent(RemoteView view){
         super(view);
     }
+    public UndoViewEvent(){
+        this(null);
+    }
     @Override
     public void accept(ViewEventVisitor visitor) {
         visitor.emitEvent(this);

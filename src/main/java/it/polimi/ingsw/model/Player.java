@@ -10,7 +10,7 @@ public class Player implements Serializable, Cloneable {
     private final String nickName;
     private final UUID uuid;
     private Card card; //FIX add final when tests are over
-    private String cardName;
+    //private String cardName;
     private FixedArray<Worker> workers;
     private boolean isChallenger;
     private PlayerColor color; //TODO
@@ -55,17 +55,20 @@ public class Player implements Serializable, Cloneable {
         if(card!=null){
             return card.getName();
         }else{
-            return cardName;
+            //TODO DA RIVEDERE SE  E' CORRETTO
+            return null;
         }
     }
-    public boolean setCardName(String cardName){
+
+    /*public boolean setCardName(String cardName){
         boolean alreadySet = false;
         if(cardName != null){
             alreadySet = true;
         }
         this.cardName = cardName;
         return alreadySet;
-    }
+    }*/
+
     public void initWorkers(int numWorkers){
         workers = new FixedArray<>(numWorkers);
     }

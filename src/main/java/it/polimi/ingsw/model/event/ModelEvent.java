@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.event;
 
-import it.polimi.ingsw.client.GameMessageVisitor;
+import it.polimi.ingsw.client.MessageVisitor;
 import it.polimi.ingsw.client.ModelEventVisitor;
 import it.polimi.ingsw.server.message.GameMessage;
 import it.polimi.ingsw.model.Player;
@@ -30,7 +30,7 @@ public abstract class ModelEvent extends GameMessage  {
                 '}';
     }
 
-    public void accept(GameMessageVisitor visitor){
+    public void accept(MessageVisitor visitor){
         visitor.visit(this);
     }
 

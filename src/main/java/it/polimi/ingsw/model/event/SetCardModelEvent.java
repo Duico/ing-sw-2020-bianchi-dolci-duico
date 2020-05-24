@@ -1,17 +1,19 @@
 package it.polimi.ingsw.model.event;
 
 import it.polimi.ingsw.client.ModelEventVisitor;
+import it.polimi.ingsw.model.Card;
 import it.polimi.ingsw.model.Player;
 
 public class SetCardModelEvent extends UpdateModelEvent {
-    private String cardName;
-    public SetCardModelEvent(Player player, String cardName) {
+    //private String cardName;
+    private Card card;
+    public SetCardModelEvent(Player player, Card card) {
         super(player);
-        this.cardName = cardName;
+        this.card = card;
     }
 
-    public String getCardName(){
-        return this.cardName;
+    public Card getCard(){
+        return this.card;
     }
 
     @Override

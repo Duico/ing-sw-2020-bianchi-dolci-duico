@@ -44,7 +44,12 @@ public enum CliText {
     NOT_FEASIBLE_BUILD(Color.RED.escape("Is not a feasible build")),
     REQUIRED_MOVE(Color.RED.escape("Is required a movement before end turn")),
     REQUIRED_BUILD(Color.RED.escape("Is required a build before end turn")),
-    REQUIRED_PLACE(Color.RED.escape("Place all the workers before end turn"))
+    REQUIRED_PLACE(Color.RED.escape("Place all the workers before end turn")),
+    WINNER(Color.GREEN_UNDERLINED.escape("You are the winner, my best compliments")),
+    LOSER(Color.RED_BOLD.escape("%s")+Color.RED.escape(" wins, end game")),
+    LOSER_BLOCK(Color.RED.escape("You are blocked, end game for you")),
+    ADVISE_LOSER_BLOCK(Color.RED_BOLD.escape("%s")+Color.RED.escape(" loses, end game for him")),
+    UNDO_NOT_AVAILABLE(Color.RED.escape("Undo not available"))
 
     ;
 

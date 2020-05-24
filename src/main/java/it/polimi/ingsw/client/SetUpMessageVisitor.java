@@ -12,4 +12,5 @@ public abstract class SetUpMessageVisitor extends ClientEventEmitter {
     //To inform the cli about the state of the connection
     public abstract void visit(ConnectionMessage connectionMessage);
 //    void visit(DisconnectionSetUpMessage evt);
+
 }

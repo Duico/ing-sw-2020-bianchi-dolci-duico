@@ -12,10 +12,7 @@ public class CliModel {
     private boolean isHost = false;
     public String nickname;
     private Player myPlayer;
-
     private Player currentPlayer;
-
-
     protected List<Player> players;
 
     protected boolean isTurnOK;
@@ -82,6 +79,15 @@ public class CliModel {
     public void placeWorker(Position placePosition){
         Worker newWorker = new Worker();
         board.setWorker(newWorker, placePosition);
+    }
+
+    public void removePlayer(Player player){
+        for(int i=0;i<players.size();i++){
+            if(player.equalsUuid(players.get(i))) {
+                players.remove(players.get(i));
+                break;
+            }
+        }
     }
 
     /*//TODO
@@ -235,12 +241,15 @@ public class CliModel {
         }
     }
 
-    public boolean setPlayerCard(Player player, String cardName) {
+    public boolean setPlayerCard(Player player, Card card) {
         Player playerReference;
         if((playerReference = getPlayerByUuid(player)) == null){
             return false;
         }else{
-            playerReference.setCardName(cardName);
+
+            //playerReference.setCardName(cardName);
+            playerReference.setCard(card);
+            //System.out.println(playerReference.getNickName() + " " + playerReference.getCard().getName());
             return true;
         }
     }
@@ -256,7 +265,7 @@ public class CliModel {
 
     private Player getPlayerByUuid(Player searchPlayer){
         for(Player player: players){
-            if(player.equalsUuid(player))
+            if(player.equalsUuid(searchPlayer))
                 return player;
         }
         return null;

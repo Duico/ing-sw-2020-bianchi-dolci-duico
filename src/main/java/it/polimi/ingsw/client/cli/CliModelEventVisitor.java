@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.cli;
 
-import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.client.ModelEventVisitor;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
@@ -143,20 +142,44 @@ public class CliModelEventVisitor extends ModelEventVisitor {
 
     @Override
     public void visit(PlayerDefeatModelEvent evt) {
+        Player playerDefeat = evt.getPlayer();
+        if(cliModel.getMyPlayer().getUuid().equals(playerDefeat.getUuid())) {
+            printAll(CliText.LOSER_BLOCK.toString());
+        } else{
+            printAll(CliText.ADVISE_LOSER_BLOCK.toString(playerDefeat.getNickName()));
+        }
+        cliModel.removePlayer(playerDefeat);
+
 
     }
 
     @Override
     public void visit(WinModelEvent evt) {
-
+        Player winner = evt.getPlayer();
+        if(cliModel.getMyPlayer().getUuid().equals(winner.getUuid())) {
+            printAll(CliText.WINNER.toString());
+        } else{
+            printAll(CliText.LOSER.toString(winner.getNickName()));
+        }
     }
 
     @Override
     public void visit(SetCardModelEvent evt) {
-        cliModel.setPlayerCard(evt.getPlayer(), evt.getCardName());
+        /*System.out.println(evt.getPlayer().getNickName());
+        System.out.println(evt.getPlayer().getCard().getName());*/
+        cliModel.setPlayerCard(evt.getPlayer(), evt.getCard());
         boolean isOwnCard = cliModel.getMyPlayer().equalsUuid(evt.getPlayer());
+        CliText cliText;
+        if(isOwnCard){
+            cliText = CliText.SET_CARD_OWN;
+        }else{
+            cliText = CliText.SET_CARD_OTHER;
+        }
+        //cliModel.updatePlayer(evt.getPlayer());
+        cli.print(System.lineSeparator() + cliText.toString(evt.getCard().getName(), evt.getPlayer().getNickName()));
 
-        cli.execInputRequest( () -> {
+
+        /*cli.execInputRequest( () -> {
         CliText cliText;
             if(isOwnCard){
                 cliText = CliText.SET_CARD_OWN;
@@ -166,14 +189,19 @@ public class CliModelEventVisitor extends ModelEventVisitor {
 
             //TODO generalize
             //ORIGINALLY infoOut instead of cli
-                cli.print(System.lineSeparator() + cliText.toString(evt.getCardName(), evt.getPlayer().getNickName()));
-        });
+                //cli.print(System.lineSeparator() + cliText.toString(evt.getCardName(), evt.getPlayer().getNickName()));
+        });*/
 //        askFirstPlayerLock.notifyAll();
 
     }
 
     @Override
     public void visit(UndoModelEvent evt) {
+       for (Player player : evt.getPlayers())
+           cliModel.updatePlayer(player);
+
+       cliModel.setBoard(evt.getBoard());
+       nextOperation();
 
     }
     protected void nextOperation(){

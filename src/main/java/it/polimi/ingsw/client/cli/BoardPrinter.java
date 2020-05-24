@@ -278,8 +278,9 @@ public class BoardPrinter {
         for(Player player : players){
             //todo
             String playerName = resizedPlayerName(player.getNickName(), playerWidth);
+            String cardName = player.getCard().getName();
                                                                     //true if currentPlayer
-            sb.appendln(Color.fromPlayerColor(player.getColor(), false).escape(playerName)+player.getCardName());
+            sb.appendln(Color.fromPlayerColor(player.getColor(), false).escape(playerName)+cardName);
         }
         return sb;
     }

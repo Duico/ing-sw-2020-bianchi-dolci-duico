@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.message;
 
-import it.polimi.ingsw.client.GameMessageVisitor;
+import it.polimi.ingsw.client.MessageVisitor;
 import it.polimi.ingsw.client.SetUpMessageVisitor;
 
 
@@ -21,7 +21,7 @@ public class ConnectionMessage extends GameMessage {
     }
 
     @Override
-    public void accept(GameMessageVisitor visitor) {
+    public void accept(MessageVisitor visitor) {
         visitor.visit(this);
     }
 
