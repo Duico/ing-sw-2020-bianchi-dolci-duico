@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CliModelEventVisitor extends ClientEventEmitter implements ModelEventVisitor {
+public class CliModelEventVisitor extends ModelEventVisitor {
     private Cli cli;
     private final CliModel cliModel;
     public CliModelEventVisitor(Cli cli, CliModel cliModel){
