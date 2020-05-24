@@ -1,8 +1,5 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.client.cli.ControllerResponseVisitor;
-import it.polimi.ingsw.client.cli.ModelEventVisitor;
-import it.polimi.ingsw.client.cli.SetUpMessageVisitor;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.controller.response.ControllerResponse;
 import it.polimi.ingsw.model.event.ModelEvent;

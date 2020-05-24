@@ -17,13 +17,13 @@ public class CliApp {
         CliModel cliModel = new CliModel();
 
         //create visitors for all event types
-        CliModelEventVisitor modelEventVisitor = new CliModelEventVisitor(cli, cliModel);
-        CliControllerResponseVisitor controllerResponseVisitor = new CliControllerResponseVisitor(cli, cliModel);
-        CliSetUpMessageVisitor setUpMessageVisitor = new CliSetUpMessageVisitor(cli, cliModel);
+//        CliModelEventVisitor modelEventVisitor = new CliModelEventVisitor(cli, cliModel);
+//        CliControllerResponseVisitor controllerResponseVisitor = new CliControllerResponseVisitor(cli, cliModel);
+//        CliSetUpMessageVisitor setUpMessageVisitor = new CliSetUpMessageVisitor(cli, cliModel);
 
-        GameMessageVisitor gameMessageVisitor = new CliGameMessageVisitor(cli, modelEventVisitor, controllerResponseVisitor, setUpMessageVisitor);
+        GameMessageVisitor gameMessageVisitor = new CliGameMessageVisitor(cli, cliModel);
         ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, gameMessageVisitor);
-        clientConnection.addEventListener(ClientConnectionEventListener.class, cli);
+//        clientConnection.addEventListener(ClientConnectionEventListener.class, cli);
         gameMessageVisitor.addSignUpListener(clientConnection);
         gameMessageVisitor.addViewEventListener(clientConnection);
 
