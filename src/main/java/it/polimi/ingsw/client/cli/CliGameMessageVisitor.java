@@ -3,11 +3,9 @@ package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.client.GameMessageVisitor;
 
 public class CliGameMessageVisitor extends GameMessageVisitor {
-    private Cli cli;
-    public CliGameMessageVisitor(Cli cli, CliModelEventVisitor cliModelEventVisitor, CliControllerResponseVisitor cliControllerResponseVisitor, CliSetUpMessageVisitor cliSetUpMessageVisitor){
+    public CliGameMessageVisitor(Cli cli, CliModel cliModel){
         //Cli property could be replaced by an event listener
-        super(cliModelEventVisitor, cliControllerResponseVisitor, cliSetUpMessageVisitor);
-        this.cli = cli;
+        super(new CliModelEventVisitor(cli, cliModel), new CliControllerResponseVisitor(cli, cliModel), new CliSetUpMessageVisitor(cli, cliModel));
     }
 
 }
