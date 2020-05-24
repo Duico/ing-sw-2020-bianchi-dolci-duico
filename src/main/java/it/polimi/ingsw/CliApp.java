@@ -24,14 +24,10 @@ public class CliApp {
         GameMessageVisitor gameMessageVisitor = new CliGameMessageVisitor(cli, modelEventVisitor, controllerResponseVisitor, setUpMessageVisitor);
         ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, gameMessageVisitor);
         clientConnection.addEventListener(ClientConnectionEventListener.class, cli);
+        gameMessageVisitor.addSignUpListener(clientConnection);
+        gameMessageVisitor.addViewEventListener(clientConnection);
 
         //CliMessageReader cliMessageReader = new CliMessageReader(cli, clientConnection, cliController);
-        setUpMessageVisitor.addEventListener(ViewEventListener.class, clientConnection);
-        setUpMessageVisitor.addEventListener(SignUpListener.class, clientConnection);
-        controllerResponseVisitor.addEventListener(ViewEventListener.class, clientConnection);
-        controllerResponseVisitor.addEventListener(SignUpListener.class, clientConnection);
-        modelEventVisitor.addEventListener(ViewEventListener.class, clientConnection);
-        modelEventVisitor.addEventListener(SignUpListener.class, clientConnection);
 
 
         //Thread cliMessageReaderThread = new Thread(cliMessageReader);

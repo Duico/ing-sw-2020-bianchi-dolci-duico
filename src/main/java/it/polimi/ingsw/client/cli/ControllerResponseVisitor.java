@@ -1,15 +1,16 @@
 package it.polimi.ingsw.client.cli;
+import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.controller.response.*;
 
-public interface ControllerResponseVisitor {
-    void visit(FailedOperationControllerResponse r);
-    void visit(FailedUndoControllerResponse r);
-    void visit(IllegalCardNameControllerResponse r);
-    void visit(IllegalCardNamesListControllerResponse r);
-    void visit(IllegalFirstPlayerControllerResponse r);
-    void visit(IllegalTurnPhaseControllerResponse r);
-    void visit(RequiredOperationControllerResponse r);
-    void visit(NotCurrentPlayerControllerResponse r);
-    void visit(SuccessControllerResponse r);
-    void visit(TurnInfoControllerResponse r);
+public abstract class ControllerResponseVisitor extends ClientEventEmitter {
+    public abstract void visit(FailedOperationControllerResponse r);
+    public abstract void visit(FailedUndoControllerResponse r);
+    public abstract void visit(IllegalCardNameControllerResponse r);
+    public abstract void visit(IllegalCardNamesListControllerResponse r);
+    public abstract void visit(IllegalFirstPlayerControllerResponse r);
+    public abstract void visit(IllegalTurnPhaseControllerResponse r);
+    public abstract void visit(RequiredOperationControllerResponse r);
+    public abstract void visit(NotCurrentPlayerControllerResponse r);
+    public abstract void visit(SuccessControllerResponse r);
+    public abstract void visit(TurnInfoControllerResponse r);
 }

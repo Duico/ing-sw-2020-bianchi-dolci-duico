@@ -5,7 +5,7 @@ import it.polimi.ingsw.controller.response.*;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.TurnPhase;
 
-public class CliControllerResponseVisitor extends ClientEventEmitter implements ControllerResponseVisitor {
+public class CliControllerResponseVisitor extends ControllerResponseVisitor {
     private Cli cli;
     private final CliModel cliModel;
     public CliControllerResponseVisitor(Cli cli, CliModel cliModel){
