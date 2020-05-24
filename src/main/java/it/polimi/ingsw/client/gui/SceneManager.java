@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.event.MessageListener;
 import it.polimi.ingsw.client.message.SignUpListener;
+import it.polimi.ingsw.event.Message;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;

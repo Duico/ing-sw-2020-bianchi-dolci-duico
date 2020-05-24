@@ -11,11 +11,9 @@ public class GuiApp extends Application {
     @Override
     public void start(Stage stage) {
         ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345);
-
         SceneManager sceneManager = new SceneManager(stage, clientConnection);
         sceneManager.handleEvent(new SceneEvent(SceneEvent.SceneType.LOGIN));
-
-        clientConnection.start();
+        new Thread(clientConnection::run).start();
 
     }
 
