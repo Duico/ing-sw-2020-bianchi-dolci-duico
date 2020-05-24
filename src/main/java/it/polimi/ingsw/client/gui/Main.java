@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientConnection;
-import it.polimi.ingsw.client.GameMessageVisitor;
+import it.polimi.ingsw.client.event.MessageListener;
 import it.polimi.ingsw.client.message.SignUpListener;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,9 +11,6 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    private ChooseCardController getChooseCardController(){
-
-    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -25,13 +22,21 @@ public class Main extends Application {
         LoginController loginController = loginLoader.getController();
 
         FXMLLoader chooseCardLoader = new FXMLLoader(getClass().getResource("/fxml/chooseCard.fxml"));
-        //TEMP
-        GameMessageVisitor guiLoginGameMessageVisitor = new GuiLoginGameMessageVisitor(new GuiModelEventVisitor(), new GuiControllerResponseVisitor(), new GuiLoginSetUpMessageVisitor(loginController));
-        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, guiLoginGameMessageVisitor);
-        new Thread( clientConnection::start ).start();
+        Parent chooseCard = chooseCardLoader.load();
+        Scene chooseCardScene = new Scene(chooseCard);
+        ChooseCardController chooseCardController= chooseCardLoader.getController();
 
+        MainController mainController= new MainController();
+
+
+        //TEMP
+        GuiMessageVisitor guiMessageVisitor = new GuiLoginGameMessageVisitor(loginController);
+        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345);
+        clientConnection.run();
+        clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
         loginController.addEventListener(SignUpListener.class,clientConnection);
-//        loginController.addEventListener();
+
+
         stage.sizeToScene();
         stage.setResizable(false);
         stage.show();

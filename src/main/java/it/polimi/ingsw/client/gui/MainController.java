@@ -28,7 +28,7 @@ import javafx.scene.transform.*;
 import java.net.URL;
 
 
-public class Game{
+public class MainController {
 
     private final static int WIDTH = 900;
     private final static int HEIGHT = 500;

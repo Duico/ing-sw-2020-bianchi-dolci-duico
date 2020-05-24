@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChooseCardController extends ClientEventEmitter {
 
@@ -34,24 +35,24 @@ public class ChooseCardController extends ClientEventEmitter {
 
     public Label choosePlayerLabel;
 
-    public ChoiceBox chooseFirstPlayer;
+    public ChoiceBox firstPlayerChoiceBox;
 
     public Label waitLabel;
 
     public Button chooseFirstPlayerButton;
 
     //get players from event on LoadButton click
-    private ArrayList<String> players= new ArrayList<>();
-    private ArrayList<String> opponents= new ArrayList<>();
+    private List<String> players= new ArrayList<>();
+    private List<String> opponents= new ArrayList<>();
 
 
 
     private int numSelectedCards=0;
     private boolean isChallenger;
 
-    private ArrayList<String> cardDeck = new ArrayList<>();
+    private List<String> cardDeck = new ArrayList<>();
     private String chosenCard=null;
-    private ArrayList<String> chosenCardsChallenger = new ArrayList<>();
+    private List<String> chosenCardsChallenger = new ArrayList<>();
 
 
     private int numPlayers;
@@ -63,15 +64,19 @@ public class ChooseCardController extends ClientEventEmitter {
         this.isChallenger=isChallenger;
     }
 
-    public void initChoiceBox(){
-        chooseFirstPlayer.setItems(FXCollections.observableArrayList(opponents));
+    public boolean getIsChallenger(){
+        return this.isChallenger;
     }
 
-    public void setOpponents(ArrayList<String > players){
+    public void initChoiceBox(){
+        firstPlayerChoiceBox.setItems(FXCollections.observableArrayList(opponents));
+    }
+
+    public void setOpponents(List<String> players){
         opponents.addAll(players);
     }
 
-    public void initChosenCardsChallenger(ArrayList<String> cards){
+    public void initChosenCardsChallenger(List<String> cards){
         chosenCardsChallenger.addAll(cards);
     }
 
@@ -87,11 +92,11 @@ public class ChooseCardController extends ClientEventEmitter {
         cardDeck.add("Prometheus");
     }
 
-    public void initCardDeck(ArrayList<String> cards){
+    public void initCardDeck(List<String> cards){
         cardDeck.addAll(cards);
     }
 
-    private void initPlayers(ArrayList<String> player){
+    private void initPlayers(List<String> player){
         players.addAll(player);
     }
 
@@ -118,6 +123,7 @@ public class ChooseCardController extends ClientEventEmitter {
     }
 
     private void addGridEventChallenger() {
+     Platform.runLater(()->{});
         cards.getChildren().forEach(item -> {
             item.setOnMouseClicked( event -> {
                 if (event.getClickCount() == 1) {
@@ -136,34 +142,42 @@ public class ChooseCardController extends ClientEventEmitter {
     }
 
     private void updateText(){
+        chooseText.setText(getUpdateText());
+    }
+
+    private String getUpdateText(){
         String text= "Your choices are: ";
         for(int i=0;i<chosenCardsChallenger.size();i++){
             text=text+chosenCardsChallenger.get(i)+", ";
         }
-        chooseText.setText(text);
+        return text;
     }
 
 
-    private void initGridNotChallenger(ArrayList<String> deck){
-        for(int i=0;i<cardDeck.size();i++){
-            if(deck.contains(cardDeck.get(i)))
-                cards.add(image(cardDeck.get(i)),i,0);
-        }
+    public void initGridNotChallenger(List<String> deck){
+        Platform.runLater(()->{
+            for(int i=0;i<cardDeck.size();i++){
+                if(deck.contains(cardDeck.get(i)))
+                    cards.add(image(cardDeck.get(i)),i,0);
+            }
+        });
     }
 
 
 
     private void addGridEventNotChallenger() {
-        cards.getChildren().forEach(item -> {
-            item.setOnMouseClicked( event -> {
-                if (event.getClickCount() == 1) {
-                    Node node = (Node) event.getSource();
-                    int n = GridPane.getColumnIndex(node);
-                    chosenCard=cardDeck.get(n);
-                    chooseText.setText("Your choice is: "+chosenCard+"!");
-                }
-            });
+        Platform.runLater(()->{
+            cards.getChildren().forEach(item -> {
+                item.setOnMouseClicked( event -> {
+                    if (event.getClickCount() == 1) {
+                        Node node = (Node) event.getSource();
+                        int n = GridPane.getColumnIndex(node);
+                        chosenCard=cardDeck.get(n);
+                        chooseText.setText("Your choice is: "+chosenCard+"!");
+                    }
+                });
 
+            });
         });
     }
 
@@ -189,14 +203,18 @@ public class ChooseCardController extends ClientEventEmitter {
     //challenger
     public void waitChooseCards(){
         hideCards();
-        waitLabel.setText("WAIT FOR OTHER PLAYERS");
+        Platform.runLater(()->{
+            waitLabel.setText("WAIT FOR OTHER PLAYERS");
+        });
         waitLabel.setVisible(true);
     }
 
     //not challenger
     public void waitForChallenger(){
         hideCards();
-        waitLabel.setText("WAIT FOR THE CHALLENGER");
+        Platform.runLater(()->{
+            waitLabel.setText("WAIT FOR THE CHALLENGER");
+        });
         waitLabel.setVisible(true);
     }
 
@@ -205,10 +223,10 @@ public class ChooseCardController extends ClientEventEmitter {
         waitLabel.setVisible(false);
         chooseFirstPlayerButton.setVisible(true);
         choosePlayerLabel.setVisible(true);
-        chooseFirstPlayer.setVisible(true);
+        firstPlayerChoiceBox.setVisible(true);
     }
 
-    public void loadCards(ArrayList<String> allCards) {
+    public void loadCards(List<String> allCards) {
         chooseText.setVisible(true);
         chooseText.setMouseTransparent(true);
         title.setVisible(true);
@@ -222,7 +240,9 @@ public class ChooseCardController extends ClientEventEmitter {
         if(isChallenger)
         {
             int numPlayers=getNumPlayers();
-            title.setText("CHOOSE "+numPlayers+" CARDS!");
+            Platform.runLater(()->{
+                title.setText("CHOOSE "+numPlayers+" CARDS!");
+            });
             if(numPlayers==3)
             {
                 initChoiceBox();
@@ -252,7 +272,7 @@ public class ChooseCardController extends ClientEventEmitter {
                 //ready to play
         }
         else if(numSelectedCards==numPlayers && numPlayers==3){
-            if (chooseFirstPlayer.getValue().toString()!=null) {
+            if (firstPlayerChoiceBox.getValue().toString()!=null) {
                 //emitEvent firstPlayer
             }else
                 alert("You must select one player!");
@@ -265,11 +285,8 @@ public class ChooseCardController extends ClientEventEmitter {
         if(chosenCard==null)
             alert("Choose a Card!");
         else{
-//            for(int i=0;i<Manager.getInstance().getNumPlayers();i++)
-//                Manager.getInstance().addCard(chosenCardsChallenger.get(i));
             //send chosen card
         }
-
     }
 
 
@@ -293,7 +310,7 @@ public class ChooseCardController extends ClientEventEmitter {
     }
 
     private String getFirstPlayer(){
-        return chooseFirstPlayer.getValue().toString();
+        return firstPlayerChoiceBox.getValue().toString();
     }
 
     public void sendFirstPlayer(ActionEvent actionEvent) {
@@ -302,11 +319,11 @@ public class ChooseCardController extends ClientEventEmitter {
 
 
     public void launchGame(){
-        Game game = new Game();
+        MainController mainController = new MainController();
         for(int i=0;i<Manager.getInstance().getNumPlayers();i++)
             Manager.getInstance().addCard(chosenCardsChallenger.get(i));
         Stage stage = new Stage();
-        stage.setScene(game.gameScene());
+        stage.setScene(mainController.gameScene());
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         stage.setX(primaryScreenBounds.getMinX());
         stage.setY(primaryScreenBounds.getMinY());

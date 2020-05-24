@@ -1,12 +1,11 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.client.SetUpMessageVisitor;
 import it.polimi.ingsw.server.message.ConnectionMessage;
 import it.polimi.ingsw.server.message.InitSetUpMessage;
 import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 import javafx.application.Platform;
 
-public class GuiLoginSetUpMessageVisitor implements SetUpMessageVisitor {
+public class GuiLoginSetUpMessageVisitor extends GuiSetUpMessageVisitor {
 
     private final LoginController loginController;
     private boolean askNumPlayers;

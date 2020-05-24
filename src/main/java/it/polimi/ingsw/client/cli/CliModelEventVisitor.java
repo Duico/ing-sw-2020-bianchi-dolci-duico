@@ -5,7 +5,10 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.event.*;
-import it.polimi.ingsw.view.event.*;
+import it.polimi.ingsw.view.event.CardViewEvent;
+import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
+import it.polimi.ingsw.view.event.FirstPlayerViewEvent;
+import it.polimi.ingsw.view.event.ViewEvent;
 
 import java.util.ArrayList;
 import java.util.List;

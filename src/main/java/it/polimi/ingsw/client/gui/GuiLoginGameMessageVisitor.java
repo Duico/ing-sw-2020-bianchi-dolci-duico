@@ -1,11 +1,9 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.client.GameMessageVisitor;
-
-public class GuiLoginGameMessageVisitor extends GameMessageVisitor {
-    public GuiLoginGameMessageVisitor(GuiModelEventVisitor guiModelEventVisitor, GuiControllerResponseVisitor guiControllerResponseVisitor, GuiLoginSetUpMessageVisitor guiSetUpMessageVisitor){
+public class GuiLoginGameMessageVisitor extends GuiMessageVisitor {
+    public GuiLoginGameMessageVisitor(LoginController loginController){
         //Cli property could be replaced by an event listenerguiSetUpMessageVisitor
-        super(guiModelEventVisitor, guiControllerResponseVisitor, guiSetUpMessageVisitor);
+        super(new GuiDefaultModelEventVisitor(), new GuiDefaultControllerResponseVisitor(), new GuiLoginSetUpMessageVisitor(loginController), new GuiDefaultClientConnectionEventVisitor());
     }
 
 }
