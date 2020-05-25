@@ -88,16 +88,16 @@ public class LoginController extends ClientEventEmitter {
     public void correctSignUp(boolean waitOtherPlayers){
         loginPane.setVisible(false);
 
-        if(waitOtherPlayers){
-            Platform.runLater(()->{
-//                waitLabel.setText("Waiting for other Players");
-            });
-        }else {
-            Platform.runLater(()->{
-//                waitLabel.setText("Waiting for other Players");
-
-            });
-        }
+//        if(waitOtherPlayers){
+//            Platform.runLater(()->{
+////                waitLabel.setText("Waiting for other Players");
+//            });
+//        }else {
+//            Platform.runLater(()->{
+////                waitLabel.setText("Waiting for other Players");
+//
+//            });
+//        }
 
         waitLabel.setVisible(true);
     }
@@ -109,14 +109,18 @@ public class LoginController extends ClientEventEmitter {
     }
 
     private Integer checkChoiceBox(){
-        if(choiceBox.getValue().toString().equals("2 PLAYERS")){
-            return 2;
-        }else if(choiceBox.getValue().toString().equals("3 PLAYERS")){
-            return 3;
-        }else{
-            alert("You must select one option!");
+        if(choiceBox.getValue()!=null){
+            if(choiceBox.getValue().toString().equals("2 PLAYERS")){
+                return 2;
+            }else if(choiceBox.getValue().toString().equals("3 PLAYERS")){
+                return 3;
+            }else{
+                alert("You must select one option!");
+                return null;
+            }
+        }else
             return null;
-        }
+
     }
 
     private void checkValidStart(){
@@ -136,9 +140,13 @@ public class LoginController extends ClientEventEmitter {
                     username = insert;
                     if(choiceBoxNumPlayers==2){
 //                        System.out.println("signupmessage"+" "+username+choiceBoxNumPlayers);
+                        GuiModel.getInstance().setNumPlayers(2);
+                        GuiModel.getInstance().setUsername(username);
                         emitSignUp(new SignUpMessage(username, choiceBoxNumPlayers));
                     }else if(choiceBoxNumPlayers==3){
 //                        System.out.println("signupmessage"+" "+username+choiceBoxNumPlayers);
+                        GuiModel.getInstance().setNumPlayers(3);
+                        GuiModel.getInstance().setUsername(username);
                         emitSignUp(new SignUpMessage(username, choiceBoxNumPlayers));
                     }
                 }
@@ -151,7 +159,8 @@ public class LoginController extends ClientEventEmitter {
         }else{
             if(checkUsername){
                 username=insert;
-                System.out.println("signupmessage"+" "+username);
+//                System.out.println("signupmessage"+" "+username);
+                GuiModel.getInstance().setUsername(username);
                 emitSignUp(new SignUpMessage(username));
 
             }else{

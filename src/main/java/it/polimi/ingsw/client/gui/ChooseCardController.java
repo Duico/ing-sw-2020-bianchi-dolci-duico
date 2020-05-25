@@ -1,6 +1,8 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientEventEmitter;
+import it.polimi.ingsw.view.event.CardViewEvent;
+import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -43,7 +45,7 @@ public class ChooseCardController extends ClientEventEmitter {
 
     //get players from event on LoadButton click
     private List<String> players= new ArrayList<>();
-    private List<String> opponents= new ArrayList<>();
+    private ArrayList<String> opponents= new ArrayList<>();
 
 
 
@@ -55,7 +57,7 @@ public class ChooseCardController extends ClientEventEmitter {
     private List<String> chosenCardsChallenger = new ArrayList<>();
 
 
-    private int numPlayers;
+    private int numPlayers=GuiModel.getInstance().getNumPlayers();
 
     public ChooseCardController(){}
 
@@ -69,11 +71,16 @@ public class ChooseCardController extends ClientEventEmitter {
     }
 
     public void initChoiceBox(){
+        System.out.println("init choice box");
         firstPlayerChoiceBox.setItems(FXCollections.observableArrayList(opponents));
     }
 
-    public void setOpponents(List<String> players){
-        opponents.addAll(players);
+    public void setOpponents(){
+        for(String name:GuiModel.getInstance().getPlayers())
+        {
+            if(!name.equals(GuiModel.getInstance().getUsername()))
+                opponents.add(name);
+        }
     }
 
     public void initChosenCardsChallenger(List<String> cards){
@@ -100,13 +107,14 @@ public class ChooseCardController extends ClientEventEmitter {
         players.addAll(player);
     }
 
-    public void setNumPlayers(int n){
+    private void setNumPlayers(int n){
         this.numPlayers=n;
     }
 
     public int getNumPlayers(){
         return this.numPlayers;
     }
+
 
     private ImageView image(String name){
         ImageView imageView = new ImageView("textures/"+name+".png");
@@ -122,7 +130,7 @@ public class ChooseCardController extends ClientEventEmitter {
             cards.add(image(cardDeck.get(i)),i,0);
     }
 
-    private void addGridEventChallenger() {
+    public void addGridEventChallenger() {
      Platform.runLater(()->{});
         cards.getChildren().forEach(item -> {
             item.setOnMouseClicked( event -> {
@@ -165,7 +173,7 @@ public class ChooseCardController extends ClientEventEmitter {
 
 
 
-    private void addGridEventNotChallenger() {
+    public void addGridEventNotChallenger() {
         Platform.runLater(()->{
             cards.getChildren().forEach(item -> {
                 item.setOnMouseClicked( event -> {
@@ -191,7 +199,7 @@ public class ChooseCardController extends ClientEventEmitter {
         return scene;
     }
 
-    private void hideCards(){
+    public void hideCards(){
         chooseText.setVisible(false);
         title.setVisible(false);
         startButton.setVisible(false);
@@ -226,7 +234,7 @@ public class ChooseCardController extends ClientEventEmitter {
         firstPlayerChoiceBox.setVisible(true);
     }
 
-    public void loadCards(List<String> allCards) {
+    public void loadCards(List<String> deck) {
         chooseText.setVisible(true);
         chooseText.setMouseTransparent(true);
         title.setVisible(true);
@@ -234,19 +242,23 @@ public class ChooseCardController extends ClientEventEmitter {
         startButton.setVisible(true);
         buttonImage.setVisible(true);
 
-        initCardDeck(allCards);
+        initCardDeck(deck);
 
         //FOR CHALLENGER PLAYER
         if(isChallenger)
         {
+            setNumPlayers(GuiModel.getInstance().getNumPlayers());
             int numPlayers=getNumPlayers();
             Platform.runLater(()->{
                 title.setText("CHOOSE "+numPlayers+" CARDS!");
             });
             if(numPlayers==3)
             {
-                initChoiceBox();
-
+                setOpponents();
+                System.out.println(opponents.get(0)+" "+opponents.get(1));
+                Platform.runLater(()->{
+                    initChoiceBox();
+                });
             }
 
             initGridChallenger();
@@ -269,15 +281,15 @@ public class ChooseCardController extends ClientEventEmitter {
 
     private void checkValidStartChallenger(){
         if(numSelectedCards==numPlayers && numPlayers==2) {
-                //ready to play
+            emitViewEvent(new ChallengerCardViewEvent(chosenCardsChallenger));
+            waitChooseCards();
         }
         else if(numSelectedCards==numPlayers && numPlayers==3){
-            if (firstPlayerChoiceBox.getValue().toString()!=null) {
-                //emitEvent firstPlayer
-            }else
-                alert("You must select one player!");
+//            if (firstPlayerChoiceBox.getValue().toString()!=null) {
+                emitViewEvent(new ChallengerCardViewEvent(chosenCardsChallenger));
+                waitChooseCards();
         }else
-            alert("Check if you have selected cards and one player!");
+            alert("Check if you have selected "+numPlayers+" cards!");
 
     }
 
@@ -285,7 +297,8 @@ public class ChooseCardController extends ClientEventEmitter {
         if(chosenCard==null)
             alert("Choose a Card!");
         else{
-            //send chosen card
+            emitViewEvent(new CardViewEvent(chosenCard));
+            waitForChallenger();
         }
     }
 

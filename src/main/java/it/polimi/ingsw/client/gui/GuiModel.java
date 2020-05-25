@@ -1,6 +1,10 @@
 
 package it.polimi.ingsw.client.gui;
+
+import it.polimi.ingsw.model.Player;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class GuiModel {
     private static GuiModel instance= null;
@@ -9,8 +13,9 @@ public class GuiModel {
     private String username;
     private String chosenCard;
 //    private Cell[][] board;
-    private ArrayList<String> cards= new ArrayList<>();
-    private ArrayList<String> players= new ArrayList<>();
+    private List<String> cards= new ArrayList<>();
+    private List<String> cardDeck= new ArrayList<>();
+    private List<String> players= new ArrayList<>();
 
     private GuiModel(){
 //        initBoard();
@@ -22,12 +27,39 @@ public class GuiModel {
         return instance;
     }
 
+    public void setPlayers(List<Player> names){
+        for(Player player:names){
+            this.players.add(player.getNickName());
+        }
+        this.setNumPlayers(names.size());
+    }
+
+    public List<String> getPlayers(){
+        return this.players;
+    }
+
 //    private void initBoard(){
 //        for(int i=0;i<5;i++)
 //            for(int j=0;j<5;j++){
 //                board[i][j]=new Cell();
 //            }
 //    }
+
+    public void setCardDeck(List<String> card){
+        this.cardDeck.addAll(card);
+    }
+
+    public List<String> getCardDeck(){
+        return this.cardDeck;
+    }
+
+    public void setCards(List<String> card){
+        this.cards.addAll(card);
+    }
+
+    public List<String> getCards(){
+        return this.cards;
+    }
 
     public void setNumPlayers(int n){
         this.numPlayers=n;

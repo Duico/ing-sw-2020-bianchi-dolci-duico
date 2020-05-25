@@ -37,6 +37,7 @@ public class GuiLoginModelEventVisitor extends GuiModelEventVisitor {
     @Override
     public void visit(NewTurnModelEvent evt) {
         //load chooseCard scene
+        GuiModel.getInstance().setPlayers(evt.getPlayers());
         sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CHOSE_CARDS));
     }
 

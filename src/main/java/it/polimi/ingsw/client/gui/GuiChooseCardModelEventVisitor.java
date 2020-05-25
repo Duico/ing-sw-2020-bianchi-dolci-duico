@@ -1,6 +1,11 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.event.*;
+import it.polimi.ingsw.view.event.CardViewEvent;
+import javafx.application.Platform;
+
+import java.util.List;
 
 public class GuiChooseCardModelEventVisitor extends GuiModelEventVisitor {
 
@@ -27,26 +32,36 @@ public class GuiChooseCardModelEventVisitor extends GuiModelEventVisitor {
 
     @Override
     public void visit(ChosenCardsModelEvent evt) {
-//        List<String> cardDeck = evt.getCardDeck();
-//        List<String> cards = evt.getChosenCards();
-//        if (cards == null) { //pick cards
-//            if (cardDeck != null) {
-//
-//            } else {
-//                throw new RuntimeException("Both cards and cardDeck are null");
-//            }
-//        }else if(cards.size()==1){
-//                Manager.getInstance().setChosenCard();
-//                chooseCardController.showChooseFirstPlayer();
-//        }else if(cards.size()>1)
-//        {
-//            chooseCardController.initGridNotChallenger(cards);
-//        }
-//
-//        else{
-//
-//        }
+        List<String> cardDeck = evt.getCardDeck();
+        List<String> cards = evt.getChosenCards();
+        Player player= evt.getPlayer();
+        GuiModel.getInstance().setCardDeck(cardDeck);
+        if(player.getNickName().equals(GuiModel.getInstance().getUsername())) {
+            Platform.runLater(() -> {
+//            if(cards.size()==GuiModel.getInstance().getNumPlayers())
+//                GuiModel.getInstance().setCards(cards);
+//            else{ }
+
+                printChooseCard(cards);
+            });
+        }else{
+                Platform.runLater(()->{
+                    chooseCardController.waitChooseCards();
+                });
+
+        }
     }
+
+
+//        for(String card:cardDeck){
+//            System.out.println(card);
+//        }
+//        for(String card:cards){
+//            System.out.println(card);
+//        }
+
+
+
 
     @Override
     public void visit(FailModelEvent evt) {
@@ -84,4 +99,36 @@ public class GuiChooseCardModelEventVisitor extends GuiModelEventVisitor {
     public void visit(UndoModelEvent evt) {
 
     }
+
+    private void printChooseCard(List<String> cards){
+        List<String> cardDeck = GuiModel.getInstance().getCardDeck();
+        if (cards == null) { //pick cards
+            if (cardDeck != null) {
+                System.out.println("challenger");
+                chooseCardController.setIsChallenger(true);
+                Platform.runLater(()-> {
+                    chooseCardController.loadCards(cardDeck);
+                });
+            } else {
+                throw new RuntimeException("Both cards and cardDeck are null");
+            }
+        }else if(cards.size()==1){
+//                GuiModel.getInstance().setChosenCard();
+            if(GuiModel.getInstance().getNumPlayers()==2)
+                emitViewEvent(new CardViewEvent(cards.get(0)));
+            else
+                    chooseCardController.showChooseFirstPlayer();
+        }else if(cards.size()>1)
+        {
+            System.out.println("not challenger");
+
+            chooseCardController.setIsChallenger(false);
+            chooseCardController.initChosenCardsChallenger(cards);
+            Platform.runLater(()->{
+                chooseCardController.waitLabel.setVisible(false);
+                chooseCardController.loadCards(cardDeck);
+            });
+        }
+    }
+
 }
