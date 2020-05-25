@@ -37,18 +37,13 @@ public class GuiChooseCardModelEventVisitor extends GuiModelEventVisitor {
         Player player= evt.getPlayer();
         GuiModel.getInstance().setCardDeck(cardDeck);
         if(player.getNickName().equals(GuiModel.getInstance().getUsername())) {
-            Platform.runLater(() -> {
-//            if(cards.size()==GuiModel.getInstance().getNumPlayers())
-//                GuiModel.getInstance().setCards(cards);
-//            else{ }
-
+            Platform.runLater(()->{
                 printChooseCard(cards);
             });
         }else{
-                Platform.runLater(()->{
-                    chooseCardController.waitChooseCards();
-                });
-
+            Platform.runLater(()->{
+                chooseCardController.waitChooseCards();
+            });
         }
     }
 
@@ -102,13 +97,15 @@ public class GuiChooseCardModelEventVisitor extends GuiModelEventVisitor {
 
     private void printChooseCard(List<String> cards){
         List<String> cardDeck = GuiModel.getInstance().getCardDeck();
+
         if (cards == null) { //pick cards
             if (cardDeck != null) {
                 System.out.println("challenger");
                 chooseCardController.setIsChallenger(true);
-                Platform.runLater(()-> {
-                    chooseCardController.loadCards(cardDeck);
-                });
+//                Platform.runLater(()-> {
+//                chooseCardController.initCardDeck(cardDeck);
+                chooseCardController.loadCards();
+//                });
             } else {
                 throw new RuntimeException("Both cards and cardDeck are null");
             }
@@ -124,11 +121,10 @@ public class GuiChooseCardModelEventVisitor extends GuiModelEventVisitor {
 
             chooseCardController.setIsChallenger(false);
             chooseCardController.initChosenCardsChallenger(cards);
-            Platform.runLater(()->{
-                chooseCardController.waitLabel.setVisible(false);
-                chooseCardController.loadCards(cardDeck);
-            });
+            chooseCardController.waitLabel.setVisible(false);
+            chooseCardController.loadCards();
         }
     }
+
 
 }

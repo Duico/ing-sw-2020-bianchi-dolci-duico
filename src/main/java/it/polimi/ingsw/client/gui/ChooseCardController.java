@@ -1,8 +1,10 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientEventEmitter;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.view.event.CardViewEvent;
 import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
+import it.polimi.ingsw.view.event.FirstPlayerViewEvent;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -47,12 +49,13 @@ public class ChooseCardController extends ClientEventEmitter {
     private List<String> players= new ArrayList<>();
     private ArrayList<String> opponents= new ArrayList<>();
 
-
+    private boolean isChallengerCardsLoaded=false;
 
     private int numSelectedCards=0;
     private boolean isChallenger;
 
-    private List<String> cardDeck = new ArrayList<>();
+//    private List<String> cardDeck = new ArrayList<>();
+    private List<String> cardDeck = GuiModel.getInstance().getCardDeck();
     private String chosenCard=null;
     private List<String> chosenCardsChallenger = new ArrayList<>();
 
@@ -61,6 +64,13 @@ public class ChooseCardController extends ClientEventEmitter {
 
     public ChooseCardController(){}
 
+    public void setIsChallengerCardsLoaded(){
+        this.isChallengerCardsLoaded=true;
+    }
+
+    public boolean getIsChallengerCardsLoaded(){
+        return this.isChallengerCardsLoaded;
+    }
 
     public void setIsChallenger(boolean isChallenger){
         this.isChallenger=isChallenger;
@@ -72,14 +82,16 @@ public class ChooseCardController extends ClientEventEmitter {
 
     public void initChoiceBox(){
         System.out.println("init choice box");
-        firstPlayerChoiceBox.setItems(FXCollections.observableArrayList(opponents));
+//        Platform.runLater(()->{
+            firstPlayerChoiceBox.setItems(FXCollections.observableArrayList(opponents));
+//        });
     }
 
     public void setOpponents(){
-        for(String name:GuiModel.getInstance().getPlayers())
+        for(Player player:GuiModel.getInstance().getPlayers())
         {
-            if(!name.equals(GuiModel.getInstance().getUsername()))
-                opponents.add(name);
+            if(!player.getNickName().equals(GuiModel.getInstance().getUsername()) && !opponents.contains(player.getNickName()))
+                opponents.add(player.getNickName());
         }
     }
 
@@ -126,12 +138,11 @@ public class ChooseCardController extends ClientEventEmitter {
 
 
     public void initGridChallenger(){
-        for(int i=0;i<cardDeck.size();i++)
-            cards.add(image(cardDeck.get(i)),i,0);
+            for(int i=0;i<cardDeck.size();i++)
+                cards.add(image(cardDeck.get(i)),i,0);
     }
 
     public void addGridEventChallenger() {
-     Platform.runLater(()->{});
         cards.getChildren().forEach(item -> {
             item.setOnMouseClicked( event -> {
                 if (event.getClickCount() == 1) {
@@ -144,10 +155,10 @@ public class ChooseCardController extends ClientEventEmitter {
                         numSelectedCards++;
                     }
                 }
-            });
-
         });
+    });
     }
+
 
     private void updateText(){
         chooseText.setText(getUpdateText());
@@ -162,31 +173,29 @@ public class ChooseCardController extends ClientEventEmitter {
     }
 
 
-    public void initGridNotChallenger(List<String> deck){
-        Platform.runLater(()->{
-            for(int i=0;i<cardDeck.size();i++){
-                if(deck.contains(cardDeck.get(i)))
-                    cards.add(image(cardDeck.get(i)),i,0);
-            }
-        });
+    public void initGridNotChallenger(List<String> chosenCards){
+          System.out.println("init grid not challenger");
+          for(int i=0;i<cardDeck.size();i++){
+              if(chosenCards.contains(cardDeck.get(i)))
+                  cards.add(image(cardDeck.get(i)),i,0);
+          }
     }
 
 
 
     public void addGridEventNotChallenger() {
-        Platform.runLater(()->{
-            cards.getChildren().forEach(item -> {
-                item.setOnMouseClicked( event -> {
-                    if (event.getClickCount() == 1) {
-                        Node node = (Node) event.getSource();
-                        int n = GridPane.getColumnIndex(node);
-                        chosenCard=cardDeck.get(n);
-                        chooseText.setText("Your choice is: "+chosenCard+"!");
-                    }
-                });
 
-            });
-        });
+              cards.getChildren().forEach(item -> {
+                  item.setOnMouseClicked( event -> {
+                      if (event.getClickCount() == 1) {
+                          Node node = (Node) event.getSource();
+                          int n = GridPane.getColumnIndex(node);
+                          chosenCard=cardDeck.get(n);
+                          chooseText.setText("Your choice is: "+chosenCard+"!");
+                      }
+                  });
+
+              });
     }
 
 
@@ -211,9 +220,9 @@ public class ChooseCardController extends ClientEventEmitter {
     //challenger
     public void waitChooseCards(){
         hideCards();
-        Platform.runLater(()->{
+//        Platform.runLater(()->{
             waitLabel.setText("WAIT FOR OTHER PLAYERS");
-        });
+//        });
         waitLabel.setVisible(true);
     }
 
@@ -232,44 +241,34 @@ public class ChooseCardController extends ClientEventEmitter {
         chooseFirstPlayerButton.setVisible(true);
         choosePlayerLabel.setVisible(true);
         firstPlayerChoiceBox.setVisible(true);
+        setOpponents();
+        initChoiceBox();
     }
 
-    public void loadCards(List<String> deck) {
-        chooseText.setVisible(true);
-        chooseText.setMouseTransparent(true);
-        title.setVisible(true);
-        cards.setVisible(true);
-        startButton.setVisible(true);
-        buttonImage.setVisible(true);
+    public void loadCards() {
+            chooseText.setVisible(true);
+            chooseText.setMouseTransparent(true);
+            title.setVisible(true);
+            cards.setVisible(true);
+            startButton.setVisible(true);
+            buttonImage.setVisible(true);
 
-        initCardDeck(deck);
+
 
         //FOR CHALLENGER PLAYER
         if(isChallenger)
         {
             setNumPlayers(GuiModel.getInstance().getNumPlayers());
             int numPlayers=getNumPlayers();
-            Platform.runLater(()->{
-                title.setText("CHOOSE "+numPlayers+" CARDS!");
-            });
-            if(numPlayers==3)
-            {
-                setOpponents();
-                System.out.println(opponents.get(0)+" "+opponents.get(1));
-                Platform.runLater(()->{
-                    initChoiceBox();
-                });
-            }
+            title.setText("CHOOSE "+numPlayers+" CARDS!");
 
             initGridChallenger();
             addGridEventChallenger();
         }
         ///////////////////////
 
-
         //FOR NOT CHALLENGER PLAYERS
-        if(!isChallenger)
-        {
+        else {
             initGridNotChallenger(chosenCardsChallenger);
             addGridEventNotChallenger();
         }
@@ -298,7 +297,7 @@ public class ChooseCardController extends ClientEventEmitter {
             alert("Choose a Card!");
         else{
             emitViewEvent(new CardViewEvent(chosenCard));
-            waitForChallenger();
+//            waitForChallenger();
         }
     }
 
@@ -328,6 +327,10 @@ public class ChooseCardController extends ClientEventEmitter {
 
     public void sendFirstPlayer(ActionEvent actionEvent) {
         //emitEvent first Player
+        for(Player p: GuiModel.getInstance().getPlayers()){
+            if(p.getNickName().equals(getFirstPlayer()))
+                emitViewEvent(new FirstPlayerViewEvent(p));
+        }
     }
 
 

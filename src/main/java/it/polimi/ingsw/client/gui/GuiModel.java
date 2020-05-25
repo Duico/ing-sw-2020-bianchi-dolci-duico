@@ -15,7 +15,8 @@ public class GuiModel {
 //    private Cell[][] board;
     private List<String> cards= new ArrayList<>();
     private List<String> cardDeck= new ArrayList<>();
-    private List<String> players= new ArrayList<>();
+    private List<String> playerNames = new ArrayList<>();
+    private List<Player> players = new ArrayList<>();
 
     private GuiModel(){
 //        initBoard();
@@ -27,15 +28,26 @@ public class GuiModel {
         return instance;
     }
 
-    public void setPlayers(List<Player> names){
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+        this.setNumPlayers(players.size());
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayerNames(List<Player> names){
         for(Player player:names){
-            this.players.add(player.getNickName());
+            this.playerNames.add(player.getNickName());
         }
+
         this.setNumPlayers(names.size());
     }
 
-    public List<String> getPlayers(){
-        return this.players;
+    public List<String> getPlayerNames(){
+        return this.playerNames;
     }
 
 //    private void initBoard(){
@@ -46,7 +58,10 @@ public class GuiModel {
 //    }
 
     public void setCardDeck(List<String> card){
-        this.cardDeck.addAll(card);
+        for(String newCard:card){
+            if(!this.cardDeck.contains(newCard))
+                cardDeck.add(newCard);
+        }
     }
 
     public List<String> getCardDeck(){
@@ -94,10 +109,10 @@ public class GuiModel {
     }
 
     public void addPlayer(String name){
-        this.players.add(name);
+        this.playerNames.add(name);
     }
 
     public String getPlayer(int i){
-        return this.players.get(i);
+        return this.playerNames.get(i);
     }
 }
