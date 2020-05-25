@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiModel {
+
+
+
     private static GuiModel instance= null;
 
     private int numPlayers;
@@ -18,8 +21,8 @@ public class GuiModel {
     private List<String> playerNames = new ArrayList<>();
     private List<Player> players = new ArrayList<>();
 
-    private GuiModel(){
-//        initBoard();
+    public GuiModel( ){
+
     }
 
     public static GuiModel getInstance(){

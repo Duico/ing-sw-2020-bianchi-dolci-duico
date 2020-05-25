@@ -5,6 +5,8 @@ import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import it.polimi.ingsw.view.event.BuildViewEvent;
+import it.polimi.ingsw.view.event.MoveViewEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
@@ -43,43 +45,54 @@ public class MainController extends ClientEventEmitter {
     private Button buildButton = new Button();
 
     private Position startPosition;
-    private double onClickXCoord,onClickYCoord,onClickZCoord;
-    private double newOnClickXCoord,newOnClickYCoord,newOnClickZCoord;
-    private boolean isSelectedWorker=false;
-    private boolean isMoveTurn = true;
+    private double onClickXCoord,onClickYCoord;
+    private double newOnClickXCoord,newOnClickYCoord;
+    private boolean isAllowedToMove = true;
+    private boolean isAllowedToBuild;
+    private boolean isDome;
+    private Operation operation;
 
 
-    private enum Dimension{
-        EMPTY(0),
-        BASE(-1.323),
-        MID(-2.434),
-        TOP(-3.034);
-        private final double height;
-        private Dimension(double height){
-            this.height = height;
-        }
-        public double getHeight() {
-            return height;
-        }
+
+    private enum Operation{
+        MOVE,
+        BUILD,
+        BUILD_DOME;
+
+        private Operation(){}
+
+
     }
 
-
-    private Cell[][] board= new Cell[5][5];
-    private MappingMatrix map = new MappingMatrix(boardSize);
 
     private int count=0;
 
 
 
+    ///da spostare in guimodel
+    private GuiCell[][] board= new GuiCell[5][5];
+    private MappingMatrix map = new MappingMatrix(boardSize);
+
+
+
+
+    private boolean isSelectedWorker(){
+        return startPosition!=null;
+    }
+
 
     private void initBoard(){
         for(int i=0;i<5;i++)
             for(int j=0;j<5;j++){
-                board[i][j]=new Cell();
-                Coordinate coord = getCenter(map.getBorder(i,j));
+                board[i][j]=new GuiCell();
+                Coordinate coord = map.getCoordinate(i,j);
                 board[i][j].setCoordinate(new Coordinate(coord.getCenterX(),coord.getCenterY(),0));
             }
     }
+    ////////////////////////
+
+
+
 
     private void create3DScene() {
         initBoard();
@@ -254,17 +267,6 @@ public class MainController extends ClientEventEmitter {
 
     }
 
-//    private Coordinate updateCoordinate(double size,double x, double y){
-//        for(int i=0;i<5;i++)
-//            for(int j=0;j<5;j++){
-//                if(x>=map.getLeft(i,j) && x<=map.getRight(i,j) && y>=map.getTop(i,j) && y<=map.getDown(i,j)) {
-////                    System.out.println(i+" "+j);
-////                    clickedCell=getClickCellIndex(i,j);
-//                    return getCenter(map.getBorder(i, j));
-//                }
-//            }
-//        return new Coordinate(0,0);
-//    }
 
     private Position getClickCellIndex(double x,double y)  {
         for(int i=0;i<5;i++){
@@ -280,28 +282,8 @@ public class MainController extends ClientEventEmitter {
         return null;
     }
 
-    private Coordinate getCenter(Border border){
-        double centerX,centerY;
-        double diffX= (border.getRight() - border.getLeft())/2;
-        double diffY= (border.getDown() - border.getTop())/2;
-        centerX = border.getLeft()+diffX;
-        centerY = border.getTop()+diffY;
 
-        Coordinate center = new Coordinate(centerX,centerY);
-        return center;
-    }
 
-//    setLevel(Level level, boolean isDome, Position)
-//    moveWorker()
-
-//    private void placeWorker1(double x, double y, double z){
-//        String workerUrl = "models/MaleBuilder_Blue.obj";
-//        Group model = loadModel(getClass().getResource(workerUrl),"sample/textures/workerblue.png");
-//        model.getTransforms().addAll(new Translate(x,y,z), new Rotate(+90, Rotate.X_AXIS));
-//        addOnClickEventWorker(model);
-//        workers.getChildren().add(model);
-//        return model;
-//    }
 
     private void placeWorker1(Position position){
         String workerUrl = "/models/MaleBuilder_Blue.obj";
@@ -313,13 +295,6 @@ public class MainController extends ClientEventEmitter {
         board[position.getX()][position.getY()].setWorker(worker);
     }
 
-//    private void placeWorker2(double x, double y, double z){
-//        String workerUrl = "models/MaleBuilder_Blue.obj";
-//        Group model = loadModel(getClass().getResource(workerUrl),"sample/textures/workerpink.png");
-//        model.getTransforms().addAll(new Translate(x,y,z), new Rotate(+90, Rotate.X_AXIS));
-//        addOnClickEventWorker(model);
-//        workers.getChildren().add(model);
-//    }
 
     private void placeWorker2(Position position){
         String workerUrl = "/models/MaleBuilder_Blue.obj";
@@ -332,21 +307,6 @@ public class MainController extends ClientEventEmitter {
     }
 
 
-//    private void buildBase(double x, double y, double z){
-//        Cube platform = new Cube(3,3,0.001,Color.DARKKHAKI);
-//        platform.getTransforms().add(new Translate(x,y,z+1));
-//        String baseUrl = "models/Base.obj";
-//        Group model = loadModel(getClass().getResource(baseUrl),"sample/textures/metal.png");
-//        model.getTransforms().addAll(new Translate(x,y,z+1), new Rotate(+90, Rotate.X_AXIS), new Scale(0.4,0.4,0.4));
-//        addOnClickEventBase(model);
-//        buildings.getChildren().add(platform);
-//        buildings.getChildren().add(model);
-//        int i = getClickCellIndex(x,y).getX();
-//        int j = getClickCellIndex(x,y).getY();
-//        board[i][j].setCoordinateZ(Dimension.BASE.getHeight());
-//        board[i][j].setLastBuilding(model);
-//    }
-
     private void buildBase(Position position){
         Coordinate pos = board[position.getX()][position.getY()].getCoordinate();
         Cube platform = new Cube(3,3,0.001,Color.DARKKHAKI);
@@ -354,76 +314,45 @@ public class MainController extends ClientEventEmitter {
         String baseUrl = "/models/Base.obj";
         Group model = loadModel(getClass().getResource(baseUrl),"/textures/base.png");
         model.getTransforms().addAll(new Translate(pos.getCenterX(), pos.getCenterY(), pos.getCenterZ()+1), new Rotate(+90, Rotate.X_AXIS), new Scale(0.4,0.4,0.4));
-        addOnClickEventBase(model);
+        addOnClickEventBuilding(model);
         buildings.getChildren().add(platform);
         buildings.getChildren().add(model);
-        board[position.getX()][position.getY()].setCoordinateZ(Dimension.BASE.getHeight());
+        board[position.getX()][position.getY()].setLevel(Dimension.BASE);
         board[position.getX()][position.getY()].setLastBuilding(model);
     }
 
-//    private void buildMiddle(double x, double y, double z){
-//        String baseUrl = "models/Middle.obj";
-//        Group model = loadModel(getClass().getResource(baseUrl),"sample/textures/metal.png");
-//        model.getTransforms().addAll(new Translate(x+0.1,y,z-0.5), new Rotate(+90, Rotate.X_AXIS), new Scale(0.32,0.32,0.32));
-//        addOnClickEventMiddle(model);
-//        buildings.getChildren().add(model);
-//        int i = getClickCellIndex(x,y).getX();
-//        int j = getClickCellIndex(x,y).getY();
-//        board[i][j].setCoordinateZ(Dimension.MID.getHeight());
-//        board[i][j].setLastBuilding(model);
-//    }
 
     private void buildMiddle(Position position){
         Coordinate pos = board[position.getX()][position.getY()].getCoordinate();
         String baseUrl = "/models/Middle.obj";
         Group model = loadModel(getClass().getResource(baseUrl),"/textures/middle.png");
         model.getTransforms().addAll(new Translate(pos.getCenterX(),pos.getCenterY(),pos.getCenterZ()+1), new Rotate(+90, Rotate.X_AXIS), new Scale(0.32,0.32,0.32));
-        addOnClickEventMiddle(model);
+        addOnClickEventBuilding(model);
         buildings.getChildren().add(model);
-        board[position.getX()][position.getY()].setCoordinateZ(Dimension.MID.getHeight());
+        board[position.getX()][position.getY()].setLevel(Dimension.MID);
         board[position.getX()][position.getY()].setLastBuilding(model);
     }
 
-//    private void buildTop(double x, double y, double z){
-//        String baseUrl = "models/Top.obj";
-//        Group model = loadModel(getClass().getResource(baseUrl),"sample/textures/metal.png");
-//        model.getTransforms().addAll(new Translate(x+0.1,y,z-0.5), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3,0.3,0.3));
-//        addOnClickEventTop(model);
-//        root.getChildren().add(model);
-//        int i = getClickCellIndex(x,y).getX();
-//        int j = getClickCellIndex(x,y).getY();
-//        board[i][j].setCoordinateZ(Dimension.TOP.getHeight());
-//        board[i][j].setLastBuilding(model);
-//    }
 
     private void buildTop(Position position){
         Coordinate pos = board[position.getX()][position.getY()].getCoordinate();
         String baseUrl = "/models/Top.obj";
         Group model = loadModel(getClass().getResource(baseUrl),"/textures/top.png");
         model.getTransforms().addAll(new Translate(pos.getCenterX(),pos.getCenterY(),pos.getCenterZ()+1), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3,0.3,0.3));
-        addOnClickEventTop(model);
+        addOnClickEventBuilding(model);
         buildings.getChildren().add(model);
-        board[position.getX()][position.getY()].setCoordinateZ(Dimension.TOP.getHeight());
+        board[position.getX()][position.getY()].setLevel(Dimension.TOP);
         board[position.getX()][position.getY()].setLastBuilding(model);
 
     }
 
-//    private void buildDome(double x, double y, double z){
-//        String baseUrl = "models/Dome.obj";
-//        Group dome = loadModel(getClass().getResource(baseUrl),"sample/textures/Dome.png");
-//        dome.getTransforms().addAll(new Translate(x+0.1,y,z-0.4), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3,0.3,0.3));
-//        buildings.getChildren().add(dome);
-//        int i = getClickCellIndex(x,y).getX();
-//        int j = getClickCellIndex(x,y).getY();
-//        board[i][j].setDome();
-//    }
 
     private void buildDome(Position position){
         Coordinate pos = board[position.getX()][position.getY()].getCoordinate();
         String baseUrl = "/models/Dome.obj";
         Group dome = loadModel(getClass().getResource(baseUrl),"/textures/Dome.png");
         dome.getTransforms().addAll(new Translate(pos.getCenterX(),pos.getCenterY(),pos.getCenterZ()+0.8), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3,0.3,0.3));
-        addOnClickEventDome(dome);
+//        addOnClickEventBuilding(dome);
         buildings.getChildren().add(dome);
         board[position.getX()][position.getY()].setDome();
     }
@@ -437,103 +366,32 @@ public class MainController extends ClientEventEmitter {
         String baseUrl = "/models/Dome.obj";
         Group dome = loadModel(getClass().getResource(baseUrl),"/textures/Dome.png");
         dome.getTransforms().addAll(new Translate(pos.getCenterX(),pos.getCenterY(),pos.getCenterZ()+0.8), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3,0.3,0.3));
-        addOnClickEventDome(dome);
+//        addOnClickEventBuilding(dome);
         buildings.getChildren().add(platform);
         buildings.getChildren().add(dome);
         board[position.getX()][position.getY()].setDome();
     }
 
-
-
-    private void addOnClickEventBase(Node node){
+    private void addOnClickEventBuilding(Node node){
         node.setOnMouseClicked(e-> {
             newOnClickXCoord = node.getBoundsInParent().getCenterX();
             newOnClickYCoord = node.getBoundsInParent().getCenterY();
-            newOnClickZCoord = node.getBoundsInParent().getCenterZ();
             Position destinationPosition = getClickCellIndex(newOnClickXCoord,newOnClickYCoord);
-//            System.out.println(newOnClickXCoord+" "+newOnClickYCoord+" "+newOnClickZCoord);
-//            int x = getClickCellIndex(newOnClickXCoord,newOnClickYCoord).getX();
-//            int y = getClickCellIndex(newOnClickXCoord,newOnClickYCoord).getY();
-//            System.out.println(getClickCellIndex(newOnClickXCoord,newOnClickYCoord).getX()+" "+getClickCellIndex(newOnClickXCoord,newOnClickYCoord).getY());
-            if (!isSelectedWorker && board[destinationPosition.getX()][destinationPosition.getY()].getWorker()==null ){
-                //if(isDome) buildDome(..)
-//                buildMiddle(node.getBoundsInParent().getCenterX(), node.getBoundsInParent().getCenterY(), node.getBoundsInParent().getCenterZ());
-                buildMiddle(destinationPosition);
-                printBoard();
-                isMoveTurn = true;
-                node.setMouseTransparent(true);
-            }
-            else{
-                if(board[destinationPosition.getX()][destinationPosition.getY()].getWorker()==null) {
-//                    moveWorker(getSelectedWorker(), -(onClickXCoord - newOnClickXCoord), -(onClickYCoord - newOnClickYCoord), -(onClickZCoord - newOnClickZCoord) - 1.5);
-                    moveWorkerByCells(startPosition, destinationPosition);
-                    printBoard();
-                    isSelectedWorker = false;
-                    isMoveTurn = false;
-                }
-            }
-
-        });
-    }
-
-    private void addOnClickEventMiddle(Node node){
-        node.setOnMouseClicked(e->{
-            newOnClickXCoord = node.getBoundsInParent().getCenterX();
-            newOnClickYCoord = node.getBoundsInParent().getCenterY();
-            newOnClickZCoord = node.getBoundsInParent().getCenterZ();
-            Position destinationPosition = getClickCellIndex(newOnClickXCoord,newOnClickYCoord);
-            if(!isSelectedWorker && board[destinationPosition.getX()][destinationPosition.getY()].getWorker()==null) {
-                //if(isDome) buildDome(..)
-//                buildTop(node.getBoundsInParent().getCenterX(), node.getBoundsInParent().getCenterY(), node.getBoundsInParent().getCenterZ());
-                buildTop(destinationPosition);
-                printBoard();
-                node.setMouseTransparent(true);
-                isMoveTurn = true;
-            }
-            else{
-                if(board[destinationPosition.getX()][destinationPosition.getY()].getWorker()==null) {
-//                moveWorker(getSelectedWorker(),-(onClickXCoord-newOnClickXCoord),-(onClickYCoord-newOnClickYCoord),-(onClickZCoord-newOnClickZCoord)-1.5);
-                    moveWorkerByCells(startPosition, destinationPosition);
-                    printBoard();
-                    isSelectedWorker = false;
-                    isMoveTurn = false;
+            if(isSelectedWorker()){
+                if(checkDistance(startPosition, destinationPosition)){
+                    if(operation.equals(Operation.MOVE))
+                        emitViewEvent(new MoveViewEvent(startPosition, destinationPosition));
+                    else if(operation.equals(Operation.BUILD))
+                        emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, false));
+                    else if(operation.equals(Operation.BUILD_DOME))
+                        emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, true));
                 }
             }
         });
     }
 
-    private void addOnClickEventTop(Node node){
-        node.setOnMouseClicked(e->{
-            newOnClickXCoord = node.getBoundsInParent().getCenterX();
-            newOnClickYCoord = node.getBoundsInParent().getCenterY();
-            newOnClickZCoord = node.getBoundsInParent().getCenterZ();
-            Position destinationPosition = getClickCellIndex(newOnClickXCoord,newOnClickYCoord);
-//            System.out.println(getClickCellIndex(newOnClickXCoord,newOnClickYCoord).getX()+" "+getClickCellIndex(newOnClickXCoord,newOnClickYCoord).getY());
-            if(!isSelectedWorker && board[destinationPosition.getX()][destinationPosition.getY()].getWorker()==null) {
-//                buildDome(node.getBoundsInParent().getCenterX(), node.getBoundsInParent().getCenterY(), node.getBoundsInParent().getCenterZ());
-                buildDome(destinationPosition);
-                printBoard();
-                node.setMouseTransparent(true);
-                isMoveTurn = true;
-            }
-            else{
-                if(board[destinationPosition.getX()][destinationPosition.getY()].getWorker()==null) {
-//                    moveWorker(getSelectedWorker(), -(onClickXCoord - newOnClickXCoord), -(onClickYCoord - newOnClickYCoord), -(onClickZCoord - newOnClickZCoord) - 1.3);
-                    moveWorkerByCells(startPosition, destinationPosition);
-                    printBoard();
-                    isSelectedWorker = false;
-                    isMoveTurn = false;
-                }
 
-            }
-        });
-    }
 
-    private void addOnClickEventDome(Node node){
-        node.setOnMouseClicked(e->{
-           //if isSelectedWorker print("can't move to this position")
-        });
-    }
 
 
     private void addOnClickEventBoard(Node node){
@@ -541,52 +399,19 @@ public class MainController extends ClientEventEmitter {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 PickResult pr = mouseEvent.getPickResult();
-                Position clickPosition = getClickCellIndex(pr.getIntersectedPoint().getX(),pr.getIntersectedPoint().getY());
-                if(isMoveTurn) {
-                    if(!isSelectedWorker)
-                        if(count%2==0) {
-                            if(board[clickPosition.getX()][clickPosition.getY()].getWorker()==null)
-                            {
-//                                placeWorker1(clickPosition);
-//                                build(new Position(0,0), clickPosition,false);
-//                                build(new Position(0,0), clickPosition,false);
-                                try{
-                                    build(new Position(0,0), clickPosition,true);
-                                }catch(PositionOutOfBoundsException e){}
-                                printBoard();
-                                count++;
-                            }
-                        }else{
-                            if(board[clickPosition.getX()][clickPosition.getY()].getWorker()==null)
-                            {
-                                placeWorker2(clickPosition);
-                                printBoard();
-                                count++;
-                            }
-                        }
-                    else{
-                        if(board[clickPosition.getX()][clickPosition.getY()].getWorker()==null){
-                            moveWorkerByCells(startPosition, clickPosition);
-//                                build(startPosition, clickPosition, true);
-                            printBoard();
-                            isSelectedWorker=false;
-                        }
-
+                Position destinationPosition = getClickCellIndex(pr.getIntersectedPoint().getX(),pr.getIntersectedPoint().getY());
+                if(isSelectedWorker()) {
+                    if(checkDistance(startPosition, destinationPosition)){
+                        if(operation.equals(Operation.MOVE))
+                            emitViewEvent(new MoveViewEvent(startPosition, destinationPosition));
+                        else if(operation.equals(Operation.BUILD))
+                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, false));
+                        else if(operation.equals(Operation.BUILD_DOME))
+                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, true));
                     }
-                    isMoveTurn = false;
                 }
-                else{
-                    //if(isDome) buildDome(..)
-                    if(board[clickPosition.getX()][clickPosition.getY()].getWorker()==null){
-//                        buildBase(center.getCenterX(), center.getCenterY(), pr.getIntersectedPoint().getZ());
-                        buildBase(clickPosition);
-                        printBoard();
-                        isMoveTurn=true;
-                    }
 
-                }
             }
-
         });
     }
 
@@ -603,35 +428,34 @@ public class MainController extends ClientEventEmitter {
 
     private void addOnClickEventWorker(Node node){
         node.setOnMousePressed(e->{
-            if(!isSelectedWorker) {
                 onClickXCoord = node.getBoundsInParent().getCenterX();
                 onClickYCoord = node.getBoundsInParent().getCenterY();
-                onClickZCoord = node.getBoundsInParent().getCenterZ();
-                startPosition = getClickCellIndex(onClickXCoord,onClickYCoord);
-                isSelectedWorker = true;
-//                setSelectedWorker(node);
-//                System.out.println(node.getBoundsInParent().getCenterX()+" "+node.getBoundsInParent().getCenterY()+" "+node.getBoundsInParent().getCenterZ());
-            }else {
-
-                Position destPosition = getClickCellIndex(node.getBoundsInParent().getCenterX(), node.getBoundsInParent().getCenterY());
-                //SWAP MOVE//
-//              swapMove(startPosition, destPosition)
-                //SWAP MOVE//
-
-
-
-                //PUSH MOVE//
-
-                pushMove(startPosition, destPosition);
-//                TODO
-//                GuiManager.move(startPosition, destPosition);
-                printBoard();
-                isSelectedWorker=false;
-
-            }
+                if(!isSelectedWorker()){
+                    startPosition = getClickCellIndex(onClickXCoord, onClickYCoord);
+                }else{
+                    Position destinationPosition = getClickCellIndex(onClickXCoord, onClickYCoord);
+                    if(checkDistance(startPosition, destinationPosition)){
+                        if(operation.equals(Operation.MOVE))
+                            emitViewEvent(new MoveViewEvent(startPosition, destinationPosition));
+                        else if(operation.equals(Operation.BUILD))
+                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, false));
+                        else if(operation.equals(Operation.BUILD_DOME))
+                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, true));
+                    }
+                }
         });
 
     }
+
+
+    private boolean checkDistance(Position start, Position destination){
+        int dx = start.getX()-destination.getX();
+        int dy = start.getY()-destination.getY();
+        if(dx<=1 && dx>=-1 && dy<=1 && dy>=-1)
+            return true;
+        return false;
+    }
+
 
 
 
@@ -662,16 +486,16 @@ public class MainController extends ClientEventEmitter {
     }
 
     public void build(Position start, Position destination, boolean isDome){
-        Cell destCell = board[destination.getX()][destination.getY()];
+        GuiCell destGuiCell = board[destination.getX()][destination.getY()];
 
-            if(destCell.getCoordinate().getCenterZ()==Dimension.EMPTY.getHeight())
+            if(destGuiCell.getCoordinate().getCenterZ()==Dimension.EMPTY.getHeight())
             {
                 if(isDome)
                     buildDomeLevel0(destination);
                 else
                     buildBase(destination);
             }
-            else if(destCell.getCoordinate().getCenterZ()==Dimension.BASE.getHeight())
+            else if(destGuiCell.getCoordinate().getCenterZ()==Dimension.BASE.getHeight())
             {
                 if(isDome)
                     {
@@ -684,7 +508,7 @@ public class MainController extends ClientEventEmitter {
                     buildMiddle(destination);
                 }
             }
-            else if(destCell.getCoordinate().getCenterZ()==Dimension.MID.getHeight())
+            else if(destGuiCell.getCoordinate().getCenterZ()==Dimension.MID.getHeight())
             {
                 if(isDome)
                 {
@@ -704,49 +528,49 @@ public class MainController extends ClientEventEmitter {
             }
     }
 
-    public void swapMove(Position start, Position destination)
-    {
-        Node startWorker = board[start.getX()][start.getY()].getWorker();
-        Node destWorker = board[destination.getX()][destination.getY()].getWorker();
-        Coordinate startCoord = board[start.getX()][start.getY()].getCoordinate();
-        Coordinate destCoord = board[destination.getX()][destination.getY()].getCoordinate();
-        moveWorker(startWorker,-(startCoord.getCenterX()-destCoord.getCenterX()), -(startCoord.getCenterY()-destCoord.getCenterY()), -(startCoord.getCenterZ()-destCoord.getCenterZ()) );
-        moveWorker(destWorker, -(destCoord.getCenterX()-startCoord.getCenterX()),-(destCoord.getCenterY()-startCoord.getCenterY()), -(destCoord.getCenterZ()-startCoord.getCenterZ()) );
-        board[start.getX()][start.getY()].setWorker(destWorker);
-        board[destination.getX()][destination.getY()].setWorker(startWorker);
-    }
-
-    public void pushMove(Position start, Position destination){
-        Node startWorker = board[start.getX()][start.getY()].getWorker();
-        Node destWorker = board[destination.getX()][destination.getY()].getWorker();
-        Coordinate startCoord = board[start.getX()][start.getY()].getCoordinate();
-        Coordinate destCoord = board[destination.getX()][destination.getY()].getCoordinate();
-        int dx = startPosition.getX() - destination.getX();
-        int dy = startPosition.getY() - destination.getY();
-        int destX=destination.getX();
-        int destY=destination.getY();
-        if(dx>=-1 && dx<=1 && dy>=-1 && dy<=1){
-            if(dx<0)
-                destX++;
-            else if(dx>0)
-                destX--;
-            if(dy<0)
-                destY++;
-            else if(dy>0)
-                destY--;
-            if(destX<5 && destX>-1 && destY<5 && destY>-1 && !board[destX][destY].isDome() && board[destX][destY].getWorker()==null) {
-                moveWorker(startWorker,-(startCoord.getCenterX()-destCoord.getCenterX()), -(startCoord.getCenterY()-destCoord.getCenterY()), -(startCoord.getCenterZ()-destCoord.getCenterZ()) );
-                double newDx = destCoord.getCenterX()-board[destX][destY].getCoordinate().getCenterX();
-                double newDy = destCoord.getCenterY()-board[destX][destY].getCoordinate().getCenterY();
-                double newDz = destCoord.getCenterZ()-board[destX][destY].getCoordinate().getCenterZ();
-                moveWorker(destWorker, -newDx,-newDy,-newDz);
-                board[start.getX()][start.getY()].setWorker(null);
-                board[start.getX()][start.getY()].deleteWorker();
-                board[destination.getX()][destination.getY()].setWorker(startWorker);
-                board[destX][destY].setWorker(destWorker);
-            }
-        }
-    }
+//    public void swapMove(Position start, Position destination)
+//    {
+//        Node startWorker = board[start.getX()][start.getY()].getWorker();
+//        Node destWorker = board[destination.getX()][destination.getY()].getWorker();
+//        Coordinate startCoord = board[start.getX()][start.getY()].getCoordinate();
+//        Coordinate destCoord = board[destination.getX()][destination.getY()].getCoordinate();
+//        moveWorker(startWorker,-(startCoord.getCenterX()-destCoord.getCenterX()), -(startCoord.getCenterY()-destCoord.getCenterY()), -(startCoord.getCenterZ()-destCoord.getCenterZ()) );
+//        moveWorker(destWorker, -(destCoord.getCenterX()-startCoord.getCenterX()),-(destCoord.getCenterY()-startCoord.getCenterY()), -(destCoord.getCenterZ()-startCoord.getCenterZ()) );
+//        board[start.getX()][start.getY()].setWorker(destWorker);
+//        board[destination.getX()][destination.getY()].setWorker(startWorker);
+//    }
+//
+//    public void pushMove(Position start, Position destination){
+//        Node startWorker = board[start.getX()][start.getY()].getWorker();
+//        Node destWorker = board[destination.getX()][destination.getY()].getWorker();
+//        Coordinate startCoord = board[start.getX()][start.getY()].getCoordinate();
+//        Coordinate destCoord = board[destination.getX()][destination.getY()].getCoordinate();
+//        int dx = startPosition.getX() - destination.getX();
+//        int dy = startPosition.getY() - destination.getY();
+//        int destX=destination.getX();
+//        int destY=destination.getY();
+//        if(dx>=-1 && dx<=1 && dy>=-1 && dy<=1){
+//            if(dx<0)
+//                destX++;
+//            else if(dx>0)
+//                destX--;
+//            if(dy<0)
+//                destY++;
+//            else if(dy>0)
+//                destY--;
+//            if(destX<5 && destX>-1 && destY<5 && destY>-1 && !board[destX][destY].isDome() && board[destX][destY].getWorker()==null) {
+//                moveWorker(startWorker,-(startCoord.getCenterX()-destCoord.getCenterX()), -(startCoord.getCenterY()-destCoord.getCenterY()), -(startCoord.getCenterZ()-destCoord.getCenterZ()) );
+//                double newDx = destCoord.getCenterX()-board[destX][destY].getCoordinate().getCenterX();
+//                double newDy = destCoord.getCenterY()-board[destX][destY].getCoordinate().getCenterY();
+//                double newDz = destCoord.getCenterZ()-board[destX][destY].getCoordinate().getCenterZ();
+//                moveWorker(destWorker, -newDx,-newDy,-newDz);
+//                board[start.getX()][start.getY()].setWorker(null);
+//                board[start.getX()][start.getY()].deleteWorker();
+//                board[destination.getX()][destination.getY()].setWorker(startWorker);
+//                board[destX][destY].setWorker(destWorker);
+//            }
+//        }
+//    }
 
     private void addButtonEvents(){
 

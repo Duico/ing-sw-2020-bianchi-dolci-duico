@@ -2,6 +2,8 @@ package it.polimi.ingsw.client.gui;
 
 public class MappingMatrix {
     private Border map[][]= new Border[5][5];
+    private Coordinate [][] coordinateMap= new Coordinate[5][5];
+    private final double coordinateZ=0;
 
     MappingMatrix(double size) {
         double gap = size / 5;
@@ -13,12 +15,26 @@ public class MappingMatrix {
                 double left=x;
                 x+=gap;
                 map[i][j]= new Border(y,y+gap,left,x);
+                coordinateMap[i][j]= getCenter(new Border(y,y+gap,left,x));
             }
             x=copyX;
             y=y+gap;
         }
 
     }
+
+    private Coordinate getCenter(Border border){
+        double centerX,centerY;
+        double diffX= (border.getRight() - border.getLeft())/2;
+        double diffY= (border.getDown() - border.getTop())/2;
+        centerX = border.getLeft()+diffX;
+        centerY = border.getTop()+diffY;
+
+        Coordinate center = new Coordinate(centerX,centerY, coordinateZ);
+        return center;
+    }
+
+
 
 
     public double getTop(int i,int j){
@@ -39,5 +55,9 @@ public class MappingMatrix {
 
     public Border getBorder(int i, int j){
         return map[i][j];
+    }
+
+    public Coordinate getCoordinate(int i, int j){
+        return coordinateMap[i][j];
     }
 }
