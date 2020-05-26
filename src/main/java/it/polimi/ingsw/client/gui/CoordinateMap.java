@@ -1,11 +1,11 @@
 package it.polimi.ingsw.client.gui;
 
-public class MappingMatrix {
+public class CoordinateMap {
     private Border map[][]= new Border[5][5];
     private Coordinate [][] coordinateMap= new Coordinate[5][5];
     private final double coordinateZ=0;
 
-    MappingMatrix(double size) {
+    CoordinateMap(double size) {
         double gap = size / 5;
         double x = -(size / 2);
         double y = -(size / 2);

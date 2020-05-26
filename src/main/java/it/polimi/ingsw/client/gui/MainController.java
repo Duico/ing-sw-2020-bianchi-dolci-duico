@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.view.event.BuildViewEvent;
 import it.polimi.ingsw.view.event.MoveViewEvent;
+import it.polimi.ingsw.view.event.PlaceViewEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
@@ -57,8 +58,8 @@ public class MainController extends ClientEventEmitter {
     private enum Operation{
         MOVE,
         BUILD,
-        BUILD_DOME;
-
+        BUILD_DOME,
+        PLACE_WORKER;
         private Operation(){}
 
 
@@ -71,7 +72,7 @@ public class MainController extends ClientEventEmitter {
 
     ///da spostare in guimodel
     private GuiCell[][] board= new GuiCell[5][5];
-    private MappingMatrix map = new MappingMatrix(boardSize);
+    private CoordinateMap map = new CoordinateMap(boardSize);
 
 
 
@@ -409,6 +410,10 @@ public class MainController extends ClientEventEmitter {
                         else if(operation.equals(Operation.BUILD_DOME))
                             emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, true));
                     }
+                }else{
+                    if(operation.equals(Operation.PLACE_WORKER)){
+                        emitViewEvent(new PlaceViewEvent(destinationPosition));
+                    }
                 }
 
             }
@@ -488,44 +493,41 @@ public class MainController extends ClientEventEmitter {
     public void build(Position start, Position destination, boolean isDome){
         GuiCell destGuiCell = board[destination.getX()][destination.getY()];
 
-            if(destGuiCell.getCoordinate().getCenterZ()==Dimension.EMPTY.getHeight())
-            {
-                if(isDome)
-                    buildDomeLevel0(destination);
-                else
-                    buildBase(destination);
-            }
-            else if(destGuiCell.getCoordinate().getCenterZ()==Dimension.BASE.getHeight())
-            {
-                if(isDome)
-                    {
-                        board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
-                        buildDome(destination);
-                    }
-                else
-                {
-                    board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
-                    buildMiddle(destination);
-                }
-            }
-            else if(destGuiCell.getCoordinate().getCenterZ()==Dimension.MID.getHeight())
-            {
-                if(isDome)
-                {
-                    board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
-                    buildDome(destination);
-                }
-                else
-                {
-                    board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
-                    buildTop(destination);
-                }
-            }
+        if(destGuiCell.getLevel().equals(Dimension.EMPTY))
+        {
+            if(isDome)
+                buildDomeLevel0(destination);
             else
+                buildBase(destination);
+        }
+        else if(destGuiCell.getLevel().equals(Dimension.BASE))
+        {
+            if(isDome)
             {
                 board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
                 buildDome(destination);
             }
+            else {
+                    board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
+                    buildMiddle(destination);
+                }
+            }
+        else if(destGuiCell.getLevel().equals(Dimension.MID))
+        {
+            if(isDome)
+            {
+                board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
+                buildDome(destination);
+            }
+            else {
+                board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
+                buildTop(destination);
+            }
+        }
+        else {
+            board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
+            buildDome(destination);
+        }
     }
 
 //    public void swapMove(Position start, Position destination)
