@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.event.*;
 
 public class GuiLoginModelEventVisitor extends GuiModelEventVisitor {
@@ -37,8 +38,10 @@ public class GuiLoginModelEventVisitor extends GuiModelEventVisitor {
     @Override
     public void visit(NewTurnModelEvent evt) {
         //load chooseCard scene
-        GuiModel.getInstance().setPlayers(evt.getPlayers());
-        sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CHOSE_CARDS));
+        if(evt.getTurnPhase().equals(TurnPhase.CHOSE_CARDS)){
+            GuiModel.getInstance().setPlayers(evt.getPlayers());
+            sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CHOSE_CARDS));
+        }
     }
 
     @Override

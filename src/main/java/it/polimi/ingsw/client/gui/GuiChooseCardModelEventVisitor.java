@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.view.event.CardViewEvent;
 import javafx.application.Platform;
@@ -36,7 +37,7 @@ public class GuiChooseCardModelEventVisitor extends GuiModelEventVisitor {
         List<String> cards = evt.getChosenCards();
         Player player= evt.getPlayer();
         GuiModel.getInstance().setCardDeck(cardDeck);
-        if(player.getNickName().equals(GuiModel.getInstance().getUsername())) {
+        if(player.getNickName().equals(GuiModel.getInstance().getCurrentUsername())) {
             Platform.runLater(()->{
                 printChooseCard(cards);
             });
@@ -46,14 +47,6 @@ public class GuiChooseCardModelEventVisitor extends GuiModelEventVisitor {
             });
         }
     }
-
-
-//        for(String card:cardDeck){
-//            System.out.println(card);
-//        }
-//        for(String card:cards){
-//            System.out.println(card);
-//        }
 
 
 
@@ -70,9 +63,9 @@ public class GuiChooseCardModelEventVisitor extends GuiModelEventVisitor {
 
     @Override
     public void visit(NewTurnModelEvent evt) {
-//        if(evt.getTurnPhase().equals(TurnPhase.CHOSE_CARDS)){
-//            //load scene chooseCard fxml
-//        }
+        if(evt.getTurnPhase().equals(TurnPhase.PLACE_WORKERS)){
+            sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.MAIN));
+        }
     }
 
     @Override
@@ -100,25 +93,23 @@ public class GuiChooseCardModelEventVisitor extends GuiModelEventVisitor {
 
         if (cards == null) { //pick cards
             if (cardDeck != null) {
-                System.out.println("challenger");
                 chooseCardController.setIsChallenger(true);
-//                Platform.runLater(()-> {
-//                chooseCardController.initCardDeck(cardDeck);
                 chooseCardController.loadCards();
-//                });
             } else {
                 throw new RuntimeException("Both cards and cardDeck are null");
             }
         }else if(cards.size()==1){
 //                GuiModel.getInstance().setChosenCard();
+            GuiModel.getInstance().setCurrentCard(cards.get(0));
+            emitViewEvent(new CardViewEvent(cards.get(0)));
             if(GuiModel.getInstance().getNumPlayers()==2)
-                emitViewEvent(new CardViewEvent(cards.get(0)));
+            {
+                //emitViewEvent(new FirstPlayerViewEvent)
+            }
             else
                     chooseCardController.showChooseFirstPlayer();
         }else if(cards.size()>1)
         {
-            System.out.println("not challenger");
-
             chooseCardController.setIsChallenger(false);
             chooseCardController.initChosenCardsChallenger(cards);
             chooseCardController.waitLabel.setVisible(false);

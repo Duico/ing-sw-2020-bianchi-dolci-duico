@@ -40,22 +40,22 @@ public class LoginController extends ClientEventEmitter {
     public void setMessage(String message){
         this.message.setText(message);
     }
-
-    public void setNumPlayers(int n){
-        this.numPlayers= n;
-    }
-
-    public int getNumPlayers(){
-        return this.numPlayers;
-    }
-
-    public void setUsername(String name){
-        this.username=name;
-    }
-
-    public String getUsername(){
-        return this.username;
-    }
+//
+//    public void setNumPlayers(int n){
+//        this.numPlayers= n;
+//    }
+//
+//    public int getNumPlayers(){
+//        return this.numPlayers;
+//    }
+//
+//    public void setUsername(String name){
+//        this.username=name;
+//    }
+//
+//    public String getUsername(){
+//        return this.username;
+//    }
 
 
     public LoginController(){
@@ -77,11 +77,8 @@ public class LoginController extends ClientEventEmitter {
         if(askNumPlayers){
             setMessage("Select number of players:");
             setVisibleChoiceBox(true);
-//            setIsAskNumPlayers(true);
         }else{
-//            setMessage("Wait for the Challenger");
             setVisibleChoiceBox(false);
-//            setIsAskNumPlayers(false);
         }
     }
 
@@ -140,13 +137,13 @@ public class LoginController extends ClientEventEmitter {
                     username = insert;
                     if(choiceBoxNumPlayers==2){
 //                        System.out.println("signupmessage"+" "+username+choiceBoxNumPlayers);
-                        GuiModel.getInstance().setNumPlayers(2);
-                        GuiModel.getInstance().setUsername(username);
+//                        GuiModel.getInstance().setNumPlayers(2);
+                        GuiModel.getInstance().setCurrentUsername(username);
                         emitSignUp(new SignUpMessage(username, choiceBoxNumPlayers));
                     }else if(choiceBoxNumPlayers==3){
 //                        System.out.println("signupmessage"+" "+username+choiceBoxNumPlayers);
-                        GuiModel.getInstance().setNumPlayers(3);
-                        GuiModel.getInstance().setUsername(username);
+//                        GuiModel.getInstance().setNumPlayers(3);
+                        GuiModel.getInstance().setCurrentUsername(username);
                         emitSignUp(new SignUpMessage(username, choiceBoxNumPlayers));
                     }
                 }
@@ -160,7 +157,7 @@ public class LoginController extends ClientEventEmitter {
             if(checkUsername){
                 username=insert;
 //                System.out.println("signupmessage"+" "+username);
-                GuiModel.getInstance().setUsername(username);
+                GuiModel.getInstance().setCurrentUsername(username);
                 emitSignUp(new SignUpMessage(username));
 
             }else{
@@ -171,12 +168,6 @@ public class LoginController extends ClientEventEmitter {
     }
 
 
-
-//    public Scene loginScene() throws IOException {
-//        Parent page = FXMLLoader.load(getClass().getResource("/login.fxml"));
-//        Scene scene = new Scene(page);
-//        return scene;
-//    }
 
     public void launchChooseCard() throws IOException {
         ChooseCardController chooseCard = new ChooseCardController();

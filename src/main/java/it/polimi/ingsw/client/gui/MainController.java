@@ -464,9 +464,8 @@ public class MainController extends ClientEventEmitter {
 
 
 
-    private void moveWorker(Node node, double dx, double dy, double dz)  {
+    private void translateWorker(Node node, double dx, double dy, double dz)  {
         try{
-//            System.out.println(dz);
             Transform localTransform = node.getLocalToSceneTransform();
             Point3D newCoords = localTransform.inverseDeltaTransform(dx,dy,dz);
             node.getTransforms().add(new Translate(newCoords.getX(),newCoords.getY(),newCoords.getZ()));
@@ -475,7 +474,7 @@ public class MainController extends ClientEventEmitter {
         }
     }
 
-    public void moveWorkerByCells(Position start, Position destination){
+    public void moveWorker(Position start, Position destination){
         if(board[start.getX()][start.getY()].isWorkerSet())
         {
             Node worker = board[start.getX()][start.getY()].getWorker();
@@ -483,7 +482,7 @@ public class MainController extends ClientEventEmitter {
             double dx = worker.getBoundsInParent().getCenterX()-dest.getCenterX();
             double dy = worker.getBoundsInParent().getCenterY()-dest.getCenterY();
             double dz = worker.getBoundsInParent().getCenterZ()-dest.getCenterZ();
-            moveWorker(worker, -dx,-dy,-dz);
+            translateWorker(worker, -dx,-dy,-dz);
             board[start.getX()][start.getY()].setWorker(null);
             board[start.getX()][start.getY()].deleteWorker();
             board[destination.getX()][destination.getY()].setWorker(worker);
@@ -530,50 +529,8 @@ public class MainController extends ClientEventEmitter {
         }
     }
 
-//    public void swapMove(Position start, Position destination)
-//    {
-//        Node startWorker = board[start.getX()][start.getY()].getWorker();
-//        Node destWorker = board[destination.getX()][destination.getY()].getWorker();
-//        Coordinate startCoord = board[start.getX()][start.getY()].getCoordinate();
-//        Coordinate destCoord = board[destination.getX()][destination.getY()].getCoordinate();
-//        moveWorker(startWorker,-(startCoord.getCenterX()-destCoord.getCenterX()), -(startCoord.getCenterY()-destCoord.getCenterY()), -(startCoord.getCenterZ()-destCoord.getCenterZ()) );
-//        moveWorker(destWorker, -(destCoord.getCenterX()-startCoord.getCenterX()),-(destCoord.getCenterY()-startCoord.getCenterY()), -(destCoord.getCenterZ()-startCoord.getCenterZ()) );
-//        board[start.getX()][start.getY()].setWorker(destWorker);
-//        board[destination.getX()][destination.getY()].setWorker(startWorker);
-//    }
-//
-//    public void pushMove(Position start, Position destination){
-//        Node startWorker = board[start.getX()][start.getY()].getWorker();
-//        Node destWorker = board[destination.getX()][destination.getY()].getWorker();
-//        Coordinate startCoord = board[start.getX()][start.getY()].getCoordinate();
-//        Coordinate destCoord = board[destination.getX()][destination.getY()].getCoordinate();
-//        int dx = startPosition.getX() - destination.getX();
-//        int dy = startPosition.getY() - destination.getY();
-//        int destX=destination.getX();
-//        int destY=destination.getY();
-//        if(dx>=-1 && dx<=1 && dy>=-1 && dy<=1){
-//            if(dx<0)
-//                destX++;
-//            else if(dx>0)
-//                destX--;
-//            if(dy<0)
-//                destY++;
-//            else if(dy>0)
-//                destY--;
-//            if(destX<5 && destX>-1 && destY<5 && destY>-1 && !board[destX][destY].isDome() && board[destX][destY].getWorker()==null) {
-//                moveWorker(startWorker,-(startCoord.getCenterX()-destCoord.getCenterX()), -(startCoord.getCenterY()-destCoord.getCenterY()), -(startCoord.getCenterZ()-destCoord.getCenterZ()) );
-//                double newDx = destCoord.getCenterX()-board[destX][destY].getCoordinate().getCenterX();
-//                double newDy = destCoord.getCenterY()-board[destX][destY].getCoordinate().getCenterY();
-//                double newDz = destCoord.getCenterZ()-board[destX][destY].getCoordinate().getCenterZ();
-//                moveWorker(destWorker, -newDx,-newDy,-newDz);
-//                board[start.getX()][start.getY()].setWorker(null);
-//                board[start.getX()][start.getY()].deleteWorker();
-//                board[destination.getX()][destination.getY()].setWorker(startWorker);
-//                board[destX][destY].setWorker(destWorker);
-//            }
-//        }
-//    }
 
+    //eventi per pulsanti sulla schermata
     private void addButtonEvents(){
 
     }
@@ -616,32 +573,6 @@ public class MainController extends ClientEventEmitter {
         }
     }
 
-    private class SmartGroup extends Group{
-        Rotate r;
-        Transform t = new Rotate();
-
-        void rotateByX(int ang){
-            r = new Rotate(ang, Rotate.X_AXIS);
-            t = t.createConcatenation(r);
-            this.getTransforms().clear();
-            this.getTransforms().addAll(t);
-        }
-
-        void rotateByY(int ang){
-            r = new Rotate(ang, Rotate.Y_AXIS);
-            t = t.createConcatenation(r);
-            this.getTransforms().clear();
-            this.getTransforms().addAll(t);
-        }
-
-        void rotateByZ(int ang){
-            r = new Rotate(ang, Rotate.Z_AXIS);
-            t = t.createConcatenation(r);
-            this.getTransforms().clear();
-            this.getTransforms().addAll(t);
-        }
-
-    }
 
 
     public Scene gameScene(){
@@ -659,29 +590,29 @@ public class MainController extends ClientEventEmitter {
         background.setPrefSize(650, 650);
 
 
-        Label username1 = new Label(GuiModel.getInstance().getPlayer(0));
+        Label username1 = new Label(GuiModel.getInstance().getCurrentUsername());
         username1.setFont(new Font("Arial", 20));
 //        username1.setTextFill(Color.WHITE);
         username1.setStyle("-fx-background-color:white;");
-        Pane cardImage1 = new Pane(cardImage(GuiModel.getInstance().getCard(0)));
+        Pane cardImage1 = new Pane(cardImage(GuiModel.getInstance().getCurrentCard()));
 
         //manca il collegamento tra carta scelta e players corrispondente
         //TODO
 
-        Label username2 = new Label(GuiModel.getInstance().getPlayer(1));
-        username2.setFont(new Font("Arial", 20));
-//        username2.setTextFill(Color.WHITE);
-        username2.setStyle("-fx-background-color:white;");
-        Pane cardImage2 = new Pane(cardImage(GuiModel.getInstance().getCard(1)));
+//        Label username2 = new Label(GuiModel.getInstance().getPlayer(1));
+//        username2.setFont(new Font("Arial", 20));
+////        username2.setTextFill(Color.WHITE);
+//        username2.setStyle("-fx-background-color:white;");
+//        Pane cardImage2 = new Pane(cardImage(GuiModel.getInstance().getCard(1)));
 
 
 
 
-        undoButton.setGraphic(buttonImage("/Undo"));
+        undoButton.setGraphic(buttonImage("/textures/Undo.png"));
         undoButton.setPrefSize(70,70);
-        moveButton.setGraphic(buttonImage("/move"));
+        moveButton.setGraphic(buttonImage("/textures/move.png"));
         moveButton.setPrefSize(70,70);
-        buildButton.setGraphic(buttonImage("/build"));
+        buildButton.setGraphic(buttonImage("/textures/build.png"));
         buildButton.setPrefSize(70,70);
         addButtonEvents();
 
@@ -694,16 +625,17 @@ public class MainController extends ClientEventEmitter {
 
         VBox vbPlayers = new VBox(5);
         vbPlayers.setPadding(new Insets(10,10,10,10));
-        if(GuiModel.getInstance().getNumPlayers()==3){
-            Label username3 = new Label(GuiModel.getInstance().getPlayer(2));
-            username3.setFont(new Font("Arial", 20));
-//            username3.setTextFill(Color.WHITE);
-            username3.setStyle("-fx-background-color:white;");
-            Pane cardImage3 = new Pane(cardImage(GuiModel.getInstance().getCard(2)));
-            vbPlayers.getChildren().addAll(username1, cardImage1, username2, cardImage2, username3, cardImage3);
-        }
-        else if(GuiModel.getInstance().getNumPlayers()==2)
-            vbPlayers.getChildren().addAll(username1, cardImage1, username2, cardImage2);
+        vbPlayers.getChildren().addAll(username1, cardImage1);
+//        if(GuiModel.getInstance().getNumPlayers()==3){
+//            Label username3 = new Label(GuiModel.getInstance().getPlayer(2));
+//            username3.setFont(new Font("Arial", 20));
+////            username3.setTextFill(Color.WHITE);
+//            username3.setStyle("-fx-background-color:white;");
+//            Pane cardImage3 = new Pane(cardImage(GuiModel.getInstance().getCard(2)));
+//            vbPlayers.getChildren().addAll(username1, cardImage1, username2, cardImage2, username3, cardImage3);
+//        }
+//        else if(GuiModel.getInstance().getNumPlayers()==2)
+//            vbPlayers.getChildren().addAll(username1, cardImage1, username2, cardImage2);
 
 
         background.setCenter(subScene);
@@ -732,14 +664,14 @@ public class MainController extends ClientEventEmitter {
 
 
     private ImageView cardImage(String name){
-        ImageView imageView = new ImageView(name+".png");
+        ImageView imageView = new ImageView(name);
         imageView.setFitHeight(150);
         imageView.setFitWidth(100);
         return imageView;
     }
 
     private ImageView buttonImage(String name){
-        ImageView imageView = new ImageView(name+".png");
+        ImageView imageView = new ImageView(name);
         imageView.setFitHeight(60);
         imageView.setFitWidth(60);
         return imageView;

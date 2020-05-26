@@ -64,21 +64,10 @@ public class ChooseCardController extends ClientEventEmitter {
 
     public ChooseCardController(){}
 
-    public void setIsChallengerCardsLoaded(){
-        this.isChallengerCardsLoaded=true;
-    }
-
-    public boolean getIsChallengerCardsLoaded(){
-        return this.isChallengerCardsLoaded;
-    }
-
     public void setIsChallenger(boolean isChallenger){
         this.isChallenger=isChallenger;
     }
 
-    public boolean getIsChallenger(){
-        return this.isChallenger;
-    }
 
     public void initChoiceBox(){
         System.out.println("init choice box");
@@ -90,7 +79,7 @@ public class ChooseCardController extends ClientEventEmitter {
     public void setOpponents(){
         for(Player player:GuiModel.getInstance().getPlayers())
         {
-            if(!player.getNickName().equals(GuiModel.getInstance().getUsername()) && !opponents.contains(player.getNickName()))
+            if(!player.getNickName().equals(GuiModel.getInstance().getCurrentUsername()) && !opponents.contains(player.getNickName()))
                 opponents.add(player.getNickName());
         }
     }
@@ -296,8 +285,8 @@ public class ChooseCardController extends ClientEventEmitter {
         if(chosenCard==null)
             alert("Choose a Card!");
         else{
+            GuiModel.getInstance().setCurrentCard(chosenCard);
             emitViewEvent(new CardViewEvent(chosenCard));
-//            waitForChallenger();
         }
     }
 

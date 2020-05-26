@@ -13,15 +13,15 @@ public class GuiModel {
     private static GuiModel instance= null;
 
     private int numPlayers;
-    private String username;
-    private String chosenCard;
+    private String currentUsername;
+    private String currentCard;
 //    private Cell[][] board;
     private List<String> cards= new ArrayList<>();
     private List<String> cardDeck= new ArrayList<>();
-    private List<String> playerNames = new ArrayList<>();
+//    private List<String> playerNames = new ArrayList<>();
     private List<Player> players = new ArrayList<>();
 
-    public GuiModel( ){
+    private GuiModel( ){
 
     }
 
@@ -41,24 +41,15 @@ public class GuiModel {
         return players;
     }
 
-    public void setPlayerNames(List<Player> names){
-        for(Player player:names){
-            this.playerNames.add(player.getNickName());
-        }
-
-        this.setNumPlayers(names.size());
-    }
-
-    public List<String> getPlayerNames(){
-        return this.playerNames;
-    }
-
-//    private void initBoard(){
-//        for(int i=0;i<5;i++)
-//            for(int j=0;j<5;j++){
-//                board[i][j]=new Cell();
-//            }
+//    public void setPlayerNames(List<Player> names){
+//        for(Player player:names){
+//            this.playerNames.add(player.getNickName());
+//        }
+//
+//        this.setNumPlayers(names.size());
 //    }
+
+
 
     public void setCardDeck(List<String> card){
         for(String newCard:card){
@@ -71,8 +62,8 @@ public class GuiModel {
         return this.cardDeck;
     }
 
-    public void setCards(List<String> card){
-        this.cards.addAll(card);
+    public void setCards(List<String> cards){
+        this.cards=cards;
     }
 
     public List<String> getCards(){
@@ -83,24 +74,24 @@ public class GuiModel {
         this.numPlayers=n;
     }
 
-    public void setUsername(String name){
-        this.username = name;
+    public void setCurrentUsername(String name){
+        this.currentUsername = name;
     }
 
-    public void setChosenCard(String name){
-        this.chosenCard=name;
+    public void setCurrentCard(String name){
+        this.currentCard =name;
     }
 
     public int getNumPlayers(){
         return this.numPlayers;
     }
 
-    public String getUsername(){
-        return this.username;
+    public String getCurrentUsername(){
+        return this.currentUsername;
     }
 
-    public String getChosenCard(){
-        return this.chosenCard;
+    public String getCurrentCard(){
+        return this.currentCard;
     }
 
     public void addCard(String card){
@@ -111,11 +102,11 @@ public class GuiModel {
         return this.cards.get(i);
     }
 
-    public void addPlayer(String name){
-        this.playerNames.add(name);
-    }
+//    public void addPlayer(String name){
+//        this.playerNames.add(name);
+//    }
 
-    public String getPlayer(int i){
-        return this.playerNames.get(i);
-    }
+//    public String getPlayer(int i){
+//        return this.playerNames.get(i);
+//    }
 }
