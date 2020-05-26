@@ -286,7 +286,7 @@ public class MainController extends ClientEventEmitter {
 
 
 
-    private void placeWorker1(Position position){
+    public void placeWorker(Position position){
         String workerUrl = "/models/MaleBuilder_Blue.obj";
         Group worker = loadModel(getClass().getResource(workerUrl),"/textures/workerblue.png");
         Coordinate pos = board[position.getX()][position.getY()].getCoordinate();
@@ -297,15 +297,15 @@ public class MainController extends ClientEventEmitter {
     }
 
 
-    private void placeWorker2(Position position){
-        String workerUrl = "/models/MaleBuilder_Blue.obj";
-        Group worker = loadModel(getClass().getResource(workerUrl),"/textures/workerpink.png");
-        Coordinate pos = board[position.getX()][position.getY()].getCoordinate();
-        worker.getTransforms().addAll(new Translate(pos.getCenterX(), pos.getCenterY(), pos.getCenterZ()), new Rotate(+90, Rotate.X_AXIS));
-        addOnClickEventWorker(worker);
-        workers.getChildren().add(worker);
-        board[position.getX()][position.getY()].setWorker(worker);
-    }
+//    private void placeWorker2(Position position){
+//        String workerUrl = "/models/MaleBuilder_Blue.obj";
+//        Group worker = loadModel(getClass().getResource(workerUrl),"/textures/workerpink.png");
+//        Coordinate pos = board[position.getX()][position.getY()].getCoordinate();
+//        worker.getTransforms().addAll(new Translate(pos.getCenterX(), pos.getCenterY(), pos.getCenterZ()), new Rotate(+90, Rotate.X_AXIS));
+//        addOnClickEventWorker(worker);
+//        workers.getChildren().add(worker);
+//        board[position.getX()][position.getY()].setWorker(worker);
+//    }
 
 
     private void buildBase(Position position){
@@ -577,6 +577,7 @@ public class MainController extends ClientEventEmitter {
 
     public Scene gameScene(){
         create3DScene();
+
         SubScene subScene = new SubScene(root, WIDTH, HEIGHT, true, SceneAntialiasing.BALANCED);
         PerspectiveCamera camera = new PerspectiveCamera(true);
         double cameraAngle = 50;
@@ -594,7 +595,7 @@ public class MainController extends ClientEventEmitter {
         username1.setFont(new Font("Arial", 20));
 //        username1.setTextFill(Color.WHITE);
         username1.setStyle("-fx-background-color:white;");
-        Pane cardImage1 = new Pane(cardImage(GuiModel.getInstance().getCurrentCard()));
+//        Pane cardImage1 = new Pane(cardImage(GuiModel.getInstance().getCurrentCard()));
 
         //manca il collegamento tra carta scelta e players corrispondente
         //TODO
@@ -625,7 +626,7 @@ public class MainController extends ClientEventEmitter {
 
         VBox vbPlayers = new VBox(5);
         vbPlayers.setPadding(new Insets(10,10,10,10));
-        vbPlayers.getChildren().addAll(username1, cardImage1);
+        vbPlayers.getChildren().addAll(username1);
 //        if(GuiModel.getInstance().getNumPlayers()==3){
 //            Label username3 = new Label(GuiModel.getInstance().getPlayer(2));
 //            username3.setFont(new Font("Arial", 20));
@@ -657,6 +658,7 @@ public class MainController extends ClientEventEmitter {
 //        subScene.widthProperty().bind(background.widthProperty());
 
         addSubSceneCameraEvents(scene,camera);
+        operation=Operation.PLACE_WORKER;
 
         return scene;
     }

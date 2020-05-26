@@ -23,7 +23,8 @@ public class GuiMainModelEventVisitor extends GuiModelEventVisitor {
 
     @Override
     public void visit(PlaceWorkerModelEvent evt) {
-
+        
+        mainController.placeWorker(evt.getPlacePosition());
     }
 
     @Override

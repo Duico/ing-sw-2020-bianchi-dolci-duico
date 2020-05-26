@@ -3,7 +3,6 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.event.MessageListener;
 import it.polimi.ingsw.client.message.SignUpListener;
-import it.polimi.ingsw.event.Message;
 import it.polimi.ingsw.view.ViewEventListener;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +20,7 @@ public class SceneManager implements SceneEventListener {
     private SceneEvent.SceneType currentSceneType;
     private final ClientConnection clientConnection;
     private FXMLLoader fxmlLoader = new FXMLLoader();
+    private GuiMessageVisitor guiMessageVisitor;
 
     public SceneManager(Stage stage, ClientConnection clientConnection){
         this.stage = stage;
@@ -34,6 +34,14 @@ public class SceneManager implements SceneEventListener {
             loadScene(evt.getSceneType());
     }
 
+
+    private void setConnectionListener(GuiMessageVisitor guiMessageVisitor){
+        clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
+        clientConnection.removeEventListener(MessageListener.class, this.guiMessageVisitor);
+        this.guiMessageVisitor=guiMessageVisitor;
+
+    }
+
     private void loadScene(SceneEvent.SceneType sceneType) {
         if(sceneType.equals(SceneEvent.SceneType.LOGIN)){
             LoginController loginController = new LoginController();
@@ -41,7 +49,7 @@ public class SceneManager implements SceneEventListener {
             loginController.addEventListener(ViewEventListener.class, clientConnection);
             GuiMessageVisitor guiMessageVisitor = new GuiLoginMessageVisitor(loginController);
             guiMessageVisitor.addSceneEventListener(this);
-            clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
+            setConnectionListener(guiMessageVisitor);
             Platform.runLater( () -> showFXMLScene(getClass().getResource("/fxml/login.fxml"), loginController));
 
         }else if(sceneType.equals(SceneEvent.SceneType.CHOSE_CARDS)){
@@ -50,18 +58,20 @@ public class SceneManager implements SceneEventListener {
             chooseCardController.addEventListener(ViewEventListener.class, clientConnection);
             GuiMessageVisitor guiMessageVisitor = new GuiChooseCardMessageVisitor(chooseCardController);
             guiMessageVisitor.addSceneEventListener(this);
-            clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
+            setConnectionListener(guiMessageVisitor);
             Platform.runLater( () -> showFXMLScene(getClass().getResource("/fxml/chooseCard.fxml"), chooseCardController));
 
         }else if(sceneType.equals(SceneEvent.SceneType.MAIN)){
             MainController mainController = new MainController();
             //TODO
-            showMainScene(mainController);
             GuiMessageVisitor guiMessageVisitor = new GuiMainMessageVisitor(mainController);
             guiMessageVisitor.addSceneEventListener(this);
             clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
             mainController.addEventListener(SignUpListener.class, clientConnection);
-            mainController.addEventListener(ViewEventListener.class, clientConnection);
+            setConnectionListener(guiMessageVisitor);
+            Platform.runLater(()->{
+                showMainScene(mainController);
+            });
         }
     }
 
@@ -76,23 +86,27 @@ public class SceneManager implements SceneEventListener {
             e.printStackTrace();
             return;
         }
+
         Scene scene = new Scene(login);
+        stage.setResizable(false);
         stage.setScene(scene);
 
         stage.sizeToScene();
-        stage.setResizable(false);
+
         stage.show();
     }
 
     public void showMainScene(MainController mainController){
 //        for(int i = 0; i< GuiModel.getInstance().getNumPlayers(); i++)
 //            GuiModel.getInstance().addCard(chosenCardsChallenger.get(i));
+        stage.setResizable(true);
         stage.setScene(mainController.gameScene());
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         stage.setX(primaryScreenBounds.getMinX());
         stage.setY(primaryScreenBounds.getMinY());
         stage.setWidth(primaryScreenBounds.getWidth());
         stage.setHeight(primaryScreenBounds.getHeight());
+
         stage.show();
     }
 
