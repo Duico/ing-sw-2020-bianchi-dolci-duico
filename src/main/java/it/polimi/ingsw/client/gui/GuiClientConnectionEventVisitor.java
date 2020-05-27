@@ -13,6 +13,5 @@ public class GuiClientConnectionEventVisitor extends ClientConnectionEventVisito
 
     @Override
     public void visit(ClientConnectionEvent evt) {
-
     }
 }

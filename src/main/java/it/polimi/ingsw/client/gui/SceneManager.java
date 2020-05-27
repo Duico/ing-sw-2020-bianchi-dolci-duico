@@ -2,8 +2,6 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.event.MessageListener;
-import it.polimi.ingsw.client.gui.event.GuiEvent;
-import it.polimi.ingsw.client.gui.event.GuiEventEmitter;
 import it.polimi.ingsw.client.gui.event.GuiEventListener;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.view.ViewEventListener;
@@ -60,7 +58,9 @@ public class SceneManager implements SceneEventListener {
         if(evt.getSceneType().equals(guiModel.getSceneType())){
             return;
         }
-            loadScene(evt.getSceneType());
+            Platform.runLater(()->{
+                loadScene(evt.getSceneType());
+            });
     }
 
 

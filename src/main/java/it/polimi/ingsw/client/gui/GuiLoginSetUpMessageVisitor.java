@@ -15,35 +15,35 @@
 //    @Override
 //    public void visit(SignUpFailedSetUpMessage message) {
 //            if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME)) {
-//                loginController.alert("Invalid nickName");
+//                guiModel.getLoginController().alert("Invalid nickName");
 //            }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS)){
-//                loginController.alert("Incorrect num of players");
+//                guiModel.getLoginController().alert("Incorrect num of players");
 //            }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.GAME_ALREADY_START)){
-//               loginController.alert("Game already started, wait the end of the game...");
+//               guiModel.getLoginController().alert("Game already started, wait the end of the game...");
 //            }
 //    }
 //
 //    @Override
 //    public void visit(InitSetUpMessage message) {
 //            if((askNumPlayers = message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME)) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.NICKNAME)) {
-//                loginController.setAskNumPlayers(askNumPlayers);
+//                guiModel.getLoginController().setAskNumPlayers(askNumPlayers);
 //                Platform.runLater( ()-> {
-//                    loginController.askSetUpInfo(askNumPlayers);
+//                    guiModel.getLoginController().askSetUpInfo(askNumPlayers);
 //                });
 //            }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_LAST)) {
 //                boolean waitOtherPlayers=message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT);
 //                System.out.println("correct sign up");
-//                loginController.correctSignUp(waitOtherPlayers);
+//                guiModel.getLoginController().correctSignUp(waitOtherPlayers);
 //            }
 //    }
 //
 //    @Override
 //    public void visit(ConnectionMessage connectionMessage) {
 //            if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
-//                loginController.alert("End game, player disconnected");
+//                guiModel.getLoginController().alert("End game, player disconnected");
 //                //CLOSE
 //            }else if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
-//                loginController.alert("You have been kicked from the game, because there are too many players.");
+//                guiModel.getLoginController().alert("You have been kicked from the game, because there are too many players.");
 //                //CLOSE
 //            }
 //    }

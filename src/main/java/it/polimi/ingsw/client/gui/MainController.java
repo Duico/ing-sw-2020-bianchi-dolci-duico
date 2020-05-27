@@ -291,9 +291,9 @@ public class MainController extends GuiEventEmitter {
         MID("/models/Middle.obj","/textures/middle.png"),
         TOP("/models/Top.obj","/textures/top.png"),
         DOME("/models/Dome.obj", "/textures/Dome.png"),
-        BLUE_WORKER("/models/MaleBuilder_Blue.obj","/textures/workerblue.png"),
-//        YELLOW_WORKER(),
-//        GRAY_WORKER(),
+        BLUE_WORKER("/models/MaleBuilder.obj","/textures/blueworker.png"),
+        YELLOW_WORKER("/models/MaleBuilder.obj","/textures/yellowworker.png"),
+        GRAY_WORKER("/models/MaleBuilder.obj","/textures/grayworker.png"),
         ;
 
         private final String baseUrl;

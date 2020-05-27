@@ -4,21 +4,39 @@ import it.polimi.ingsw.event.EventEmitter;
 import it.polimi.ingsw.event.EventHandler;
 import it.polimi.ingsw.model.Position;
 
+import java.util.List;
+
 public class GuiEventEmitter extends EventEmitter {
     private void executeGuiEventListeners(EventHandler<GuiEventListener> eventHandler){
         executeEventListeners(GuiEventListener.class, eventHandler);
     }
-    public void makeMove(Position startPosition, Position destinationPosition){
-        executeGuiEventListeners(listener -> listener.makeMove(startPosition, destinationPosition));
+    public void emitMove(Position startPosition, Position destinationPosition){
+        executeGuiEventListeners(listener -> listener.onMove(startPosition, destinationPosition));
     }
-    public void makeBuild(Position workerPosition, Position buildPosition, boolean isDome){
-        executeGuiEventListeners(listener -> listener.makeBuild(workerPosition, buildPosition, isDome));
+    public void emitBuild(Position workerPosition, Position buildPosition, boolean isDome){
+        executeGuiEventListeners(listener -> listener.onBuild(workerPosition, buildPosition, isDome));
     }
-    public void makePlace(Position workerPosition){
-        executeGuiEventListeners(listener -> listener.makePlace(workerPosition) );
+    public void emitPlace(Position workerPosition){
+        executeGuiEventListeners(listener -> listener.onPlace(workerPosition) );
     }
-    public void endTurn(){
-        executeGuiEventListeners(listener -> listener.endTurn());
+    public void emitEndTurn(){
+        executeGuiEventListeners(listener -> listener.onEndTurn());
+    }
+
+    public void emitLogin(String username, Integer numPlayers){
+        executeGuiEventListeners(listener -> listener.onLogin(username, numPlayers));
+    }
+
+    public void emitChosenCard(String chosenCard){
+        executeGuiEventListeners(listener -> listener.onChooseCard(chosenCard));
+    }
+
+    public void emitChallengerCards(List<String> challengerCards){
+        executeGuiEventListeners(listener -> listener.onChallengeCards(challengerCards));
+    }
+
+    public void emitFirstPlayer(String firstPlayer){
+        executeGuiEventListeners(listener -> listener.onFirstPlayer(firstPlayer));
     }
 
 }
