@@ -44,10 +44,10 @@ public class CliSetUpMessageVisitor extends SetUpMessageVisitor {
     public void visit(ConnectionMessage connectionMessage) {
         if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
             //cli.printClientConnectionEvent(connectionMessage);
-            cli.print(System.lineSeparator() + "End game, player disconnected...Press to close");
+            cli.print(System.lineSeparator() + Color.RED_UNDERLINED.escape("Game over, player disconnected..."));
             cli.shutdown();
         }else if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
-            cli.print(System.lineSeparator() + "You have been kicked from the game, because there are too many players.");
+            cli.print(System.lineSeparator() + Color.RED_UNDERLINED.escape("You have been kicked from the game, because there were too many players."));
             cli.shutdown();
         }
     }
@@ -56,16 +56,20 @@ public class CliSetUpMessageVisitor extends SetUpMessageVisitor {
         return () -> {
             cli.clearReadLines();
             String playerName;
-            while ((playerName = promptName()) == null);
-            Integer numPlayers = null;
-            if (askNumPlayers) {
-                cli.clearReadLines();
-                while ((numPlayers = promptNumPlayers()) == null);
-            }
+//            try {
+                while ((playerName = promptName()) == null) ;
+                Integer numPlayers = null;
+                if (askNumPlayers) {
+                    cli.clearReadLines();
+                    while ((numPlayers = promptNumPlayers()) == null) ;
+                }
             emitSignUp(new SignUpMessage(playerName, numPlayers));
+//            }catch (InterruptedException e){
+//                return;
+//            }
         };
     }
-    private String promptName(){
+    private String promptName() throws InterruptedException {
         cli.print(CliText.ASK_NAME.toPrompt());
         String line = cli.pollLine();
         if(!line.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$")){
@@ -74,7 +78,7 @@ public class CliSetUpMessageVisitor extends SetUpMessageVisitor {
         }
         return line;
     }
-    private Integer promptNumPlayers(){
+    private Integer promptNumPlayers() throws InterruptedException {
         //check valid
         cli.print(CliText.ASK_NUMPLAYERS.toPrompt());
         String line = cli.pollLine();

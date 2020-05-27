@@ -87,7 +87,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
             ObjectOutputStream socketOut = new ObjectOutputStream(outputStream);
             Thread objectInputThread = new Thread(new ObjectInputRunnable(socketIn));
             Thread objectOutputThread = new Thread(new ObjectOutputRunnable(socketOut));
-            Thread messageReader = new Thread(new CliMessageReader());
+            Thread messageReader = new Thread(new ClientMessageReader());
 
             objectInputThread.start();
             objectOutputThread.start();
@@ -117,20 +117,21 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
     public void startPingTimer() {
         Timer timer = new Timer();
         TimeOutCheckerInterface timeOutChecker = () -> {
-            if (isActive()){
+//            if (isActive()){
                 send(new ConnectionMessage(ConnectionMessage.Type.PONG));
                 return false;
-            }else{
-                emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.PING_FAIL));
-                try {
-                    if(socket != null) {
-                        socket.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return true;
-            }
+//            }
+//            else{
+//                emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.PING_FAIL));
+//                try {
+//                    if(socket != null) {
+//                        socket.close();
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                return true;
+//            }
         };
 
         TimerTask task = new TimeoutCounter(timeOutChecker);
@@ -175,7 +176,6 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                             ConnectionMessage event = (ConnectionMessage) message;
                              if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION) || event.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)) {
                                  setActive(false);
-//                                 System.out.println("LA metto io a false 1");
                                  //event.accept(setUpVisitor);
                              }
 
@@ -237,7 +237,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                         }
                     }
 
-                    System.out.println("Esco dal thread out message ");
+//                    System.out.println("Esco dal thread out message ");
 
                 } catch (IOException e) {
                     emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.IO_EXCEPTION));
@@ -246,6 +246,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                 }finally {
                         try {
                             socketOut.close();
+                            emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.PING_FAIL));
                         } catch (IOException e) {
                             emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.CLOSE_IO_EXCEPTION));
                         }
@@ -263,19 +264,8 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         }
     }
 
-    private class CliMessageReader implements Runnable{
-       /* private ClientConnection clientConnection;
-        private GameMessageVisitor gameMessageVisitor;
-        //TODO remove
-        private Cli cli;*/
-
-        public CliMessageReader(/*Cli cli, ClientConnection clientConnection, CliController cliController*/){
-           // this.clientConnection = clientConnection;
-//        If needed, pass via constructor
-//        this.gameMessageVisitor = gameMessageVisitor;
-            //this.gameMessageVisitor = new CliGameMessageVisitor(cli, cliController);
-
-        }
+    private class ClientMessageReader implements Runnable{
+        public ClientMessageReader(){}
         @Override
         public void run(){
             while(isActive()) {

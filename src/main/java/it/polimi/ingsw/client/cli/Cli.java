@@ -4,8 +4,10 @@ import it.polimi.ingsw.client.event.ClientConnectionEvent;
 import it.polimi.ingsw.server.message.ConnectionMessage;
 
 import java.io.*;
+import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
     //boolean hasPrintedTurnMessage = false;
@@ -73,23 +75,45 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
 //    }
     protected void execAsyncInputRequest(CliRunnable cliRunnable) {
         //passing this to the runnable
-        inputRequestsPool.submit(cliRunnable::run);
+        inputRequestsPool.submit( () -> {
+            try {
+                cliRunnable.run();
+            } catch (InterruptedException e) {
+                return;
+            }
+        });
     }
 
     protected void execInputRequest(CliRunnable cliRunnable) {
         //passing this to the runnable
         inputRequestsPool.submit(() -> {
             synchronized (this) {
-                cliRunnable.run();
+                try {
+                    cliRunnable.run();
+                } catch (InterruptedException e) {
+                    return;
+                }
             }
         });
     }
 
     //TODO
     protected void shutdown() {
-//        inputRequestsPool.shutdown();
-//        inputRequestsPool.shutdownNow();
-        System.exit(0);
+        inputRequestsPool.shutdown(); // Disable new tasks from being submitted
+        try {
+            // Wait a while for existing tasks to terminate
+//            if (!inputRequestsPool.awaitTermination(1, TimeUnit.SECONDS)) {
+                inputRequestsPool.shutdownNow(); // Cancel currently executing tasks
+                // Wait a while for tasks to respond to being cancelled
+                if (!inputRequestsPool.awaitTermination(10, TimeUnit.SECONDS))
+                    System.err.println("Some threads did not terminate");
+//            }
+        } catch (InterruptedException ie) {
+            // (Re-)Cancel if current thread also interrupted
+            inputRequestsPool.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
     }
 
 //    protected void handleInput(LineConsumer lambda){
@@ -109,16 +133,11 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
 //            });
 //    }
 
-    protected String pollLine() {
+    protected String pollLine() throws InterruptedException{
         synchronized (inputHandler) {
             String line;
             while ((line = inputHandler.pollReadLines()) == null) {
-                try {
-                    inputHandler.wait();
-                } catch (InterruptedException e) {
-                    System.err.println("Richiesta di input interrotta.");
-                    //e.printStackTrace();
-                }
+                inputHandler.wait();
             }
             return line;
         }
