@@ -4,9 +4,11 @@ import it.polimi.ingsw.client.ClientConnectionEventVisitor;
 import it.polimi.ingsw.client.event.ClientConnectionEvent;
 
 public class GuiClientConnectionEventVisitor extends ClientConnectionEventVisitor {
-    protected final GuiModel guiModel;
-    protected GuiClientConnectionEventVisitor(GuiModel guiModel) {
+    private final GuiModel guiModel;
+    private final SceneEventEmitter sceneEventEmitter;
+    protected GuiClientConnectionEventVisitor(GuiModel guiModel, SceneEventEmitter sceneEventEmitter) {
         this.guiModel = guiModel;
+        this.sceneEventEmitter = sceneEventEmitter;
     }
 
     @Override

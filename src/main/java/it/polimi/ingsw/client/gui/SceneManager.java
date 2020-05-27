@@ -44,10 +44,11 @@ public class SceneManager implements SceneEventListener {
         guiModel.setMainController(mainController);
 
 
-        GuiModelEventVisitor guiModelEventVisitor = new GuiModelEventVisitor(guiModel);
-        guiModelEventVisitor.addSceneEventListener(this);
-
-        GuiMessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModelEventVisitor, new GuiControllerResponseVisitor(guiModel), new GuiSetUpMessageVisitor(guiModel), new GuiClientConnectionEventVisitor(guiModel));
+        SceneEventEmitter sceneEventEmitter = new SceneEventEmitter();
+        sceneEventEmitter.addEventListener(SceneEventListener.class, this);
+        GuiModelEventVisitor guiModelEventVisitor = new GuiModelEventVisitor(guiModel, sceneEventEmitter);
+        GuiClientConnectionEventVisitor guiClientConnectionEventVisitor = new GuiClientConnectionEventVisitor(guiModel, sceneEventEmitter);
+        GuiMessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModelEventVisitor, new GuiControllerResponseVisitor(guiModel), new GuiSetUpMessageVisitor(guiModel), guiClientConnectionEventVisitor);
         setConnectionListener(guiMessageVisitor);
         guiModel.addEventListener(ViewEventListener.class, clientConnection);
         guiModel.addEventListener(SignUpListener.class,clientConnection);

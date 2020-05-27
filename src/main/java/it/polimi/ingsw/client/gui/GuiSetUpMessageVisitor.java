@@ -7,7 +7,7 @@ import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 import javafx.application.Platform;
 
 public class GuiSetUpMessageVisitor extends SetUpMessageVisitor {
-    protected final GuiModel guiModel;
+    private final GuiModel guiModel;
     public GuiSetUpMessageVisitor(GuiModel guiModel) {
         super();
         this.guiModel = guiModel;

@@ -6,14 +6,12 @@ import it.polimi.ingsw.model.event.*;
 import javafx.scene.Scene;
 
 public class GuiModelEventVisitor extends ModelEventVisitor {
-    SceneEventEmitter sceneEventEmitter = new SceneEventEmitter();
     private final GuiModel guiModel;
-    public GuiModelEventVisitor(GuiModel guiModel){
+    private final SceneEventEmitter sceneEventEmitter;
+    public GuiModelEventVisitor(GuiModel guiModel, SceneEventEmitter sceneEventEmitter){
         super();
         this.guiModel = guiModel;
-    }
-    protected void addSceneEventListener(SceneEventListener sceneEventListener) {
-        sceneEventEmitter.addEventListener(SceneEventListener.class, sceneEventListener);
+        this.sceneEventEmitter = sceneEventEmitter;
     }
 
     @Override
