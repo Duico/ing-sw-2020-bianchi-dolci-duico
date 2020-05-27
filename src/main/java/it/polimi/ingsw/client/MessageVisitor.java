@@ -23,6 +23,7 @@ public abstract class MessageVisitor implements MessageListener {
         this.clientConnectionEventVisitor = clientConnectionEventVisitor;
     }
 
+
     public void visit(ModelEvent evt) {
         evt.accept(modelEventVisitor);
     }

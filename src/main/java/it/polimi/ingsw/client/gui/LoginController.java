@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientEventEmitter;
+import it.polimi.ingsw.client.gui.event.GuiEventEmitter;
 import it.polimi.ingsw.client.message.SignUpMessage;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -13,8 +14,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Optional;
 
-public class LoginController extends ClientEventEmitter {
-
+public class LoginController extends GuiEventEmitter {
 
     @FXML
     public TextField textfield;
@@ -121,69 +121,49 @@ public class LoginController extends ClientEventEmitter {
     }
 
     private void checkValidStart(){
-        //check if username is ok
-        String insert = textfield.getText().trim();
-        boolean checkUsername = insert.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$");
-        if(askNumPlayers.equals(Optional.empty())){
-            return;
-        }
-        if(askNumPlayers.get()){
-            if(checkUsername) {
-                Integer choiceBoxNumPlayers = checkChoiceBox();
-                if(choiceBoxNumPlayers==null){
-                    username=null;
-                }
-                else {
-                    username = insert;
-                    if(choiceBoxNumPlayers==2){
-//                        System.out.println("signupmessage"+" "+username+choiceBoxNumPlayers);
-//                        GuiModel.getInstance().setNumPlayers(2);
-                        GuiModel.getInstance().setCurrentUsername(username);
-                        emitSignUp(new SignUpMessage(username, choiceBoxNumPlayers));
-                    }else if(choiceBoxNumPlayers==3){
-//                        System.out.println("signupmessage"+" "+username+choiceBoxNumPlayers);
-//                        GuiModel.getInstance().setNumPlayers(3);
-                        GuiModel.getInstance().setCurrentUsername(username);
-                        emitSignUp(new SignUpMessage(username, choiceBoxNumPlayers));
-                    }
-                }
-
-
-            }else{
-                alert("Invalid username!");
-            }
-
-        }else{
-            if(checkUsername){
-                username=insert;
-//                System.out.println("signupmessage"+" "+username);
-                GuiModel.getInstance().setCurrentUsername(username);
-                emitSignUp(new SignUpMessage(username));
-
-            }else{
-                alert("Invalid username!");
-            }
-        }
-
-    }
-
-
-
-    public void launchChooseCard() throws IOException {
-        ChooseCardController chooseCard = new ChooseCardController();
-        Stage stage = new Stage();
-        stage.setScene(chooseCard.chooseCardScene());
-        stage.setResizable(false);
-        stage.sizeToScene();
-        stage.show();
-//        ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
-    }
-
-
-
-    public void startGame(ActionEvent actionEvent) throws Exception {
-
-       checkValidStart();
+//        //check if username is ok
+//        String insert = textfield.getText().trim();
+//        boolean checkUsername = insert.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$");
+//        if(askNumPlayers.equals(Optional.empty())){
+//            return;
+//        }
+//        if(askNumPlayers.get()){
+//            if(checkUsername) {
+//                Integer choiceBoxNumPlayers = checkChoiceBox();
+//                if(choiceBoxNumPlayers==null){
+//                    username=null;
+//                }
+//                else {
+//                    username = insert;
+//                    if(choiceBoxNumPlayers==2){
+////                        System.out.println("signupmessage"+" "+username+choiceBoxNumPlayers);
+////                        GuiModel.getInstance().setNumPlayers(2);
+//                        GuiModel.getInstance().setCurrentUsername(username);
+//                        emitSignUp(new SignUpMessage(username, choiceBoxNumPlayers));
+//                    }else if(choiceBoxNumPlayers==3){
+////                        System.out.println("signupmessage"+" "+username+choiceBoxNumPlayers);
+////                        GuiModel.getInstance().setNumPlayers(3);
+//                        GuiModel.getInstance().setCurrentUsername(username);
+//                        emitSignUp(new SignUpMessage(username, choiceBoxNumPlayers));
+//                    }
+//                }
+//
+//
+//            }else{
+//                alert("Invalid username!");
+//            }
+//
+//        }else{
+//            if(checkUsername){
+//                username=insert;
+////                System.out.println("signupmessage"+" "+username);
+//                GuiModel.getInstance().setCurrentUsername(username);
+//                emitSignUp(new SignUpMessage(username));
+//
+//            }else{
+//                alert("Invalid username!");
+//            }
+//        }
 
     }
 
