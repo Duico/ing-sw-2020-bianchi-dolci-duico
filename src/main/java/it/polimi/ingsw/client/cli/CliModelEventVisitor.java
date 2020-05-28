@@ -232,25 +232,38 @@ public class CliModelEventVisitor extends ModelEventVisitor {
     protected CliRunnable askFirstPlayer() {
         return () -> {
             Player player;
-            while ((player = promptFirstPlayer()) == null) ;
-            emitViewEvent(new FirstPlayerViewEvent(player));
+//            try {
+                while ((player = promptFirstPlayer()) == null) ;
+                emitViewEvent(new FirstPlayerViewEvent(player));
+//            }catch (InterruptedException e){
+//                return;
+//            }
         };
     }
     protected CliRunnable askCard(List<String> chosenCards){
         return () -> {
             String cardName;
-            while ((cardName = promptCard(chosenCards)) == null) ;
+//            try {
+                while ((cardName = promptCard(chosenCards)) == null) ;
+//            }catch (InterruptedException e){
+//                return;
+//            }
             emitViewEvent(new CardViewEvent(cardName));
         };
     }
     protected CliRunnable askChallCards(List<String> cardDeck){
         return () -> {
-            List<String> challCards = promptChallCards(cardDeck);
+            List<String> challCards = null;
+//            try {
+                challCards = promptChallCards(cardDeck);
+//            } catch (InterruptedException e) {
+//                return;
+//            }
             emitViewEvent(new ChallengerCardViewEvent(challCards));
         };
     }
 
-    private Player promptFirstPlayer(){
+    private Player promptFirstPlayer() throws InterruptedException{
         StringBuilder playersLine = new StringBuilder();
         boolean isFirst = true;
         for(Player player: cliModel.getPlayers()){
@@ -277,7 +290,7 @@ public class CliModelEventVisitor extends ModelEventVisitor {
         return matchingPlayers.get(0);
     }
 
-    private List<String> promptChallCards(List<String> cards){
+    private List<String> promptChallCards(List<String> cards) throws InterruptedException {
         List<String> chosenCards = new ArrayList<>();
         String line;
         int numPlayers = cliModel.getNumPlayers();
@@ -298,7 +311,7 @@ public class CliModelEventVisitor extends ModelEventVisitor {
         }
         return chosenCards;
     }
-    private String promptCard(List<String> chosenCards) {
+    private String promptCard(List<String> chosenCards) throws InterruptedException {
         String line;
         cli.print(CliText.ASK_CARD.toPrompt(chosenCards.toString()));
         cli.clearReadLines();
@@ -339,7 +352,13 @@ public class CliModelEventVisitor extends ModelEventVisitor {
             CliRunnable inputGetter = () -> {
                 while (true) {
                     String cmd;
-                    while ((cmd = readCommand()) == null || !executeCommand(cliModel.isMyTurn(), cmd));
+//                    try {
+                        while (true) {
+                                if (!((cmd = readCommand()) == null || !executeCommand(cliModel.isMyTurn(), cmd)));
+                        }
+//                    } catch (InterruptedException e) {
+//                        return;
+//                    }
                 }
                 //cli.setAwaitingInput(false) on exit
             };
@@ -347,11 +366,13 @@ public class CliModelEventVisitor extends ModelEventVisitor {
             cli.execAsyncInputRequest(inputGetter);
         }
     }
-    private String readCommand() {
+    private String readCommand() throws InterruptedException {
         String line;
 
         //needed to avoid Exception below
+
         line = cli.pollLine().trim();
+
 
         if (line.equals("")) {
             return null;
@@ -362,11 +383,11 @@ public class CliModelEventVisitor extends ModelEventVisitor {
         }
         return line;
     }
-    private String promptCommand(boolean myTurn){
-        CliText promptText = myTurn?CliText.YOUR_TURN_COMMAND:CliText.ENTER_COMMAND;
-        cli.print(promptText.toPrompt());
-        return readCommand();
-    }
+//    private String promptCommand(boolean myTurn){
+//        CliText promptText = myTurn?CliText.YOUR_TURN_COMMAND:CliText.ENTER_COMMAND;
+//        cli.print(promptText.toPrompt());
+//        return readCommand();
+//    }
     private boolean executeCommand(boolean myTurn, String cmd){
         CommandParser commandParser;
         ViewEvent event = null;

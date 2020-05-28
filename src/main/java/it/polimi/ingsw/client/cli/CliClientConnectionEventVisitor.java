@@ -12,6 +12,7 @@ public class CliClientConnectionEventVisitor extends ClientConnectionEventVisito
 
     @Override
     public void visit(ClientConnectionEvent evt) {
-        cli.print(Color.RED_UNDERLINED.escape(evt.getReason().toString()));
+        cli.print(System.lineSeparator() + Color.RED_UNDERLINED.escape(evt.toString()));
+        cli.shutdown();
     }
 }
