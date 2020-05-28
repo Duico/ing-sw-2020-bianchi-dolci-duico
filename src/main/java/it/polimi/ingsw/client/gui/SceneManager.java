@@ -101,7 +101,8 @@ public class SceneManager implements SceneEventListener {
         }
 
         Scene scene = new Scene(login);
-        stage.setResizable(false);
+//        stage.setResizable(false);
+        stage.setResizable(true);
         stage.setScene(scene);
 
         stage.sizeToScene();

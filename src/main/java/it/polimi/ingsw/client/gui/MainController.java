@@ -335,6 +335,8 @@ public class MainController extends GuiEventEmitter {
 
 
 
+
+
     public void placeWorker(Position position, boolean isMyWorker, PlayerColor color){
         Platform.runLater(()->{
             Group worker = Models.fromColor(color);
@@ -463,7 +465,7 @@ public class MainController extends GuiEventEmitter {
 //                    else if (operation.equals(Operation.BUILD_DOME))
 //                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, true));
                 } else {
-                    if (operation.equals(Operation.PLACE_WORKER)) {
+                    if (currentOperation.equals(Operation.PLACE_WORKER)) {
                         System.out.println(destinationPosition.getX()+" "+destinationPosition.getY());
                         emitPlaceWorker(destinationPosition);
                     }
@@ -662,6 +664,8 @@ public class MainController extends GuiEventEmitter {
         moveButton.setPrefSize(70,70);
         buildButton.setGraphic(buttonImage("/textures/build.png"));
         buildButton.setPrefSize(70,70);
+        endTurnButton.setGraphic(buttonImage("/textures/endTurn.png"));
+        endTurnButton.setPrefSize(100, 70);
         addButtonEvents();
 
         VBox vbButtons = new VBox(30);
