@@ -106,28 +106,15 @@ public class CliModel {
     }*/
 
     public boolean moveWorker(Position startPosition, Position destPosition, Position pushPosition, Player playerEvent){
-        if(pushPosition==null) {
             for (Player player : players) {
                 Integer workerId = player.getWorkerId(startPosition);
                 if (workerId == null) {
-
-                    return false;
-                }
-
-                //         return player.setWorkerPosition(workerId, destPosition);
-                player.setWorkerPosition(workerId, destPosition);
-            }
-        }else {
-            for (Player player : players) {
-                Integer workerId = player.getWorkerId(startPosition);
-                if (workerId == null) {
-                    System.out.println("Entro qui nel false worker ID");
                     return false;
                 }
                 player.setWorkerPosition(workerId, destPosition);
 
             }
-
+        if(pushPosition!=null) {
             for (Player player : players) {
                 if (!player.equalsUuid(playerEvent)) {
                     Integer workerId = player.getWorkerId(destPosition);
