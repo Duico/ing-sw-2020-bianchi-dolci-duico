@@ -4,8 +4,10 @@ package it.polimi.ingsw.client.gui;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import it.polimi.ingsw.client.gui.event.GuiEventEmitter;
 import it.polimi.ingsw.model.Level;
+import it.polimi.ingsw.model.PlayerColor;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -41,15 +43,21 @@ public class MainController extends GuiEventEmitter {
     final double baseZ = 0;
     private final Group root = new Group();
     private final Group workers = new Group();
+    private final Group myWorkers= new Group();
+    private final Group opponentWorkers = new Group();
     private final Group buildings = new Group();
 
     private Button undoButton = new Button();
     private Button moveButton = new Button();
     private Button buildButton = new Button();
+    private Button endTurnButton = new Button();
 
     private Position startPosition;
     private double onClickXCoord,onClickYCoord;
     private double newOnClickXCoord,newOnClickYCoord;
+
+    private Operation currentOperation;
+    private int buildButtonClickCount;
 
     private boolean isDome;
     private Operation operation;
@@ -60,7 +68,10 @@ public class MainController extends GuiEventEmitter {
         PLACE_WORKER;
     }
 
-    private int count=0;
+
+    public MainController(){
+        setOperation(Operation.PLACE_WORKER);
+    }
 
     ///da spostare in guimodel
     private CoordinateMap map = new CoordinateMap(boardSize, baseZ);
@@ -69,6 +80,93 @@ public class MainController extends GuiEventEmitter {
     private boolean isSelectedWorker(){
         return startPosition!=null;
     }
+
+    public void setOperation(Operation operation){
+        this.currentOperation=operation;
+    }
+    public Operation getOperation(){
+        return this.currentOperation;
+    }
+
+    private void addButtonEvents(){
+        addOnClickEventMoveButton(moveButton);
+        addOnClickEventUndoButton(undoButton);
+        addOnClickEventBuildButton(buildButton);
+        addOnClickEventEndTurnButton(endTurnButton);
+    }
+
+
+
+    public void updateMoveButton(boolean isAllowedToMove, boolean isAllowedToBuild){
+        if(isAllowedToMove)
+        {
+            moveButton.setGraphic(buttonImage("/textures/move.png"));
+            moveButton.setMouseTransparent(false);
+        }
+        else
+        {
+            moveButton.setGraphic(buttonImage("/textures/notmove.png"));
+            moveButton.setMouseTransparent(true);
+        }
+        if(isAllowedToBuild)
+        {
+            buildButton.setGraphic(buttonImage("/textures/build.png"));
+            buildButton.setMouseTransparent(false);
+        }
+        else
+        {
+            moveButton.setGraphic(buttonImage("/textures/notbuild.png"));
+            moveButton.setMouseTransparent(true);
+        }
+    }
+
+    public void addOnClickEventEndTurnButton(Node node){
+        node.setOnMouseClicked(event->{
+            //end turn event
+        });
+    }
+    public void addOnClickEventUndoButton(Node node){
+        node.setOnMouseClicked(event->{
+//            undo();
+        });
+    }
+    public void addOnClickEventMoveButton(Node node){
+        node.setOnMouseClicked(event->{
+            setOperation(Operation.MOVE);
+        });
+    }
+    public void addOnClickEventBuildButton(Node node){
+        node.setOnMouseClicked(event->{
+            if(buildButtonClickCount==1)
+                setOperation(Operation.BUILD);
+            else if(buildButtonClickCount==2)
+                setOperation(Operation.BUILD_DOME);
+        });
+    }
+
+
+    public void clearBoard(){
+        buildings.getChildren().removeAll();
+        workers.getChildren().removeAll();
+        workersMap.clear();
+    }
+
+    public void drawBoardCell(Position position, Level level, boolean isDome){
+        int i;
+        for(i=0;i<level.getOrd();i++){
+            makeBuild(position, Level.fromIntToLevel(i));
+        }
+        if(isDome)
+        {
+            if(i==0)
+                makeDomeBuild(position, true);
+            else
+                makeDomeBuild(position, false);
+        }else
+            return;
+    }
+
+
 
     private void create3DScene() {
 //        initBoard();
@@ -101,14 +199,9 @@ public class MainController extends GuiEventEmitter {
         lightGroup.setTranslateY(40);
         light.setRotate(45);
 
-        root.getChildren().add(board);
-        root.getChildren().add(cliff);
-//        root.getChildren().add(outerWall);
-        root.getChildren().add(islands);
-        root.getChildren().add(innerWalls);
-        root.getChildren().add(sea);
-        root.getChildren().add(workers);
-        root.getChildren().add(buildings);
+        root.getChildren().addAll(board, cliff, islands, innerWalls, sea, workers, buildings);
+        workers.getChildren().addAll(myWorkers, opponentWorkers);
+
 
 
 
@@ -220,15 +313,19 @@ public class MainController extends GuiEventEmitter {
     }
 
 
+
+
     private Position getClickCellIndex(double x,double y) {
         for(int i=0;i<5;i++){
             for(int j=0;j<5;j++) {
-                if (x >= map.getLeft(i, j) && x <= map.getRight(i, j) && y >= map.getTop(i, j) && y <= map.getDown(i, j))
+                if (map.getBoundingBox(i,j).contains(x,y))
+                {
                     try{
                         return new Position(i, j);
                     }catch(PositionOutOfBoundsException e){
-
+                        return null;
                     }
+                }
             }
         }
         return null;
@@ -237,31 +334,28 @@ public class MainController extends GuiEventEmitter {
 
 
 
-    public void placeWorker(Position position){
-        Group worker = Models.BLUE_WORKER.getModel();
-        Point3D pos = map.getCoordinate(position);
-        worker.getTransforms().addAll(new Translate(pos.getX(), pos.getY(), pos.getZ()), new Rotate(+90, Rotate.X_AXIS));
-        addOnClickEventWorker(worker);
-        workers.getChildren().add(worker);
-        workersMap.put(position, worker);
+
+    public void placeWorker(Position position, boolean isMyWorker, PlayerColor color){
+        Platform.runLater(()->{
+            Group worker = Models.fromColor(color);
+            Point3D pos = map.getCoordinate(position);
+            worker.getTransforms().addAll(new Translate(pos.getX(), pos.getY(), pos.getZ()), new Rotate(+90, Rotate.X_AXIS));
+            addOnClickEventWorker(worker);
+            if(isMyWorker)
+                myWorkers.getChildren().add(worker);
+            else
+                opponentWorkers.getChildren().add(worker);
+            workersMap.put(position, worker);
+        });
     }
 
-
-//    private void placeWorker2(Position position){
-//        String workerUrl = "/models/MaleBuilder_Blue.obj";
-//        Group worker = loadModel(getClass().getResource(workerUrl),"/textures/workerpink.png");
-//        Coordinate pos = board[position.getX()][position.getY()].getCoordinate();
-//        worker.getTransforms().addAll(new Translate(pos.getCenterX(), pos.getCenterY(), pos.getCenterZ()), new Rotate(+90, Rotate.X_AXIS));
-//        addOnClickEventWorker(worker);
-//        workers.getChildren().add(worker);
-//        board[position.getX()][position.getY()].setWorker(worker);
-//    }
 
     private void buildPlatform(Point3D pos){
         Cube platform = new Cube(3,3,0.001,Color.DARKKHAKI);
         platform.getTransforms().add(new Translate(pos.getX(), pos.getY(), pos.getZ()+1));
         buildings.getChildren().add(platform);
     }
+
     public boolean makeBuild(Position position, Level level){
         Point3D pos = map.getCoordinate(position);
         Group model = Models.fromLevel(level);
@@ -322,6 +416,17 @@ public class MainController extends GuiEventEmitter {
             }
             return model;
         }
+
+        public static Group fromColor(PlayerColor color){
+            if(color.equals(PlayerColor.BLUE))
+                return Models.BLUE_WORKER.getModel();
+            else if(color.equals(PlayerColor.YELLOW))
+                return Models.YELLOW_WORKER.getModel();
+            else if(color.equals(PlayerColor.GRAY))
+                return Models.GRAY_WORKER.getModel();
+            else
+                return null;
+        }
     }
 
 
@@ -344,29 +449,33 @@ public class MainController extends GuiEventEmitter {
     }
 
 
-    private void addOnClickEventBoard(Node node){
+    private void addOnClickEventBoard(Node node) {
         node.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 PickResult pr = mouseEvent.getPickResult();
-                Position destinationPosition = getClickCellIndex(pr.getIntersectedPoint().getX(),pr.getIntersectedPoint().getY());
-//                if(isSelectedWorker()) {
-//                    if(checkDistance(startPosition, destinationPosition)){
-//                        if(operation.equals(Operation.MOVE))
+                Position destinationPosition = getClickCellIndex(pr.getIntersectedPoint().getX(), pr.getIntersectedPoint().getY());
+                if (isSelectedWorker()) {
+//                    if (operation.equals(Operation.MOVE))
 //                            emitViewEvent(new MoveViewEvent(startPosition, destinationPosition));
-//                        else if(operation.equals(Operation.BUILD))
+//                    else if (operation.equals(Operation.BUILD))
 //                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, false));
-//                        else if(operation.equals(Operation.BUILD_DOME))
+//                    else if (operation.equals(Operation.BUILD_DOME))
 //                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, true));
-//                    }
-//                }else{
-//                    if(operation.equals(Operation.PLACE_WORKER)){
-//                        emitViewEvent(new PlaceViewEvent(destinationPosition));
-//                }
+                } else {
+                    if (operation.equals(Operation.PLACE_WORKER)) {
+                        System.out.println(destinationPosition.getX()+" "+destinationPosition.getY());
+                        emitPlaceWorker(destinationPosition);
+                    }
 
+                }
             }
         });
     }
+
+
+
+
 
     private void addOnClickEventWorker(Node node){
         node.setOnMousePressed(e->{
@@ -389,7 +498,7 @@ public class MainController extends GuiEventEmitter {
 
     }
 
-private void translateWorker(Node node, Point3D start, Point3D dest)  {
+    private void translateWorker(Node node, Point3D start, Point3D dest)  {
         try{
             Transform localTransform = node.getLocalToSceneTransform();
             Point3D delta = dest.subtract(start);
@@ -472,10 +581,6 @@ private void translateWorker(Node node, Point3D start, Point3D dest)  {
     }
 
 
-    //eventi per pulsanti sulla schermata
-    private void addButtonEvents(){
-
-    }
 
     private static Group loadModel(URL url, String diffuseTexture){
         Group modelRoot = new Group();
@@ -561,10 +666,11 @@ private void translateWorker(Node node, Point3D start, Point3D dest)  {
 
         VBox vbButtons = new VBox(30);
         vbButtons.setPadding(new Insets(10,10,10,10));
+        Pane entTurnPane = new Pane(endTurnButton);
         Pane undoPane = new Pane(undoButton);
         Pane movePane = new Pane(moveButton);
         Pane buildPane = new Pane(buildButton);
-        vbButtons.getChildren().addAll(undoPane, movePane, buildPane);
+        vbButtons.getChildren().addAll(entTurnPane,undoPane, movePane, buildPane);
 
         VBox vbPlayers = new VBox(5);
         vbPlayers.setPadding(new Insets(10,10,10,10));
@@ -602,7 +708,7 @@ private void translateWorker(Node node, Point3D start, Point3D dest)  {
 //        subScene.widthProperty().bind(background.widthProperty());
 
         addSubSceneCameraEvents(scene,camera);
-        operation = Operation.PLACE_WORKER;
+//        operation = Operation.PLACE_WORKER;
         return scene;
     }
 

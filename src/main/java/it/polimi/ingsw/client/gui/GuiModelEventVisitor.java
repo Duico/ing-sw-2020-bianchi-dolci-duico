@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.ModelEventVisitor;
 import it.polimi.ingsw.model.Card;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.event.*;
 
@@ -29,7 +30,9 @@ public class GuiModelEventVisitor extends ModelEventVisitor {
 
     @Override
     public void visit(PlaceWorkerModelEvent evt) {
-
+        Player player = evt.getPlayer();
+        Position position = evt.getPlacePosition();
+        guiModel.placeWorker(position, player);
     }
 
     @Override

@@ -49,8 +49,12 @@ public class Board implements Cloneable, Serializable {
             return cell;
     }
 
-    private BoardCell getBoardCellReference(Position position){
-        return grid[position.getX()][position.getY()];
+    private BoardCell getBoardCellReference(Position position) throws NullPointerException,IndexOutOfBoundsException{
+        try{
+            return grid[position.getX()][position.getY()];
+        }catch(NullPointerException |IndexOutOfBoundsException e){
+            throw e;
+        }
     }
 
 

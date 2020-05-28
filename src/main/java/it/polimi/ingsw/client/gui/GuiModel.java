@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.view.event.CardViewEvent;
 import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
 import it.polimi.ingsw.view.event.FirstPlayerViewEvent;
+import it.polimi.ingsw.view.event.PlaceViewEvent;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
@@ -17,7 +18,6 @@ import java.util.List;
 public class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     private SceneEvent.SceneType sceneType;
-    private Board board;
 
     private Player myPlayer;
     private Player currentPlayer;
@@ -45,6 +45,14 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
                 player.setCard(evtCard);
             }
         }
+    }
+
+
+    public void placeWorker(Position position, Player player){
+        if(player.equalsUuid(myPlayer))
+            mainController.placeWorker(position,true, player.getColor());
+        else
+            mainController.placeWorker(position,false, player.getColor());
     }
 
     public void setCardDeck(List<String> cardDeck){
@@ -208,10 +216,6 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     }
 
-    @Override
-    public void onPlace(Position workerPosition) {
-
-    }
 
     @Override
     public void onEndTurn() {
@@ -242,6 +246,10 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         }
     }
 
+    @Override
+    public void onPlaceWorker(Position position) {
+        emitViewEvent(new PlaceViewEvent(position));
+    }
 
 
 }

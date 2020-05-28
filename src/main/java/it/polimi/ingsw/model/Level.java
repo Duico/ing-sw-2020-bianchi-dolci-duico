@@ -17,6 +17,17 @@ public enum Level {
         return this.ord;
     }
 
-
+    public static Level fromIntToLevel(int i){
+        if(i==0)
+            return Level.EMPTY;
+        else if(i==1)
+            return Level.BASE;
+        else if(i==2)
+            return Level.MID;
+        else if(i==3)
+            return Level.TOP;
+        else
+            return null;
+    }
 
 }

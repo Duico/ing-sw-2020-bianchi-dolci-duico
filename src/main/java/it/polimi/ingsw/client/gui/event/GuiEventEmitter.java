@@ -16,9 +16,7 @@ public class GuiEventEmitter extends EventEmitter {
     public void emitBuild(Position workerPosition, Position buildPosition, boolean isDome){
         executeGuiEventListeners(listener -> listener.onBuild(workerPosition, buildPosition, isDome));
     }
-    public void emitPlace(Position workerPosition){
-        executeGuiEventListeners(listener -> listener.onPlace(workerPosition) );
-    }
+
     public void emitEndTurn(){
         executeGuiEventListeners(listener -> listener.onEndTurn());
     }
@@ -37,6 +35,10 @@ public class GuiEventEmitter extends EventEmitter {
 
     public void emitFirstPlayer(String firstPlayer){
         executeGuiEventListeners(listener -> listener.onFirstPlayer(firstPlayer));
+    }
+
+    public void emitPlaceWorker(Position position){
+        executeGuiEventListeners(listener -> listener.onPlaceWorker(position));
     }
 
 }
