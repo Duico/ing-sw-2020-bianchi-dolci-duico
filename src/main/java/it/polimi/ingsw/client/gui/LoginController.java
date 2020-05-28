@@ -7,6 +7,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+
+import java.awt.event.MouseEvent;
 
 public class LoginController extends GuiEventEmitter {
 
@@ -19,18 +22,18 @@ public class LoginController extends GuiEventEmitter {
     @FXML
     public Label message;
     @FXML
-    public Label waitLabel;
+    public VBox waitLabel;
     @FXML
-    public Pane loginPane;
+    public VBox loginPane;
 
     private int numPlayers;
     private String username;
 
 
 
-    public void setMessage(String message){
-        this.message.setText(message);
-    }
+//    public void setMessage(String message){
+//        this.message.setText(message);
+//    }
 
 
 
@@ -52,7 +55,8 @@ public class LoginController extends GuiEventEmitter {
     public void askSetUpInfo(boolean askNumPlayers){
         Platform.runLater(()->{
             if(askNumPlayers){
-                setMessage("Select number of players:");
+//                setMessage("Select number of players:");
+                message.setVisible(true);
                 setVisibleChoiceBox(true);
             }else{
                 setVisibleChoiceBox(false);
@@ -124,6 +128,16 @@ public class LoginController extends GuiEventEmitter {
 
     public void startGame(ActionEvent actionEvent) throws Exception {
         checkValidStart();
+    }
+    @FXML
+    private void startButtonHover(){
+        start.getStyleClass().removeAll("start_button");
+        start.getStyleClass().add("start_button_hover");
+    }
+    @FXML
+    private void startButtonNonHover(){
+        start.getStyleClass().removeAll("start_button_hover");
+        start.getStyleClass().add("start_button");
     }
 
 

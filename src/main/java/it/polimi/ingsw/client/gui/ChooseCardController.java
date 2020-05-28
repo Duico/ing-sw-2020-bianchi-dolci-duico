@@ -6,15 +6,18 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ChooseCardController extends GuiEventEmitter {
@@ -26,9 +29,9 @@ public class ChooseCardController extends GuiEventEmitter {
 
     public Button startButton;
 
-    public GridPane cards;
+    public HBox cards;
 
-    public TextField chooseText;
+    public Label chooseText;
 
     public Label choosePlayerLabel;
 
@@ -88,18 +91,35 @@ public class ChooseCardController extends GuiEventEmitter {
 
     private ImageView image(String name){
         ImageView imageView = new ImageView("textures/"+name+".png");
-        imageView.setFitHeight(150);
-        imageView.setFitWidth(100);
+        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(141);
+        imageView.setFitWidth(84);
+        imageView.getStyleClass().addAll("card_image");
         return imageView;
     }
 
 
-
-    public void initGridChallenger(){
-            for(int i=0;i<cardDeck.size();i++)
-                cards.add(image(cardDeck.get(i)),i,0);
+    public void initGridNotChallenger(List<String> chosenCards){
+          for(int i=0;i<cardDeck.size();i++){
+              if(chosenCards.contains(cardDeck.get(i))){
+                  ImageView image = image(cardDeck.get(i));
+                  HBox.setMargin(image, new Insets(0, (i==cardDeck.size()-1)?0:10, 0, i==0?0:10));
+                  cards.getChildren().addAll(image);
+              }
+          }
     }
 
+    //TODO remove
+    public void initGridChallenger(List<String> chosenCards){
+        List<String> cardstmp = new LinkedList<String>();
+        cardstmp.add("Athena");
+        cardstmp.add("Prometheus");
+        cardstmp.add("Atlas");
+        initGridNotChallenger(cardstmp);
+    }
+
+
+    //Events must be added on the single ImageView
     public void addGridEventChallenger() {
         cards.getChildren().forEach(item -> {
             item.setOnMouseClicked( event -> {
@@ -131,13 +151,6 @@ public class ChooseCardController extends GuiEventEmitter {
     }
 
 
-    public void initGridNotChallenger(List<String> chosenCards){
-          System.out.println("init grid not challenger");
-          for(int i=0;i<cardDeck.size();i++){
-              if(chosenCards.contains(cardDeck.get(i)))
-                  cards.add(image(cardDeck.get(i)),i,0);
-          }
-    }
 
 
 
@@ -221,17 +234,17 @@ public class ChooseCardController extends GuiEventEmitter {
             {
 //            setNumPlayers(GuiModel.getInstance().getNumPlayers());
 
-                header.setText("CHOOSE "+numPlayers+" CARDS!");
+                header.setText("Chose "+numPlayers+" cards");
 
-                initGridChallenger();
-                addGridEventChallenger();
+                initGridChallenger(cardDeck);
+//                addGridEventChallenger();
             }
             ///////////////////////
 
             //FOR NOT CHALLENGER PLAYERS
             else {
                 initGridNotChallenger(chosenCardsChallenger);
-                addGridEventNotChallenger();
+//                addGridEventNotChallenger();
             }
             ////////////////////////////
 

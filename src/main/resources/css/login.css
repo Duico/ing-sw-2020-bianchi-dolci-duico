@@ -1,6 +1,70 @@
-#message{
- -fx-background-color: green;
-}
-.nome-classe{
 
+#waitLabel{
+ -fx-font-size: 38;
+}
+
+#choiceBox{
+ -fx-pref-height: 34;
+ -fx-pref-width: 226;
+}
+#textfield{
+ -fx-pref-height: 34;
+ -fx-max-width: 226;
+}
+
+#loginPane{
+ -fx-background-image: url("/textures/pane.png");
+ -fx-padding: 40px 20px;
+ -fx-pref-width: 299px;
+ -fx-pref-height: 232px;
+}
+
+.santorini_border{
+ -fx-border-insets: 4;
+ -fx-border-color: #222222;
+ -fx-border-width: 4px;
+}
+
+.info_block {
+ -fx-text-fill: white;
+ -fx-padding: 20px;
+ /*pane bg color*/
+ -fx-background-color: #c8bfe7;
+ -fx-border-radius: 2px;
+}
+
+.label_vbox{
+ -fx-text-alignment: center;
+ -fx-alignment: top-center;
+ -fx-translate-y: 280px;
+}
+
+.full_window{
+ -fx-text-fill: #222222;
+}
+
+.prompt_label {
+ -fx-text-fill: white;
+ -fx-font-size: 12;
+ -fx-font-weight: bold;
+}
+
+.start_button{
+ -fx-background-color: #e4dff3;
+ -fx-text-fill: #222222;
+ -fx-font-size: 16;
+ -fx-font-weight: bolder;
+ -fx-border-radius: 4px;
+ -fx-pref-width: 180px;
+ -fx-translate-y: 10px;
+}
+
+.start_button_hover{
+ -fx-background-color: white;
+ -fx-text-fill: black;
+ -fx-font-size: 18;
+ -fx-font-weight: bolder;
+ -fx-border-radius: 4px;
+ -fx-pref-width: 180px;
+ -fx-translate-y: 10px;
 }
