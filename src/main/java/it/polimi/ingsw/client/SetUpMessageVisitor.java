@@ -6,11 +6,20 @@ import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 import it.polimi.ingsw.server.message.InitSetUpMessage;
 
 
-public abstract class SetUpMessageVisitor extends ClientEventEmitter {
+public interface SetUpMessageVisitor /*extends ClientEventEmitter*/ {
+    void visit(SignUpFailedSetUpMessage message);
+    void visit(InitSetUpMessage evt);
+    //To inform the cli about the state of the connection
+    void visit(ConnectionMessage connectionMessage);
+//    void visit(DisconnectionSetUpMessage evt);
+
+}
+
+/*public abstract class SetUpMessageVisitor extends ClientEventEmitter {
     public abstract void visit(SignUpFailedSetUpMessage message);
     public abstract void visit(InitSetUpMessage evt);
     //To inform the cli about the state of the connection
     public abstract void visit(ConnectionMessage connectionMessage);
 //    void visit(DisconnectionSetUpMessage evt);
 
-}
+}*/

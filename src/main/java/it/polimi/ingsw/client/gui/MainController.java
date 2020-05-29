@@ -147,10 +147,12 @@ public class MainController implements GuiEventEmitter {
     }
     public void addOnClickEventBuildButton(Node node){
         node.setOnMouseClicked(event->{
-            if(buildButtonClickCount==1)
+            /*if(buildButtonClickCount==1)
                 setOperation(Operation.BUILD);
             else if(buildButtonClickCount==2)
-                setOperation(Operation.BUILD_DOME);
+                setOperation(Operation.BUILD_DOME);*/
+            setOperation(Operation.BUILD);
+
         });
     }
 
@@ -370,6 +372,7 @@ public class MainController implements GuiEventEmitter {
 
     public boolean makeBuild(Position position, Level level){
         Point3D pos = map.getCoordinate(position);
+
         Group model = Models.fromLevel(level);
         if(model == null)
             return false;
@@ -377,6 +380,7 @@ public class MainController implements GuiEventEmitter {
         model.getTransforms().addAll(new Translate(pos.getX(),pos.getY(),pos.getZ()+1), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3,0.3,0.3));
         addOnClickEventBuilding(model);
         buildings.getChildren().add(model);
+
         buildPlatform(pos);
         return true;
     }
@@ -467,11 +471,14 @@ public class MainController implements GuiEventEmitter {
             public void handle(MouseEvent mouseEvent) {
                 PickResult pr = mouseEvent.getPickResult();
                 Position destinationPosition = getClickCellIndex(pr.getIntersectedPoint().getX(), pr.getIntersectedPoint().getY());
-                if (isSelectedWorker()) {
-//                    if (operation.equals(Operation.MOVE))
-//                            emitViewEvent(new MoveViewEvent(startPosition, destinationPosition));
-//                    else if (operation.equals(Operation.BUILD))
-//                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, false));
+                if (isSelectedWorker() && !currentOperation.equals(Operation.PLACE_WORKER) ) {
+                    if (currentOperation.equals(Operation.MOVE)) {
+                        emitMove(startPosition, destinationPosition);
+
+                    } else if (currentOperation.equals(Operation.BUILD)){
+                        System.out.println("Parte la build");
+                        emitBuild(startPosition, destinationPosition, false);
+                  }
 //                    else if (operation.equals(Operation.BUILD_DOME))
 //                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, true));
                 } else {
@@ -493,19 +500,26 @@ public class MainController implements GuiEventEmitter {
         node.setOnMousePressed(e->{
                 onClickXCoord = node.getBoundsInParent().getCenterX();
                 onClickYCoord = node.getBoundsInParent().getCenterY();
-                if(!isSelectedWorker()){
-                    startPosition = getClickCellIndex(onClickXCoord, onClickYCoord);
-                }else{
-                    Position destinationPosition = getClickCellIndex(onClickXCoord, onClickYCoord);
-//                    if(checkDistance(startPosition, destinationPosition)){
-//                        if(operation.equals(Operation.MOVE))
-//                            emitViewEvent(new MoveViewEvent(startPosition, destinationPosition));
-//                        else if(operation.equals(Operation.BUILD))
-//                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, false));
-//                        else if(operation.equals(Operation.BUILD_DOME))
-//                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, true));
-//                    }
-                }
+                if(currentOperation.equals(Operation.PLACE_WORKER)){
+                    Position workerPosition = getClickCellIndex(onClickXCoord, onClickYCoord);
+                    emitPlaceWorker(workerPosition);
+                }else if(!isSelectedWorker() && (currentOperation.equals(Operation.MOVE) || currentOperation.equals(Operation.BUILD))){
+                        System.out.println("selezionato il worker");
+                        startPosition = getClickCellIndex(onClickXCoord, onClickYCoord);
+                    } else{
+                        System.out.println("sono io ");
+                        Position destinationPosition = getClickCellIndex(onClickXCoord, onClickYCoord);
+
+    //                    if(checkDistance(startPosition, destinationPosition)){
+    //                        if(operation.equals(Operation.MOVE))
+    //                            emitViewEvent(new MoveViewEvent(startPosition, destinationPosition));
+    //                        else if(operation.equals(Operation.BUILD))
+    //                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, false));
+    //                        else if(operation.equals(Operation.BUILD_DOME))
+    //                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, true));
+    //                    }
+                    }
+
         });
 
     }
@@ -522,24 +536,30 @@ public class MainController implements GuiEventEmitter {
     }
 
     public void moveWorker(Position startPosition, Position destinationPosition, Position pushPosition){
-            Node tmpWorker = workersMap.get(startPosition);
-            Node pushedWorker = workersMap.get(destinationPosition);
+        Platform.runLater(()-> {
+                    Node tmpWorker = workersMap.get(startPosition);
+                    Node pushedWorker = workersMap.get(destinationPosition);
 //                    }
-        if(tmpWorker == null){
-            return;
-        }
+                    if (tmpWorker == null) {
+                        return;
+                    }
 //            double dx = tmpWorker.getBoundsInParent().getCenterX()-dest.getCenterX();
 //            double dy = tmpWorker.getBoundsInParent().getCenterY()-dest.getCenterY();
 //            double dz = tmpWorker.getBoundsInParent().getCenterZ()-dest.getCenterZ();
 
-            Point3D destCenter1 = map.getCoordinate(destinationPosition);
-            Point3D destCenter2 = map.getCoordinate(pushPosition);
-            Bounds startBounds1 = tmpWorker.getBoundsInParent();
-            Point3D startCenter1 = new Point3D(startBounds1.getCenterX(), startBounds1.getCenterY(), startBounds1.getCenterZ());
-            Bounds startBounds2 = pushedWorker.getBoundsInParent();
-            Point3D startCenter2 = new Point3D(startBounds2.getCenterX(), startBounds2.getCenterY(), startBounds2.getCenterZ());
-            translateWorker(pushedWorker, startCenter2, destCenter2);
-            translateWorker(tmpWorker, startCenter1, destCenter1);
+                    Point3D destCenter1 = map.getCoordinate(destinationPosition);
+
+                    Bounds startBounds1 = tmpWorker.getBoundsInParent();
+                    Point3D startCenter1 = new Point3D(startBounds1.getCenterX(), startBounds1.getCenterY(), startBounds1.getCenterZ());
+                    translateWorker(tmpWorker, startCenter1, destCenter1);
+                    if(pushPosition!=null) {
+                        Point3D destCenter2 = map.getCoordinate(pushPosition);
+                        Bounds startBounds2 = pushedWorker.getBoundsInParent();
+                        Point3D startCenter2 = new Point3D(startBounds2.getCenterX(), startBounds2.getCenterY(), startBounds2.getCenterZ());
+                        translateWorker(pushedWorker, startCenter2, destCenter2);
+                    }
+
+                });
 //            board[startPosition.getX()][startPosition.getY()].setWorker(null);
 //            board[startPosition.getX()][startPosition.getY()].deleteWorker();
 //            board[destinationPosition.getX()][destinationPosition.getY()].setWorker(worker);
@@ -711,7 +731,7 @@ public class MainController implements GuiEventEmitter {
     }
 
 
-    public void updatePlayers(List<Player> players){
+    public void displayPlayers(List<Player> players){
         Platform.runLater(()->{
             for(Player player:players){
                 System.out.println(player.getNickName()+" "+player.getCard().getName());
@@ -744,6 +764,8 @@ public class MainController implements GuiEventEmitter {
 
 
     public void emitMove(Position startPosition, Position destinationPosition){
+        System.out.println(startPosition.getX()+" "+startPosition.getY());
+        System.out.println(destinationPosition.getX()+" "+destinationPosition.getY());
         listener.onMove(startPosition, destinationPosition);
     }
     public void emitBuild(Position workerPosition, Position buildPosition, boolean isDome){

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientConnection;
+import it.polimi.ingsw.client.MessageVisitor;
 import it.polimi.ingsw.client.event.MessageListener;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.view.ViewEventListener;
@@ -17,13 +18,13 @@ import java.net.URL;
 
 public class SceneManager implements SceneEventListener {
     private final Stage stage;
-    private final ClientConnection clientConnection;
+    //private final ClientConnection clientConnection;
     private FXMLLoader fxmlLoader = new FXMLLoader();
     private GuiModel guiModel;
 
-    public SceneManager(Stage stage, ClientConnection clientConnection){
+    public SceneManager(Stage stage/*, ClientConnection clientConnection*/){
         this.stage = stage;
-        this.clientConnection = clientConnection;
+        //this.clientConnection = clientConnection;
     }
 
     public void startGame(){
@@ -43,13 +44,16 @@ public class SceneManager implements SceneEventListener {
 
         SceneEventEmitter sceneEventEmitter = new SceneEventEmitter();
         sceneEventEmitter.addEventListener(SceneEventListener.class, this);
-        GuiModelEventVisitor guiModelEventVisitor = new GuiModelEventVisitor(guiModel, sceneEventEmitter);
-        GuiClientConnectionEventVisitor guiClientConnectionEventVisitor = new GuiClientConnectionEventVisitor(guiModel, sceneEventEmitter);
-        GuiMessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModelEventVisitor, new GuiControllerResponseVisitor(guiModel), new GuiSetUpMessageVisitor(guiModel), guiClientConnectionEventVisitor);
-        setConnectionListener(guiMessageVisitor);
+        //GuiModelEventVisitor guiModelEventVisitor = new GuiModelEventVisitor(guiModel, sceneEventEmitter);
+        //GuiClientConnectionEventVisitor guiClientConnectionEventVisitor = new GuiClientConnectionEventVisitor(guiModel, sceneEventEmitter);
+        //GuiMessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModelEventVisitor, new GuiControllerResponseVisitor(guiModel), new GuiSetUpMessageVisitor(guiModel), guiClientConnectionEventVisitor);
+        //setConnectionListener(guiMessageVisitor);
+        MessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModel, sceneEventEmitter);
+        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, guiMessageVisitor);
         guiModel.addEventListener(ViewEventListener.class, clientConnection);
         guiModel.addEventListener(SignUpListener.class,clientConnection);
         loadScene(SceneEvent.SceneType.LOGIN);
+        new Thread(clientConnection::run).start();
     }
 
     @Override
@@ -63,9 +67,9 @@ public class SceneManager implements SceneEventListener {
     }
 
 
-    private void setConnectionListener(GuiMessageVisitor guiMessageVisitor){
+    /*private void setConnectionListener(GuiMessageVisitor guiMessageVisitor){
         clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
-    }
+    }*/
 
     private void loadScene(SceneEvent.SceneType sceneType) {
         if(sceneType.equals(SceneEvent.SceneType.LOGIN)){

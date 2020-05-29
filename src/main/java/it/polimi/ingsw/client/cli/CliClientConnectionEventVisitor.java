@@ -3,7 +3,7 @@ package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.client.ClientConnectionEventVisitor;
 import it.polimi.ingsw.client.event.ClientConnectionEvent;
 
-public class CliClientConnectionEventVisitor extends ClientConnectionEventVisitor {
+public class CliClientConnectionEventVisitor implements ClientConnectionEventVisitor {
     private final Cli cli;
     public CliClientConnectionEventVisitor(Cli cli) {
         super();

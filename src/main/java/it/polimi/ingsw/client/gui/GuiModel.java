@@ -19,6 +19,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
     private Player myPlayer;
     private Player currentPlayer;
     private List<Player> players= new ArrayList<>();
+    private Board board = new Board();
     private boolean isAllowedToMove;
     private boolean isAllowedToBuild;
     private boolean askNumPlayers = true;
@@ -44,14 +45,17 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         }
     }
 
+
+
     //TODO fix
-    public void updatePlayers(){
+    public void displayPlayers(){
 //        if(turnPhase.equals(TurnPhase.CHOSE_CARDS))
-            mainController.updatePlayers(players);
+            mainController.displayPlayers(players);
     }
 
 
     public void placeWorker(Position position, Player player){
+        board.setWorker(new Worker(), position);
         if(player.equalsUuid(myPlayer))
             mainController.placeWorker(position,true, player.getColor());
         else
@@ -196,6 +200,17 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 //        return mainController !=null;
 //    }
 
+    public void moveOnTheBoard(Position startPosition, Position destPosition, Position pushPosition){
+        board.putWorkers(startPosition, destPosition, pushPosition);
+        mainController.moveWorker(startPosition, destPosition, pushPosition);
+    }
+
+    public void buildOnTheBoard(Position workerPosition, Position destPosition, boolean isDome){
+        board.build(workerPosition, destPosition, isDome);
+        Level level = board.getBoardCell(destPosition).getLevel();
+        System.out.println(level);
+        mainController.makeBuild(destPosition, level);
+    }
 
     public void alert(String message){
         Platform.runLater(()->{
@@ -215,12 +230,12 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     @Override
     public void onMove(Position startPosition, Position destPosition) {
-
+        emitViewEvent(new MoveViewEvent(startPosition, destPosition));
     }
 
     @Override
     public void onBuild(Position workerPosition, Position buildPosition, boolean isDome) {
-
+        emitViewEvent((new BuildViewEvent(workerPosition, buildPosition, isDome)));
     }
 
 

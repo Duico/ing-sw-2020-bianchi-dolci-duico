@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.cli;
 
+import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.client.ModelEventVisitor;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CliModelEventVisitor extends ModelEventVisitor {
+public class CliModelEventVisitor extends ClientEventEmitter implements ModelEventVisitor {
     private Cli cli;
     private final CliModel cliModel;
     public CliModelEventVisitor(Cli cli, CliModel cliModel){

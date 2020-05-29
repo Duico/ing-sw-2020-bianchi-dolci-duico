@@ -1,9 +1,11 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ControllerResponseVisitor;
+import it.polimi.ingsw.client.cli.CliText;
 import it.polimi.ingsw.controller.response.*;
+import it.polimi.ingsw.model.Operation;
 
-public class GuiControllerResponseVisitor extends ControllerResponseVisitor {
+public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
     private final GuiModel guiModel;
     public GuiControllerResponseVisitor(GuiModel guiModel) {
         this.guiModel = guiModel;
@@ -11,7 +13,13 @@ public class GuiControllerResponseVisitor extends ControllerResponseVisitor {
 
     @Override
     public void visit(FailedOperationControllerResponse r) {
-
+        if(r.getOperation().equals(Operation.PLACE)){
+            if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_FEASIBLE)){
+                System.out.println("PLACE ALREADY WORKER");
+            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.DESTINATION_NOT_EMPTY)){
+                System.out.println("POSIZIONE OCCUPATA");
+            }
+        }
     }
 
     @Override

@@ -5,7 +5,7 @@ import it.polimi.ingsw.server.message.ConnectionMessage;
 import it.polimi.ingsw.server.message.InitSetUpMessage;
 import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 
-public class GuiSetUpMessageVisitor extends SetUpMessageVisitor {
+public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
     private final GuiModel guiModel;
     public GuiSetUpMessageVisitor(GuiModel guiModel) {
         super();

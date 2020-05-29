@@ -9,7 +9,7 @@ import it.polimi.ingsw.client.event.MessageListener;
 public class CliApp {
     public static void main( String[] args )
     {
-//        Queue<Object> toSendMessages = new LinkedBlockingQueue<>();
+
         Cli cli = new Cli();
         CliModel cliModel = new CliModel();
 
@@ -19,7 +19,7 @@ public class CliApp {
 //        CliSetUpMessageVisitor setUpMessageVisitor = new CliSetUpMessageVisitor(cli, cliModel);
 
         MessageVisitor gameMessageVisitor = new CliMessageVisitor(cli, cliModel);
-        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345);
+        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, gameMessageVisitor);
         clientConnection.addEventListener(MessageListener.class, gameMessageVisitor);
 //        clientConnection.addEventListener(ClientConnectionEventListener.class, cli);
         gameMessageVisitor.addSignUpListener(clientConnection);
@@ -43,33 +43,7 @@ public class CliApp {
             e.printStackTrace();
         }
 
-//        Thread thread2 = new Thread(cliVisitor);
-//        //thread2.start();
-//        try{
-//            thread2.join();
-//        }catch (InterruptedException e){
-//            e.printStackTrace();
-//        }
 
-
-        /*
-        while(scanner.hasNextLine()){
-            String input = scanner.nextLine();
-            if(input.indexOf("+") == 0){
-                cp.setCellWidth(cp.getCellWidth()+1);
-            }else if(input.indexOf("-") == 0){
-                cp.setCellWidth(cp.getCellWidth()-1);
-            }
-            cp.clear();
-            printBoard = cp.printAll();
-            printBoard.printOut();
-            //  prompt for the user's name
-            System.out.println("");
-            System.out.println("Enter command: ");
-            System.out.print("> ");
-            //System.out.println(printBoard.getWidth());
-        }
-        */
     }
 
 }

@@ -11,6 +11,21 @@ import it.polimi.ingsw.server.message.GameMessage;
 import it.polimi.ingsw.server.message.SetUpMessage;
 import it.polimi.ingsw.view.ViewEventListener;
 
+
+public interface MessageVisitor extends MessageListener {
+
+    void visit(ModelEvent evt);
+    void visit(ControllerResponse evt);
+    void visit(SetUpMessage evt);
+    void visit(ConnectionMessage evt);
+    void visit(ClientConnectionEvent evt);
+    void addViewEventListener(ViewEventListener listener);
+    void addSignUpListener(SignUpListener listener);
+    @Override
+    void handleEvent(Message evt);
+}
+
+/*
 public abstract class MessageVisitor implements MessageListener {
     protected ModelEventVisitor modelEventVisitor;
     protected ControllerResponseVisitor controllerResponseVisitor;
@@ -55,4 +70,4 @@ public abstract class MessageVisitor implements MessageListener {
     public void handleEvent(Message evt) {
         evt.accept(this);
     }
-}
+}*/
