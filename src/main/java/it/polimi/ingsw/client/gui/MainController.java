@@ -690,7 +690,7 @@ public class MainController implements GuiEventEmitter {
         moveButton.setPrefSize(70,70);
         buildButton.setGraphic(buttonImage("/textures/notbuild.png"));
         buildButton.setPrefSize(70,70);
-        endTurnButton.setGraphic(buttonImage("/textures/notendTurn.png"));
+        endTurnButton.setGraphic(buttonImage("/textures/notendturn.png"));
         endTurnButton.setPrefSize(100, 70);
         addButtonEvents();
 

@@ -87,9 +87,9 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         chooseCardController.setIsChallenger(isChallenger);
     }
 
-    public void initChosenCardsChallenger(List<String> cards){
-        chooseCardController.initChosenCardsChallenger(cards);
-    }
+//    public void initChosenCardsChallenger(List<String> cards){
+//        chooseCardController.initChosenCardsChallenger(cards);
+//    }
 
     public void setWaitLabelVisible(boolean isVisible){
         chooseCardController.waitLabel.setVisible(isVisible);

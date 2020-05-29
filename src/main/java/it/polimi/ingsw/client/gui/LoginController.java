@@ -132,17 +132,6 @@ public class LoginController implements GuiEventEmitter {
     public void startGame(ActionEvent actionEvent) throws Exception {
         checkValidStart();
     }
-    @FXML
-    private void startButtonHover(){
-        start.getStyleClass().removeAll("start_button");
-        start.getStyleClass().add("start_button_hover");
-    }
-    @FXML
-    private void startButtonNonHover(){
-        start.getStyleClass().removeAll("start_button_hover");
-        start.getStyleClass().add("start_button");
-    }
-
 
     public void alert(String message){
         Platform.runLater(()->{

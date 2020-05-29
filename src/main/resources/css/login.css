@@ -1,10 +1,18 @@
-Label {
+Pane{
  -fx-font-family: Georgia, serif;
 }
 
 
 #waitLabel{
- -fx-font-size: 38;
+ -fx-font-size: 36;
+ -fx-alignment: top-center;
+ -fx-translate-y: 280px;
+}
+
+
+#waitLabel Label{
+ -fx-alignment: center;
+ -fx-text-alignment: center;
 }
 
 #choiceBox{
@@ -17,29 +25,16 @@ Label {
 }
 
 #loginPane{
- -fx-background-image: url("/textures/pane.png");
- -fx-padding: 40px 20px;
  -fx-pref-width: 299px;
  -fx-pref-height: 232px;
 }
 
-.label_vbox{
- -fx-text-alignment: center;
- -fx-alignment: top-center;
- -fx-translate-y: 280px;
-}
 
 .full_window{
  -fx-text-fill: #222222;
 }
 
-.prompt_label {
- -fx-text-fill: white;
- -fx-font-size: 12;
- -fx-font-weight: bold;
-}
-
-.start_button{
+.enter_button{
  -fx-background-color: #e4dff3;
  -fx-text-fill: #222222;
  -fx-font-size: 16;
@@ -49,7 +44,7 @@ Label {
  -fx-translate-y: 10px;
 }
 
-.start_button_hover{
+.enter_button:hover{
  -fx-background-color: white;
  -fx-text-fill: black;
  -fx-font-size: 18;

@@ -16,17 +16,17 @@
        <ImageView fitHeight="480.0" fitWidth="770.0">
            <Image url="@/textures/copertina.jpg"/>
        </ImageView>
-       <VBox fx:id="loginPane" alignment="TOP_CENTER" layoutX="240.0" layoutY="205.0">
+       <VBox fx:id="loginPane" styleClass="prompt_vbox" alignment="TOP_CENTER" layoutX="240.0" layoutY="205.0">
          <!--  <Label layoutX="184.0" layoutY="102.0"/> -->
            <Label styleClass="prompt_label" layoutX="18.0" layoutY="23.0" text="Insert your username here:"/>
            <TextField fx:id="textfield" layoutX="18.0" layoutY="48.0" promptText="Your name"/>
            <Label fx:id="message" styleClass="prompt_label" layoutX="18.0" layoutY="94.0" visible="false" text="Select the number of players:"/>
            <ChoiceBox fx:id="choiceBox" layoutX="18" layoutY="118.0" visible="false"/>
-           <Button fx:id="start" styleClass="start_button" layoutY="180.0" layoutX="40" mnemonicParsing="false" mouseTransparent="false"
-                   onAction="#startGame" onMouseEntered="#startButtonHover" onMouseExited="#startButtonNonHover" text="Enter Game"/>
+           <Button fx:id="start" styleClass="enter_button" layoutY="180.0" layoutX="40" mnemonicParsing="false"
+                   onAction="#startGame" text="Enter Game"/>
        </VBox>
        <VBox fx:id="waitLabel" prefHeight="480.0" prefWidth="770.0" styleClass="label_vbox" visible="false" >
-           <Label styleClass="santorini_border, info_block" prefHeight="55.0" prefWidth="600.0" text="Wait for the other players" textFill="#1c1b1b"/>
+           <Label styleClass="santorini_border, info_block" prefHeight="56.0" prefWidth="620.0" text="Wait for the other players"/>
        </VBox>
         </children>
 </Pane>

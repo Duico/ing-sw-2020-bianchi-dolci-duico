@@ -1,3 +1,8 @@
+Label {
+    -fx-font-family: Georgia, serif;
+}
+
+
 .header_block {
     -fx-text-fill: white;
     -fx-padding: 20px;
@@ -19,4 +24,21 @@
     -fx-background-color: #c8bfe7;
     -fx-border-radius: 2px;
     -fx-text-alignment: center;
+    -fx-font-weight: bold;
+}
+
+.label_vbox{
+    -fx-text-alignment: center;
+    -fx-alignment: top-center;
+}
+
+.prompt_label {
+    -fx-text-fill: white;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+}
+
+.prompt_vbox{
+    -fx-background-image: url("/textures/pane.png");
+    -fx-padding: 40px 20px;
 }
