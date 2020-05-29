@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import it.polimi.ingsw.client.gui.event.GuiEventEmitter;
+import it.polimi.ingsw.client.gui.event.GuiEventListener;
 import it.polimi.ingsw.model.Level;
 import it.polimi.ingsw.model.PlayerColor;
 import it.polimi.ingsw.model.Position;
@@ -35,7 +36,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 
-public class MainController extends GuiEventEmitter {
+public class MainController implements GuiEventEmitter {
+
+    private GuiEventListener listener;
 
     private final static int WIDTH = 900;
     private final static int HEIGHT = 500;
@@ -63,6 +66,7 @@ public class MainController extends GuiEventEmitter {
 
     private boolean isDome;
     private Operation operation;
+
     public enum Operation {
         MOVE,
         BUILD,
@@ -735,8 +739,25 @@ public class MainController extends GuiEventEmitter {
     }
 
 
+    public void emitMove(Position startPosition, Position destinationPosition){
+        listener.onMove(startPosition, destinationPosition);
+    }
+    public void emitBuild(Position workerPosition, Position buildPosition, boolean isDome){
+        listener.onBuild(workerPosition, buildPosition, isDome);
+    }
 
+    public void emitEndTurn(){
+        listener.onEndTurn();
+    }
 
+    public void emitPlaceWorker(Position position){
+        listener.onPlaceWorker(position);
+    }
+
+    @Override
+    public void setEventListener(GuiEventListener listener) {
+        this.listener = listener;
+    }
 
 
 }

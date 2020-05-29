@@ -15,7 +15,7 @@ import javafx.scene.control.Alert;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiModel extends ClientEventEmitter implements GuiEventListener {
+class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     private SceneEvent.SceneType sceneType;
 
@@ -142,18 +142,6 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         return false;
     }
 
-    public void waitChooseCards(){
-        chooseCardController.waitChooseCards();
-    }
-
-    public void askSetUpInfo(boolean askNumPlayers){
-        loginController.askSetUpInfo(askNumPlayers);
-    }
-
-
-    public void correctSignUp(boolean waitOtherPlayers){
-        loginController.correctSignUp(waitOtherPlayers);
-    }
 
     public LoginController getLoginController() {
         return loginController;
@@ -177,6 +165,19 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
+    }
+
+    public void waitChooseCards(){
+        chooseCardController.waitChooseCards();
+    }
+
+    public void askSetUpInfo(boolean askNumPlayers){
+        loginController.askSetUpInfo(askNumPlayers);
+    }
+
+
+    public void correctSignUp(boolean waitOtherPlayers){
+        loginController.correctSignUp(waitOtherPlayers);
     }
 
 //    public boolean isSetLoginController(){

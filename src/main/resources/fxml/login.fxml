@@ -11,12 +11,12 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
-<Pane styleClass="full_window" maxHeight="480" maxWidth="770" prefHeight="480.0" prefWidth="770.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@/css/login.css">
+<Pane styleClass="full_window" maxHeight="480" maxWidth="770" prefHeight="480.0" prefWidth="770.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@/css/info_block.css,@/css/login.css">
    <children>
        <ImageView fitHeight="480.0" fitWidth="770.0">
            <Image url="@/textures/copertina.jpg"/>
        </ImageView>
-       <VBox alignment="TOP_CENTER" fx:id="loginPane" layoutX="240.0" layoutY="205.0">
+       <VBox fx:id="loginPane" alignment="TOP_CENTER" layoutX="240.0" layoutY="205.0">
          <!--  <Label layoutX="184.0" layoutY="102.0"/> -->
            <Label styleClass="prompt_label" layoutX="18.0" layoutY="23.0" text="Insert your username here:"/>
            <TextField fx:id="textfield" layoutX="18.0" layoutY="48.0" promptText="Your name"/>
@@ -26,7 +26,7 @@
                    onAction="#startGame" onMouseEntered="#startButtonHover" onMouseExited="#startButtonNonHover" text="Enter Game"/>
        </VBox>
        <VBox fx:id="waitLabel" prefHeight="480.0" prefWidth="770.0" styleClass="label_vbox" visible="false" >
-           <Label styleClass="santorini_border, info_block" prefHeight="55.0" prefWidth="600.0" text="Wait for the other players..." textFill="#1c1b1b"/>
+           <Label styleClass="santorini_border, info_block" prefHeight="55.0" prefWidth="600.0" text="Wait for the other players" textFill="#1c1b1b"/>
        </VBox>
         </children>
 </Pane>

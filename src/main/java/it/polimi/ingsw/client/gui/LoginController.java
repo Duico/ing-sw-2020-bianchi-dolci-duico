@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.event.GuiEventEmitter;
+import it.polimi.ingsw.client.gui.event.GuiEventListener;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -11,7 +12,9 @@ import javafx.scene.layout.VBox;
 
 import java.awt.event.MouseEvent;
 
-public class LoginController extends GuiEventEmitter {
+public class LoginController implements GuiEventEmitter {
+
+    public GuiEventListener listener;
 
     @FXML
     public TextField textfield;
@@ -150,4 +153,12 @@ public class LoginController extends GuiEventEmitter {
     }
 
 
+    public void emitLogin(String username, Integer numPlayers){
+        listener.onLogin(username, numPlayers);
+    }
+
+    @Override
+    public void setEventListener(GuiEventListener listener) {
+        this.listener = listener;
+    }
 }

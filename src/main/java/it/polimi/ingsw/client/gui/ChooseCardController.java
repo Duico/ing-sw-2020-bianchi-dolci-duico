@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.event.GuiEventEmitter;
+import it.polimi.ingsw.client.gui.event.GuiEventListener;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -16,12 +17,15 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseCardController extends GuiEventEmitter {
+public class ChooseCardController implements GuiEventEmitter {
+
+    private GuiEventListener listener;
 
     @FXML
     public Label header;
@@ -37,6 +41,8 @@ public class ChooseCardController extends GuiEventEmitter {
     public Label choosePlayerLabel;
 
     public ChoiceBox firstPlayerChoiceBox;
+
+    public VBox waitBox;
 
     public Label waitLabel;
 
@@ -169,23 +175,22 @@ public class ChooseCardController extends GuiEventEmitter {
 
 
     public void addGridEventNotChallenger() {
-
-              cards.getChildren().forEach(item -> {
-                  item.setOnMouseClicked( event -> {
-                      if (event.getClickCount() == 1) {
-                          Node node = (Node) event.getSource();
+          cards.getChildren().forEach(item -> {
+              item.setOnMouseClicked( event -> {
+                  if (event.getClickCount() == 1) {
+                      Node node = (Node) event.getSource();
 //                          int n = GridPane.getColumnIndex(node);
-                          int i;
-                          for(i=0;i<cards.getChildren().size();i++){
-                              if(node.equals(cards.getChildren().get(i)))
-                                  break;
-                          }
-                          chosenCard=chosenCardsChallenger.get(i);
-                          chooseText.setText("Your choice is: "+chosenCard+"!");
+                      int i;
+                      for(i=0;i<cards.getChildren().size();i++){
+                          if(node.equals(cards.getChildren().get(i)))
+                              break;
                       }
-                  });
-
+                      chosenCard=chosenCardsChallenger.get(i);
+                      chooseText.setText("Your choice is: "+chosenCard+"!");
+                  }
               });
+
+          });
     }
 
 
@@ -211,18 +216,18 @@ public class ChooseCardController extends GuiEventEmitter {
     public void waitChooseCards(){
         Platform.runLater(()->{
             hideCards();
-            waitLabel.setText("WAIT FOR OTHER PLAYERS");
-            waitLabel.setVisible(true);
+            waitLabel.setText("Wait for the other players");
+            waitBox.setVisible(true);
         });
     }
 
     //not challenger
     public void waitForChallenger(){
-        hideCards();
         Platform.runLater(()->{
-            waitLabel.setText("WAIT FOR THE CHALLENGER");
+            hideCards();
+            waitLabel.setText("Wait for the challenger");
+            waitBox.setVisible(true);
         });
-        waitLabel.setVisible(true);
     }
 
     //challenger
@@ -337,4 +342,21 @@ public class ChooseCardController extends GuiEventEmitter {
 //    }
 //
 
+
+    public void emitChosenCard(String chosenCard){
+        listener.onChooseCard(chosenCard);
+    }
+
+    public void emitChallengerCards(List<String> challengerCards){
+        listener.onChallengeCards(challengerCards);
+    }
+
+    public void emitFirstPlayer(String firstPlayer){
+        listener.onFirstPlayer(firstPlayer);
+    }
+
+    @Override
+    public void setEventListener(GuiEventListener listener) {
+        this.listener = listener;
+    }
 }

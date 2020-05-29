@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.event.MessageListener;
-import it.polimi.ingsw.client.gui.event.GuiEventListener;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.view.ViewEventListener;
 import javafx.application.Platform;
@@ -30,15 +29,15 @@ public class SceneManager implements SceneEventListener {
     public void startGame(){
         guiModel = new GuiModel();
         LoginController loginController = new LoginController();
-        loginController.addEventListener(GuiEventListener.class, guiModel);
+        loginController.setEventListener(guiModel);
         guiModel.setLoginController(loginController);
 
         ChooseCardController chooseCardController = new ChooseCardController();
-        chooseCardController.addEventListener(GuiEventListener.class, guiModel);
+        chooseCardController.setEventListener(guiModel);
         guiModel.setChooseCardController(chooseCardController);
 
         MainController mainController = new MainController();
-        mainController.addEventListener(GuiEventListener.class, guiModel);
+        mainController.setEventListener(guiModel);
         guiModel.setMainController(mainController);
 
 
@@ -123,6 +122,5 @@ public class SceneManager implements SceneEventListener {
 
         stage.show();
     }
-
 
 }
