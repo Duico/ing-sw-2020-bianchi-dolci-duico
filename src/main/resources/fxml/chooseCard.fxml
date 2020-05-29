@@ -21,25 +21,25 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
       prefWidth="1005.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
       stylesheets="@/css/info_block.css,@/css/cards.css">
-   <VBox fx:id="cardsBox" alignment="TOP_CENTER">
-      <Label styleClass="header_block, santorini_border" fx:id="header" text="Choose your card" visible="false"/>
+   <VBox fx:id="cardsBox" alignment="TOP_CENTER" visible="false">
+      <Label styleClass="header_block, santorini_border" fx:id="header" text="Choose your card"/>
       <HBox fx:id="cards" layoutX="12.0" layoutY="90.0" minHeight="200" prefWidth="1005" maxWidth="1005"
-            alignment="TOP_CENTER" visible="false">
+            alignment="TOP_CENTER">
       </HBox>
 
-      <Label fx:id="chooseText" layoutX="326.0" layoutY="273.0" prefHeight="28.0" prefWidth="354.0" focusTraversable="false" visible="false"/>
+      <Label fx:id="chooseText" layoutX="326.0" layoutY="273.0" prefHeight="28.0" prefWidth="354.0"/>
 
 
       <Button fx:id="startButton" layoutX="436.0" layoutY="312.0" mnemonicParsing="false" onAction="#sendCards"
-              prefHeight="74.0" prefWidth="103.0" visible="false">
+              prefHeight="74.0" prefWidth="103.0">
          <graphic>
-            <ImageView preserveRatio="true" fx:id="buttonImage" fitHeight="63.0" fitWidth="118.0" visible="false">
+            <ImageView preserveRatio="true" fx:id="buttonImage" fitHeight="63.0" fitWidth="118.0">
                <Image preserveRatio="true" url="@/textures/button-play-normal.png"/>
             </ImageView>
          </graphic>
       </Button>
    </VBox>
-   <VBox fx:id="playerBox">
+   <VBox fx:id="playerBox" visible="false">
       <Label styleClass="label_vbox" layoutX="437.0" text="Choose First Player:"/>
       <ChoiceBox fx:id="firstPlayerChoiceBox" layoutX="452.0" layoutY="188.0" prefWidth="150.0"/>
       <Button fx:id="chooseFirstPlayerButton" layoutX="501.0" mnemonicParsing="false" onAction="#sendFirstPlayer" text="PLAY"/>

@@ -42,6 +42,8 @@ public class ChooseCardController implements GuiEventEmitter {
 
     public ChoiceBox firstPlayerChoiceBox;
 
+    public VBox playerBox;
+
     public VBox waitBox;
 
     public Label waitLabel;
@@ -232,12 +234,10 @@ public class ChooseCardController implements GuiEventEmitter {
 
     //challenger
     public void showChooseFirstPlayer(List<String> usernames){
+        setOpponents(usernames);
         Platform.runLater(()->{
-            waitLabel.setVisible(false);
-            chooseFirstPlayerButton.setVisible(true);
-            choosePlayerLabel.setVisible(true);
-            firstPlayerChoiceBox.setVisible(true);
-            setOpponents(usernames);
+            waitBox.setVisible(false);
+            playerBox.setVisible(true);
             initChoiceBox();
         });
     }
@@ -343,15 +343,15 @@ public class ChooseCardController implements GuiEventEmitter {
 //
 
 
-    public void emitChosenCard(String chosenCard){
+    private void emitChosenCard(String chosenCard){
         listener.onChooseCard(chosenCard);
     }
 
-    public void emitChallengerCards(List<String> challengerCards){
+    private void emitChallengerCards(List<String> challengerCards){
         listener.onChallengeCards(challengerCards);
     }
 
-    public void emitFirstPlayer(String firstPlayer){
+    private void emitFirstPlayer(String firstPlayer){
         listener.onFirstPlayer(firstPlayer);
     }
 
