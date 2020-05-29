@@ -61,11 +61,17 @@ public class GuiModelEventVisitor extends ModelEventVisitor {
     @Override
     public void visit(NewTurnModelEvent evt) {
         TurnPhase turnPhase = evt.getTurnPhase();
+        guiModel.setPlayers(evt.getPlayers());
             if(turnPhase.equals(TurnPhase.CHOSE_CARDS)){
-                guiModel.setPlayers(evt.getPlayers());
+                guiModel.setTurnPhase(TurnPhase.CHOSE_CARDS);
                 sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CHOSE_CARDS));
-            } else if (turnPhase.equals(TurnPhase.PLACE_WORKERS) || turnPhase.equals(TurnPhase.NORMAL)) {
+            } else if (turnPhase.equals(TurnPhase.PLACE_WORKERS)) {
                 sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.MAIN));
+                guiModel.updatePlayers();
+                guiModel.setTurnPhase(TurnPhase.PLACE_WORKERS);
+            }else if(turnPhase.equals(TurnPhase.NORMAL))
+            {
+                //update scene buttons
             }
     }
 
@@ -98,7 +104,7 @@ public class GuiModelEventVisitor extends ModelEventVisitor {
         if (cards == null) { //pick cards
             if (cardDeck != null) {
                 guiModel.setIsChallenger(true);
-                guiModel.loadCards();
+                guiModel.loadCards(cardDeck);
             } else {
                 throw new RuntimeException("Both cards and cardDeck are null");
             }
@@ -107,9 +113,7 @@ public class GuiModelEventVisitor extends ModelEventVisitor {
         }else if(cards.size()>1)
         {
             guiModel.setIsChallenger(false);
-            guiModel.initChosenCardsChallenger(cards);
-            guiModel.setWaitLabelVisible(false);
-            guiModel.loadCards();
+            guiModel.loadCards(cards);
         }
     }
 

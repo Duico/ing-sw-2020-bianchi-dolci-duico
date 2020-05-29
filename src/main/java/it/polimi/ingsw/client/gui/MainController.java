@@ -5,6 +5,7 @@ import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import it.polimi.ingsw.client.gui.event.GuiEventEmitter;
 import it.polimi.ingsw.client.gui.event.GuiEventListener;
 import it.polimi.ingsw.model.Level;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.PlayerColor;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
@@ -33,6 +34,7 @@ import javafx.scene.transform.*;
 
 import java.net.URL;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -59,6 +61,7 @@ public class MainController implements GuiEventEmitter {
     private double onClickXCoord,onClickYCoord;
     private double newOnClickXCoord,newOnClickYCoord;
 
+    private VBox vbPlayers=new VBox(5);;
 
 
     private Operation currentOperation;
@@ -128,7 +131,8 @@ public class MainController implements GuiEventEmitter {
 
     public void addOnClickEventEndTurnButton(Node node){
         node.setOnMouseClicked(event->{
-            //end turn event
+            System.out.println("endturn");
+            emitEndTurn();
         });
     }
     public void addOnClickEventUndoButton(Node node){
@@ -646,11 +650,7 @@ public class MainController implements GuiEventEmitter {
         background.setPrefSize(650, 650);
 
 
-        Label username1 = new Label("Pippo FANCLUB");
-        username1.setFont(new Font("Arial", 20));
-//        username1.setTextFill(Color.WHITE);
-        username1.setStyle("-fx-background-color:white;");
-//        Pane cardImage1 = new Pane(cardImage(GuiModel.getInstance().getCurrentCard()));
+
 
         //manca il collegamento tra carta scelta e players corrispondente
         //TODO
@@ -682,19 +682,7 @@ public class MainController implements GuiEventEmitter {
         Pane buildPane = new Pane(buildButton);
         vbButtons.getChildren().addAll(entTurnPane,undoPane, movePane, buildPane);
 
-        VBox vbPlayers = new VBox(5);
         vbPlayers.setPadding(new Insets(10,10,10,10));
-        vbPlayers.getChildren().addAll(username1);
-//        if(GuiModel.getInstance().getNumPlayers()==3){
-//            Label username3 = new Label(GuiModel.getInstance().getPlayer(2));
-//            username3.setFont(new Font("Arial", 20));
-////            username3.setTextFill(Color.WHITE);
-//            username3.setStyle("-fx-background-color:white;");
-//            Pane cardImage3 = new Pane(cardImage(GuiModel.getInstance().getCard(2)));
-//            vbPlayers.getChildren().addAll(username1, cardImage1, username2, cardImage2, username3, cardImage3);
-//        }
-//        else if(GuiModel.getInstance().getNumPlayers()==2)
-//            vbPlayers.getChildren().addAll(username1, cardImage1, username2, cardImage2);
 
 
         background.setCenter(subScene);
@@ -723,9 +711,25 @@ public class MainController implements GuiEventEmitter {
     }
 
 
+    public void updatePlayers(List<Player> players){
+        Platform.runLater(()->{
+            for(Player player:players){
+                System.out.println(player.getNickName()+" "+player.getCard().getName());
+                Label username = new Label(player.getNickName());
+                username.setFont(new Font("Arial", 20));
+                username.setStyle("-fx-background-color:white;");
+                Pane cardImage = new Pane(cardImage(player.getCard().getName()));
+                VBox addPlayer = new VBox(5);
+                addPlayer.getChildren().addAll(username, cardImage);
+                vbPlayers.getChildren().add(addPlayer);
+            }
+        });
+    }
+
+
 
     private ImageView cardImage(String name){
-        ImageView imageView = new ImageView(name);
+        ImageView imageView = new ImageView("/textures/"+name+".png");
         imageView.setFitHeight(150);
         imageView.setFitWidth(100);
         return imageView;

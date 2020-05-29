@@ -5,10 +5,7 @@ import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.client.gui.event.GuiEventListener;
 import it.polimi.ingsw.client.message.SignUpMessage;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.view.event.CardViewEvent;
-import it.polimi.ingsw.view.event.ChallengerCardViewEvent;
-import it.polimi.ingsw.view.event.FirstPlayerViewEvent;
-import it.polimi.ingsw.view.event.PlaceViewEvent;
+import it.polimi.ingsw.view.event.*;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
@@ -21,7 +18,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     private Player myPlayer;
     private Player currentPlayer;
-    private List<Player> players = new ArrayList<>();
+    private List<Player> players= new ArrayList<>();
     private boolean isAllowedToMove;
     private boolean isAllowedToBuild;
     private boolean askNumPlayers = true;
@@ -41,10 +38,16 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
     public void setCard(Player evtPlayer, Card evtCard){
         for(Player player:players)
         {
-            if(player.getUuid().equals(evtPlayer)){
+            if(player.getUuid().equals(evtPlayer.getUuid())){
                 player.setCard(evtCard);
             }
         }
+    }
+
+    //TODO fix
+    public void updatePlayers(){
+//        if(turnPhase.equals(TurnPhase.CHOSE_CARDS))
+            mainController.updatePlayers(players);
     }
 
 
@@ -88,8 +91,8 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         chooseCardController.waitLabel.setVisible(isVisible);
     }
 
-    public void loadCards(){
-        chooseCardController.loadCards();
+    public void loadCards(List<String> cards){
+        chooseCardController.loadCards(cards);
     }
 
     public void setAskNumPlayers(boolean askNumPlayers){
@@ -113,8 +116,10 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
     }
 
     public void setPlayers(List<Player> players) {
-        this.players = players;
-        chooseCardController.setNumPlayers(players.size());
+       if(players!=null){
+           this.players = players;
+           chooseCardController.setNumPlayers(players.size());
+       }
     }
 
     public List<Player> getPlayers() {
@@ -130,6 +135,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     public void setTurnPhase(TurnPhase turnPhase) {
         this.turnPhase = turnPhase;
+
     }
 
 
@@ -220,7 +226,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     @Override
     public void onEndTurn() {
-
+        emitViewEvent(new EndTurnViewEvent());
     }
 
     @Override
