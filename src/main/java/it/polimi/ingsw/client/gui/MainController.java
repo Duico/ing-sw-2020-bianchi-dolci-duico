@@ -56,6 +56,8 @@ public class MainController extends GuiEventEmitter {
     private double onClickXCoord,onClickYCoord;
     private double newOnClickXCoord,newOnClickYCoord;
 
+
+
     private Operation currentOperation;
     private int buildButtonClickCount;
 
@@ -97,7 +99,7 @@ public class MainController extends GuiEventEmitter {
 
 
 
-    public void updateMoveButton(boolean isAllowedToMove, boolean isAllowedToBuild){
+    public void updateOperationButtons(boolean isAllowedToMove, boolean isAllowedToBuild){
         if(isAllowedToMove)
         {
             moveButton.setGraphic(buttonImage("/textures/move.png"));
@@ -660,11 +662,11 @@ public class MainController extends GuiEventEmitter {
 
         undoButton.setGraphic(buttonImage("/textures/Undo.png"));
         undoButton.setPrefSize(70,70);
-        moveButton.setGraphic(buttonImage("/textures/move.png"));
+        moveButton.setGraphic(buttonImage("/textures/notmove.png"));
         moveButton.setPrefSize(70,70);
-        buildButton.setGraphic(buttonImage("/textures/build.png"));
+        buildButton.setGraphic(buttonImage("/textures/notbuild.png"));
         buildButton.setPrefSize(70,70);
-        endTurnButton.setGraphic(buttonImage("/textures/endTurn.png"));
+        endTurnButton.setGraphic(buttonImage("/textures/notendTurn.png"));
         endTurnButton.setPrefSize(100, 70);
         addButtonEvents();
 
