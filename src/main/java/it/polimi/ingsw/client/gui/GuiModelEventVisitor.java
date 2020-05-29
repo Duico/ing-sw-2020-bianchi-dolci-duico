@@ -6,6 +6,8 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.event.*;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
 
     @Override
     public void visit(MoveWorkerModelEvent evt) {
-
+        System.out.println("correct move");
         guiModel.moveOnTheBoard(evt.getStartPosition(), evt.getDestinationPosition(), evt.getPushPosition());
     }
 
@@ -63,6 +65,7 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
     @Override
     public void visit(NewTurnModelEvent evt) {
         TurnPhase turnPhase = evt.getTurnPhase();
+        Player currentPlayer = evt.getPlayer();
         guiModel.setPlayers(evt.getPlayers());
         if(turnPhase.equals(TurnPhase.CHOSE_CARDS)){
             guiModel.setTurnPhase(TurnPhase.CHOSE_CARDS);
@@ -71,11 +74,15 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
             if(guiModel.getTurnPhase().equals(TurnPhase.CHOSE_CARDS)) {
                 sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.MAIN));
                 guiModel.displayPlayers();
+                if(guiModel.getMyPlayer().equalsUuid(currentPlayer))
+                    alert("It's your turn!");
             }
             guiModel.setTurnPhase(TurnPhase.PLACE_WORKERS);
         }else if(turnPhase.equals(TurnPhase.NORMAL))
         {
             guiModel.setTurnPhase(TurnPhase.NORMAL);
+            if(guiModel.getMyPlayer().equalsUuid(currentPlayer))
+                alert("It's your turn!");
             //update scene buttons
 
         }
@@ -123,7 +130,16 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         }
     }
 
+    public void alert(String message){
+        Platform.runLater(()->{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setHeaderText(message);
+            alert.showAndWait();
+        });
+    }
 }
+
+
 
 /*public class GuiModelEventVisitor extends ModelEventVisitor {
     private final GuiModel guiModel;
