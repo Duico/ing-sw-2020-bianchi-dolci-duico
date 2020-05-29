@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.client.gui.BuildingHeight;
+
 public enum Level {
 
     EMPTY(0),
@@ -30,4 +32,16 @@ public enum Level {
             return null;
     }
 
+    public static BuildingHeight fromLevelToBuildingHeight(Level level){
+        if(level.equals(Level.EMPTY))
+            return BuildingHeight.EMPTY;
+        else if(level.equals(Level.BASE))
+            return BuildingHeight.BASE;
+        else if(level.equals(Level.MID))
+            return BuildingHeight.MID;
+        else if(level.equals(Level.TOP))
+            return BuildingHeight.TOP;
+        else
+            return null;
+    }
 }

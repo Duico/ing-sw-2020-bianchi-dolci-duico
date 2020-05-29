@@ -76,6 +76,8 @@ public class CoordinateMap {
      * @param position
      * @return Center of the bounding box
      */
+
+    //TODO fix Zcoordinate of the returned Point3D should be related to height[][]
     public Point3D getCoordinate(Position position){
         return getCoordinate(position.getX(), position.getY());
     }
@@ -87,6 +89,7 @@ public class CoordinateMap {
             return null;
         }
     }
+
     public boolean setLastBuilding(Position position, Node lastNode, BuildingHeight level){
         try {
             lastBuildings[position.getX()][position.getY()] = lastNode;
@@ -96,5 +99,9 @@ public class CoordinateMap {
         }catch(IndexOutOfBoundsException e){
             return false;
         }
+    }
+
+    public double getHeight(int i, int j){
+        return height[i][j];
     }
 }
