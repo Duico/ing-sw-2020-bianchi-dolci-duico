@@ -10,9 +10,7 @@ import it.polimi.ingsw.model.PlayerColor;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
 import javafx.scene.*;
 import javafx.scene.control.Button;
@@ -56,6 +54,7 @@ public class MainController implements GuiEventEmitter {
     private Button moveButton = new Button();
     private Button buildButton = new Button();
     private Button endTurnButton = new Button();
+    private Label messageBox = new Label();
 
     private Position startPosition;
     private double onClickXCoord,onClickYCoord;
@@ -88,6 +87,18 @@ public class MainController implements GuiEventEmitter {
     public MainController(){
         setOperation(Operation.PLACE_WORKER);
         isBuildDome = false;
+    }
+
+    public void setMessage(String message){
+        messageBox.setText(message);
+    }
+
+    private void initMessageBox(){
+//        messageBox.setLayoutX(450);
+        messageBox.setLayoutY(50);
+        messageBox.setPrefSize(200, 30);
+        messageBox.setFont(new Font("Arial", 13));
+        messageBox.setMouseTransparent(true);
     }
 
     private boolean isSelectedWorker(){
@@ -228,8 +239,8 @@ public class MainController implements GuiEventEmitter {
         lightGroup.setTranslateY(40);
         light.setRotate(45);
 
-        root.getChildren().addAll(board, cliff, islands, innerWalls, sea, workers, buildings);
         workers.getChildren().addAll(myWorkers, opponentWorkers);
+        root.getChildren().addAll(board, cliff, islands, innerWalls, sea, workers, buildings);
 
 
     }
@@ -735,6 +746,7 @@ public class MainController implements GuiEventEmitter {
         subScene.setFill(Color.BLACK);
         subScene.setCamera(camera);
 
+
         BorderPane background = new BorderPane();
 
         undoButton.setGraphic(buttonImage("/textures/Undo.png"));
@@ -749,9 +761,16 @@ public class MainController implements GuiEventEmitter {
 
         vbButtons.getChildren().addAll(endTurnButton,undoButton, moveButton, buildButton);
 
+        initMessageBox();
+        Pane foreground = new Pane(messageBox);
+        foreground.getStylesheets().add("/css/foreground.css");
+
         background.setCenter(subScene);
         background.setLeft(vbPlayers);
         background.setRight(vbButtons);
+        background.getChildren().add(foreground);
+
+
 
         background.getStylesheets().add("/css/mainscene.css");
         background.getStyleClass().add("background");
@@ -759,10 +778,16 @@ public class MainController implements GuiEventEmitter {
         vbButtons.getStyleClass().add("right_vbox");
 
 
+//        Pane container = new Pane();
+
+//        container.getChildren().add(background);
+//        container.getChildren().add(messageBox);
+
 
 
         Scene scene = new Scene(background);
 
+        foreground.layoutXProperty().bind(scene.widthProperty().subtract(foreground.widthProperty()).divide(2));
         vbButtons.prefHeightProperty().bind(scene.heightProperty());
         vbPlayers.prefHeightProperty().bind(scene.heightProperty());
         background.maxHeightProperty().bind(scene.heightProperty());

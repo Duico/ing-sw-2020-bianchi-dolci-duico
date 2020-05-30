@@ -36,6 +36,10 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     }
 
+    public void setMessage(String message){
+        mainController.setMessage(message);
+    }
+
     public void setCard(Player evtPlayer, Card evtCard){
         for(Player player:players)
         {
@@ -139,10 +143,13 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
             mainController.displayPlayers(players);
         }
         if(myPlayer.equalsUuid(currentPlayer)){
-            alert("Your turn to play.");
             if(turnPhase.equals(TurnPhase.PLACE_WORKERS)){
+//                alert("Your turn to play.");
+                setMessage("Your turn to play");
                 mainController.setOperation(MainController.Operation.PLACE_WORKER);
             }else if(turnPhase.equals(TurnPhase.NORMAL)){
+//                alert("Your turn to play.");
+                setMessage("Your turn to play");
                 mainController.setOperation(MainController.Operation.MOVE);
             }
         }
