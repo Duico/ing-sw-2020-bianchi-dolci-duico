@@ -66,23 +66,17 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
     public void visit(NewTurnModelEvent evt) {
         TurnPhase turnPhase = evt.getTurnPhase();
         Player currentPlayer = evt.getPlayer();
+        changeScene(turnPhase);
         guiModel.setPlayers(evt.getPlayers());
-        if(turnPhase.equals(TurnPhase.CHOSE_CARDS)){
-            guiModel.setTurnPhase(TurnPhase.CHOSE_CARDS);
-            sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CHOSE_CARDS));
-        } else if (turnPhase.equals(TurnPhase.PLACE_WORKERS)) {
-            if(guiModel.getTurnPhase().equals(TurnPhase.CHOSE_CARDS)) {
-                sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.MAIN));
-                guiModel.displayPlayers();
-                guiModel.newTurn(currentPlayer);
-            }
-            guiModel.setTurnPhase(TurnPhase.PLACE_WORKERS);
-        }else if(turnPhase.equals(TurnPhase.NORMAL))
-        {
-            guiModel.setTurnPhase(TurnPhase.NORMAL);
-            guiModel.newTurn(currentPlayer);
-            //update scene buttons
+        guiModel.newTurn(currentPlayer, turnPhase);
 
+    }
+
+    private void changeScene(TurnPhase turnPhase){
+        if(turnPhase.equals(TurnPhase.CHOSE_CARDS)){
+            sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CHOSE_CARDS));
+        } else if (turnPhase.equals(TurnPhase.PLACE_WORKERS) || turnPhase.equals(TurnPhase.NORMAL)) {
+            sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.MAIN));
         }
     }
 

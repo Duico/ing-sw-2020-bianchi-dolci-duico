@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.PlayerColor;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
@@ -40,7 +41,7 @@ import java.util.Map;
 public class MainController implements GuiEventEmitter {
 
     private GuiEventListener listener;
-
+    private boolean active = false;
     private final static int WIDTH = 900;
     private final static int HEIGHT = 500;
     final double boardSize=15;
@@ -60,7 +61,8 @@ public class MainController implements GuiEventEmitter {
     private double onClickXCoord,onClickYCoord;
     private double newOnClickXCoord,newOnClickYCoord;
 
-    private VBox vbPlayers=new VBox(5);;
+    private VBox vbPlayers=new VBox(5);
+    private VBox vbButtons=new VBox(30);
 
 
     private Operation currentOperation;
@@ -70,6 +72,10 @@ public class MainController implements GuiEventEmitter {
     private boolean isBuildDome;
     private final CoordinateMap map = new CoordinateMap(boardSize, baseZ);
     private Map<Position, Node> workersMap = new LinkedHashMap<>();
+
+    public boolean isActive() {
+        return active;
+    }
 
 
     public enum Operation {
@@ -224,8 +230,6 @@ public class MainController implements GuiEventEmitter {
 
         root.getChildren().addAll(board, cliff, islands, innerWalls, sea, workers, buildings);
         workers.getChildren().addAll(myWorkers, opponentWorkers);
-
-
 
 
     }
@@ -732,22 +736,6 @@ public class MainController implements GuiEventEmitter {
         subScene.setCamera(camera);
 
         BorderPane background = new BorderPane();
-        background.setPrefSize(650, 650);
-
-
-
-
-        //manca il collegamento tra carta scelta e players corrispondente
-        //TODO
-
-//        Label username2 = new Label(GuiModel.getInstance().getPlayer(1));
-//        username2.setFont(new Font("Arial", 20));
-////        username2.setTextFill(Color.WHITE);
-//        username2.setStyle("-fx-background-color:white;");
-//        Pane cardImage2 = new Pane(cardImage(GuiModel.getInstance().getCard(1)));
-
-
-
 
         undoButton.setGraphic(buttonImage("/textures/Undo.png"));
         undoButton.setPrefSize(70,70);
@@ -756,28 +744,20 @@ public class MainController implements GuiEventEmitter {
         buildButton.setGraphic(buttonImage("/textures/build.png"));
         buildButton.setPrefSize(70,70);
         endTurnButton.setGraphic(buttonImage("/textures/notendturn.png"));
-        endTurnButton.setPrefSize(100, 70);
+        endTurnButton.setPrefSize(70, 70);
         addButtonEvents();
 
-        VBox vbButtons = new VBox(30);
-        vbButtons.setPadding(new Insets(10,10,10,10));
-        Pane entTurnPane = new Pane(endTurnButton);
-        Pane undoPane = new Pane(undoButton);
-        Pane movePane = new Pane(moveButton);
-        Pane buildPane = new Pane(buildButton);
-        vbButtons.getChildren().addAll(entTurnPane,undoPane, movePane, buildPane);
-
-        vbPlayers.setPadding(new Insets(10,10,10,10));
-
+        vbButtons.getChildren().addAll(endTurnButton,undoButton, moveButton, buildButton);
 
         background.setCenter(subScene);
         background.setLeft(vbPlayers);
         background.setRight(vbButtons);
 
-        //TODO css
-        background.setStyle("-fx-background-color:black;");
-        background.getLeft().setStyle("-fx-background-color:black;");
-        background.getRight().setStyle("-fx-background-color:black;");
+        background.getStylesheets().add("/css/mainscene.css");
+        background.getStyleClass().add("background");
+        vbPlayers.getStyleClass().add("left_vbox");
+        vbButtons.getStyleClass().add("right_vbox");
+
 
 
 
@@ -785,19 +765,26 @@ public class MainController implements GuiEventEmitter {
 
         vbButtons.prefHeightProperty().bind(scene.heightProperty());
         vbPlayers.prefHeightProperty().bind(scene.heightProperty());
-        background.prefHeightProperty().bind(scene.heightProperty());
-        background.prefWidthProperty().bind(scene.widthProperty());
+        background.maxHeightProperty().bind(scene.heightProperty());
+        background.maxWidthProperty().bind(scene.widthProperty());
         subScene.heightProperty().bind(background.heightProperty());
-//        subScene.widthProperty().bind(background.widthProperty());
+        subScene.widthProperty().bind(background.widthProperty().subtract(vbPlayers.widthProperty()).subtract(vbButtons.widthProperty()));
 
         addSubSceneCameraEvents(scene,camera);
 //        operation = Operation.PLACE_WORKER;
+        active = true;
         return scene;
     }
 
 
     public void displayPlayers(List<Player> players){
         Platform.runLater(()->{
+            vbPlayers.getChildren().clear();
+            if(players==null){
+                return;
+            }
+            System.out.print("diplayPlayers( ");
+            System.out.println(players);
             for(Player player:players){
                 System.out.println(player.getNickName()+" "+player.getCard().getName());
                 Label username = new Label(player.getNickName());
@@ -805,6 +792,7 @@ public class MainController implements GuiEventEmitter {
                 username.setStyle("-fx-background-color:white;");
                 Pane cardImage = new Pane(cardImage(player.getCard().getName()));
                 VBox addPlayer = new VBox(5);
+                addPlayer.getStyleClass().add("player_box");
                 addPlayer.getChildren().addAll(username, cardImage);
                 vbPlayers.getChildren().add(addPlayer);
             }

@@ -45,15 +45,6 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         }
     }
 
-
-
-    //TODO fix
-    public void displayPlayers(){
-//        if(turnPhase.equals(TurnPhase.CHOSE_CARDS))
-            mainController.displayPlayers(players);
-    }
-
-
     public void placeWorker(Position position, Player player){
         board.setWorker(new Worker(), position);
         if(player.equalsUuid(myPlayer))
@@ -141,7 +132,11 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         this.turnPhase = turnPhase;
     }
 
-    public void newTurn(Player currentPlayer){
+    public void newTurn(Player currentPlayer, TurnPhase turnPhase){
+        setTurnPhase(turnPhase);
+        if(players !=null && (turnPhase.equals(TurnPhase.PLACE_WORKERS) || turnPhase.equals(TurnPhase.NORMAL))) {
+            mainController.displayPlayers(players);
+        }
         if(myPlayer.equalsUuid(currentPlayer)){
             alert("Your turn to play.");
             if(turnPhase.equals(TurnPhase.PLACE_WORKERS)){
