@@ -109,7 +109,7 @@ public class ChooseCardController implements GuiEventEmitter {
 
 
     private void addEventCard(CardImageView node, String name){
-        node.setOnMouseClicked(event->{
+        node.setOnMousePressed(event->{
 
             if(chosenCards.contains(name))
             {

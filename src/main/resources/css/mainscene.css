@@ -6,20 +6,64 @@
     -fx-alignment: top-center;
 }
 
+.left_vbox, .right_vbox{
+    -fx-alignment: center;
+    -fx-background-color: #c8bfe7;
+}
+
 .right_vbox{
+    -fx-padding: 20px 26px 20px 32px;
     -fx-effect: innershadow( gaussian, rgba( 255, 255, 255, 0.5 ), 10, 0, 10, -5);
 }
 
 .left_vbox{
-    -fx-alignment: top-center;
+    -fx-padding: 12px 22px 12px 20px
+;
     -fx-effect: innershadow( gaussian, rgba( 255, 255, 255, 0.5 ), 10, 0, -10, -5);
 
 }
 
-.left_vbox, .right_vbox{
-    -fx-padding: 20px;
-    -fx-background-color: #c8bfe7;
-    -fx-border-insets: 4;
-    -fx-border-color: #222222;
-    -fx-border-width: 4px;
+.player_box{
+    -fx-alignment: center;
+}
+.player_box Label{
+    -fx-font-family: "Georgia", serif;
+    -fx-text-fill: white;
+    -fx-stroke: black;
+    -fx-font-size: 20px;
+    -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.8) , 8 , 0.0 , -2 , 2);
+    -fx-text-alignment: justify;
+    -fx-alignment: bottom-center;
+    -fx-translate-y: -6px;
+    -fx-min-width: 120;
+    -fx-max-width: 120;
+    -fx-padding: 8px;
+    -fx-border-radius: 4px;
+
+}
+.player_box VBox{
+    -fx-background-image: url("/textures/playerName-pink.png");
+    -fx-background-size: 100% auto;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 0px 4px;
+    -fx-min-height: 50px;
+    -fx-min-width: 140px;
+    -fx-alignment: center;
+}
+.player_box ImageView{
+    -fx-smooth: true;
+    /*
+    -fx-fit-to-width: 168;
+    -fx-fit-to-height: 282;
+     */
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 6, 0, 0, 0);
+}
+
+.trigliph{
+    -fx-min-height: 40px;
+    -fx-background-image: url("/textures/ps_bottom_bar_tile.png");
+    -fx-background-position: 0px -6px;
+    -fx-background-size: auto 52px;
+    -fx-background-repeat: repeat-x;
 }

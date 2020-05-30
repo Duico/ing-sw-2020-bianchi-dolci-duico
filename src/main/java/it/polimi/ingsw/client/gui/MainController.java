@@ -14,6 +14,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
+import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -44,6 +45,7 @@ public class MainController implements GuiEventEmitter {
     private boolean active = false;
     private final static int WIDTH = 900;
     private final static int HEIGHT = 500;
+    private final int TRIGLIPH_HEIGHT = 40;
     final double boardSize=15;
     final double baseZ = 0;
     private final Group root = new Group();
@@ -61,8 +63,9 @@ public class MainController implements GuiEventEmitter {
     private double onClickXCoord,onClickYCoord;
     private double newOnClickXCoord,newOnClickYCoord;
 
-    private VBox vbPlayers=new VBox(5);
+    private VBox vbPlayers=new VBox(40);
     private VBox vbButtons=new VBox(30);
+    private Pane trigliph = new Pane();
 
 
     private Operation currentOperation;
@@ -749,25 +752,29 @@ public class MainController implements GuiEventEmitter {
 
         vbButtons.getChildren().addAll(endTurnButton,undoButton, moveButton, buildButton);
 
+
+
         background.setCenter(subScene);
         background.setLeft(vbPlayers);
         background.setRight(vbButtons);
+        background.setTop(trigliph);
+
 
         background.getStylesheets().add("/css/mainscene.css");
         background.getStyleClass().add("background");
+        BorderPane.setAlignment(subScene, Pos.TOP_LEFT);
         vbPlayers.getStyleClass().add("left_vbox");
         vbButtons.getStyleClass().add("right_vbox");
-
+        trigliph.getStyleClass().add("trigliph");
 
 
 
         Scene scene = new Scene(background);
-
-        vbButtons.prefHeightProperty().bind(scene.heightProperty());
-        vbPlayers.prefHeightProperty().bind(scene.heightProperty());
+        vbButtons.prefHeightProperty().bind(scene.heightProperty().subtract(TRIGLIPH_HEIGHT));
+        vbPlayers.prefHeightProperty().bind(scene.heightProperty().subtract(TRIGLIPH_HEIGHT));
         background.maxHeightProperty().bind(scene.heightProperty());
         background.maxWidthProperty().bind(scene.widthProperty());
-        subScene.heightProperty().bind(background.heightProperty());
+        subScene.heightProperty().bind(background.heightProperty().subtract(TRIGLIPH_HEIGHT));
         subScene.widthProperty().bind(background.widthProperty().subtract(vbPlayers.widthProperty()).subtract(vbButtons.widthProperty()));
 
         addSubSceneCameraEvents(scene,camera);
@@ -787,10 +794,9 @@ public class MainController implements GuiEventEmitter {
             System.out.println(players);
             for(Player player:players){
                 System.out.println(player.getNickName()+" "+player.getCard().getName());
-                Label username = new Label(player.getNickName());
-                username.setFont(new Font("Arial", 20));
-                username.setStyle("-fx-background-color:white;");
-                Pane cardImage = new Pane(cardImage(player.getCard().getName()));
+                VBox username = new VBox();
+                username.getChildren().add(new Label(player.getNickName()));
+                ImageView cardImage = cardImage(player.getCard().getName());
                 VBox addPlayer = new VBox(5);
                 addPlayer.getStyleClass().add("player_box");
                 addPlayer.getChildren().addAll(username, cardImage);
@@ -803,7 +809,7 @@ public class MainController implements GuiEventEmitter {
 
     private ImageView cardImage(String name){
         ImageView imageView = new ImageView("/textures/"+name+".png");
-        imageView.setFitHeight(150);
+        imageView.setFitHeight(168);
         imageView.setFitWidth(100);
         return imageView;
     }

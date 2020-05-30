@@ -7,10 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-
-import java.awt.event.MouseEvent;
 
 public class LoginController implements GuiEventEmitter {
 
@@ -21,7 +18,7 @@ public class LoginController implements GuiEventEmitter {
     @FXML
     public Button start;
     @FXML
-    public ChoiceBox choiceBox;
+    public ChoiceBox<String> choiceBox;
     @FXML
     public Label message;
     @FXML
@@ -88,13 +85,14 @@ public class LoginController implements GuiEventEmitter {
         String twoPlayers="2 PLAYERS";
         String threePlayers="3 PLAYERS";
         choiceBox.setItems(FXCollections.observableArrayList(twoPlayers,threePlayers));
+        choiceBox.setValue(twoPlayers);
     }
 
     private Integer getNumPlayers(){
         if(choiceBox.getValue()!=null){
-            if(choiceBox.getValue().toString().equals("2 PLAYERS")){
+            if(choiceBox.getValue().equals("2 PLAYERS")){
                 return 2;
-            }else if(choiceBox.getValue().toString().equals("3 PLAYERS")){
+            }else if(choiceBox.getValue().equals("3 PLAYERS")){
                 return 3;
             }else{
                 alert("You must select one option!");

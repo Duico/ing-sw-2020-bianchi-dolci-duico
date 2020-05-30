@@ -132,7 +132,8 @@ public class SceneManager implements SceneEventListener {
         stage.setY(primaryScreenBounds.getMinY());
         stage.setWidth(primaryScreenBounds.getWidth());
         stage.setHeight(primaryScreenBounds.getHeight());
-
+        stage.setMinHeight(540);
+        stage.setMinWidth(720);
         stage.show();
     }
 }
