@@ -771,8 +771,7 @@ public class MainController implements GuiEventEmitter {
         background.setCenter(subScene);
         background.setLeft(vbPlayers);
         background.setRight(vbButtons);
-        background.getChildren().add(foreground);
-
+        background.setTop(trigliph);
 
 
         background.getStylesheets().add("/css/mainscene.css");
@@ -783,12 +782,11 @@ public class MainController implements GuiEventEmitter {
         trigliph.getStyleClass().add("trigliph");
 
 
-
         Scene scene = new Scene(background);
 
         foreground.layoutXProperty().bind(scene.widthProperty().subtract(foreground.widthProperty()).divide(2));
-        vbButtons.prefHeightProperty().bind(scene.heightProperty());
-        vbPlayers.prefHeightProperty().bind(scene.heightProperty());
+        vbButtons.prefHeightProperty().bind(scene.heightProperty().subtract(TRIGLIPH_HEIGHT));
+        vbPlayers.prefHeightProperty().bind(scene.heightProperty().subtract(TRIGLIPH_HEIGHT));
         background.maxHeightProperty().bind(scene.heightProperty());
         background.maxWidthProperty().bind(scene.widthProperty());
         subScene.heightProperty().bind(background.heightProperty().subtract(TRIGLIPH_HEIGHT));
