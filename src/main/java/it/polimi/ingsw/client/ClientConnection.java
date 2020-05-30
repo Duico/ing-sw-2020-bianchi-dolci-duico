@@ -120,7 +120,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
             new ClientConnectionEvent(ClientConnectionEvent.Reason.ERROR_ON_THE_SOCKET).accept(gameMessageVisitor);
         }
          catch (InterruptedException e) {
-            e.printStackTrace();
+            System.err.print("TODO handle gui interrupts");
         } finally {
             try {
                 if(socket != null) {

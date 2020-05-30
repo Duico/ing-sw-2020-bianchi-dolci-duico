@@ -3,21 +3,23 @@
     -fx-pref-width: 800;
     -fx-background-color:black;
     -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 15, 0, 0, 0 );
+    -fx-alignment: top-center;
 }
 
 .right_vbox{
-    -fx-padding: 14px;
-    -fx-border-radius: 10px;
     -fx-effect: innershadow( gaussian, rgba( 255, 255, 255, 0.5 ), 10, 0, 10, -5);
 }
 
 .left_vbox{
-    -fx-padding: 14px;
     -fx-alignment: top-center;
     -fx-effect: innershadow( gaussian, rgba( 255, 255, 255, 0.5 ), 10, 0, -10, -5);
 
 }
 
 .left_vbox, .right_vbox{
-    -fx-background-color: khaki;
+    -fx-padding: 20px;
+    -fx-background-color: #c8bfe7;
+    -fx-border-insets: 4;
+    -fx-border-color: #222222;
+    -fx-border-width: 4px;
 }

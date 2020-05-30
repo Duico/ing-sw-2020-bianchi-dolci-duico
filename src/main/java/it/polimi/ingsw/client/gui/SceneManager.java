@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.MessageVisitor;
 import it.polimi.ingsw.client.event.MessageListener;
 import it.polimi.ingsw.client.message.SignUpListener;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.view.ViewEventListener;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -53,7 +55,14 @@ public class SceneManager implements SceneEventListener {
         guiModel.addEventListener(ViewEventListener.class, clientConnection);
         guiModel.addEventListener(SignUpListener.class,clientConnection);
         loadScene(SceneEvent.SceneType.LOGIN);
-        new Thread(clientConnection::run).start();
+        Thread connectionThread = new Thread(clientConnection::run);
+        connectionThread.start();
+
+        stage.setOnCloseRequest((windowEvent) -> {
+            //disconnect
+            //TODO handle interruptedException
+                connectionThread.interrupt();
+        });
     }
 
     @Override
@@ -126,5 +135,4 @@ public class SceneManager implements SceneEventListener {
 
         stage.show();
     }
-
 }
