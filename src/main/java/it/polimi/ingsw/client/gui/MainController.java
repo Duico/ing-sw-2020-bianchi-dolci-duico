@@ -64,8 +64,8 @@ public class MainController implements GuiEventEmitter {
     private double onClickXCoord,onClickYCoord;
     private double newOnClickXCoord,newOnClickYCoord;
 
-    private VBox vbPlayers=new VBox(40);
-    private VBox vbButtons=new VBox(30);
+    private VBox vbPlayers=new VBox(32);
+    private VBox vbButtons=new VBox(28);
     private Pane trigliph = new Pane();
 
 
