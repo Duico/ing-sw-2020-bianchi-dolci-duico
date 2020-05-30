@@ -1,13 +1,15 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.exception.InvalidPushCell;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.model.strategy.BuildStrategy;
 import it.polimi.ingsw.model.strategy.MoveStrategy;
 import it.polimi.ingsw.model.strategy.OpponentStrategy;
 import it.polimi.ingsw.model.strategy.WinStrategy;
 
+
 public class NormalTurn extends Turn {
-    private int currentWorkerId;
+    private Optional<Integer> currentWorkerId;
     private Card previousTurnCard;
     //private Card previousBlockCard;
     private boolean blockNextPlayer;
@@ -15,7 +17,7 @@ public class NormalTurn extends Turn {
 
     public NormalTurn(Player currentPlayer, Card previousTurnCard, /*Card previousBlockCard,*/ boolean previousBlockNextPlayer){
         super(TurnPhase.NORMAL, currentPlayer);
-        this.currentWorkerId = -1;
+        this.currentWorkerId = Optional.empty();
         this.blockNextPlayer = false;
         this.previousTurnCard = previousTurnCard;
         //this.previousBlockCard = previousBlockCard;
@@ -24,9 +26,8 @@ public class NormalTurn extends Turn {
 
     @Override
     public boolean isAllowedToMove(){
-        //TODO not the best solution
-        if(currentWorkerId >=0){
-            return isAllowedToMove(currentPlayer.getWorkerPosition(currentWorkerId));
+        if(currentWorkerId.isPresent()){
+            return isAllowedToMove(currentPlayer.getWorkerPosition(currentWorkerId.get()));
         }else{
             Card card = currentPlayer.getCard();
             boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(0, 0);
@@ -50,8 +51,8 @@ public class NormalTurn extends Turn {
 
     @Override
     public boolean isRequiredToMove(){
-        if(currentWorkerId>=0){
-            return isRequiredToMove(currentPlayer.getWorkerPosition(currentWorkerId));
+        if(currentWorkerId.isPresent()){
+            return isRequiredToMove(currentPlayer.getWorkerPosition(currentWorkerId.get()));
         }else {
             return true;
         }
@@ -74,8 +75,8 @@ public class NormalTurn extends Turn {
 
     @Override
     public boolean isRequiredToBuild(){
-        if(currentWorkerId>=0){
-            return isRequiredToBuild(currentPlayer.getWorkerPosition(currentWorkerId));
+        if(currentWorkerId.isPresent()){
+            return isRequiredToBuild(currentPlayer.getWorkerPosition(currentWorkerId.get()));
         }else {
             return true;
         }
@@ -99,8 +100,8 @@ public class NormalTurn extends Turn {
     @Override
     public boolean isAllowedToBuild(){
     //TODO improve
-      if(currentWorkerId >=0) {
-          return isAllowedToBuild(currentPlayer.getWorkerPosition(currentWorkerId));
+      if(currentWorkerId.isPresent()) {
+          return isAllowedToBuild(currentPlayer.getWorkerPosition(currentWorkerId.get()));
       }else {
           Card card = currentPlayer.getCard();
           //any operation is the same
@@ -131,7 +132,7 @@ public class NormalTurn extends Turn {
         return previousBlockNextPlayer;
     }
     //public Card getPreviousBlockCard(){return previousBlockCard;}
-    public int getCurrentWorkerId(){
+    public Optional<Integer> getCurrentWorkerId(){
         return this.currentWorkerId;
     }
 
@@ -148,7 +149,7 @@ public class NormalTurn extends Turn {
 
     public boolean checkCurrentWorker(Position workerPosition){
         if(isSetCurrentWorker())
-            return workerPosition != null && workerPosition.equals(currentPlayer.getWorkerPosition(currentWorkerId));
+            return workerPosition != null && workerPosition.equals(currentPlayer.getWorkerPosition(currentWorkerId.get()));
         else{
             for(int i=0;i<currentPlayer.getNumWorkers();i++){
                 if(currentPlayer.getWorkerPosition(i).equals(workerPosition))
@@ -160,7 +161,7 @@ public class NormalTurn extends Turn {
     }
 
     public boolean isSetCurrentWorker(){
-        return currentWorkerId>=0;
+        return currentWorkerId.isPresent();
     }
 
     public boolean isBlockNextPlayer() {
@@ -177,8 +178,9 @@ public class NormalTurn extends Turn {
     }
 
     private void setCurrentWorker(int workerId){
+        assert workerId>=0;
         if(currentPlayer.isWorkerSet(workerId))
-            this.currentWorkerId=workerId;
+            this.currentWorkerId = Optional.of(workerId);
     }
 
     public Card getPreviousTurnCard(){
@@ -190,7 +192,7 @@ public class NormalTurn extends Turn {
         int workerId = currentPlayer.getWorkerId(startPosition);
         Card card = currentPlayer.getCard();
 
-        if(this.getBlockNextPlayer() == false) {
+        if(!this.getBlockNextPlayer()) {
             blockNextPlayer=blockNextPlayer(board, startPosition, destinationPosition);
         }
         try {
@@ -198,8 +200,7 @@ public class NormalTurn extends Turn {
             board.putWorkers(startPosition, destinationPosition, pushDestPosition);
             this.updateCurrentWorker(workerId);
             return pushDestPosition;
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (InvalidPushCell e){
             return null;
         }
 
@@ -359,8 +360,8 @@ public class NormalTurn extends Turn {
     boolean isLoseCondition(Board board) {
         Player currentPlayer = this.getCurrentPlayer();
         boolean loseCondition = true;
-        if(this.isSetCurrentWorker()){
-            Position currentWorkerPosition = currentPlayer.getWorkerPosition(currentWorkerId);
+        if(isSetCurrentWorker()){
+            Position currentWorkerPosition = currentPlayer.getWorkerPosition(currentWorkerId.get());
             loseCondition = cannotMakeRequiredOperation(board, currentWorkerPosition); //&& loseCondition
 
         }else {//first operation of the turn can have workerId not set

@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.exception.StrategyNameNotFound;
 import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class NormalTurnTest {
@@ -112,7 +115,7 @@ class NormalTurnTest {
         setWorkerOnTheBoard();
         //initial phase of the turn, the currentWorkerId is not set
         assertFalse(turn.isSetCurrentWorker());
-        assertEquals(-1, turn.getCurrentWorkerId());
+        assertEquals(Optional.empty(), turn.getCurrentWorkerId());
         assertTrue(turn.checkCurrentWorker(worker1.getCurrentPosition()));
         assertTrue(turn.checkCurrentWorker(worker2.getCurrentPosition()));
 
@@ -121,7 +124,7 @@ class NormalTurnTest {
         assertTrue(turn.isSetCurrentWorker());
         assertTrue(turn.checkCurrentWorker(worker1.getCurrentPosition()));
         assertFalse(turn.checkCurrentWorker(worker2.getCurrentPosition()));
-        assertEquals(0, turn.getCurrentWorkerId());
+        assertEquals(Optional.of(0), turn.getCurrentWorkerId());
     }
 
     /**

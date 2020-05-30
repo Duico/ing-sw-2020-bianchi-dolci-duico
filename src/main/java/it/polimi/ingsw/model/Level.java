@@ -13,7 +13,7 @@ public enum Level {
         ord=i;
     }
 
-    private int ord;
+    private final int ord;
 
     public int getOrd(){
         return this.ord;
@@ -42,6 +42,6 @@ public enum Level {
         else if(level.equals(Level.TOP))
             return BuildingHeight.TOP;
         else
-            return null;
+            throw new IllegalArgumentException();
     }
 }

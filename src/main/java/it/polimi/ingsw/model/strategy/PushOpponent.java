@@ -26,8 +26,6 @@ public class PushOpponent implements OpponentStrategy {
                 else{
                     return true;
                 }
-            }catch (PositionOutOfBoundsException e){
-                return false;
             }catch (InvalidPushCell e){
                 return false;
             }
@@ -38,15 +36,19 @@ public class PushOpponent implements OpponentStrategy {
 
 
     @Override
-    public Position destinationPosition(Position startPosition, Position destPosition) throws InvalidPushCell, PositionOutOfBoundsException{
+    public Position destinationPosition(Position startPosition, Position destPosition) throws InvalidPushCell{
         int dx = destPosition.getX() - startPosition.getX();
         int dy = destPosition.getY() - startPosition.getY();
         if(dx > 1 || dy > 1) throw new InvalidPushCell();
 
         int x = destPosition.getX() + dx;
         int y = destPosition.getY() + dy;
-
-        return new Position(x,y);
+        try{
+            Position pos = new Position(x,y);
+            return pos;
+        }catch (PositionOutOfBoundsException e){
+            throw new InvalidPushCell();
+        }
     }
 }
 
