@@ -90,15 +90,14 @@ public class MainController implements GuiEventEmitter {
     }
 
     public void setMessage(String message){
-        messageBox.setText(message);
+        Platform.runLater(()->{
+            messageBox.setText(message);
+        });
     }
 
     private void initMessageBox(){
-//        messageBox.setLayoutX(450);
         messageBox.setLayoutY(50);
-        messageBox.setPrefSize(200, 30);
-        messageBox.setFont(new Font("Arial", 13));
-        messageBox.setMouseTransparent(true);
+        messageBox.setFont(new Font("Arial", 20));
     }
 
     private boolean isSelectedWorker(){
