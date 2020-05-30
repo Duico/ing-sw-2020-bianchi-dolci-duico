@@ -139,9 +139,18 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     public void setTurnPhase(TurnPhase turnPhase) {
         this.turnPhase = turnPhase;
-
     }
 
+    public void newTurn(Player currentPlayer){
+        if(myPlayer.equalsUuid(currentPlayer)){
+            alert("Your turn to play.");
+            if(turnPhase.equals(TurnPhase.PLACE_WORKERS)){
+                mainController.setOperation(MainController.Operation.PLACE_WORKER);
+            }else if(turnPhase.equals(TurnPhase.NORMAL)){
+                mainController.setOperation(MainController.Operation.MOVE);
+            }
+        }
+    }
 
 
     private boolean checkDistance(Position start, Position destination){
@@ -209,7 +218,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         board.build(workerPosition, destPosition, isDome);
         Level level = board.getBoardCell(destPosition).getLevel();
         System.out.println(level);
-        mainController.makeBuild(destPosition, level);
+        mainController.makeBuild(destPosition, level, isDome);
     }
 
     public void alert(String message){
@@ -235,7 +244,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     @Override
     public void onBuild(Position workerPosition, Position buildPosition, boolean isDome) {
-        emitViewEvent((new BuildViewEvent(workerPosition, buildPosition, isDome)));
+        emitViewEvent(new BuildViewEvent(workerPosition, buildPosition, isDome));
     }
 
 

@@ -7,9 +7,9 @@ import javafx.geometry.Point3D;
 import javafx.scene.Node;
 
 public class CoordinateMap {
-    private Bounds map2D[][]= new BoundingBox[5][5];
-    private double height[][]= new double[5][5];
-    private Node [][] lastBuildings = new Node[5][5];
+    private Bounds[][] map2D = new BoundingBox[5][5];
+    private double[][] heights = new double[5][5];
+    private Node[][] lastBuildings = new Node[5][5];
     private final double baseZ;
 //    private Coordinate [][] coordinateMap= new Coordinate[5][5];
 
@@ -34,14 +34,14 @@ public class CoordinateMap {
 
     }
 
-    private Point3D getCenter(Bounds bounds){
-        double centerX= bounds.getCenterX();
-        double centerY= bounds.getCenterY();
-        double topZ = bounds.getMaxZ();
-
-        Point3D center = new Point3D(centerX,centerY,topZ);
-        return center;
-    }
+//    private Point3D getCenter(Bounds bounds){
+//        double centerX= bounds.getCenterX();
+//        double centerY= bounds.getCenterY();
+//        double topZ = bounds.getMaxZ();
+//
+//        Point3D center = new Point3D(centerX,centerY,topZ);
+//        return center;
+//    }
 
 //    public double getTop(int i,int j){
 //        return map2D[i][j].getMaxY();
@@ -68,13 +68,14 @@ public class CoordinateMap {
     }
 
     private Point3D getCoordinate(int i, int j){
-        return getCenter(getBoundingBox(i,j));
+        Bounds bb2D = getBoundingBox(i,j);
+        return new Point3D(bb2D.getCenterX(), bb2D.getCenterY(), heights[i][j]);
     }
 
     /**
      *
      * @param position
-     * @return Center of the bounding box
+     * @return Center of the bounding box fox X,Y. Top of the Box for Z
      */
 
     //TODO fix Zcoordinate of the returned Point3D should be related to height[][]
@@ -82,6 +83,11 @@ public class CoordinateMap {
         return getCoordinate(position.getX(), position.getY());
     }
 
+    /**
+     * Needed for making the last building block mouse-transparent
+     * @param position
+     * @return
+     */
     public Node getLastBuilding(Position position){
         try{
             return lastBuildings[position.getX()][position.getY()];
@@ -94,7 +100,7 @@ public class CoordinateMap {
         try {
             lastBuildings[position.getX()][position.getY()] = lastNode;
             Bounds old = map2D[position.getX()][position.getY()];
-            height[position.getX()][position.getY()] = level.getHeight();
+            heights[position.getX()][position.getY()] = level.getHeight();
             return true;
         }catch(IndexOutOfBoundsException e){
             return false;
@@ -102,6 +108,6 @@ public class CoordinateMap {
     }
 
     public double getHeight(int i, int j){
-        return height[i][j];
+        return heights[i][j];
     }
 }

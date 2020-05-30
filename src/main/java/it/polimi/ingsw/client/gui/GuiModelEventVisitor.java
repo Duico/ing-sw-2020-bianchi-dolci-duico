@@ -74,15 +74,13 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
             if(guiModel.getTurnPhase().equals(TurnPhase.CHOSE_CARDS)) {
                 sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.MAIN));
                 guiModel.displayPlayers();
-                if(guiModel.getMyPlayer().equalsUuid(currentPlayer))
-                    alert("It's your turn!");
+                guiModel.newTurn(currentPlayer);
             }
             guiModel.setTurnPhase(TurnPhase.PLACE_WORKERS);
         }else if(turnPhase.equals(TurnPhase.NORMAL))
         {
             guiModel.setTurnPhase(TurnPhase.NORMAL);
-            if(guiModel.getMyPlayer().equalsUuid(currentPlayer))
-                alert("It's your turn!");
+            guiModel.newTurn(currentPlayer);
             //update scene buttons
 
         }

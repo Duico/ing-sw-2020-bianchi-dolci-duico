@@ -21,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -327,7 +328,12 @@ public class ChooseCardController implements GuiEventEmitter {
     }
 
     private String getFirstPlayer(){
-        return firstPlayerChoiceBox.getValue().toString();
+        Object choiceBoxValue =  firstPlayerChoiceBox.getValue();
+        if(choiceBoxValue != null){
+            return choiceBoxValue.toString();
+        }else{
+            return null;
+        }
     }
 
     public void sendFirstPlayer(ActionEvent actionEvent) {

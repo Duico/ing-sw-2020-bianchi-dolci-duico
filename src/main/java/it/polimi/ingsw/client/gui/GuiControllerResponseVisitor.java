@@ -14,10 +14,13 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
 
     @Override
     public void visit(FailedOperationControllerResponse r) {
-        if(r.getOperation().equals(Operation.PLACE)){
+//        if(r.getOperation().equals(Operation.PLACE)){
             if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_FEASIBLE)){
 //                System.out.println("PLACE ALREADY WORKER");
+                if(r.getOperation().equals(Operation.PLACE))
                 alert("YOUR WORKERS ARE ALREADY PLACED");
+                else
+                    alert("Move not feasible");
             } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.DESTINATION_NOT_EMPTY)){
 //                System.out.println("POSIZIONE OCCUPATA");
                 alert("POSITION ALREADY OCCUPIED");
@@ -31,7 +34,7 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
 //                System.out.println("POSIZIONE OCCUPATA");
                 alert("YOU ARE BLOCKED");
             }
-        }
+//        }
     }
 
     @Override

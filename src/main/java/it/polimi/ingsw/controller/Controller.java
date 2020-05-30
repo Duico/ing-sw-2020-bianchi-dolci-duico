@@ -194,6 +194,8 @@ public class Controller implements GameViewEventListener {
             return;
         }
 
+
+        //TODO
         //checks isValidMove and isValidPush
         if(!game.isFeasibleMove(workerPosition, destinationPosition)){
             view.sendMessage("is not a feasible movement");
