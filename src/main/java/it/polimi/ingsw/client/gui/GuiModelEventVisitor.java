@@ -130,13 +130,13 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         }
     }
 
-    public void alert(String message){
-        Platform.runLater(()->{
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setHeaderText(message);
-            alert.showAndWait();
-        });
-    }
+//    public void alert(String message){
+//        Platform.runLater(()->{
+//            Alert alert = new Alert(Alert.AlertType.WARNING);
+//            alert.setHeaderText(message);
+//            alert.showAndWait();
+//        });
+//    }
 }
 
 

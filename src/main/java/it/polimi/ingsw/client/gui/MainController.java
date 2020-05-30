@@ -9,6 +9,8 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.PlayerColor;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
+import javafx.animation.FadeTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Bounds;
@@ -31,12 +33,14 @@ import javafx.scene.shape.Box;
 import javafx.scene.shape.MeshView;
 import javafx.scene.text.Font;
 import javafx.scene.transform.*;
+import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 
 public class MainController implements GuiEventEmitter {
@@ -97,9 +101,16 @@ public class MainController implements GuiEventEmitter {
     public void setMessage(String message){
         Platform.runLater(()->{
             messageBox.setText(message);
+            FadeTransition ft = new FadeTransition(Duration.millis(4000), messageBox);
+            ft.setDelay(Duration.seconds(4));
+            ft.setFromValue(1.0);
+            ft.setToValue(0);
+            ft.setCycleCount(1);
+            ft.play();
         });
     }
 
+    //TODO css
     private void initMessageBox(){
         messageBox.setLayoutY(50);
         messageBox.setFont(new Font("Arial", 20));
