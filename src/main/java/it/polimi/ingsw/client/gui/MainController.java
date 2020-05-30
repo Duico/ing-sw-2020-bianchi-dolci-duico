@@ -767,12 +767,13 @@ public class MainController implements GuiEventEmitter {
         initMessageBox();
         Pane foreground = new Pane(messageBox);
         foreground.getStylesheets().add("/css/foreground.css");
+        messageBox.getStyleClass().add("foreground_messagebox");
 
         background.setCenter(subScene);
         background.setLeft(vbPlayers);
         background.setRight(vbButtons);
         background.setTop(trigliph);
-
+        background.getChildren().add(foreground);
 
         background.getStylesheets().add("/css/mainscene.css");
         background.getStyleClass().add("background");
@@ -784,7 +785,7 @@ public class MainController implements GuiEventEmitter {
 
         Scene scene = new Scene(background);
 
-        foreground.layoutXProperty().bind(scene.widthProperty().subtract(foreground.widthProperty()).divide(2));
+        foreground.layoutXProperty().bind(scene.widthProperty().subtract(foreground.prefWidthProperty()).divide(2));
         vbButtons.prefHeightProperty().bind(scene.heightProperty().subtract(TRIGLIPH_HEIGHT));
         vbPlayers.prefHeightProperty().bind(scene.heightProperty().subtract(TRIGLIPH_HEIGHT));
         background.maxHeightProperty().bind(scene.heightProperty());
