@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ControllerResponseVisitor;
+import it.polimi.ingsw.client.cli.CliText;
 import it.polimi.ingsw.controller.response.*;
 import it.polimi.ingsw.model.Operation;
 import javafx.application.Platform;
@@ -14,21 +15,34 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
 
     @Override
     public void visit(FailedOperationControllerResponse r) {
+
+        if(r.getOperation().equals(Operation.PLACE)){
             if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_FEASIBLE)){
-                if(r.getOperation().equals(Operation.PLACE))
-                    guiModel.setMessage("YOUR WORKERS ARE ALREADY PLACED");
-                else
-                    guiModel.setMessage("MOVE NOT FEASIBLE");
+                guiModel.setMessage("Your worker are already place");
             } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.DESTINATION_NOT_EMPTY)){
-                guiModel.setMessage("POSITION ALREADY OCCUPIED");
-            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_ALLOWED)){
-                guiModel.setMessage("YOU ARE NOT ALLOWED TO DO THIS");
-            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_CURRENT_WORKER)){
-                guiModel.setMessage("OCCUPIED POSITION");
-            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.BLOCKED_BY_OPPONENT)){
-                guiModel.setMessage("YOU ARE BLOCKED");
+                guiModel.setMessage("Position already occupied");
             }
-//        }
+        }else if(r.getOperation().equals(Operation.MOVE)){
+            if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_CURRENT_WORKER)){
+                guiModel.setMessage("Is not the current worker");
+            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_ALLOWED)){
+                guiModel.setMessage("You are not allowed to move");
+            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.BLOCKED_BY_OPPONENT)){
+                guiModel.setMessage("Ops, your opponent has blocked this move");
+            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_FEASIBLE)){
+                guiModel.setMessage("Not feasible move");
+            }
+
+        } else if(r.getOperation().equals(Operation.BUILD)){
+            if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_CURRENT_WORKER)){
+                guiModel.setMessage("Is not the current worker");
+            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_ALLOWED)){
+                guiModel.setMessage("You are not allowed to build");
+            } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_FEASIBLE)){
+                guiModel.setMessage("Not feasible build");
+            }
+
+        }
     }
 
     @Override
@@ -59,18 +73,18 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
     @Override
     public void visit(RequiredOperationControllerResponse r) {
         if(r.getRequiredOperation().equals(Operation.MOVE)){
-            guiModel.setMessage("YOUR WORKER HASN'T MOVED YET");
+            guiModel.setMessage("Your worker hasn't move yet");
         } else if(r.getRequiredOperation().equals(Operation.BUILD)){
-            guiModel.setMessage("YOUR WORKER HASN'T BUILT YET");
+            guiModel.setMessage("Your worker hasn't build yet");
         } else if(r.getRequiredOperation().equals(Operation.PLACE)) {
-            guiModel.setMessage("YOUR HAVEN'T PLACED BOTH YOUR WORKERS");
+            guiModel.setMessage("Please, place all 2 workers");
         }
     }
 
 
     @Override
     public void visit(NotCurrentPlayerControllerResponse r) {
-        guiModel.setMessage("THIS IS NOT YOUR TURN!");
+        guiModel.setMessage("This is not your turn, wait...");
     }
 
     @Override
