@@ -210,14 +210,20 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 //    }
 
     public void moveOnTheBoard(Position startPosition, Position destPosition, Position pushPosition){
+        if(board.getBoardCell(pushPosition).getWorker()!=null)
+            mainController.moveWorker(startPosition, destPosition, pushPosition);
+        else
+            mainController.moveWorker(startPosition, destPosition);
+
         board.putWorkers(startPosition, destPosition, pushPosition);
-        mainController.moveWorker(startPosition, destPosition, pushPosition);
+
     }
 
     public void buildOnTheBoard(Position workerPosition, Position destPosition, boolean isDome){
         board.build(workerPosition, destPosition, isDome);
         Level level = board.getBoardCell(destPosition).getLevel();
         System.out.println(level);
+        System.out.println(isDome);
         mainController.makeBuild(destPosition, level, isDome);
     }
 

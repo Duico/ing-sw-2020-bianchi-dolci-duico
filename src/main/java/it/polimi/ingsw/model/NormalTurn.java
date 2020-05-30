@@ -68,7 +68,6 @@ public class NormalTurn extends Turn {
             return false;
         //int numBuilds = currentPlayer.getNumBuildsWorker(workerId);
         int numMoves = currentPlayer.getNumMovesWorker(workerId);
-        System.out.println(card.getName());
         boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
         return isRequiredToMove;
     }

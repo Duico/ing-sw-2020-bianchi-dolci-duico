@@ -424,14 +424,17 @@ public class MainController implements GuiEventEmitter {
     }
 
     private void makeDomeBuild(Position position, boolean level0){
-        Point3D pos = map.getCoordinate(position);
-        Group dome = Models.DOME.getModel();
-        dome.getTransforms().addAll(new Translate(pos.getX(),pos.getY(),pos.getZ()+0.8), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3,0.3,0.3));
+        Platform.runLater(()-> {
+            System.out.println("dovrei disegnare una dome");
+            Point3D pos = map.getCoordinate(position);
+            Group dome = Models.DOME.getModel();
+            dome.getTransforms().addAll(new Translate(pos.getX(), pos.getY(), pos.getZ() + 0.8), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3, 0.3, 0.3));
 //        addOnClickEventBuilding(dome);
-        if(level0) {
-            buildPlatform(pos);
-        }
-        buildings.getChildren().add(dome);
+            if (level0) {
+                buildPlatform(pos);
+            }
+            buildings.getChildren().add(dome);
+        });
     }
 
     public enum Models{
@@ -622,6 +625,10 @@ public class MainController implements GuiEventEmitter {
 
                 });
 
+    }
+
+    public void moveWorker(Position startPosition, Position destinationPosition){
+        moveWorker(startPosition, destinationPosition, null);
     }
 
     public void build(Position start, Position destination, boolean isDome, Level level){
