@@ -23,6 +23,7 @@ public class SceneManager implements SceneEventListener {
     //private final ClientConnection clientConnection;
     private FXMLLoader fxmlLoader = new FXMLLoader();
     private GuiModel guiModel;
+    private SceneEvent.SceneType sceneType;
 
     public SceneManager(Stage stage/*, ClientConnection clientConnection*/){
         this.stage = stage;
@@ -54,6 +55,7 @@ public class SceneManager implements SceneEventListener {
         ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, guiMessageVisitor);
         guiModel.addEventListener(ViewEventListener.class, clientConnection);
         guiModel.addEventListener(SignUpListener.class,clientConnection);
+        this.sceneType= SceneEvent.SceneType.LOGIN;
         loadScene(SceneEvent.SceneType.LOGIN);
         Thread connectionThread = new Thread(clientConnection::run);
         connectionThread.start();
@@ -67,10 +69,11 @@ public class SceneManager implements SceneEventListener {
 
     @Override
     public void handleEvent(SceneEvent evt) {
-        if(evt.getSceneType().equals(guiModel.getSceneType())){
+        if(evt.getSceneType().equals(sceneType)){
             return;
         }
             Platform.runLater(()->{
+                sceneType=evt.getSceneType();
                 loadScene(evt.getSceneType());
             });
     }

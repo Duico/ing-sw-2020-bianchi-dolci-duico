@@ -260,6 +260,7 @@ public class ChooseCardController implements GuiEventEmitter {
 
     public void loadCards(List<String> cardDeck) {
         Platform.runLater(()->{
+            waitBox.setVisible(false);
             cardsBox.setVisible(true);
             if(isChallenger){
                 this.requiredNumCards=numPlayers;
