@@ -58,6 +58,7 @@ public class MainController implements GuiEventEmitter {
     private Button moveButton = new Button();
     private Button buildButton = new Button();
     private Button endTurnButton = new Button();
+    private Label messageBox = new Label();
 
     private Position startPosition;
     private double onClickXCoord,onClickYCoord;
@@ -91,6 +92,17 @@ public class MainController implements GuiEventEmitter {
     public MainController(){
         setOperation(Operation.PLACE_WORKER);
         isBuildDome = false;
+    }
+
+    public void setMessage(String message){
+        Platform.runLater(()->{
+            messageBox.setText(message);
+        });
+    }
+
+    private void initMessageBox(){
+        messageBox.setLayoutY(50);
+        messageBox.setFont(new Font("Arial", 20));
     }
 
     private boolean isSelectedWorker(){
@@ -231,8 +243,8 @@ public class MainController implements GuiEventEmitter {
         lightGroup.setTranslateY(40);
         light.setRotate(45);
 
-        root.getChildren().addAll(board, cliff, islands, innerWalls, sea, workers, buildings);
         workers.getChildren().addAll(myWorkers, opponentWorkers);
+        root.getChildren().addAll(board, cliff, islands, innerWalls, sea, workers, buildings);
 
 
     }
@@ -752,12 +764,15 @@ public class MainController implements GuiEventEmitter {
 
         vbButtons.getChildren().addAll(endTurnButton,undoButton, moveButton, buildButton);
 
-
+        initMessageBox();
+        Pane foreground = new Pane(messageBox);
+        foreground.getStylesheets().add("/css/foreground.css");
 
         background.setCenter(subScene);
         background.setLeft(vbPlayers);
         background.setRight(vbButtons);
-        background.setTop(trigliph);
+        background.getChildren().add(foreground);
+
 
 
         background.getStylesheets().add("/css/mainscene.css");
@@ -770,8 +785,10 @@ public class MainController implements GuiEventEmitter {
 
 
         Scene scene = new Scene(background);
-        vbButtons.prefHeightProperty().bind(scene.heightProperty().subtract(TRIGLIPH_HEIGHT));
-        vbPlayers.prefHeightProperty().bind(scene.heightProperty().subtract(TRIGLIPH_HEIGHT));
+
+        foreground.layoutXProperty().bind(scene.widthProperty().subtract(foreground.widthProperty()).divide(2));
+        vbButtons.prefHeightProperty().bind(scene.heightProperty());
+        vbPlayers.prefHeightProperty().bind(scene.heightProperty());
         background.maxHeightProperty().bind(scene.heightProperty());
         background.maxWidthProperty().bind(scene.widthProperty());
         subScene.heightProperty().bind(background.heightProperty().subtract(TRIGLIPH_HEIGHT));

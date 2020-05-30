@@ -14,25 +14,19 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
 
     @Override
     public void visit(FailedOperationControllerResponse r) {
-//        if(r.getOperation().equals(Operation.PLACE)){
             if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_FEASIBLE)){
-//                System.out.println("PLACE ALREADY WORKER");
                 if(r.getOperation().equals(Operation.PLACE))
-                alert("YOUR WORKERS ARE ALREADY PLACED");
+                    guiModel.setMessage("YOUR WORKERS ARE ALREADY PLACED");
                 else
-                    alert("Move not feasible");
+                    guiModel.setMessage("MOVE NOT FEASIBLE");
             } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.DESTINATION_NOT_EMPTY)){
-//                System.out.println("POSIZIONE OCCUPATA");
-                alert("POSITION ALREADY OCCUPIED");
+                guiModel.setMessage("POSITION ALREADY OCCUPIED");
             } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_ALLOWED)){
-//                System.out.println("POSIZIONE OCCUPATA");
-                alert("YOU ARE NOT ALLOWED TO DO THIS");
+                guiModel.setMessage("YOU ARE NOT ALLOWED TO DO THIS");
             } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_CURRENT_WORKER)){
-//                System.out.println("POSIZIONE OCCUPATA");
-                alert("YOU CAN'T USE THIS WORKER");
+                guiModel.setMessage("OCCUPIED POSITION");
             } else if(r.getReason().equals(FailedOperationControllerResponse.Reason.BLOCKED_BY_OPPONENT)){
-//                System.out.println("POSIZIONE OCCUPATA");
-                alert("YOU ARE BLOCKED");
+                guiModel.setMessage("YOU ARE BLOCKED");
             }
 //        }
     }
@@ -65,18 +59,18 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
     @Override
     public void visit(RequiredOperationControllerResponse r) {
         if(r.getRequiredOperation().equals(Operation.MOVE)){
-            alert("Your worker hasn't moved yet");
+            guiModel.setMessage("YOUR WORKER HASN'T MOVED YET");
         } else if(r.getRequiredOperation().equals(Operation.BUILD)){
-            alert("You haven't built yet");
+            guiModel.setMessage("YOUR WORKER HASN'T BUILT YET");
         } else if(r.getRequiredOperation().equals(Operation.PLACE)) {
-            alert("You haven't placed both your workers");
+            guiModel.setMessage("YOUR HAVEN'T PLACED BOTH YOUR WORKERS");
         }
     }
 
 
     @Override
     public void visit(NotCurrentPlayerControllerResponse r) {
-        alert("This is not your turn");
+        guiModel.setMessage("THIS IS NOT YOUR TURN!");
     }
 
     @Override

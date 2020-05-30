@@ -77,8 +77,6 @@ public class CoordinateMap {
      * @param position
      * @return Center of the bounding box fox X,Y. Top of the Box for Z
      */
-
-    //TODO fix Zcoordinate of the returned Point3D should be related to height[][]
     public Point3D getCoordinate(Position position){
         return getCoordinate(position.getX(), position.getY());
     }

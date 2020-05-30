@@ -104,6 +104,8 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
 
 
     private void printChooseCard(List<String> cards){
+
+
         List<String> cardDeck = guiModel.getCardDeck();
 
         if (cards == null) { //pick cards
