@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ModelEventVisitor;
+import it.polimi.ingsw.client.cli.CliText;
 import it.polimi.ingsw.model.Card;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
@@ -87,7 +88,12 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
 
     @Override
     public void visit(WinModelEvent evt) {
-
+        Player winner = evt.getPlayer();
+        if(guiModel.getMyPlayer().getUuid().equals(winner.getUuid())) {
+            guiModel.setMessage("My best compliments, you are the winner!");
+        } else{
+            guiModel.setMessage("You lose, "+winner.getNickName()+" is the winner!");
+        }
     }
 
     @Override
