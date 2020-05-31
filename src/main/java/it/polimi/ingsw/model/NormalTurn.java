@@ -7,6 +7,8 @@ import it.polimi.ingsw.model.strategy.MoveStrategy;
 import it.polimi.ingsw.model.strategy.OpponentStrategy;
 import it.polimi.ingsw.model.strategy.WinStrategy;
 
+import javax.swing.text.html.Option;
+
 
 public class NormalTurn extends Turn {
     private Optional<Integer> currentWorkerId;
@@ -39,12 +41,12 @@ public class NormalTurn extends Turn {
     public boolean isAllowedToMove(Position workerPosition){
 
         Card card = currentPlayer.getCard();
-        int workerId = currentPlayer.getWorkerId(workerPosition);
-        if(workerId == -1) {
+        Optional<Integer> workerId = currentPlayer.getWorkerId(workerPosition);
+        if(!workerId.isPresent()) {
             return false;
         }
-        int numBuilds = currentPlayer.getNumBuildsWorker(workerId);
-        int numMoves = currentPlayer.getNumMovesWorker(workerId);
+        int numBuilds = currentPlayer.getNumBuildsWorker(workerId.get());
+        int numMoves = currentPlayer.getNumMovesWorker(workerId.get());
         boolean isAllowedToMove = card.getMoveStrategy().isAllowedToMove(numMoves, numBuilds);
         return isAllowedToMove;
     }
@@ -63,11 +65,11 @@ public class NormalTurn extends Turn {
         if(isAnyWorkerNotPlaced())
             return false;
         Card card = currentPlayer.getCard();
-        int workerId = currentPlayer.getWorkerId(workerPosition);
-        if(workerId == -1)
+        Optional<Integer> workerId = currentPlayer.getWorkerId(workerPosition);
+        if(!workerId.isPresent())
             return false;
         //int numBuilds = currentPlayer.getNumBuildsWorker(workerId);
-        int numMoves = currentPlayer.getNumMovesWorker(workerId);
+        int numMoves = currentPlayer.getNumMovesWorker(workerId.get());
         boolean isRequiredToMove = card.getMoveStrategy().isRequiredToMove(numMoves);
         return isRequiredToMove;
     }
@@ -86,12 +88,12 @@ public class NormalTurn extends Turn {
         if(isAnyWorkerNotPlaced())
             return false;
         Card card = currentPlayer.getCard();
-        int workerId = currentPlayer.getWorkerId(workerPosition);
-        if(workerId == -1)
+        Optional<Integer> workerId = currentPlayer.getWorkerId(workerPosition);
+        if(!workerId.isPresent())
             return false;
-        int numBuilds = currentPlayer.getNumBuildsWorker(workerId);
-        int numMoves = currentPlayer.getNumMovesWorker(workerId);
-        Operation lastOperation = currentPlayer.getLastOperationWorker(workerId);
+        int numBuilds = currentPlayer.getNumBuildsWorker(workerId.get());
+        int numMoves = currentPlayer.getNumMovesWorker(workerId.get());
+        Operation lastOperation = currentPlayer.getLastOperationWorker(workerId.get());
         boolean isRequiredToBuild = card.getBuildStrategy().isRequiredToBuild(numMoves, numBuilds, lastOperation);
         return isRequiredToBuild;
     }
@@ -114,12 +116,12 @@ public class NormalTurn extends Turn {
         if(isAnyWorkerNotPlaced())
             return false;
         Card card = currentPlayer.getCard();
-        int workerId = currentPlayer.getWorkerId(workerPosition);
-        if(workerId == -1)
+        Optional<Integer> workerId = currentPlayer.getWorkerId(workerPosition);
+        if(!workerId.isPresent())
             return false;
-        int numBuilds = currentPlayer.getNumBuildsWorker(workerId);
-        int numMoves = currentPlayer.getNumMovesWorker(workerId);
-        Operation lastOperation = currentPlayer.getLastOperationWorker(workerId);
+        int numBuilds = currentPlayer.getNumBuildsWorker(workerId.get());
+        int numMoves = currentPlayer.getNumMovesWorker(workerId.get());
+        Operation lastOperation = currentPlayer.getLastOperationWorker(workerId.get());
         boolean isAllowedToBuild = card.getBuildStrategy().isAllowedToBuild(numMoves, numBuilds, lastOperation);
         return isAllowedToBuild;
     }
@@ -168,7 +170,7 @@ public class NormalTurn extends Turn {
     }
 
 
-    public boolean updateCurrentWorker(int workerId){
+    public boolean updateCurrentWorker(Integer workerId){
         if(!isSetCurrentWorker()){
             setCurrentWorker(workerId);
             return true;
@@ -176,8 +178,7 @@ public class NormalTurn extends Turn {
             return false;
     }
 
-    private void setCurrentWorker(int workerId){
-        assert workerId>=0;
+    private void setCurrentWorker(Integer workerId){
         if(currentPlayer.isWorkerSet(workerId))
             this.currentWorkerId = Optional.of(workerId);
     }
@@ -188,7 +189,7 @@ public class NormalTurn extends Turn {
 
     protected Position boardMove(Board board, Position startPosition, Position destinationPosition) {
         Player currentPlayer = this.getCurrentPlayer();
-        int workerId = currentPlayer.getWorkerId(startPosition);
+        Optional<Integer> workerId = currentPlayer.getWorkerId(startPosition);
         Card card = currentPlayer.getCard();
 
         if(!this.getBlockNextPlayer()) {
@@ -197,7 +198,7 @@ public class NormalTurn extends Turn {
         try {
             Position pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
             board.putWorkers(startPosition, destinationPosition, pushDestPosition);
-            this.updateCurrentWorker(workerId);
+            this.updateCurrentWorker(workerId.get());
             return pushDestPosition;
         }catch (InvalidPushCell e){
             return null;
@@ -208,9 +209,9 @@ public class NormalTurn extends Turn {
 
     protected void boardBuild(Board board, Position startPosition, Position destinationPosition, boolean isDome){
         Player currentPlayer = this.getCurrentPlayer();
-        int workerId = currentPlayer.getWorkerId(startPosition);
+        Optional<Integer> workerId = currentPlayer.getWorkerId(startPosition);
         board.build(startPosition, destinationPosition, isDome);
-        this.updateCurrentWorker(workerId);
+        this.updateCurrentWorker(workerId.get());
     }
 
     private boolean blockNextPlayer(Board board, Position startPosition, Position destinationPosition) {

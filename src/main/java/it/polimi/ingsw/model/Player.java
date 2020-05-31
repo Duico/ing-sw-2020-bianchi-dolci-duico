@@ -111,9 +111,8 @@ public class Player implements Serializable, Cloneable {
         return (workers.get(i) != null);
     }
 
-    public int addWorker(Worker newWorker) {
-        int workerId = workers.add(newWorker);
-        return workerId;
+    public Optional<Integer> addWorker(Worker newWorker) {
+        return workers.add(newWorker);
     }
 
     public boolean isAnyWorkerNotPlaced() {
@@ -187,18 +186,18 @@ public class Player implements Serializable, Cloneable {
     }
 
 
-    public int getWorkerId(Position workerPosition) {
+    public Optional<Integer> getWorkerId(Position workerPosition) {
         for(int i=0; i<workers.size(); i++){
             Worker worker = workers.get(i);
             try{
                 if(worker!=null && worker.getCurrentPosition().equals(workerPosition)){
-                    return i;
+                    return Optional.of(i);
                 }
             }catch (WorkerPositionNotSetException e){
-
+                return Optional.empty();
             }
         }
-        return -1;
+        return Optional.empty();
     }
 
     public boolean setWorkerPosition(int i, Position destPosition) {
