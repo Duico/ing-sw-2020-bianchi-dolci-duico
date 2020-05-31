@@ -31,14 +31,14 @@ public class FixedArray<T> implements Serializable {
      * @param elem Element to add
      * @return index of the added element, -1 if not added
      */
-    public int add(T elem){
+    public Optional<Integer> add(T elem){
         for(int i=0; i<size; i++){
             if(array.get(i)==null){
                 array.set(i, elem);
-                return i;
+                return Optional.of(i);
             }
         }
-        return -1;
+        return Optional.empty();
     }
 
     /**

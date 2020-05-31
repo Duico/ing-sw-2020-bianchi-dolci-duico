@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.Optional;
 
 import javax.swing.*;
 import java.io.InputStream;
@@ -107,22 +108,22 @@ public class CliModel {
 
     public boolean moveWorker(Position startPosition, Position destPosition, Position pushPosition, Player playerEvent){
         for (Player player : players) {
-            Integer workerId = player.getWorkerId(startPosition);
-            if (workerId == null) {
+            Optional<Integer> workerId = player.getWorkerId(startPosition);
+            if (!workerId.isPresent() || workerId.get() == null) {
                 return false;
             }
-            player.setWorkerPosition(workerId, destPosition);
+            player.setWorkerPosition(workerId.get(), destPosition);
 
         }
         if(pushPosition!=null) {
             for (Player player : players) {
                 if (!player.equalsUuid(playerEvent)) {
-                    Integer workerId = player.getWorkerId(destPosition);
-                    if (workerId == null) {
+                    Optional<Integer> workerId = player.getWorkerId(destPosition);
+                    if (!workerId.isPresent() || workerId.get() == null) {
                         System.out.println("Entro qui nel false worker ID");
                         return false;
                     }
-                    player.setWorkerPosition(workerId, pushPosition);
+                    player.setWorkerPosition(workerId.get(), pushPosition);
 
                 }
             }

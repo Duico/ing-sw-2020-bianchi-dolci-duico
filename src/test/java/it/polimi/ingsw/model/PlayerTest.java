@@ -59,7 +59,7 @@ class PlayerTest {
         Worker worker1 = new Worker();
         Worker worker2 = new Worker();
         player1.addWorker(worker1);
-        assertTrue(player1.addWorker(worker2)==1);
+        assertTrue(player1.addWorker(worker2).get() == 1);
     }
 
     /**
