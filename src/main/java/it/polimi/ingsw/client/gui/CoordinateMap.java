@@ -9,7 +9,7 @@ import javafx.scene.Node;
 public class CoordinateMap {
     private Bounds[][] map2D = new BoundingBox[5][5];
     private double[][] heights = new double[5][5];
-    private Node[][] lastBuildings = new Node[5][5];
+//    private Node[][] lastBuildings = new Node[5][5];
     private final double baseZ;
 //    private Coordinate [][] coordinateMap= new Coordinate[5][5];
 
@@ -81,23 +81,23 @@ public class CoordinateMap {
         return getCoordinate(position.getX(), position.getY());
     }
 
-    /**
-     * Needed for making the last building block mouse-transparent
-     * @param position
-     * @return
-     */
-    public Node getLastBuilding(Position position){
-        try{
-            return lastBuildings[position.getX()][position.getY()];
-        }catch(IndexOutOfBoundsException e){
-            return null;
-        }
-    }
+//    /**
+//     * Needed for making the last building block mouse-transparent
+//     * @param position
+//     * @return
+//     */
+//    public Node getLastBuilding(Position position){
+//        try{
+//            return lastBuildings[position.getX()][position.getY()];
+//        }catch(IndexOutOfBoundsException e){
+//            return null;
+//        }
+//    }
 
-    public boolean setLastBuilding(Position position, Node lastNode, BuildingHeight level){
+    public boolean setHeight(Position position, BuildingHeight level){
         try {
-            lastBuildings[position.getX()][position.getY()] = lastNode;
-            Bounds old = map2D[position.getX()][position.getY()];
+//            lastBuildings[position.getX()][position.getY()] = lastNode;
+//            Bounds old = map2D[position.getX()][position.getY()];
             heights[position.getX()][position.getY()] = level.getHeight();
             return true;
         }catch(IndexOutOfBoundsException e){

@@ -8,6 +8,7 @@ import java.util.List;
 public interface GuiEventListener extends EventListener {
     void onMove(Position startPosition, Position destPosition);
     void onBuild(Position workerPosition, Position buildPosition, boolean isDome);
+    void onUndo();
     void onEndTurn();
     void onLogin(String username, Integer numPlayers);
     void onChooseCard(String chosenCard);

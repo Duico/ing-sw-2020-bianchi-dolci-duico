@@ -5,9 +5,11 @@ import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.client.gui.event.GuiEventListener;
 import it.polimi.ingsw.client.message.SignUpMessage;
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.view.event.*;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,8 +127,9 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         return players;
     }
 
-
-
+    public void setBoard(@NotNull Board board) {
+        this.board = board;
+    }
 
     public TurnPhase getTurnPhase() {
         return turnPhase;
@@ -211,7 +214,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 //    }
 
     public void moveOnTheBoard(Position startPosition, Position destPosition, Position pushPosition){
-        if(pushPosition!=null && board.getBoardCell(pushPosition).getWorker()!=null)
+        if(pushPosition!=null && board.getBoardCell(destPosition).getWorker()!=null)
             mainController.moveWorker(startPosition, destPosition, pushPosition);
         else
             mainController.moveWorker(startPosition, destPosition);
@@ -226,6 +229,50 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         System.out.println(level);
         System.out.println(isDome);
         mainController.makeBuild(destPosition, level, isDome);
+    }
+
+    public void undoOnTheBoard(){
+        mainController.clearBoard();
+        placeAllBuildings();
+        placeAllWorkers();
+        //TODO infoEvent
+//        mainController.updateOperationButtons(true, true);
+    }
+
+    //TODO create Class workersMap
+    private boolean placeAllWorkers(){
+        //TO call above
+        //mainController.clearBoard();
+        int count = 0;
+        for(Player player: players){
+            boolean isMyPlayer = player.equalsUuid(myPlayer);
+            for(int i = 0; i<player.getNumWorkers(); i++) {
+                Position pos = player.getWorkerPosition(i);
+                if(pos!=null){
+                    mainController.placeWorker(pos, isMyPlayer, player.getColor());
+                    count++;
+                }
+            }
+        }
+        if(count>0) return true;
+        else return false;
+    }
+
+    private boolean placeAllBuildings(){
+        for(int y=0; y<board.getHeight(); y++){
+            for(int x=0; x<board.getWidth(); x++){
+                Position position;
+                try {
+                    position = new Position(x, y);
+                } catch (PositionOutOfBoundsException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+                BoardCell boardCell = board.getBoardCell(position);
+                mainController.drawBoardCell(position, boardCell.getLevel(), boardCell.hasDome());
+            }
+        }
+        return true;
     }
 
     public void alert(String message){
@@ -254,6 +301,10 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         emitViewEvent(new BuildViewEvent(workerPosition, buildPosition, isDome));
     }
 
+    @Override
+    public void onUndo(){
+        emitViewEvent(new UndoViewEvent());
+    }
 
     @Override
     public void onEndTurn() {

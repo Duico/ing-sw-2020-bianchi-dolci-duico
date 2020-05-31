@@ -10,11 +10,8 @@ import it.polimi.ingsw.model.PlayerColor;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import javafx.animation.FadeTransition;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
 import javafx.scene.*;
@@ -40,7 +37,6 @@ import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 
 
 public class MainController implements GuiEventEmitter {
@@ -63,6 +59,7 @@ public class MainController implements GuiEventEmitter {
     private Button buildButton = new Button();
     private Button endTurnButton = new Button();
     private Label messageBox = new Label();
+    private FadeTransition messageBoxFade;
 
     private Position startPosition;
     private double onClickXCoord,onClickYCoord;
@@ -85,7 +82,6 @@ public class MainController implements GuiEventEmitter {
         return active;
     }
 
-
     public enum Operation {
         MOVE,
         BUILD,
@@ -101,17 +97,21 @@ public class MainController implements GuiEventEmitter {
     public void setMessage(String message){
         Platform.runLater(()->{
             messageBox.setText(message);
-            FadeTransition ft = new FadeTransition(Duration.millis(4000), messageBox);
-            ft.setDelay(Duration.seconds(4));
-            ft.setFromValue(1.0);
-            ft.setToValue(0);
-            ft.setCycleCount(1);
-            ft.play();
+            messageBox.setOpacity(1);
+            //TODO clear
+            if(messageBoxFade != null) {
+                messageBoxFade.playFromStart();
+            }
         });
     }
 
     //TODO css
     private void initMessageBox(){
+        messageBoxFade = new FadeTransition(Duration.millis(4000), messageBox);
+        messageBoxFade.setDelay(Duration.seconds(4));
+        messageBoxFade.setFromValue(1.0);
+        messageBoxFade.setToValue(0);
+        messageBoxFade.setCycleCount(1);
         messageBox.setLayoutY(50);
         messageBox.setFont(new Font("Arial", 20));
     }
@@ -167,9 +167,10 @@ public class MainController implements GuiEventEmitter {
     }
     public void addOnClickEventUndoButton(Node node){
         node.setOnMouseClicked(event->{
-//            undo();
+            emitUndo();
         });
     }
+
     //TODO activate button only after first Normal turn
     public void addOnClickEventMoveButton(Node node){
         node.setOnMouseClicked(event->{
@@ -201,9 +202,13 @@ public class MainController implements GuiEventEmitter {
 
 
     public void clearBoard(){
-        buildings.getChildren().removeAll();
-        workers.getChildren().removeAll();
-        workersMap.clear();
+        Platform.runLater( () -> {
+            myWorkers.getChildren().clear();
+            opponentWorkers.getChildren().clear();
+            buildings.getChildren().clear();
+//        workers.getChildren().removeAll();
+            workersMap.clear();
+        });
     }
 
     public void drawBoardCell(Position position, Level level, boolean isDome){
@@ -432,6 +437,9 @@ public class MainController implements GuiEventEmitter {
     }
 
     private void makeBlockBuild(Position position, @NotNull Level level){
+        if(level == null || level.equals(Level.EMPTY)){
+            return;
+        }
         Platform.runLater(()->{
             Point3D pos = map.getCoordinate(position);
             double height= pos.getZ();
@@ -443,7 +451,7 @@ public class MainController implements GuiEventEmitter {
             model.getTransforms().addAll(new Translate(pos.getX(),pos.getY(),height+1), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3,0.3,0.3));
             addOnClickEventBuilding(model);
             ///
-            map.setLastBuilding(position, model, Level.fromLevelToBuildingHeight(level));
+            map.setHeight(position, Level.fromLevelToBuildingHeight(level));
             ///
             buildings.getChildren().add(model);
             if(level.equals(Level.BASE)) {
@@ -833,7 +841,6 @@ public class MainController implements GuiEventEmitter {
     }
 
 
-
     private ImageView cardImage(String name){
         ImageView imageView = new ImageView("/textures/"+name+".png");
         imageView.setFitHeight(168);
@@ -848,7 +855,6 @@ public class MainController implements GuiEventEmitter {
         return imageView;
     }
 
-
     public void emitMove(Position startPosition, Position destinationPosition){
         System.out.println(startPosition.getX()+" "+startPosition.getY());
         System.out.println(destinationPosition.getX()+" "+destinationPosition.getY());
@@ -858,6 +864,10 @@ public class MainController implements GuiEventEmitter {
         System.out.println(workerPosition.getX()+" "+workerPosition.getY());
         System.out.println(buildPosition.getX()+" "+buildPosition.getY());
         listener.onBuild(workerPosition, buildPosition, isDome);
+    }
+
+    private void emitUndo() {
+        listener.onUndo();
     }
 
     public void emitEndTurn(){

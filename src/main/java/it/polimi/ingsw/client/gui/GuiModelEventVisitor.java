@@ -105,7 +105,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
 
     @Override
     public void visit(UndoModelEvent evt) {
-
+        guiModel.setPlayers(evt.getPlayers());
+        guiModel.setBoard(evt.getBoard());
+        guiModel.undoOnTheBoard();
+        guiModel.setMessage(evt.getPlayer().getNickName()+" used the undo function.");
     }
 
 

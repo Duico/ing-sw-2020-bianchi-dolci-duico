@@ -47,7 +47,7 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
 
     @Override
     public void visit(FailedUndoControllerResponse r) {
-
+        guiModel.setMessage("You're not allowed to undo anymore.");
     }
 
     @Override
@@ -73,9 +73,9 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
     @Override
     public void visit(RequiredOperationControllerResponse r) {
         if(r.getRequiredOperation().equals(Operation.MOVE)){
-            guiModel.setMessage("Your worker hasn't move yet");
+            guiModel.setMessage("Your worker is required to move.");
         } else if(r.getRequiredOperation().equals(Operation.BUILD)){
-            guiModel.setMessage("Your worker hasn't build yet");
+            guiModel.setMessage("Your worker is required to build.");
         } else if(r.getRequiredOperation().equals(Operation.PLACE)) {
             guiModel.setMessage("Please, place all 2 workers");
         }
