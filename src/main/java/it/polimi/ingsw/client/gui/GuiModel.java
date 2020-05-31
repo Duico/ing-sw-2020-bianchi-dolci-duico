@@ -51,6 +51,10 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         }
     }
 
+    public void updateGameButtons(){
+        mainController.updateButtons();
+    }
+
     public void placeWorker(Position position, Player player){
         board.setWorker(new Worker(), position);
         if(player.equalsUuid(myPlayer))

@@ -185,18 +185,29 @@ public class MainController implements GuiEventEmitter {
     //TODO activate button only after first Normal Turn
     public void addOnClickEventBuildButton(Node node){
         node.setOnMouseClicked(event->{
-            if(!getOperation().equals(Operation.BUILD)) {
-                startPosition = null;
-            }
+//            if(!getOperation().equals(Operation.BUILD)) {
+//
+//            }
             if(!currentOperation.equals(Operation.BUILD)) {
+                startPosition = null;
                 System.out.println("build selected");
                 setOperation(Operation.BUILD);
                 isBuildDome = false;
             }else{
                 isBuildDome = !isBuildDome;
+                if(isBuildDome)
+                    buildButton.setGraphic(buttonImage("/textures/builddome.png"));
+                else
+                    buildButton.setGraphic(buttonImage("/textures/build.png"));
                 System.out.println("Build dome: "+isBuildDome);
             }
 
+        });
+    }
+
+    public void updateButtons(){
+        Platform.runLater(()->{
+            buildButton.setGraphic(buttonImage("/textures/build.png"));
         });
     }
 

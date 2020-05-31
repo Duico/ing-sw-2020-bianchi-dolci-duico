@@ -2,9 +2,7 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.MessageVisitor;
-import it.polimi.ingsw.client.event.MessageListener;
 import it.polimi.ingsw.client.message.SignUpListener;
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.view.ViewEventListener;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +11,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -52,6 +49,7 @@ public class SceneManager implements SceneEventListener {
         //GuiMessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModelEventVisitor, new GuiControllerResponseVisitor(guiModel), new GuiSetUpMessageVisitor(guiModel), guiClientConnectionEventVisitor);
         //setConnectionListener(guiMessageVisitor);
         MessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModel, sceneEventEmitter);
+//        ClientConnection clientConnection = new ClientConnection("3.137.63.131", 11347, guiMessageVisitor);
         ClientConnection clientConnection = new ClientConnection("127.0.0.1", 12345, guiMessageVisitor);
         guiModel.addEventListener(ViewEventListener.class, clientConnection);
         guiModel.addEventListener(SignUpListener.class,clientConnection);

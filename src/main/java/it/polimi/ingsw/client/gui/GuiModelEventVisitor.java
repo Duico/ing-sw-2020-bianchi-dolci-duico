@@ -1,14 +1,11 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ModelEventVisitor;
-import it.polimi.ingsw.client.cli.CliText;
 import it.polimi.ingsw.model.Card;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.event.*;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
 
 import java.util.List;
 
@@ -70,7 +67,7 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         changeScene(turnPhase);
         guiModel.setPlayers(evt.getPlayers());
         guiModel.newTurn(currentPlayer, turnPhase);
-
+        guiModel.updateGameButtons();
     }
 
     private void changeScene(TurnPhase turnPhase){
