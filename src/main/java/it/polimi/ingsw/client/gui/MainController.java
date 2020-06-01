@@ -266,6 +266,7 @@ public class MainController implements GuiEventEmitter {
             buildings.getChildren().clear();
 //        workers.getChildren().removeAll();
             workersMap.clear();
+            map.clear();
         });
     }
 
