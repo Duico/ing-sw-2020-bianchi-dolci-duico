@@ -5,12 +5,12 @@
 
 
 #waitLabel{
-    -fx-font-size: 42;
+    -fx-font-size: 38px;
     -fx-alignment: top-center;
 
 }
 #waitBox{
-    -fx-translate-y: 280px;
+    -fx-translate-y: 180px;
 }
 
 #firstPlayerChoiceBox{
@@ -22,6 +22,7 @@
     -fx-alignment: top-center;
     -fx-pref-width: 299px;
     -fx-pref-height: 232px;
+    -fx-spacing: 20;
 }
 
 
@@ -46,6 +47,10 @@
     -fx-translate-y: 10px;
 }
 
+#cardsBox{
+    -fx-padding: 32px 0px;
+}
+
 .card_image{
     -fx-smooth: true;
     /*
@@ -54,7 +59,6 @@
      */
     -fx-border-image: 30px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 6, 0, 0, 0);
-
 }
 
 .card_image:hover{
@@ -72,12 +76,11 @@
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
     -fx-background-color: #c8bfe7;
-    -fx-border-insets: 4;
-    -fx-border-width: 4px;
+    -fx-border-width: 0px;
     /*-fx-border-color: #222222;*/
     -fx-background-size: 78.9px 96.6px;
-    -fx-pref-height: 124;
-    -fx-pref-width: 124;
+    -fx-pref-height: 100;
+    -fx-pref-width: 100;
 
 }
 .play_button:hover{
