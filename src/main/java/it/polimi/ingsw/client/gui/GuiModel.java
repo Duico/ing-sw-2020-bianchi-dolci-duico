@@ -236,11 +236,13 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
     }
 
     public void undoOnTheBoard(){
-        mainController.clearBoard();
-        placeAllBuildings();
-        placeAllWorkers();
-        //TODO infoEvent
+        Platform.runLater( () -> {
+            mainController.clearBoard();
+            placeAllBuildings();
+            placeAllWorkers();
+            //TODO infoEvent
 //        mainController.updateOperationButtons(true, true);
+        });
     }
 
     //TODO create Class workersMap

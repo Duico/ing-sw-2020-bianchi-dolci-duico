@@ -260,14 +260,13 @@ public class MainController implements GuiEventEmitter {
     }
 
     public void clearBoard(){
-        Platform.runLater( () -> {
             myWorkers.getChildren().clear();
             opponentWorkers.getChildren().clear();
             buildings.getChildren().clear();
 //        workers.getChildren().removeAll();
             workersMap.clear();
             map.clear();
-        });
+
     }
 
     public void drawBoardCell(Position position, Level level, boolean isDome){
