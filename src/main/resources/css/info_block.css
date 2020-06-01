@@ -30,6 +30,7 @@ Label {
 .label_vbox{
     -fx-text-alignment: center;
     -fx-alignment: top-center;
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.8), 8, 0, 2, 2);
 }
 
 .prompt_label {

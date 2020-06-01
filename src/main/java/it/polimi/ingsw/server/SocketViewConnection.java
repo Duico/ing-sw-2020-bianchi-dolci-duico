@@ -153,7 +153,6 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         } catch (IOException | NoSuchElementException | InterruptedException e) {
             //TODO change text
             System.err.println("Error! Entra qui" + e.getMessage());
-            System.out.println("ciaooo");
         } finally{
             close();
         }
