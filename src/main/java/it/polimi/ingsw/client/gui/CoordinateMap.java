@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
+import it.polimi.ingsw.model.Level;
 import it.polimi.ingsw.model.Position;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -26,10 +27,14 @@ public class CoordinateMap {
                 x+=gap;
                 map2D[j][i] = new BoundingBox(left, y, gap, gap);
                 //                coordinateMap[i][j]= getCenter(new Border(y,y+gap,left,x));
+                //Initialize heights to EMPTY level height
+//                heights[i][j] = new BuildingHeight()
             }
 
             x=copyX;
             y=y+gap;
+
+
         }
 
     }
