@@ -96,7 +96,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         try {
 
             socket = new Socket(ip, port);
-            socket.setSoTimeout(5500);
+            socket.setSoTimeout(6000);
             startPingTimer();
             InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = socket.getOutputStream();

@@ -215,7 +215,7 @@ public class MainController implements GuiEventEmitter {
     }
 
     private void setStartPosition(Position position) {
-        if(position!= null && !workersMap.containsKey(position)){
+        if(position!= null && !isMyWorker(position)){
             return;
         }
         startPosition = position;
@@ -265,13 +265,14 @@ public class MainController implements GuiEventEmitter {
             buildings.getChildren().clear();
 //        workers.getChildren().removeAll();
             workersMap.clear();
-            map.clear();
+            map.clearHeight();
 
     }
 
     public void drawBoardCell(Position position, Level level, boolean isDome){
         int i;
-        for(i=0;i<level.getOrd();i++){
+        for(i=0;i<=level.getOrd();i++){
+            System.out.print("drawBoardCell "+position.getX()+" "+position.getY()+" level "+Level.fromIntToLevel(i));
             makeBlockBuild(position, Level.fromIntToLevel(i));
         }
         if(isDome)

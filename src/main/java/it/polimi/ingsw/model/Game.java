@@ -416,14 +416,14 @@ public class Game extends ModelEventEmitter implements Serializable{
 
 
 
-    public int place(Position placePosition) {
+    public Optional<Integer> place(Position placePosition) {
         if(turn.getPhase() != TurnPhase.PLACE_WORKERS)
             throw new IllegalTurnPhaseException();
         backupUndo();
         startTimerUndo();
 
-        int workerId = turn.boardPlace(board, placePosition);
-        if(workerId>=0) {
+        Optional<Integer> workerId = turn.boardPlace(board, placePosition);
+        if(workerId.isPresent()) {
             ModelEvent evt = new PlaceWorkerModelEvent(getCurrentPlayer(), placePosition);
             emitEvent(evt);
         }

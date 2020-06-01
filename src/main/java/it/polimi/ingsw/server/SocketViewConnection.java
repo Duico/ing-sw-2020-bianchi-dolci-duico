@@ -40,8 +40,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         try {
             out.reset();
         } catch(IOException e){
-            System.out.println(message.getClass());
-            System.out.println("Tutto ok!");
+            System.out.println("Send of"+message.getClass()+"failed");
             //e.printStackTrace();
         }
         try{
@@ -131,13 +130,13 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         timer.schedule(task, intialDelay, delta);
     }
 
-   public void createObjectStream()  {
-       try {
+   public void createObjectStream() throws IOException{
+//       try {
            out = new ObjectOutputStream(socket.getOutputStream());
            in = new ObjectInputStream(socket.getInputStream());
-       }catch(IOException e){
-           e.printStackTrace();
-       }
+//       }catch(IOException e){
+//           e.printStackTrace();
+//       }
     }
 
 
@@ -145,7 +144,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     public void run(){
         try{
 
-            socket.setSoTimeout(2500);
+            socket.setSoTimeout(3500);
             startPingTimer();
             Thread t0 = asyncReadFromSocket(in);
             t0.join();

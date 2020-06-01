@@ -6,11 +6,11 @@ public class PlaceWorkersTurn extends Turn {
         super(TurnPhase.PLACE_WORKERS, currentPlayer);
     }
 
-    protected int boardPlace(Board board, Position placePosition){
+    protected Optional<Integer> boardPlace(Board board, Position placePosition){
         Player currentPlayer = this.getCurrentPlayer();
         //for extra security
         if(!currentPlayer.isAnyWorkerNotPlaced()){
-            return -1;
+            return Optional.empty();
         }
 
         Worker newWorker = new Worker();
@@ -18,10 +18,10 @@ public class PlaceWorkersTurn extends Turn {
             Optional<Integer> workerId = currentPlayer.addWorker(newWorker);
             if(!workerId.isPresent())
                 throw new RuntimeException("Worker set in the board without reference from player");
-            return workerId.get();
+            return workerId;
         }
 
-        return -1;
+        return Optional.empty();
     }
 
     /*@Override

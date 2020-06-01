@@ -195,14 +195,16 @@ public class NormalTurn extends Turn {
         if(!this.getBlockNextPlayer()) {
             blockNextPlayer=blockNextPlayer(board, startPosition, destinationPosition);
         }
+        Position pushDestPosition;
         try {
-            Position pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
+            pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
+        }catch (InvalidPushCell e){
+            pushDestPosition = null;
+            System.out.print("Invalid push cell");
+        }
             board.putWorkers(startPosition, destinationPosition, pushDestPosition);
             this.updateCurrentWorker(workerId.get());
             return pushDestPosition;
-        }catch (InvalidPushCell e){
-            return null;
-        }
 
     }
 

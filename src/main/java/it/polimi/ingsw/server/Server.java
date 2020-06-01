@@ -1,6 +1,7 @@
 
 package it.polimi.ingsw.server;
 
+import com.sun.nio.sctp.InvalidStreamException;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.GameViewEventListener;
 import it.polimi.ingsw.model.PlayerColor;
@@ -12,6 +13,7 @@ import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.ModelEventListener;
 
 import java.io.IOException;
+import java.io.StreamCorruptedException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -21,7 +23,7 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-    private static final int PORT = 12345;
+    private static final int PORT = 38612;
     private Lobby lobby;
     private Game game;
     private ServerSocket serverSocket;
@@ -138,11 +140,12 @@ public class Server {
             try {
                 Socket newSocket = serverSocket.accept();
                 SocketViewConnection socketConnection = new SocketViewConnection(newSocket, this);
-                connections.add(socketConnection);
                 socketConnection.createObjectStream();
+                connections.add(socketConnection);
                 executor.submit(socketConnection);
                 initMessageClient(socketConnection);
-
+            } catch(StreamCorruptedException e){
+                System.out.print("Connection attempt from unknown service");
             } catch (IOException e) {
                 System.out.println("Connection Error!");
                 System.out.println("Il server ha perso la connessione!");

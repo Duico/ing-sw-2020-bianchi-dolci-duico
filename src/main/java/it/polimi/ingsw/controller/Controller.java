@@ -169,7 +169,7 @@ public class Controller implements GameViewEventListener {
             view.sendMessage("incorrect turn phase");
             return;
         }
-        if(!isCurrentWorkerId(message)){
+        if(!isCurrentWorkerId(workerPosition)){
             view.sendMessage("incorrect Worker");
             ControllerResponse response = new FailedOperationControllerResponse(message, Operation.MOVE, FailedOperationControllerResponse.Reason.NOT_CURRENT_WORKER);
             view.eventResponse(response);
@@ -231,8 +231,8 @@ public class Controller implements GameViewEventListener {
 
 
         //int workerId = game.place(message.getDestinationPosition());
-        int workerId = game.place(message.getWorkerPosition());
-        if( workerId < 0){
+        Optional<Integer> workerId = game.place(message.getWorkerPosition());
+        if(!workerId.isPresent()){
             view.sendMessage("incorrect position");
             ControllerResponse response = new FailedOperationControllerResponse(message, Operation.PLACE, FailedOperationControllerResponse.Reason.DESTINATION_NOT_EMPTY);
             view.eventResponse(response);
@@ -332,13 +332,13 @@ public class Controller implements GameViewEventListener {
         }
         return false;
     }
-    private boolean isCurrentWorkerId(WorkerViewEvent message){
-        Position currentWorkerPosition = message.getWorkerPosition();
-        if(!game.checkCurrentWorker(currentWorkerPosition)){
-            return false;
-        }
-        return true;
-    }
+//    private boolean isCurrentWorkerId(WorkerViewEvent message){
+//        Position currentWorkerPosition = message.getWorkerPosition();
+//        if(!game.checkCurrentWorker(currentWorkerPosition)){
+//            return false;
+//        }
+//        return true;
+//    }
 
     private boolean isCurrentWorkerId(Position currentWorkerPosition){
         //Position currentWorkerPosition = message.getWorkerPosition();

@@ -1,15 +1,13 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.model.Level;
 import it.polimi.ingsw.model.Position;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point3D;
-import javafx.scene.Node;
 
 public class CoordinateMap {
     private Bounds[][] map2D = new BoundingBox[5][5];
-    private double[][] heights = new double[5][5];
+    private double[][] heightMap = new double[5][5];
 //    private Node[][] lastBuildings = new Node[5][5];
     private final double baseZ;
 //    private Coordinate [][] coordinateMap= new Coordinate[5][5];
@@ -74,7 +72,7 @@ public class CoordinateMap {
 
     private Point3D getCoordinate(int i, int j){
         Bounds bb2D = getBoundingBox(i,j);
-        return new Point3D(bb2D.getCenterX(), bb2D.getCenterY(), heights[i][j]);
+        return new Point3D(bb2D.getCenterX(), bb2D.getCenterY(), heightMap[i][j]);
     }
 
     /**
@@ -103,7 +101,7 @@ public class CoordinateMap {
         try {
 //            lastBuildings[position.getX()][position.getY()] = lastNode;
 //            Bounds old = map2D[position.getX()][position.getY()];
-            heights[position.getX()][position.getY()] = level.getHeight();
+            heightMap[position.getX()][position.getY()] = level.getHeight();
             return true;
         }catch(IndexOutOfBoundsException e){
             return false;
@@ -111,13 +109,13 @@ public class CoordinateMap {
     }
 
     public double getHeight(int i, int j){
-        return heights[i][j];
+        return heightMap[i][j];
     }
 
-    public void clear(){
+    public void clearHeight(){
         for(int i=0;i<5;i++){
             for(int j=0;j<5;j++){
-                heights[i][j] = 0;
+                heightMap[i][j] = 0;
             }
         }
     }
