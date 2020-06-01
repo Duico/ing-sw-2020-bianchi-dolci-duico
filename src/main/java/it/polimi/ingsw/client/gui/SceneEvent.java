@@ -17,7 +17,8 @@ public class SceneEvent {
     public enum SceneType {
         LOGIN,
         CHOSE_CARDS,
-        MAIN
+        MAIN,
+        CONNECTION_CLOSED
     }
 
 

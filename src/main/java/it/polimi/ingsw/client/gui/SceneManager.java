@@ -61,7 +61,8 @@ public class SceneManager implements SceneEventListener {
         stage.setOnCloseRequest((windowEvent) -> {
             //disconnect
             //TODO handle interruptedException
-                connectionThread.interrupt();
+            clientConnection.closeConnection();
+            System.out.println("Window closed... Closing connection.");
         });
     }
 
@@ -96,6 +97,9 @@ public class SceneManager implements SceneEventListener {
 //            Platform.runLater(()->{
                 showMainScene(guiModel.getMainController());
 //            });
+        }else if(sceneType.equals(SceneEvent.SceneType.CONNECTION_CLOSED)){
+//            showFXMLScene();
+            System.exit(1);
         }
     }
 
