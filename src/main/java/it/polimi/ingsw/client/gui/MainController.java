@@ -558,7 +558,7 @@ public class MainController implements GuiEventEmitter {
             System.out.println("dovrei disegnare una dome");
             Point3D pos = map.getCoordinate(position);
             Group dome = Models.DOME.getModel();
-            dome.getTransforms().addAll(new Translate(pos.getX(), pos.getY(), pos.getZ() + 0.8), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3, 0.3, 0.3));
+            dome.getTransforms().addAll(new Translate(pos.getX(), pos.getY(), pos.getZ() + 0.86), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3, 0.3, 0.3));
 //        addOnClickEventBuilding(dome);
 //            if (level0) {
 //                buildPlatform(pos);
@@ -925,8 +925,6 @@ public class MainController implements GuiEventEmitter {
             if(players==null){
                 return;
             }
-            System.out.print("diplayPlayers( ");
-            System.out.println(players);
             for(Player player:players){
                 System.out.println(player.getNickName()+" "+player.getCard().getName());
                 VBox username = new VBox();
