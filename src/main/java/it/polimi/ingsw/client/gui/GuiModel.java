@@ -25,13 +25,13 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
     private boolean isAllowedToMove;
     private boolean isAllowedToBuild;
     private boolean askNumPlayers = true;
+    private boolean askPersistency = true;
     private LoginController loginController;
     private ChooseCardController chooseCardController;
     private MainController mainController;
 
 
     private TurnPhase turnPhase;
-
 
 
     public GuiModel( ){
@@ -150,13 +150,17 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         }
         if(myPlayer.equalsUuid(currentPlayer)){
             setMessage("Your turn to play");
-            if(turnPhase.equals(TurnPhase.PLACE_WORKERS)){
-                mainController.setOperation(MainController.Operation.PLACE_WORKER);
-            }else if(turnPhase.equals(TurnPhase.NORMAL)){
-                mainController.setOperation(MainController.Operation.MOVE);
-            }
+            setDefaultOperation();
         }else{
             setMessage("Wait, it's not your turn...");
+        }
+    }
+
+    public void setDefaultOperation() {
+        if (turnPhase.equals(TurnPhase.PLACE_WORKERS)) {
+            mainController.setOperation(MainController.Operation.PLACE_WORKER);
+        } else if (turnPhase.equals(TurnPhase.NORMAL)) {
+            mainController.setOperation(MainController.Operation.MOVE);
         }
     }
 
@@ -198,14 +202,15 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         chooseCardController.waitChooseCards();
     }
 
-    public void askSetUpInfo(boolean askNumPlayers){
+    public void askSetUpInfo(boolean askNumPlayers, boolean askPersistency){
         this.askNumPlayers = askNumPlayers;
-        loginController.askSetUpInfo(askNumPlayers);
+        this.askPersistency = askPersistency;
+        loginController.askSetUpInfo(askNumPlayers, askPersistency);
     }
 
 
-    public void correctSignUp(boolean waitOtherPlayers){
-        loginController.correctSignUp(waitOtherPlayers);
+    public void correctSignUp(){
+        loginController.correctSignUp();
     }
 
 //    public boolean isSetLoginController(){
@@ -244,6 +249,22 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
             //TODO infoEvent
 //        mainController.updateOperationButtons(true, true);
         });
+    }
+
+
+    public void resumeGame() {
+        if(!(turnPhase.equals(TurnPhase.PLACE_WORKERS)||turnPhase.equals(TurnPhase.NORMAL))) {
+            throw new RuntimeException("Trying to resume from an invalid game... quitting");
+        }
+        mainController.displayPlayers(players);
+        undoOnTheBoard();
+        if(myPlayer.equalsUuid(currentPlayer)){
+            setMessage("Resumed game: Your turn to play.");
+            setDefaultOperation();
+        }else{
+            setMessage("Resumed game: Not your turn...");
+        }
+
     }
 
     //TODO create Class workersMap
@@ -319,9 +340,11 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
     }
 
     @Override
-    public void onLogin(String username, Integer numPlayers) {
-
-        emitSignUp(new SignUpMessage(username, numPlayers));
+    public void onLogin(String username, Integer numPlayers, boolean persistency) {
+        if(askNumPlayers && numPlayers==null){
+            System.err.print("Gui should provide numPlayers");
+        }
+        emitSignUp(new SignUpMessage(username, numPlayers, persistency));
     }
 
     @Override

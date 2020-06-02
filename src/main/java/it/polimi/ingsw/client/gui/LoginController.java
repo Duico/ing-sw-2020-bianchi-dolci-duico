@@ -20,14 +20,15 @@ public class LoginController implements GuiEventEmitter {
     @FXML
     public ChoiceBox<String> choiceBox;
     @FXML
-    public Label message;
+    public VBox numPlayersVBox;
     @FXML
     public VBox waitLabel;
     @FXML
     public VBox loginPane;
-
-    private int numPlayers;
-    private String username;
+    @FXML
+    private VBox persistencyVbox;
+    @FXML
+    private CheckBox persistencyCheckBox;
 
 
 
@@ -52,32 +53,23 @@ public class LoginController implements GuiEventEmitter {
         choiceBox.setVisible(set);
     }
 
-    public void askSetUpInfo(boolean askNumPlayers){
+    public void askSetUpInfo(boolean askNumPlayers, boolean askPersistency){
         Platform.runLater(()->{
             if(askNumPlayers){
 //                setMessage("Select number of players:");
-                message.setVisible(true);
-                setVisibleChoiceBox(true);
+                persistencyVbox.setVisible(true);
+                if (askPersistency) {
+                    persistencyVbox.setDisable(false);
+                }
+                numPlayersVBox.setVisible(true);
             }else{
-                setVisibleChoiceBox(false);
+//                setVisibleChoiceBox(false);
             }
         });
     }
 
-    public void correctSignUp(boolean waitOtherPlayers){
+    public void correctSignUp(){
         loginPane.setVisible(false);
-
-//        if(waitOtherPlayers){
-//            Platform.runLater(()->{
-////                waitLabel.setText("Waiting for other Players");
-//            });
-//        }else {
-//            Platform.runLater(()->{
-////                waitLabel.setText("Waiting for other Players");
-//
-//            });
-//        }
-
         waitLabel.setVisible(true);
     }
 
@@ -103,7 +95,7 @@ public class LoginController implements GuiEventEmitter {
 
     }
 
-    private void checkValidStart(){
+    public void startGame(ActionEvent actionEvent) throws Exception {
         String username = textfield.getText().trim();
         boolean checkUsername = username.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$");
         if(checkUsername) {
@@ -112,23 +104,19 @@ public class LoginController implements GuiEventEmitter {
                 if(choiceBoxNumPlayers==null){
                     textfield.setText("");
                     alert("Number of players not set!");
+                    return;
                 }
-                else {
-                    emitLogin(username, choiceBoxNumPlayers);
-                }
+                boolean persistency = persistencyCheckBox.isSelected();
+                emitLogin(username, choiceBoxNumPlayers, persistency);
+
             }else{
-                emitLogin(username, null);
+                emitLogin(username);
             }
 
         }
         else{
             alert("Invalid username!");
         }
-
-    }
-
-    public void startGame(ActionEvent actionEvent) throws Exception {
-        checkValidStart();
     }
 
     public void alert(String message){
@@ -140,8 +128,11 @@ public class LoginController implements GuiEventEmitter {
     }
 
 
-    public void emitLogin(String username, Integer numPlayers){
-        listener.onLogin(username, numPlayers);
+    private void emitLogin(String username, Integer numPlayers, boolean persistency){
+        listener.onLogin(username, numPlayers, persistency);
+    }
+    private void emitLogin(String username){
+        listener.onLogin(username, null, false);
     }
 
     @Override

@@ -10,7 +10,7 @@ public interface GuiEventListener extends EventListener {
     void onBuild(Position workerPosition, Position buildPosition, boolean isDome);
     void onUndo();
     void onEndTurn();
-    void onLogin(String username, Integer numPlayers);
+    void onLogin(String username, Integer numPlayers, boolean persistency);
     void onChooseCard(String chosenCard);
     void onChallengeCards(List<String> challengerCards);
     void onFirstPlayer(String firstPlayer);

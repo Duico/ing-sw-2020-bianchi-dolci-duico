@@ -43,6 +43,8 @@ public class Server {
                     connections.clear();
                     //it is safe not to clear lobby.waitingPlayers if we unset the lobby later
                     waitingConnection.clear();
+//                   !!!!!!!!!!!!!!!
+//                    TODO ENABLE
                     lobby.persistencySaveGame();
                     lobby.clearGame();
                     this.lobby = null;
@@ -59,7 +61,7 @@ public class Server {
 
     }
 
-    private void waitingConnectionRemove(ViewConnection c){
+    private synchronized void waitingConnectionRemove(ViewConnection c){
         lobby.removePlayerByName(waitingConnection.get(c));
         waitingConnection.remove(c);
     }
@@ -67,7 +69,7 @@ public class Server {
 
     public synchronized void createNewGame(){
 //            if(!lobby.isSetGame()) {
-                System.out.println(waitingConnection.size());
+                System.out.println("Players waiting: "+waitingConnection.size());
                 Integer numPlayers = lobby.getNumPlayers();
 
                 ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
@@ -103,8 +105,6 @@ public class Server {
 //        }else{
 //            System.out.println("Entro nel controllo nickname persistenza");
 //        }
-
-
     }
 
     private boolean initPlayerOfConnection(ViewConnection connection){
@@ -145,7 +145,6 @@ public class Server {
     }
 
     public void run(){
-        //TODO ??needed??
         hasGameStarted = false;
         while(true){
             try {
@@ -181,6 +180,10 @@ public class Server {
             connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.NULL_LOBBY));
             return;
         }
+        if(waitingConnection.containsKey(connection)){
+            System.out.println("Multiple login attempts from the same connection");
+            return;
+        }
         if(!hasGameStarted) {
             if (!lobby.validateNickname(nickName)) {
                 connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME));
@@ -202,7 +205,7 @@ public class Server {
 //                    }else{//isPersistency
                         //numPlayers set by the lobby
 //                    }
-                }
+                    }
 
             }
             lobby.addWaitingPlayer(nickName);
@@ -229,7 +232,7 @@ public class Server {
 
     public synchronized boolean createNewLobby() {
         if(this.lobby==null){
-            System.out.println("Instantiating new Lobby obj");
+            System.out.println("Opening a new Lobby");
             lobby = new Lobby("./game.ser"); //pass filename here
             this.isPersistencyAvailable = lobby.persistencyLoadGame();
             return true;

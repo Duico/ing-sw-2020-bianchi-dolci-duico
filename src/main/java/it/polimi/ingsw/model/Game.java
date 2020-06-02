@@ -1,15 +1,9 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.client.event.ClientConnectionEvent;
 import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
-import it.polimi.ingsw.server.TimeOutCheckerInterface;
-import it.polimi.ingsw.server.TimeoutCounter;
-import it.polimi.ingsw.server.message.ConnectionMessage;
 
-import javax.swing.*;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.Timer;
 import java.util.stream.Collectors;
@@ -600,15 +594,13 @@ public class Game extends ModelEventEmitter implements Serializable{
                 checkHasLost();
             }
         }, delta);
-
     }
 
     public void resumeGame(){
        emitEvent(makePersistencyEvent());
     }
     private PersistencyEvent makePersistencyEvent(){
-        //TODO use clone
-        return new PersistencyEvent(getPlayers(), getCurrentPlayer(), board, getTurnPhase());
+        return new PersistencyEvent(getCurrentPlayer(), getPlayers(), board, getTurnPhase());
     }
 
     public List<Player> getPlayers(){

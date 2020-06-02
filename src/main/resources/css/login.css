@@ -53,3 +53,7 @@ Pane{
  -fx-pref-width: 180px;
  -fx-translate-y: 10px;
 }
+
+#persistencyCheckBox{
+ -fx-alignment: center;
+}

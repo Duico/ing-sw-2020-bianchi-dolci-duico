@@ -5,9 +5,12 @@ import it.polimi.ingsw.controller.GameViewEventListener;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameSerializer;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.event.ModelEvent;
 import it.polimi.ingsw.view.ModelEventListener;
 import it.polimi.ingsw.view.RemoteView;
 
+import java.io.FileNotFoundException;
+import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -17,7 +20,7 @@ public class Lobby {
     //TODO should be in a configuration file
     private  Game game = null;
     private Controller controller;
-    Integer numPlayers;
+    private Integer numPlayers;
     //only needed to check for duplicate nicknames
     private List<String> waitingPlayers;
     private List<Player> playingPlayers;
@@ -63,12 +66,17 @@ public class Lobby {
     }
 
     public Player checkPersistencyPlayer(String nickname){
-
+        if(persistencyPlayers==null){
+            System.out.print("Error with loading players from persistency.");
+            return null;
+        }
 //        if(!validateNickname(nickname)){
 //            return false;
 //        }
         for(Player player : persistencyPlayers){
             if(player.getNickName().equals(nickname)){
+                //to avoid multiple players taking the same name
+                persistencyPlayers.remove(player);
                 return player;
             }
         }
@@ -82,16 +90,12 @@ public class Lobby {
     public Player addPlayingPlayer(String nickname){
         Player newPlayer = new Player(nickname);
         playingPlayers.add(newPlayer);
-        System.out.print("Add playing player: "+nickname);
+        System.out.println("Add playing player: "+nickname);
         return newPlayer;
     }
 
     public void removePlayerByName(String nickname){
-        for(String player: waitingPlayers) {
-            if (player.equals(nickname)) {
-                waitingPlayers.remove(player);
-            }
-        }
+        waitingPlayers.removeIf(player -> player.equals(nickname));
     }
 
 
@@ -118,17 +122,28 @@ public class Lobby {
      */
     public boolean persistencyLoadGame(){
         GameSerializer gameSerializer = new GameSerializer(persistencyFilename);
-        Game readGame = gameSerializer.readGame();
+        Game readGame = null;
+        try {
+            readGame = gameSerializer.readGame();
+        }catch (FileNotFoundException e) {
+            System.out.println("No game save found on disk...");
+            return false;
+        } catch(InvalidClassException e) {
+            System.out.println("Game save corrupted (Invalid Class)");
+            return false;
+        }
         if(!Game.validateGame(readGame)){
-            this.game =  null;
             return false;
         }
 //        PersistencyEvent persistencyEvent = game.makePersistencyEvent();
 //        if(!validatePlayersPersistency(persistencyEvent)){
 //            return null;
 //        }
+        System.out.println("Game save found on disk: persistency available.");
         this.persistencyPlayers = readGame.getPlayers();
+        setNumPlayers(persistencyPlayers.size());
         this.game = readGame;
+        game.clearEventListeners(ModelEventListener.class);
         return true;
     }
 
@@ -144,9 +159,6 @@ public class Lobby {
 
     public Integer getNumPlayers(){
         //if(numPlayers>=2 && numPlayers<=3){
-        if(persistencyPlayers!=null){
-            return persistencyPlayers.size();
-        }
         return numPlayers;
 
     }
@@ -155,14 +167,15 @@ public class Lobby {
         if(numPlayers == null){
             return false;
         }
-        if(this.numPlayers!=null)
-            return false;
-        else if(2<=numPlayers && numPlayers<=3) {
+//        if(this.numPlayers!=null)
+//            return false;
+        if(2<=numPlayers && numPlayers<=3) {
             this.numPlayers = numPlayers;
             return true;
         }else
             return false;
     }
+
 
     public void newGame() {
         this.game = new Game();
@@ -182,9 +195,10 @@ public class Lobby {
 //                }
         if(isPersistencyAvailable){
             System.out.print("Resuming game.");
+            //no need for playingPlayers here
             game.resumeGame();
         }else {
-            System.out.print("Starting new game");
+            System.out.println("Starting new game");
             game.startGame(playingPlayers, true);
         }
     }
@@ -204,4 +218,5 @@ public class Lobby {
 //        remoteViews.add(remoteView);
         game.addEventListener(ModelEventListener.class, remoteView);
     }
+
 }

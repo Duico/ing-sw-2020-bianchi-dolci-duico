@@ -21,6 +21,8 @@ public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
                 alert("Incorrect number of players");
             }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.GAME_ALREADY_START)){
                 alert("Game already started, wait the end of the game...");
+            }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME_PERSISTENCY)){
+                alert("Game loaded from disk has no player with this nickname.");
             }
     }
 
@@ -28,19 +30,20 @@ public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
     public void visit(InitSetUpMessage message) {
             if((message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME)) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.NICKNAME)) {
                 boolean askNumPlayers = message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME);
+                boolean isAskPersistency = message.isAskPersistency();
 //                guiModel.setAskNumPlayers(askNumPlayers);
 //                Platform.runLater( ()-> {
-                    guiModel.askSetUpInfo(askNumPlayers);
+                    guiModel.askSetUpInfo(askNumPlayers, isAskPersistency);
 //                });
             }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING)) {
-                boolean waitOtherPlayers=message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT);
+                boolean starting=message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING);
                 System.out.println("correct sign up");
-                if(!waitOtherPlayers) {
+                if(starting) {
                     guiModel.setMyPlayer(message.getPlayer());
                     //if persistency
                     //guiModel.startGame();
                 }else {
-                    guiModel.correctSignUp(waitOtherPlayers);
+                    guiModel.correctSignUp();
                 }
             }
     }

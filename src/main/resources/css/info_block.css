@@ -38,8 +38,14 @@ Label {
     -fx-font-size: 12;
     -fx-font-weight: bold;
 }
+.prompt_label:disabled {
+    -fx-text-fill: #eedddd;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+    -fx-strikethrough: true;
+}
 
 .prompt_vbox{
     -fx-background-image: url("/textures/pane.png");
-    -fx-padding: 40px 20px;
+    -fx-padding: 30px 20px;
 }

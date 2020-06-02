@@ -40,7 +40,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         try {
             out.reset();
         } catch(IOException e){
-            System.out.println("Send of"+message.getClass()+"failed");
+            System.out.println("Send of "+message.getClass()+" failed");
             //e.printStackTrace();
         }
         try{

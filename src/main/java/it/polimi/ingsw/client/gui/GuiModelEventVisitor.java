@@ -70,6 +70,18 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         guiModel.updateGameButtons();
     }
 
+    @Override
+    public void visit(PersistencyEvent evt) {
+        System.out.print("Resuming game");
+        sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.MAIN));
+        guiModel.setPlayers(evt.getPlayers());
+        guiModel.setCurrentPlayer(evt.getPlayer());
+        guiModel.setBoard(evt.getBoard());
+        guiModel.setTurnPhase(evt.getTurnPhase());
+        guiModel.resumeGame();
+        guiModel.updateGameButtons();
+    }
+
     private void changeScene(TurnPhase turnPhase){
         if(turnPhase.equals(TurnPhase.CHOSE_CARDS)){
             sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CHOSE_CARDS));
@@ -87,9 +99,9 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
     public void visit(WinModelEvent evt) {
         Player winner = evt.getPlayer();
         if(guiModel.getMyPlayer().getUuid().equals(winner.getUuid())) {
-            guiModel.setMessage("My best compliments, you are the winner!");
+            guiModel.setMessage("My best compliments, you win!");
         } else{
-            guiModel.setMessage("You lose, "+winner.getNickName()+" is the winner!");
+            guiModel.setMessage("You lose, "+winner.getNickName()+" wins!");
         }
     }
 

@@ -11,7 +11,7 @@ public interface ModelEventVisitor /*extends ClientEventEmitter*/ {
     void visit(FailModelEvent evt);
     void visit(FullInfoModelEvent evt);
     void visit(NewTurnModelEvent evt); //ChoseCards, ChosePlayer
-    //void visit(PersistencyEvent evt);
+    void visit(PersistencyEvent evt);
     void visit(PlayerDefeatModelEvent evt);
     void visit(WinModelEvent evt);
     void visit(SetCardModelEvent evt);

@@ -25,7 +25,7 @@ class GameSerializerTest {
     }
 
     @Test
-    void writeGame0(){
+    void writeGame0() throws Exception{
         //game which has just started
         GameSerializer serializer = new GameSerializer("./game.ser");
         serializer.writeGame(game);
@@ -34,7 +34,7 @@ class GameSerializerTest {
     }
 
     @Test
-    void writeGame1(){
+    void writeGame1() throws Exception{
         //game in setCardTurn
         setCardTurn();
         GameSerializer serializer = new GameSerializer("./game.ser");

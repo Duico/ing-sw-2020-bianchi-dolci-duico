@@ -120,6 +120,12 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
     }
 
     @Override
+    public void visit(PersistencyEvent evt) {
+        //TODO
+        //copy GuiModelEventVisitor
+    }
+
+    @Override
     public void visit(PlayerDefeatModelEvent evt) {
         Player playerDefeat = evt.getPlayer();
         if(cliModel.getMyPlayer().getUuid().equals(playerDefeat.getUuid())) {

@@ -15,6 +15,15 @@ public abstract class EventEmitter {
         listenerList.remove(listenerClass, listener);
     }
 
+    synchronized public <T extends EventListener> void clearEventListeners(Class<T> listenerClass){
+        Object[] listeners = listenerList.getListenerList();
+        for(int i=0; i<listeners.length; i+=2){
+            if(listeners[i] == listenerClass){
+                listenerList.remove(listenerClass, (T) listeners[i+1]);
+            }
+        }
+    }
+
     synchronized protected <T extends EventListener>  void executeEventListeners(Class<T> listenerClass, EventHandler<T> eventHandler){
         Object[] listeners = listenerList.getListenerList();
         /*
