@@ -70,10 +70,15 @@
 
 .move_button{
         -fx-background-image: url("/textures/moveImage.png");
+        -fx-background-color: #c8acfa;
+        -fx-background-radius: 15 15 15 15;
+        -fx-border-color: black;
+        -fx-border-width: 2 2 2 2;
+        -fx-border-radius: 15;
 }
 
 .move_button:hover{
-    -fx-background-color: #e4dff3;
+    -fx-background-color: #7e71c9;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 
@@ -82,11 +87,16 @@
 }
 
 .selectedMove_button{
-    -fx-background-image: url("/textures/selectedMove.png");
+    -fx-background-image: url("/textures/moveImage.png");
+    -fx-background-color: #7e71c9;
+    -fx-background-radius: 15 15 15 15;
+    -fx-border-color: black;
+    -fx-border-width: 4 4 4 4;
+    -fx-border-radius: 15;
 }
 
 .selectedMove_button:hover{
-    -fx-background-color: #e4dff3;
+    -fx-background-color: #705cc9;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 
@@ -95,11 +105,17 @@
 }
 
 .build_button{
+        -fx-background-color: #c8acfa;
         -fx-background-image: url("/textures/buildImage.png");
+        -fx-background-radius: 15 15 15 15;
+        -fx-border-color: black;
+        -fx-border-width: 2 2 2 2;
+        -fx-border-radius: 15;
 }
 
 .build_button:hover{
-    -fx-background-color: #e4dff3;
+
+    -fx-background-color: #7e71c9;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 
@@ -110,11 +126,16 @@
 
 
 .selectedBuild_button{
-      -fx-background-image: url("/textures/selectedBuild.png");
+      -fx-background-color: #7e71c9;
+      -fx-background-image: url("/textures/buildImage.png");
+      -fx-background-radius: 15 15 15 15;
+      -fx-border-color: black;
+      -fx-border-width: 4 4 4 4;
+      -fx-border-radius: 15;
 }
 
 .selectedBuild_button:hover{
-    -fx-background-color: #e4dff3;
+    -fx-background-color: #705cc9;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 
@@ -124,11 +145,16 @@
 
 
 .buildDome_button{
-    -fx-background-image: url("/textures/selectedDome.png");
+    -fx-background-image: url("/textures/buildDome.png");
+    -fx-background-color: #705cc9;
+    -fx-background-radius: 15 15 15 15;
+    -fx-border-color: black;
+    -fx-border-width: 4 4 4 4;
+    -fx-border-radius: 15;
 }
 
 .buildDome_button:hover{
-     -fx-background-color: #e4dff3;
+      -fx-background-color: #6042c9;
       -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 
@@ -140,10 +166,15 @@
 
 .endTurn_button{
         -fx-background-image: url("/textures/endturn.png");
+        -fx-background-color: #c8acfa;
+        -fx-background-radius: 15 15 15 15;
+        -fx-border-color: black;
+        -fx-border-width: 2 2 2 2;
+        -fx-border-radius: 15;
 }
 
 .endTurn_button:hover{
-    -fx-background-color: #e4dff3;
+    -fx-background-color: #7e71c9;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 
@@ -153,10 +184,15 @@
 
 .undo_button{
         -fx-background-image: url("/textures/undo.png");
+        -fx-background-color: #c8acfa;
+        -fx-background-radius: 15 15 15 15;
+        -fx-border-color: black;
+        -fx-border-width: 2 2 2 2;
+        -fx-border-radius: 15;
 }
 
 .undo_button:hover{
-    -fx-background-color: #e4dff3;
+    -fx-background-color: #7e71c9;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 

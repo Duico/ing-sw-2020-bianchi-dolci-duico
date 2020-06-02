@@ -50,7 +50,7 @@ public class SceneManager implements SceneEventListener {
         //GuiMessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModelEventVisitor, new GuiControllerResponseVisitor(guiModel), new GuiSetUpMessageVisitor(guiModel), guiClientConnectionEventVisitor);
         //setConnectionListener(guiMessageVisitor);
         MessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModel, sceneEventEmitter);
-//        ClientConnection clientConnection = new ClientConnection("3.137.63.131", 11347, guiMessageVisitor);
+//        ClientConnection clientConnection = new ClientConnection("3.17.117.250", 11086, guiMessageVisitor);
         ClientConnection clientConnection = new ClientConnection("127.0.0.1", 38612, guiMessageVisitor);
         guiModel.addEventListener(ViewEventListener.class, clientConnection);
         guiModel.addEventListener(SignUpListener.class,clientConnection);

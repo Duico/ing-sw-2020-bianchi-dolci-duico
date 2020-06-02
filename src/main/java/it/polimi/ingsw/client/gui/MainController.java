@@ -178,18 +178,16 @@ public class MainController implements GuiEventEmitter {
         });
     }
 
-    //TODO activate button only after first Normal turn
     public void addOnClickEventMoveButton(Node node){
         node.setOnMouseClicked(event->{
             if(!isOperationSet())
             {
-                startPosition = null;
+                startPosition=null;
                 moveButton.getStyleClass().clear();
                 moveButton.getStyleClass().add("selectedMove_button");
                 setOperation(Operation.MOVE);
             }else{
                if(!currentOperation.equals(Operation.MOVE)){
-                   startPosition = null;
                    buildButton.getStyleClass().clear();
                    buildButton.getStyleClass().add("build_button");
                    moveButton.getStyleClass().clear();
@@ -205,7 +203,6 @@ public class MainController implements GuiEventEmitter {
         });
     }
 
-    //TODO activate button only after first Normal Turn
     public void addOnClickEventBuildButton(Node node){
         node.setOnMouseClicked(event->{
             if(!isOperationSet()){
@@ -215,7 +212,6 @@ public class MainController implements GuiEventEmitter {
                 setOperation(Operation.BUILD);
             }else{
                 if(!currentOperation.equals(Operation.BUILD)){
-                    startPosition=null;
                     moveButton.getStyleClass().clear();
                     moveButton.getStyleClass().add("move_button");
                     buildButton.getStyleClass().clear();
@@ -908,19 +904,15 @@ public class MainController implements GuiEventEmitter {
     private void initGameButtons(){
         undoButton.setPrefSize(80,80);
         undoButton.getStylesheets().add("/css/mainscene.css");
-        undoButton.getStyleClass().clear();
         undoButton.getStyleClass().add("undo_button");
         moveButton.setPrefSize(80,80);
         moveButton.getStylesheets().add("/css/mainscene.css");
-        moveButton.getStyleClass().clear();
         moveButton.getStyleClass().add("move_button");
         buildButton.setPrefSize(80,80);
         buildButton.getStylesheets().add("/css/mainscene.css");
-        buildButton.getStyleClass().clear();
         buildButton.getStyleClass().add("build_button");
         endTurnButton.setPrefSize(80, 80);
         endTurnButton.getStylesheets().add("/css/mainscene.css");
-        endTurnButton.getStyleClass().clear();
         endTurnButton.getStyleClass().add("endTurn_button");
         addOnClickEventEndTurnButton(endTurnButton);
         addOnClickEventUndoButton(undoButton);
