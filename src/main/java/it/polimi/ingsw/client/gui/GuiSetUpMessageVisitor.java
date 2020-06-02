@@ -6,10 +6,12 @@ import it.polimi.ingsw.server.message.InitSetUpMessage;
 import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 
 public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
+    private final SceneEventEmitter sceneEventEmitter;
     private final GuiModel guiModel;
-    public GuiSetUpMessageVisitor(GuiModel guiModel) {
+    public GuiSetUpMessageVisitor(GuiModel guiModel, SceneEventEmitter sceneEventEmitter) {
         super();
         this.guiModel = guiModel;
+        this.sceneEventEmitter=sceneEventEmitter;
     }
 
 
@@ -51,7 +53,7 @@ public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
     @Override
     public void visit(ConnectionMessage connectionMessage) {
             if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
-                alert("End game, player disconnected");
+                sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CONNECTION_CLOSED));
                 //sceneEventEmitter closeWindow
             }else if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
                 alert("You have been kicked from the game, because there are too many players.");

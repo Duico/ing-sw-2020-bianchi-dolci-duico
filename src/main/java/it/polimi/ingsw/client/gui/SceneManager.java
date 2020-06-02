@@ -21,6 +21,7 @@ public class SceneManager implements SceneEventListener {
     private FXMLLoader fxmlLoader = new FXMLLoader();
     private GuiModel guiModel;
     private SceneEvent.SceneType sceneType;
+    private ClientConnection clientConnection;
 
     public SceneManager(Stage stage/*, ClientConnection clientConnection*/){
         this.stage = stage;
@@ -49,7 +50,7 @@ public class SceneManager implements SceneEventListener {
         //GuiMessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModelEventVisitor, new GuiControllerResponseVisitor(guiModel), new GuiSetUpMessageVisitor(guiModel), guiClientConnectionEventVisitor);
         //setConnectionListener(guiMessageVisitor);
         MessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModel, sceneEventEmitter);
-//        ClientConnection clientConnection = new ClientConnection("3.137.63.131", 11347, guiMessageVisitor);
+//        ClientConnection clientConnection = new ClientConnection("3.17.117.250", 11086, guiMessageVisitor);
         ClientConnection clientConnection = new ClientConnection("127.0.0.1", 38612, guiMessageVisitor);
         guiModel.addEventListener(ViewEventListener.class, clientConnection);
         guiModel.addEventListener(SignUpListener.class,clientConnection);
@@ -97,9 +98,10 @@ public class SceneManager implements SceneEventListener {
 //            Platform.runLater(()->{
                 showMainScene(guiModel.getMainController());
 //            });
+
         }else if(sceneType.equals(SceneEvent.SceneType.CONNECTION_CLOSED)){
 //            showFXMLScene();
-            System.exit(1);
+            showFXMLScene(getClass().getResource("/fxml/endGame.fxml"), guiModel.getLoginController());
         }
     }
 
@@ -125,6 +127,7 @@ public class SceneManager implements SceneEventListener {
         stage.sizeToScene();
 
         stage.show();
+
     }
 
     public void showMainScene(MainController mainController){

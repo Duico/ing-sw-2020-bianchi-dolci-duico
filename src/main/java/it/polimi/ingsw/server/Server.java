@@ -158,7 +158,6 @@ public class Server {
                 System.out.print("Connection attempt from unknown service");
             } catch (IOException e) {
                 System.out.println("Connection Error!");
-                System.out.println("Il server ha perso la connessione!");
             }
         }
     }

@@ -34,6 +34,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
     private TurnPhase turnPhase;
 
 
+
     public GuiModel( ){
 
     }
@@ -160,9 +161,16 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         if (turnPhase.equals(TurnPhase.PLACE_WORKERS)) {
             mainController.setOperation(MainController.Operation.PLACE_WORKER);
         } else if (turnPhase.equals(TurnPhase.NORMAL)) {
-            mainController.setOperation(MainController.Operation.MOVE);
+            updateGameButtons();
+                addGameButtonEvents();
+                mainController.setOperation(null);
         }
     }
+
+    public void addGameButtonEvents(){
+        mainController.addButtonEvents();
+    }
+
 
 
     private boolean checkDistance(Position start, Position destination){
@@ -202,10 +210,8 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         chooseCardController.waitChooseCards();
     }
 
-    public void askSetUpInfo(boolean askNumPlayers, boolean askPersistency){
-        this.askNumPlayers = askNumPlayers;
-        this.askPersistency = askPersistency;
-        loginController.askSetUpInfo(askNumPlayers, askPersistency);
+    public void askSetUpInfo(boolean askNumPlayers){
+        loginController.askSetUpInfo(askNumPlayers);
     }
 
 
@@ -222,6 +228,10 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 //    public boolean isSetMainController(){
 //        return mainController !=null;
 //    }
+
+    public void winCondition(){
+        mainController.disableAll();
+    }
 
     public void moveOnTheBoard(Position startPosition, Position destPosition, Position pushPosition){
         if(pushPosition!=null && board.getBoardCell(destPosition).getWorker()!=null)

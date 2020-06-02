@@ -44,7 +44,6 @@ public class LoginController implements GuiEventEmitter {
     @FXML
     protected void initialize() {
         initChoiceBox();
-        setVisibleChoiceBox(true);
     }
 
 
@@ -55,6 +54,7 @@ public class LoginController implements GuiEventEmitter {
 
     public void askSetUpInfo(boolean askNumPlayers, boolean askPersistency){
         Platform.runLater(()->{
+            loginPane.setVisible(true);
             if(askNumPlayers){
 //                setMessage("Select number of players:");
                 persistencyVbox.setVisible(true);
