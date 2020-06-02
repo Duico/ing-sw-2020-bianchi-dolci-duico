@@ -77,10 +77,12 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 
+.move_button:pressed{
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 10, 0, 5, 5 ), dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
 .selectedMove_button{
-    -fx-background-image: url("/textures/moveImage.png");
-    -fx-background-color: #e4dff3;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+    -fx-background-image: url("/textures/selectedMove.png");
 }
 
 .selectedMove_button:hover{
@@ -88,6 +90,9 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 
+.selectedMove_button:pressed{
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 10, 0, 5, 5 ), dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
 
 .build_button{
         -fx-background-image: url("/textures/buildImage.png");
@@ -98,10 +103,28 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 
-.buildDome_button{
-    -fx-background-image: url("/textures/buildDome.png");
+.build_button:pressed{
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 10, 0, 5, 5 ), dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+
+
+.selectedBuild_button{
+      -fx-background-image: url("/textures/selectedBuild.png");
+}
+
+.selectedBuild_button:hover{
     -fx-background-color: #e4dff3;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+.selectedBuild_button:pressed{
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 10, 0, 5, 5 ), dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+
+.buildDome_button{
+    -fx-background-image: url("/textures/selectedDome.png");
 }
 
 .buildDome_button:hover{
@@ -109,17 +132,11 @@
       -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 
-
-.selectedBuild_button{
-      -fx-background-image: url("/textures/buildImage.png");
-      -fx-background-color: #e4dff3;
-      -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+.buildDome_button:pressed{
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 10, 0, 5, 5 ), dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
 }
 
-.selectedBuild_button:hover{
-    -fx-background-color: #e4dff3;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
-}
+
 
 .endTurn_button{
         -fx-background-image: url("/textures/endturn.png");
@@ -130,6 +147,10 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
 }
 
+.endTurn_button:pressed{
+       -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 10, 0, 5, 5 ), dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
 .undo_button{
         -fx-background-image: url("/textures/undo.png");
 }
@@ -137,4 +158,8 @@
 .undo_button:hover{
     -fx-background-color: #e4dff3;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+.undo_button:pressed{
+       -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 10, 0, 5, 5 ), dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
 }
