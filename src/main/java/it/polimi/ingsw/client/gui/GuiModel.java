@@ -153,12 +153,19 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
             if(turnPhase.equals(TurnPhase.PLACE_WORKERS)){
                 mainController.setOperation(MainController.Operation.PLACE_WORKER);
             }else if(turnPhase.equals(TurnPhase.NORMAL)){
-                mainController.setOperation(MainController.Operation.MOVE);
+                updateGameButtons();
+                addGameButtonEvents();
+                mainController.setOperation(null);
             }
         }else{
             setMessage("Wait, it's not your turn...");
         }
     }
+
+    public void addGameButtonEvents(){
+        mainController.addButtonEvents();
+    }
+
 
 
     private boolean checkDistance(Position start, Position destination){

@@ -22,12 +22,14 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
     public void visit(BuildWorkerModelEvent evt) {
         System.out.println("correctBuild");
         guiModel.buildOnTheBoard(evt.getStartPosition(), evt.getDestinationPosition(), evt.isDome());
+        guiModel.updateGameButtons();
     }
 
     @Override
     public void visit(MoveWorkerModelEvent evt) {
         System.out.println("correct move");
         guiModel.moveOnTheBoard(evt.getStartPosition(), evt.getDestinationPosition(), evt.getPushPosition());
+        guiModel.updateGameButtons();
     }
 
     @Override
@@ -67,7 +69,7 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         changeScene(turnPhase);
         guiModel.setPlayers(evt.getPlayers());
         guiModel.newTurn(currentPlayer, turnPhase);
-        guiModel.updateGameButtons();
+
     }
 
     private void changeScene(TurnPhase turnPhase){

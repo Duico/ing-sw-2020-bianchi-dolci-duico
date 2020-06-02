@@ -67,3 +67,74 @@
     -fx-background-size: auto 52px;
     -fx-background-repeat: repeat-x;
 }
+
+.move_button{
+        -fx-background-image: url("/textures/moveImage.png");
+}
+
+.move_button:hover{
+    -fx-background-color: #e4dff3;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+.selectedMove_button{
+    -fx-background-image: url("/textures/moveImage.png");
+    -fx-background-color: #e4dff3;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+.selectedMove_button:hover{
+    -fx-background-color: #e4dff3;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+
+.build_button{
+        -fx-background-image: url("/textures/buildImage.png");
+}
+
+.build_button:hover{
+    -fx-background-color: #e4dff3;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+.buildDome_button{
+    -fx-background-image: url("/textures/buildDome.png");
+    -fx-background-color: #e4dff3;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+.buildDome_button:hover{
+     -fx-background-color: #e4dff3;
+      -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+
+.selectedBuild_button{
+      -fx-background-image: url("/textures/buildImage.png");
+      -fx-background-color: #e4dff3;
+      -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+.selectedBuild_button:hover{
+    -fx-background-color: #e4dff3;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+.endTurn_button{
+        -fx-background-image: url("/textures/endturn.png");
+}
+
+.endTurn_button:hover{
+    -fx-background-color: #e4dff3;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+.undo_button{
+        -fx-background-image: url("/textures/undo.png");
+}
+
+.undo_button:hover{
+    -fx-background-color: #e4dff3;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}

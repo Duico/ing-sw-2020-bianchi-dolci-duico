@@ -127,40 +127,44 @@ public class MainController implements GuiEventEmitter {
         this.currentOperation=operation;
     }
     public Operation getOperation(){
-        return this.currentOperation;
+        return currentOperation;
     }
 
-    private void addButtonEvents(){
+    public void addButtonEvents(){
         addOnClickEventMoveButton(moveButton);
-        addOnClickEventUndoButton(undoButton);
+//        addOnClickEventUndoButton(undoButton);
         addOnClickEventBuildButton(buildButton);
-        addOnClickEventEndTurnButton(endTurnButton);
+//        addOnClickEventEndTurnButton(endTurnButton);
+    }
+
+    private boolean isOperationSet(){
+        return currentOperation!=null;
     }
 
 
 
-    public void updateOperationButtons(boolean isAllowedToMove, boolean isAllowedToBuild){
-        if(isAllowedToMove)
-        {
-            moveButton.setGraphic(buttonImage("/textures/move.png"));
-            moveButton.setMouseTransparent(false);
-        }
-        else
-        {
-            moveButton.setGraphic(buttonImage("/textures/notmove.png"));
-            moveButton.setMouseTransparent(true);
-        }
-        if(isAllowedToBuild)
-        {
-            buildButton.setGraphic(buttonImage("/textures/build.png"));
-            buildButton.setMouseTransparent(false);
-        }
-        else
-        {
-            moveButton.setGraphic(buttonImage("/textures/notbuild.png"));
-            moveButton.setMouseTransparent(true);
-        }
-    }
+//    public void updateOperationButtons(boolean isAllowedToMove, boolean isAllowedToBuild){
+//        if(isAllowedToMove)
+//        {
+//            moveButton.setGraphic(buttonImage("/textures/move.png"));
+//            moveButton.setMouseTransparent(false);
+//        }
+//        else
+//        {
+//            moveButton.setGraphic(buttonImage("/textures/notmove.png"));
+//            moveButton.setMouseTransparent(true);
+//        }
+//        if(isAllowedToBuild)
+//        {
+//            buildButton.setGraphic(buttonImage("/textures/build.png"));
+//            buildButton.setMouseTransparent(false);
+//        }
+//        else
+//        {
+//            moveButton.setGraphic(buttonImage("/textures/notbuild.png"));
+//            moveButton.setMouseTransparent(true);
+//        }
+//    }
 
     public void addOnClickEventEndTurnButton(Node node){
         node.setOnMouseClicked(event->{
@@ -177,40 +181,67 @@ public class MainController implements GuiEventEmitter {
     //TODO activate button only after first Normal turn
     public void addOnClickEventMoveButton(Node node){
         node.setOnMouseClicked(event->{
-            if(!getOperation().equals(Operation.MOVE)) {
+            if(!isOperationSet())
+            {
                 startPosition = null;
+                moveButton.getStyleClass().clear();
+                moveButton.getStyleClass().add("selectedMove_button");
+                setOperation(Operation.MOVE);
+            }else{
+               if(!currentOperation.equals(Operation.MOVE)){
+                   startPosition = null;
+                   buildButton.getStyleClass().clear();
+                   buildButton.getStyleClass().add("build_button");
+                   moveButton.getStyleClass().clear();
+                   moveButton.getStyleClass().add("selectedMove_button");
+                   setOperation(Operation.MOVE);
+               }else{
+                   moveButton.getStyleClass().clear();
+                   moveButton.getStyleClass().add("move_button");
+                   setOperation(null);
+               }
             }
-            System.out.println("move selected");
-            setOperation(Operation.MOVE);
+
         });
     }
 
     //TODO activate button only after first Normal Turn
     public void addOnClickEventBuildButton(Node node){
         node.setOnMouseClicked(event->{
-//            if(!getOperation().equals(Operation.BUILD)) {
-//
-//            }
-            if(!currentOperation.equals(Operation.BUILD)) {
+            if(!isOperationSet()){
                 startPosition = null;
-                System.out.println("build selected");
+                buildButton.getStyleClass().clear();
+                buildButton.getStyleClass().add("selectedBuild_button");
                 setOperation(Operation.BUILD);
-                isBuildDome = false;
             }else{
-                isBuildDome = !isBuildDome;
-                if(isBuildDome)
-                    buildButton.setGraphic(buttonImage("/textures/builddome.png"));
-                else
-                    buildButton.setGraphic(buttonImage("/textures/build.png"));
-                System.out.println("Build dome: "+isBuildDome);
+                if(!currentOperation.equals(Operation.BUILD)){
+                    startPosition=null;
+                    moveButton.getStyleClass().clear();
+                    moveButton.getStyleClass().add("move_button");
+                    buildButton.getStyleClass().clear();
+                    buildButton.getStyleClass().add("selectedBuild_button");
+                    setOperation(Operation.BUILD);
+                }else{
+                    isBuildDome=!isBuildDome;
+                    if(isBuildDome){
+                        buildButton.getStyleClass().clear();
+                        buildButton.getStyleClass().add("buildDome_button");
+                    }else{
+                        buildButton.getStyleClass().clear();
+                        buildButton.getStyleClass().add("build_button");
+                        setOperation(null);
+                    }
+                }
             }
-
         });
     }
 
     public void updateButtons(){
         Platform.runLater(()->{
-            buildButton.setGraphic(buttonImage("/textures/build.png"));
+            buildButton.getStyleClass().clear();
+            moveButton.getStyleClass().clear();
+            buildButton.getStyleClass().add("build_button");
+            moveButton.getStyleClass().add("move_button");
         });
     }
 
@@ -587,16 +618,18 @@ public class MainController implements GuiEventEmitter {
 
     private void handleCellClickEvent(Position destinationPosition){
         if (isSelectedWorker() && !isMyWorker(destinationPosition)) {
-            if (currentOperation.equals(Operation.MOVE)) {
-                emitMove(startPosition, destinationPosition);
-                setStartPosition(null);
-            } else if (currentOperation.equals(Operation.BUILD)){
-                emitBuild(startPosition, destinationPosition, isBuildDome);
-                setStartPosition(null);
-            }
+           if(currentOperation!=null){
+               if (currentOperation.equals(Operation.MOVE)) {
+                   emitMove(startPosition, destinationPosition);
+                   setStartPosition(null);
+               } else if (currentOperation.equals(Operation.BUILD)){
+                   emitBuild(startPosition, destinationPosition, isBuildDome);
+                   setStartPosition(null);
+               }
 //                    else if (operation.equals(Operation.BUILD_DOME))
 
 //                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, true));
+           }
         } else {
             //set start position
             setStartPosition(destinationPosition);
@@ -622,12 +655,14 @@ public class MainController implements GuiEventEmitter {
             Position destinationPosition = getClickPosition(pr.getIntersectedPoint().getX(), pr.getIntersectedPoint().getY());
             //The position should be taken from an apposite map and not from the intersectedPoint
 
-            if (currentOperation.equals(Operation.PLACE_WORKER)) {
-                System.out.println(destinationPosition.getX()+" "+destinationPosition.getY());
-                emitPlaceWorker(destinationPosition);
-            }else{
-                handleCellClickEvent(destinationPosition);
-            }
+           if(currentOperation!=null){
+               if (currentOperation.equals(Operation.PLACE_WORKER)) {
+                   System.out.println(destinationPosition.getX()+" "+destinationPosition.getY());
+                   emitPlaceWorker(destinationPosition);
+               }else{
+                   handleCellClickEvent(destinationPosition);
+               }
+           }
         });
         addHoverIndicator(node, pr -> getClickPosition(pr.getIntersectedPoint().getX(), pr.getIntersectedPoint().getY()));
     }
@@ -822,15 +857,7 @@ public class MainController implements GuiEventEmitter {
 
         BorderPane background = new BorderPane();
 
-        undoButton.setGraphic(buttonImage("/textures/Undo.png"));
-        undoButton.setPrefSize(70,70);
-        moveButton.setGraphic(buttonImage("/textures/move.png"));
-        moveButton.setPrefSize(70,70);
-        buildButton.setGraphic(buttonImage("/textures/build.png"));
-        buildButton.setPrefSize(70,70);
-        endTurnButton.setGraphic(buttonImage("/textures/notendturn.png"));
-        endTurnButton.setPrefSize(70, 70);
-        addButtonEvents();
+        initGameButtons();
 
         vbButtons.getChildren().addAll(endTurnButton,undoButton, moveButton, buildButton);
 
@@ -869,6 +896,27 @@ public class MainController implements GuiEventEmitter {
         return scene;
     }
 
+    private void initGameButtons(){
+        undoButton.setPrefSize(80,80);
+        undoButton.getStylesheets().add("/css/mainscene.css");
+        undoButton.getStyleClass().clear();
+        undoButton.getStyleClass().add("undo_button");
+        moveButton.setPrefSize(80,80);
+        moveButton.getStylesheets().add("/css/mainscene.css");
+        moveButton.getStyleClass().clear();
+        moveButton.getStyleClass().add("move_button");
+        buildButton.setPrefSize(80,80);
+        buildButton.getStylesheets().add("/css/mainscene.css");
+        buildButton.getStyleClass().clear();
+        buildButton.getStyleClass().add("build_button");
+        endTurnButton.setPrefSize(80, 80);
+        endTurnButton.getStylesheets().add("/css/mainscene.css");
+        endTurnButton.getStyleClass().clear();
+        endTurnButton.getStyleClass().add("endTurn_button");
+        addOnClickEventEndTurnButton(endTurnButton);
+        addOnClickEventUndoButton(undoButton);
+    }
+
 
     public void displayPlayers(List<Player> players){
         Platform.runLater(()->{
@@ -901,8 +949,8 @@ public class MainController implements GuiEventEmitter {
 
     private ImageView buttonImage(String name){
         ImageView imageView = new ImageView(name);
-        imageView.setFitHeight(60);
-        imageView.setFitWidth(60);
+        imageView.setFitHeight(80);
+        imageView.setFitWidth(80);
         return imageView;
     }
 
