@@ -210,10 +210,11 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         chooseCardController.waitChooseCards();
     }
 
-    public void askSetUpInfo(boolean askNumPlayers){
-        loginController.askSetUpInfo(askNumPlayers);
+    public void askSetUpInfo(boolean askNumPlayers, boolean askPersistency){
+        this.askNumPlayers = askNumPlayers;
+        this.askPersistency = askPersistency;
+        loginController.askSetUpInfo(askNumPlayers, askPersistency);
     }
-
 
     public void correctSignUp(){
         loginController.correctSignUp();

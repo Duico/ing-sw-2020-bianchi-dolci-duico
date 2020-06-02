@@ -2,9 +2,7 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.GameViewEventListener;
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.GameSerializer;
-import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.event.ModelEvent;
 import it.polimi.ingsw.view.ModelEventListener;
 import it.polimi.ingsw.view.RemoteView;
@@ -149,6 +147,10 @@ public class Lobby {
 
     public boolean persistencySaveGame(){
         if(this.game == null){
+            return false;
+        }
+        TurnPhase turnPhase = this.game.getTurnPhase();
+        if(!(turnPhase.equals(TurnPhase.PLACE_WORKERS) || turnPhase.equals(TurnPhase.NORMAL))){
             return false;
         }
         System.out.println("Saving game to disk...");
