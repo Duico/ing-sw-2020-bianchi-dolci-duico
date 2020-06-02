@@ -13,5 +13,10 @@ public class GuiClientConnectionEventVisitor implements ClientConnectionEventVis
 
     @Override
     public void visit(ClientConnectionEvent evt) {
+        if(evt.getReason().equals(ClientConnectionEvent.Reason.ERROR_ON_THE_SOCKET)){
+            guiModel.alert("Errore nella connessione con il server.");
+        }else
+            sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CONNECTION_CLOSED));
+
     }
 }

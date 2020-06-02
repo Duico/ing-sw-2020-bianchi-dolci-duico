@@ -43,7 +43,7 @@ public class LoginController implements GuiEventEmitter {
     @FXML
     protected void initialize() {
         initChoiceBox();
-        setVisibleChoiceBox(true);
+        //setVisibleChoiceBox(true);
     }
 
 
@@ -56,9 +56,11 @@ public class LoginController implements GuiEventEmitter {
         Platform.runLater(()->{
             if(askNumPlayers){
 //                setMessage("Select number of players:");
+                loginPane.setVisible(true);
                 message.setVisible(true);
                 setVisibleChoiceBox(true);
             }else{
+                loginPane.setVisible(true);
                 setVisibleChoiceBox(false);
             }
         });
@@ -130,6 +132,8 @@ public class LoginController implements GuiEventEmitter {
     public void startGame(ActionEvent actionEvent) throws Exception {
         checkValidStart();
     }
+
+
 
     public void alert(String message){
         Platform.runLater(()->{

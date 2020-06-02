@@ -20,7 +20,7 @@ public class GuiMessageVisitor implements MessageVisitor {
     public GuiMessageVisitor(GuiModel guiModel, SceneEventEmitter sceneEmitter){
         this.modelEventVisitor = new GuiModelEventVisitor(guiModel, sceneEmitter);
         this.controllerResponseVisitor = new GuiControllerResponseVisitor(guiModel);
-        this.setUpMessageVisitor = new GuiSetUpMessageVisitor(guiModel);
+        this.setUpMessageVisitor = new GuiSetUpMessageVisitor(guiModel, sceneEmitter);
         this.clientConnectionEventVisitor = new GuiClientConnectionEventVisitor(guiModel, sceneEmitter);
     }
 

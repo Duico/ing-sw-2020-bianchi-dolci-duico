@@ -90,8 +90,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         Player winner = evt.getPlayer();
         if(guiModel.getMyPlayer().getUuid().equals(winner.getUuid())) {
             guiModel.setMessage("My best compliments, you are the winner!");
+            guiModel.winCondition();
         } else{
             guiModel.setMessage("You lose, "+winner.getNickName()+" is the winner!");
+            guiModel.winCondition();
         }
     }
 

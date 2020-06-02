@@ -4,7 +4,7 @@ Pane{
 
 
 #waitLabel{
- -fx-font-size: 36;
+ -fx-font-size: 25;
  -fx-alignment: top-center;
  -fx-translate-y: 280px;
 }
@@ -18,10 +18,14 @@ Pane{
 #choiceBox{
  -fx-pref-height: 34;
  -fx-pref-width: 226;
+ -fx-text-alignment: center;
+
 }
 #textfield{
  -fx-pref-height: 34;
  -fx-max-width: 226;
+ -fx-text-alignment: center;
+
 }
 
 #loginPane{
@@ -41,7 +45,7 @@ Pane{
  -fx-font-weight: bolder;
  -fx-border-radius: 4px;
  -fx-pref-width: 180px;
- -fx-translate-y: 10px;
+ -fx-translate-y: 30px;
 }
 
 .enter_button:hover{
@@ -51,5 +55,10 @@ Pane{
  -fx-font-weight: bolder;
  -fx-border-radius: 4px;
  -fx-pref-width: 180px;
- -fx-translate-y: 10px;
+ -fx-translate-y: 30px;
+}
+
+.title{
+ -fx-translate-y: 50px;
+ -fx-translate-x: 205px;
 }

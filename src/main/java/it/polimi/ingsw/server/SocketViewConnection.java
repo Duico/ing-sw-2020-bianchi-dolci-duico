@@ -125,18 +125,15 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         };
 
         TimerTask task = new TimeoutCounter(timeOutChecker);
-        int intialDelay = 5000;
-        int delta = 5000;
+        int intialDelay = 2000;
+        int delta = 2000;
         timer.schedule(task, intialDelay, delta);
     }
 
    public void createObjectStream() throws IOException{
-//       try {
            out = new ObjectOutputStream(socket.getOutputStream());
            in = new ObjectInputStream(socket.getInputStream());
-//       }catch(IOException e){
-//           e.printStackTrace();
-//       }
+
     }
 
 
@@ -144,7 +141,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     public void run(){
         try{
 
-            socket.setSoTimeout(3500);
+            socket.setSoTimeout(8000);
             startPingTimer();
             Thread t0 = asyncReadFromSocket(in);
             t0.join();

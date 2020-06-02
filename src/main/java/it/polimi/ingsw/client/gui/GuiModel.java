@@ -210,6 +210,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
     }
 
 
+
     public void correctSignUp(boolean waitOtherPlayers){
         loginController.correctSignUp(waitOtherPlayers);
     }
@@ -223,6 +224,10 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 //    public boolean isSetMainController(){
 //        return mainController !=null;
 //    }
+
+    public void winCondition(){
+        mainController.disableAll();
+    }
 
     public void moveOnTheBoard(Position startPosition, Position destPosition, Position pushPosition){
         if(pushPosition!=null && board.getBoardCell(destPosition).getWorker()!=null)

@@ -6,14 +6,10 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-
-//import it.polimi.ingsw.client.cli.Color;
 import it.polimi.ingsw.client.event.ClientConnectionEvent;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.client.message.SignUpMessage;
 import it.polimi.ingsw.event.Message;
-import it.polimi.ingsw.server.TimeOutCheckerInterface;
-import it.polimi.ingsw.server.TimeoutCounter;
 import it.polimi.ingsw.server.message.*;
 import it.polimi.ingsw.view.ViewEventListener;
 import it.polimi.ingsw.view.event.*;
@@ -27,7 +23,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
     private final Queue<Message> gameMessages = new LinkedBlockingQueue<>();
     private MessageVisitor gameMessageVisitor;
     private ExecutorService connectionThreads = Executors.newFixedThreadPool(3);
-    private TimeoutCounter timerTask;
+    //private TimeoutCounter timerTask;
 
 
 
@@ -42,56 +38,39 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
 
     private boolean active = true;
 
-    public synchronized boolean isActive(){
+    private synchronized boolean isActive(){
         return active;
     }
 
-    public synchronized void setActive(boolean active){
+    private synchronized void setActive(boolean active){
         this.active = active;
     }
 
     public synchronized void closeConnection() {
         try {
+            active = false;
             connectionThreads.shutdownNow();
-            timerTask.cancel();
-            socket.close();
+
+            if(socket!=null)
+                socket.close();
         } catch (IOException e) {
             System.err.println("Error when closing socket!");
         }
-        active = false;
+
     }
 
 
-    public void send(final Object message){
+    private void send(final Object message){
         synchronized (toSend) {
             toSend.add(message);
             toSend.notifyAll();
         }
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                send(message);
-//            }
-//        }).start();
+
     }
 
-    /*public GameMessage pollReadMessages(){
-        synchronized (gameMessages) {
-            GameMessage message = null;
-            while((message = gameMessages.poll()) == null){
-                try {
-                    gameMessages.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            return message;
 
-        }
-    }*/
-
-    public Message pollReadMessages(){
+    private Message pollReadMessages(){
         synchronized (gameMessages) {
             Message message = null;
             while(((message = gameMessages.poll()) == null) && isActive()){
@@ -112,8 +91,8 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         try {
 
             socket = new Socket(ip, port);
-            socket.setSoTimeout(6000);
-            startPingTimer();
+            socket.setSoTimeout(10000);
+            startTimerPing();
             InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = socket.getOutputStream();
             ObjectInputStream socketIn = new ObjectInputStream(inputStream);
@@ -121,13 +100,12 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
             connectionThreads.submit(new ObjectInputRunnable(socketIn));
             connectionThreads.submit(new ObjectOutputRunnable(socketOut));
             connectionThreads.submit(new ClientMessageReader());
-//            Thread t0 = asyncRead...;
-//            t0.join();
+
 
         } catch (IOException e) {
-            //emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.ERROR_ON_THE_SOCKET));
             new ClientConnectionEvent(ClientConnectionEvent.Reason.ERROR_ON_THE_SOCKET).accept(gameMessageVisitor);
         } finally {
+
 //            try {
 //                if(socket != null) {
 //                    socket.close();
@@ -138,29 +116,22 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         }
     }
 
-    public void startPingTimer() {
-        Timer timer = new Timer();
-        TimeOutCheckerInterface timeOutChecker = () -> {
-            if (isActive()){
-                send(new ConnectionMessage(ConnectionMessage.Type.PONG));
-                return false;
-            }
-            else{
-//                emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.PING_FAIL));
-//                try {
-//                    if(socket != null) {
-//                        socket.close();
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-                return true;
-            }
-        };
-        timerTask = new TimeoutCounter(timeOutChecker);
-        int intialDelay = 1500;
+
+    private void startTimerPing() {
+        java.util.Timer timer = new Timer();
         int delta = 2000;
-        timer.schedule(timerTask, intialDelay, delta);
+        timer.schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                if (isActive()){
+                    send(new ConnectionMessage(ConnectionMessage.Type.PONG));
+                }else {
+                    new ClientConnectionEvent(ClientConnectionEvent.Reason.PING_FAIL).accept(gameMessageVisitor);
+                    timer.cancel();
+                }
+            }
+        }, 2000, delta);
+
     }
 
     @Override
@@ -183,12 +154,9 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
             asyncReadFromSocket(socketIn);
         }
         public synchronized void asyncReadFromSocket(final ObjectInputStream socketIn){
-//        Thread t = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
+
             try {
                 while (isActive()) {
-//                        if(socketIn.available()>0){
                     Object message = socketIn.readObject();
                     if (message instanceof GameMessage) {
                         synchronized (gameMessages) {
@@ -198,17 +166,11 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                          if (message instanceof ConnectionMessage) {
                             ConnectionMessage event = (ConnectionMessage) message;
                              if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION) || event.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)) {
-                                 setActive(false);
-                                 //event.accept(setUpVisitor);
+                                 new ClientConnectionEvent(ClientConnectionEvent.Reason.CONNECTION_LOST).accept(gameMessageVisitor);
+                                 closeConnection();
                              }
 
-                            /*if (event.getType().equals(ConnectionMessage.Type.PING)) {
-//                                send(new ConnectionMessage(ConnectionMessage.Type.PONG));
-                            } else if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION)) {
-                                //emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.DISCONNECTION));
-                                setActive(false);
-                                //event.accept(setUpVisitor);
-                            }*/
+
                         }
                         //TODO remove
                     } else if (message instanceof String) {
@@ -220,7 +182,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
 
             } catch (Exception e){
                 setActive(false);
-//                System.out.println("LA metto io a false 2");
+
             }finally {
                 try {
                     socketIn.close();
@@ -228,16 +190,9 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                     e.printStackTrace();
                 }
             }
-//            }
-//        });
-//        t.start();
-//        return t;
         }
     }
 
-    /*private void emitEvent(ClientConnectionEvent evt){
-        executeEventListeners(ClientConnectionEventListener.class, (listener) -> listener.handleEvent(evt) );
-    }*/
 
     private class ObjectOutputRunnable implements Runnable{
         private final ObjectOutputStream socketOut;
@@ -263,31 +218,24 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
 //                    System.out.println("Esco dal thread out message ");
 
                 } catch (IOException e) {
-                    //emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.IO_EXCEPTION));
                     new ClientConnectionEvent(ClientConnectionEvent.Reason.IO_EXCEPTION).accept(gameMessageVisitor);
                 } catch (InterruptedException e) {
                     //emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.INTERRUPTED));
-                    new ClientConnectionEvent(ClientConnectionEvent.Reason.INTERRUPTED).accept(gameMessageVisitor);
+                    //QUANDO C'E' DISCONNESSIONE PLAYER ENTRA QUA
+                    //new ClientConnectionEvent(ClientConnectionEvent.Reason.INTERRUPTED).accept(gameMessageVisitor);
                 }finally {
                         try {
                             socketOut.close();
-                            //emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.PING_FAIL));
-                            new ClientConnectionEvent(ClientConnectionEvent.Reason.PING_FAIL).accept(gameMessageVisitor);
                         } catch (IOException e) {
-                            //emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.CLOSE_IO_EXCEPTION));
-                            new ClientConnectionEvent(ClientConnectionEvent.Reason.CLOSE_IO_EXCEPTION).accept(gameMessageVisitor);
+                            e.printStackTrace();
                         }
                     }
         }
+
         private synchronized void send(Object message) throws IOException{
-//            try {
                 socketOut.reset();
                 socketOut.writeObject(message);
                 socketOut.flush();
-//            } catch(IOException e){
-//                e.printStackTrace();
-//            }
-
         }
     }
 
@@ -296,23 +244,12 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         @Override
         public void run(){
             while(isActive()) {
-                //GameMessage message;
                 Message message;
-                /*synchronized (gameMessages) {
-                    while ( (message = pollReadMessages() ) == null){
-                        try {
-                            gameMessages.wait();
-                        } catch (InterruptedException e){
-                            e.printStackTrace();
-                        }
-                    }*/
 
                 //Synchronized inside pollReadMessages()
                 message = pollReadMessages();
-                //message.accept(gameMessageVisitor);
-                //emitEvent(message);
+
                 if(message == null){
-                    //setActive(false);
                     return;
                 }
                 message.accept(gameMessageVisitor);

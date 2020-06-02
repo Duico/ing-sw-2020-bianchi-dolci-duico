@@ -16,6 +16,7 @@
 #firstPlayerChoiceBox{
     -fx-pref-height: 34;
     -fx-pref-width: 226;
+    -fx-translate-y: -10px;
 }
 
 #playerBox{
@@ -90,4 +91,8 @@
 
 .play_button_white {
     -fx-background-color: white;
+}
+
+.background-image{
+    -fx-opacity: 0.5;
 }

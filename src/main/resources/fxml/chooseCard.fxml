@@ -21,6 +21,9 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480"
       prefWidth="1005.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
       stylesheets="@/css/info_block.css,@/css/cards.css">
+   <ImageView styleClass="background-image" fitHeight="480" fitWidth="1005.0">
+      <Image url="@/textures/mondo2.png"/>
+   </ImageView>
    <VBox fx:id="cardsBox" alignment="TOP_CENTER" visible="false">
       <Label styleClass="header_block, santorini_border" fx:id="header" text="Choose your card"/>
       <HBox fx:id="cards" layoutX="12.0" layoutY="90.0" minHeight="200" prefWidth="1005" maxWidth="1005"

@@ -245,6 +245,15 @@ public class MainController implements GuiEventEmitter {
         });
     }
 
+    public void disableAll(){
+        Platform.runLater(()-> {
+            undoButton.setMouseTransparent(true);
+            moveButton.setMouseTransparent(true);
+            buildButton.setMouseTransparent(true);
+            endTurnButton.setMouseTransparent(true);
+        });
+    }
+
     private void setStartPosition(Position position) {
         if(position!= null && !isMyWorker(position)){
             return;
