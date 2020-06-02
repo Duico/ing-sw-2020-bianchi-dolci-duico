@@ -6,7 +6,12 @@ public class SignUpMessage implements Serializable {
 
     private String nickName;
     private Integer numPlayers;
+    private boolean persistency = false;
 
+    public SignUpMessage(String nickName, Integer numPlayers, boolean persistency){
+        this(nickName, numPlayers);
+        this.persistency = persistency;
+    }
     public SignUpMessage(String nickName, Integer numPlayers) {
         this.nickName=nickName;
         this.numPlayers=numPlayers;
@@ -25,4 +30,7 @@ public class SignUpMessage implements Serializable {
     }
 
 
+    public boolean isPersistency() {
+        return persistency;
+    }
 }

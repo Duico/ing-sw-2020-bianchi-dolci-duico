@@ -7,14 +7,22 @@ public class InitSetUpMessage extends SetUpMessage {
 
     private SignUpParameter response;
     private Player player;
+    private boolean askPersistency;
 
     public InitSetUpMessage(SetUpType setUpType, SignUpParameter response){
         this(setUpType, response, null);
     }
-    public InitSetUpMessage(SetUpType setUpType, SignUpParameter response, Player newPlayer){
+    public InitSetUpMessage(SetUpType setUpType, SignUpParameter response, boolean askPersistency){
+        this(setUpType, response, null, askPersistency);
+    }
+    public InitSetUpMessage(SetUpType setUpType, SignUpParameter response, Player newPlayer, boolean askPersistency){
         super(setUpType);
         this.response=response;
         this.player = newPlayer;
+        this.askPersistency = askPersistency;
+    }
+    public InitSetUpMessage(SetUpType setUpType, SignUpParameter response, Player newPlayer){
+        this(setUpType, response, newPlayer, false);
     }
 
     @Override
@@ -26,7 +34,7 @@ public class InitSetUpMessage extends SetUpMessage {
         STARTGAME,
         NICKNAME,
         CORRECT_SIGNUP_WAIT,
-        CORRECT_SIGNUP_LAST
+        CORRECT_SIGNUP_STARTING
     }
 
     public SignUpParameter getResponse() {
@@ -35,5 +43,9 @@ public class InitSetUpMessage extends SetUpMessage {
 
     public Player getPlayer(){
         return player;
-    };
+    }
+
+    public boolean isAskPersistency() {
+        return askPersistency;
+    }
 }

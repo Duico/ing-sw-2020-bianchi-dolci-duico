@@ -244,14 +244,15 @@ public class MainController implements GuiEventEmitter {
 
     private void setHoverPosition(Position position){
         hoverPosition = position;
-        if (hoverPosition == null)
+
+        if(hoverPositionIndicator==null) {
+            hoverPositionIndicator = new Cube(3, 3, 0.001, Color.WHITE, "/graphics/blue_glow.png");
+            root.getChildren().add(hoverPositionIndicator);
+            hoverPositionIndicator.setMouseTransparent(true);
+        }
+        if (hoverPosition == null) {
             hoverPositionIndicator.setVisible(false);
-        else{
-            if(hoverPositionIndicator==null) {
-                hoverPositionIndicator = new Cube(3, 3, 0.001, Color.WHITE, "/graphics/blue_glow.png");
-                root.getChildren().add(hoverPositionIndicator);
-                hoverPositionIndicator.setMouseTransparent(true);
-            }
+        }else{
             Point3D pos = map.getCoordinate(position);
             hoverPositionIndicator.getTransforms().clear();
             hoverPositionIndicator.getTransforms().add(new Translate(pos.getX(), pos.getY(), pos.getZ()+0.98));

@@ -100,9 +100,9 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         chooseCardController.loadCards(cards);
     }
 
-    public void setAskNumPlayers(boolean askNumPlayers){
-        this.askNumPlayers = askNumPlayers;
-    }
+//    public void setAskNumPlayers(boolean askNumPlayers){
+//        this.askNumPlayers = askNumPlayers;
+//    }
 
     public Player getMyPlayer() {
         return myPlayer;
@@ -199,6 +199,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
     }
 
     public void askSetUpInfo(boolean askNumPlayers){
+        this.askNumPlayers = askNumPlayers;
         loginController.askSetUpInfo(askNumPlayers);
     }
 

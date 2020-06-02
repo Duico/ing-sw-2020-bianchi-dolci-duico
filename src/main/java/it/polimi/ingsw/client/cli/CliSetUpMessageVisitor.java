@@ -25,6 +25,8 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
             cli.execInputRequest(askSetUpInfo(askNumPlayers));
         }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.GAME_ALREADY_START)){
             cli.println(CliText.GAME_ALREADY_STARTED.toString());
+        }else if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME_PERSISTENCY)){
+            cli.println("Invalid nickname for persistency");
         }
     }
 
@@ -33,10 +35,12 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
         if((askNumPlayers = message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME)) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.NICKNAME)) {
             cli.execInputRequest(askSetUpInfo(askNumPlayers));
 
-        }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_LAST)) {
-            boolean playerHasToWait = message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT);
+        }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT)){
+            cli.println(CliText.CORRECT_SIGNUP_WAIT);
+        }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING)) {
+//            boolean playerHasToWait = message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT);
             cliModel.setMyPlayer(message.getPlayer());
-            printCorrectSignUp(playerHasToWait);
+            printCorrectSignUp(false);
         }
 
     }

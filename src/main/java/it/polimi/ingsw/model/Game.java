@@ -9,6 +9,7 @@ import it.polimi.ingsw.server.message.ConnectionMessage;
 
 import javax.swing.*;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.Timer;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class Game extends ModelEventEmitter implements Serializable{
     private Turn turn;
-    private ArrayList<Player> players = new ArrayList<>();
+    private List<Player> players = new ArrayList<>();
     boolean useCards = false;
     private CardDeck cardDeck;
 
@@ -60,7 +61,7 @@ public class Game extends ModelEventEmitter implements Serializable{
      * @param useCards  True if the game will be using cards
      * @return
      */
-    public void startGame(ArrayList<Player> players, boolean useCards) {
+    public void startGame(List<Player> players, boolean useCards) {
 
         this.useCards = useCards;
         this.firstPlayer=null;
@@ -514,7 +515,7 @@ public class Game extends ModelEventEmitter implements Serializable{
         //deserialize turn, players
         Turn undoTurn = undoBlob.getTurn();
         Board undoBoard = undoBlob.getBoard();
-        ArrayList<Player> undoPlayers = undoBlob.getPlayers();
+        List<Player> undoPlayers = undoBlob.getPlayers();
         if(undoTurn == null || undoBoard == null ||undoPlayers == null){
             return false;
         }
@@ -600,6 +601,22 @@ public class Game extends ModelEventEmitter implements Serializable{
             }
         }, delta);
 
+    }
+
+    public void resumeGame(){
+       emitEvent(makePersistencyEvent());
+    }
+    private PersistencyEvent makePersistencyEvent(){
+        //TODO use clone
+        return new PersistencyEvent(getPlayers(), getCurrentPlayer(), board, getTurnPhase());
+    }
+
+    public List<Player> getPlayers(){
+        List<Player> clonedPlayers = new ArrayList<>();
+        for(Player p : players){
+            clonedPlayers.add(p.clone());
+        }
+        return clonedPlayers;
     }
 
     

@@ -1,16 +1,9 @@
 
 package it.polimi.ingsw.server;
 
-import com.sun.nio.sctp.InvalidStreamException;
-import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.GameViewEventListener;
-import it.polimi.ingsw.model.PlayerColor;
 import it.polimi.ingsw.server.message.*;
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.GameSerializer;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.view.RemoteView;
-import it.polimi.ingsw.view.ModelEventListener;
 
 import java.io.IOException;
 import java.io.StreamCorruptedException;
@@ -19,29 +12,28 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-//import it.polimi.ingsw.model.event.PersistencyEvent;
 
 public class Server {
 
     private static final int PORT = 38612;
     private Lobby lobby;
-    private Game game;
+//    private Game game;
     private ServerSocket serverSocket;
     private ExecutorService executor = Executors.newFixedThreadPool(100);
-    private Map<ViewConnection,Player> waitingConnection = new LinkedHashMap<>();
+    private Map<ViewConnection,String> waitingConnection = new LinkedHashMap<>();
     private ArrayList<ViewConnection> connections = new ArrayList<>();
     private boolean hasGameStarted = false;
+    private boolean isPersistencyAvailable;
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(PORT);
-        init();
     }
 
     public synchronized void clientCloseConnection(ViewConnection c) {
         boolean isFirstConnection = c == getFirstConnection();
             if (isFirstConnection || (waitingConnection.containsKey(c) && hasGameStarted)) {
 //                if(waitingConnection.containsKey(c)) {
-                    waitingConnection.remove(c);
+                    waitingConnectionRemove(c);
                     connections.remove(c);
 
                     //ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
@@ -49,17 +41,17 @@ public class Server {
                         connection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
                     }
                     connections.clear();
+                    //it is safe not to clear lobby.waitingPlayers if we unset the lobby later
                     waitingConnection.clear();
-                    GameSerializer serializer = new GameSerializer("./game.ser");
-                    serializer.writeGame(game);
-                    this.game = null;
+                    lobby.persistencySaveGame();
+                    lobby.clearGame();
                     this.lobby = null;
                     System.out.println("game, lobby set to null");
                     hasGameStarted = false;
             } else {
                 //client disconnected from lobby
 //                if(waitingConnection.containsKey(c)) {
-                    waitingConnection.remove(c);
+                    waitingConnectionRemove(c);
                     connections.remove(c);
 //                }
             }
@@ -67,70 +59,89 @@ public class Server {
 
     }
 
-
-    public synchronized Player putConnection(ViewConnection c, String name){
-        Player newPlayer = new Player(name);
-        waitingConnection.put(c, newPlayer);
-        return newPlayer;
+    private void waitingConnectionRemove(ViewConnection c){
+        lobby.removePlayerByName(waitingConnection.get(c));
+        waitingConnection.remove(c);
     }
 
+
     public synchronized void createNewGame(){
-            if(game==null) {
-            //if (waitingConnection.size() == lobby.getNumPlayers()) {
+//            if(!lobby.isSetGame()) {
                 System.out.println(waitingConnection.size());
                 Integer numPlayers = lobby.getNumPlayers();
 
                 ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
-                ArrayList<Player> players = new ArrayList<>();
-                ArrayList<RemoteView> remoteViews = new ArrayList<>();
                 ViewConnection firstConnection = getFirstConnection();
 
                 hasGameStarted = true;
-                game = new Game();
-                Controller controller = new Controller(game);
-
+                lobby.newController();
                 //add firstConnection player
-                initPlayer(firstConnection, controller, players, remoteViews);
+                if(!initPlayerOfConnection(firstConnection)){
+                    return;
+                }
                 numPlayers--;
 
                 //add all BUT firstConnection player
                 for (ViewConnection viewConnection : viewConnections) {
                     if(numPlayers>0){
                         if(viewConnection != firstConnection){
-                            initPlayer(viewConnection, controller, players, remoteViews);
+                            if(!initPlayerOfConnection(viewConnection)){
+                                return;
+                            }
                             numPlayers--;
                         }
                     }else if(viewConnection != firstConnection){
-                        waitingConnection.remove(viewConnection);
+                        waitingConnectionRemove(viewConnection);
                         connections.remove(viewConnection);
                         viewConnection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS));
-                        //viewConnections.remove(viewConnection);
-                        //waitingConnection.remove(viewConnection);
                         //clientCloseConnection(viewConnection);
                         //viewConnection.closeConnection();
                     }
                 }
-                for (Player player : players) {
-                    System.out.println(player.getNickName());
-                }
-                game.startGame(players, true);
+                lobby.startGame(isPersistencyAvailable);
 
-
-           // }
-        }else{
-            System.out.println("Entro nel controllo nickname persistenza");
-        }
+//        }else{
+//            System.out.println("Entro nel controllo nickname persistenza");
+//        }
 
 
     }
 
-    private void initPlayer(ViewConnection viewConnection, Controller controller, ArrayList<Player> players, ArrayList<RemoteView> remoteViews){
-        Player player = waitingConnection.get(viewConnection);
-        players.add(player);
+    private boolean initPlayerOfConnection(ViewConnection connection){
+        String playerName = waitingConnection.get(connection);
+        Player player;
+        if(isPersistencyAvailable){
+            player = lobby.checkPersistencyPlayer(playerName);
+            if(player == null){
+                notifyPersistencyFail(connection);
+                return false;
+            }
+//            else{
+//                connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING, player));
+//            }
+        }else{
+            player = lobby.addPlayingPlayer(playerName);
+            if(player == null){
+                throw new RuntimeException("Newly created player from lobby is null");
+//                return false;
+            }
+        }
+        initRemoteView(player, connection);
+        connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING, player));
+        return true;
+    }
+
+    private void initRemoteView(Player player, ViewConnection viewConnection){
         RemoteView remoteView = new RemoteView(player, viewConnection);
-        remoteView.addEventListener(GameViewEventListener.class, controller);
-        remoteViews.add(remoteView);
-        game.addEventListener(ModelEventListener.class, remoteView);
+        lobby.addRemoteView(remoteView);
+    }
+
+    private void notifyPersistencyFail(ViewConnection connection){
+        //emit persistency fail event
+        //close all connections
+        connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME_PERSISTENCY));
+        //TEMP >
+        clientCloseConnection(connection);
     }
 
     public void run(){
@@ -156,53 +167,57 @@ public class Server {
     public void initMessageClient(SocketViewConnection socketConnection){
         if(/*lobby.getNumPlayers()==0*/ lobby==null) {
             createNewLobby();
-            socketConnection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.STARTGAME));
+        }
+        if(socketConnection == getFirstConnection()){
+            socketConnection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.STARTGAME, isPersistencyAvailable));
         }else {
-            socketConnection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.NICKNAME));
+            socketConnection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.NICKNAME, isPersistencyAvailable));
         }
     }
 
-    public void checkUpRegistration(String nickName, Integer numPlayers, SocketViewConnection connection){
+    public void checkUpRegistration(String nickName, Integer numPlayers, boolean wantsPersistency, SocketViewConnection connection){
         if(lobby == null){
             System.out.println("NULL lobby!!!");
             connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.NULL_LOBBY));
             return;
         }
         if(!hasGameStarted) {
-            if (!lobby.addPlayer(nickName)) {
+            if (!lobby.validateNickname(nickName)) {
                 connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME));
                 return;
             }
             if (connection == getFirstConnection()) {
-                if (numPlayers == null) {
-                    connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
-                    return;
-                }
-                if (!lobby.setNumPlayers(numPlayers)) {
-                    connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
-                    return;
+//                if(isPersistencyAvailable){
+                    if(!isPersistencyAvailable || !wantsPersistency){
+                        lobby.clearGame();
+                        isPersistencyAvailable = false;
+                        if (numPlayers == null || !lobby.setNumPlayers(numPlayers)) {
+                            connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
+                            return;
+                        }
+//                        if (!lobby.setNumPlayers(numPlayers)) {
+//                            connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
+//                            return;
+//                        }
+//                    }else{//isPersistency
+                        //numPlayers set by the lobby
+//                    }
                 }
 
             }
-            Player newPlayer = putConnection(connection, nickName);
+            lobby.addWaitingPlayer(nickName);
+            waitingConnection.put(connection, nickName);
 
             if (lobby.getNumPlayers() != null && waitingConnection.size() >= lobby.getNumPlayers()) {
-                connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_LAST, newPlayer));
                 createNewGame();
             } else {
                 //client has to wait
-                connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT, newPlayer));
+                connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT));
             }
         }else{
             connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.GAME_ALREADY_START));
         }
 
-//        } else if (lobby.addPlayer(nickName)) {
-//            connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP));
-//            this.lobby(connection, nickName);
-//        } else{
-//            connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME));
-//        }
     }
 
     private ViewConnection getFirstConnection(){
@@ -212,61 +227,15 @@ public class Server {
         return connections.get(0);
     }
 
-    /*public int getNumPlayers() {
-        return lobby.getNumPlayers();
-    }*/
-
-//    public synchronized boolean setNumPlayers(int numPlayers) {
-//        return lobby.setNumPlayers(numPlayers);
-//    }
-
-
-    public synchronized boolean nameAlreadyUsed(String name) {
-        return lobby.validateNickname(name);
-    }
-
-    public synchronized boolean addPlayer(String nickName){
-        if(lobby.getNumPlayers()==0){
-            lobby.addPlayer(nickName);
-
-        }else{
-            if(!nameAlreadyUsed(nickName))
-                return false;
-            lobby.addPlayer(nickName);
-        }
-        return true;
-    }
-
-
     public synchronized boolean createNewLobby() {
         if(this.lobby==null){
             System.out.println("Instantiating new Lobby obj");
-            this.lobby = new Lobby();
+            lobby = new Lobby("./game.ser"); //pass filename here
+            this.isPersistencyAvailable = lobby.persistencyLoadGame();
             return true;
         }else{
             return false;
         }
-    }
-
-//    public void addWaitingGame(ViewConnection c){
-//        waitingGameConnection.add(c);
-//    }
-
-
-    protected void init(){
-        /*lobby = new Lobby("./game.ser"); //pass filename here
-        Game loadedGame = lobby.persistencyLoadGame();
-        if(loadedGame != null){
-            game=loadedGame;
-            System.out.println("return to game serialized");
-            //PersistencyEvent p = new PersistencyEvent(loadedGame);
-            //send p to client via socket
-        }else{
-            createNewGame();
-            System.out.println("new Game");
-            //create and start new game
-        }*/
-        //createNewGame();
     }
 
 

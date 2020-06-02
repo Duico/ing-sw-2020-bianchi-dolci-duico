@@ -90,7 +90,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
                     }
                     else if(inputObject instanceof SignUpMessage) {
                         SignUpMessage message = (SignUpMessage) inputObject;
-                        server.checkUpRegistration(message.getNickName(), message.getNumPlayers(), this);
+                        server.checkUpRegistration(message.getNickName(), message.getNumPlayers(), message.isPersistency(), this);
                     }
                     else if(inputObject instanceof ViewEvent){
                         ViewEvent event = (ViewEvent) inputObject;
@@ -144,7 +144,8 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     public void run(){
         try{
 
-            socket.setSoTimeout(3500);
+//            socket.setSoTimeout(3500);
+            socket.setSoTimeout(10000);
             startPingTimer();
             Thread t0 = asyncReadFromSocket(in);
             t0.join();

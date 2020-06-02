@@ -2,17 +2,18 @@ package it.polimi.ingsw.model;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UndoBlob {
     private ByteArrayOutputStream ba;
     private Turn inputTurn;
     private Board inputBoard;
-    private ArrayList<Player> inputPlayers;
+    private List<Player> inputPlayers;
     private Turn outputTurn;
     private Board outputBoard;
-    private ArrayList<Player> outputPlayers;
+    private List<Player> outputPlayers;
 
-    public UndoBlob(Turn turn, Board board, ArrayList<Player> players){
+    public UndoBlob(Turn turn, Board board, List<Player> players){
         inputTurn = turn;
         inputBoard = board;
         inputPlayers = players;
@@ -97,7 +98,7 @@ public class UndoBlob {
         }
         return outputBoard;
     }
-    public ArrayList<Player> getPlayers(){
+    public List<Player> getPlayers(){
         if(outputTurn==null){
             readBlob();
         }

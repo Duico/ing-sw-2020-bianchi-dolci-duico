@@ -28,15 +28,20 @@ public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
     public void visit(InitSetUpMessage message) {
             if((message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME)) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.NICKNAME)) {
                 boolean askNumPlayers = message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME);
-                guiModel.setAskNumPlayers(askNumPlayers);
+//                guiModel.setAskNumPlayers(askNumPlayers);
 //                Platform.runLater( ()-> {
                     guiModel.askSetUpInfo(askNumPlayers);
 //                });
-            }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_LAST)) {
+            }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING)) {
                 boolean waitOtherPlayers=message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT);
                 System.out.println("correct sign up");
-                guiModel.setMyPlayer(message.getPlayer());
-                guiModel.correctSignUp(waitOtherPlayers);
+                if(!waitOtherPlayers) {
+                    guiModel.setMyPlayer(message.getPlayer());
+                    //if persistency
+                    //guiModel.startGame();
+                }else {
+                    guiModel.correctSignUp(waitOtherPlayers);
+                }
             }
     }
 

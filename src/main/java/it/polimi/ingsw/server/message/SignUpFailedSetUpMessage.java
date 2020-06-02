@@ -20,7 +20,8 @@ public class SignUpFailedSetUpMessage extends SetUpMessage {
         NULL_LOBBY,
         INVALID_NICKNAME,
         INVALID_NUMPLAYERS,
-        GAME_ALREADY_START
+        GAME_ALREADY_START,
+        INVALID_NICKNAME_PERSISTENCY
     }
 
     public Reason getReason() {
