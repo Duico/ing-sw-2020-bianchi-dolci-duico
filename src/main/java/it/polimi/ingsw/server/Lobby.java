@@ -140,6 +140,8 @@ public class Lobby {
         System.out.println("Game save found on disk: persistency available.");
         this.persistencyPlayers = readGame.getPlayers();
         setNumPlayers(persistencyPlayers.size());
+//        String names = persistencyPlayers.stream().
+//        System.out.println()
         this.game = readGame;
         game.clearEventListeners(ModelEventListener.class);
         return true;

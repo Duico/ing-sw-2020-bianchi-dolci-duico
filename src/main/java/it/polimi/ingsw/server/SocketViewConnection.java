@@ -65,7 +65,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     private void close() {
         closeConnection();
         server.clientCloseConnection(this);
-        System.out.println("Disconnect player done!");
+        System.out.println("Gracefully closing connection to remaining player.");
     }
 
     @Override

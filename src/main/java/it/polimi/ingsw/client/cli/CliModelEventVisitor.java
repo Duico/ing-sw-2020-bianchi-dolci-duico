@@ -121,8 +121,13 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     @Override
     public void visit(PersistencyEvent evt) {
-        //TODO
-        //copy GuiModelEventVisitor
+        Player player = evt.getPlayer();
+        cliModel.setPlayers(evt.getPlayers());
+        cliModel.setCurrentPlayer(player);
+        cliModel.setBoard(evt.getBoard());
+        cliModel.setTurnPhase(evt.getTurnPhase());
+        boolean myTurn = player.equalsUuid(cliModel.getMyPlayer());
+        nextOperation(myTurn);
     }
 
     @Override

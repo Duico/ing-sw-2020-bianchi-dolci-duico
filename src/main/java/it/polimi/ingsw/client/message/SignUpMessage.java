@@ -9,16 +9,13 @@ public class SignUpMessage implements Serializable {
     private boolean persistency = false;
 
     public SignUpMessage(String nickName, Integer numPlayers, boolean persistency){
-        this(nickName, numPlayers);
-        this.persistency = persistency;
-    }
-    public SignUpMessage(String nickName, Integer numPlayers) {
         this.nickName=nickName;
         this.numPlayers=numPlayers;
+        this.persistency = persistency;
     }
 
     public SignUpMessage(String nickName){
-        this(nickName, null);
+        this(nickName, null, false);
     }
 
     public String getNickName() {

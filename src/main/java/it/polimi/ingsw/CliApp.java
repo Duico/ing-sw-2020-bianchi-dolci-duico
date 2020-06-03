@@ -19,7 +19,7 @@ public class CliApp {
 //        CliSetUpMessageVisitor setUpMessageVisitor = new CliSetUpMessageVisitor(cli, cliModel);
 
         MessageVisitor gameMessageVisitor = new CliMessageVisitor(cli, cliModel);
-        ClientConnection clientConnection = new ClientConnection("3.137.63.131", 12192, gameMessageVisitor);
+        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 38612, gameMessageVisitor);
         clientConnection.addEventListener(MessageListener.class, gameMessageVisitor);
 //        clientConnection.addEventListener(ClientConnectionEventListener.class, cli);
         gameMessageVisitor.addSignUpListener(clientConnection);
