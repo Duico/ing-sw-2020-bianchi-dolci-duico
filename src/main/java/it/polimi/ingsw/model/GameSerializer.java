@@ -73,6 +73,9 @@ public class GameSerializer {
             inputGame = (Game) in.readObject();
             //undoBlob is transient
             //we need to regenerate it on reload from persistency
+            if(inputGame==null)
+                return null;
+
             inputGame.regenerateUndo();
         }catch (InvalidClassException | FileNotFoundException e){
             throw e;

@@ -47,13 +47,13 @@ public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
 
     @Override
     public void visit(ConnectionMessage connectionMessage) {
-            if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
+            /*if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
                 sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CONNECTION_CLOSED));
                 //sceneEventEmitter closeWindow
             }else if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
                 alert("You have been kicked from the game, because there are too many players.");
                 //sceneEventEmitter closeWindow
-            }
+            }*/
     }
 
     private void alert(String message){

@@ -1,6 +1,7 @@
 
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.server.message.*;
 import it.polimi.ingsw.client.message.SignUpMessage;
 import it.polimi.ingsw.view.event.ViewEvent;
@@ -62,6 +63,8 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         active = false;
     }
 
+
+
     private void close() {
         closeConnection();
         server.clientCloseConnection(this);
@@ -78,6 +81,12 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
                 send(message);
 //            }
 //        }).start();
+    }
+
+    @Override
+    public void playerDefeat() {
+        System.out.println("dovrei farela disconnessione");
+        server.removeFromGameConnectionList(this);
     }
 
     public Thread asyncReadFromSocket(final ObjectInputStream socketIn){

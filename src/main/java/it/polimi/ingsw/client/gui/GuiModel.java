@@ -21,6 +21,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
     private Player myPlayer;
     private Player currentPlayer;
     private List<Player> players= new ArrayList<>();
+    private boolean endGame = false;
     private Board board = new Board();
     private boolean isAllowedToMove;
     private boolean isAllowedToBuild;
@@ -70,6 +71,10 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     public List<String> getCardDeck(){
         return chooseCardController.getCardDeck();
+    }
+
+    public boolean getEndGame(){
+        return this.endGame;
     }
 
     public void showChooseFirstPlayer(){
@@ -157,6 +162,22 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
         }
     }
 
+    public void playerDefeat(Player playerDefeat){
+
+        for(int i=0;i<playerDefeat.getNumWorkers();i++) {
+            board.removeWorker(playerDefeat.getWorkerPosition(i));
+            mainController.removeWorker(playerDefeat.getWorkerPosition(i), playerDefeat.getColor());
+        }
+
+        for(int i=0;i<players.size();i++){
+            if(players.get(i).equalsUuid(playerDefeat))
+                players.remove(players.get(i));
+        }
+
+        mainController.displayPlayers(players);
+
+    }
+
     public void setDefaultOperation() {
         if (turnPhase.equals(TurnPhase.PLACE_WORKERS)) {
             mainController.setOperation(MainController.Operation.PLACE_WORKER);
@@ -231,7 +252,9 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 //    }
 
     public void winCondition(){
+        this.endGame=true;
         mainController.disableAll();
+
     }
 
     public void moveOnTheBoard(Position startPosition, Position destPosition, Position pushPosition){

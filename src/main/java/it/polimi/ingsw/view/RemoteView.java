@@ -43,9 +43,17 @@ public class RemoteView extends View implements ViewEventListener, ModelEventLis
     }
 
     @Override
+    public void defeatPlayer(Player player) {
+        if(getPlayer().equalsUuid(player))
+            viewConnection.playerDefeat();
+    }
+
+
+    @Override
     public void handleEvent(ViewEvent evt){
         evt.setView(this);
         evt.accept(this);
+
     }
 
     public void eventResponse(ControllerResponse response){

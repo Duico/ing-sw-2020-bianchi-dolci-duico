@@ -165,7 +165,10 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                         }
                          if (message instanceof ConnectionMessage) {
                             ConnectionMessage event = (ConnectionMessage) message;
-                             if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION) || event.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)) {
+                             if (event.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
+                                 new ClientConnectionEvent(ClientConnectionEvent.Reason.CONNECTION_LOST).accept(gameMessageVisitor);
+                                 closeConnection();
+                             } else if(event.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
                                  new ClientConnectionEvent(ClientConnectionEvent.Reason.CONNECTION_LOST).accept(gameMessageVisitor);
                                  closeConnection();
                              }

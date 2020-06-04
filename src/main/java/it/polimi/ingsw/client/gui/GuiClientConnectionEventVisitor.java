@@ -15,8 +15,15 @@ public class GuiClientConnectionEventVisitor implements ClientConnectionEventVis
     public void visit(ClientConnectionEvent evt) {
         if(evt.getReason().equals(ClientConnectionEvent.Reason.ERROR_ON_THE_SOCKET)){
             guiModel.alert("Errore nella connessione con il server.");
-        }else
-            sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CONNECTION_CLOSED));
-
+        }else if(evt.getReason().equals(ClientConnectionEvent.Reason.DISCONNECTION_TOO_MANY_PLAYERS)) {
+            guiModel.alert("You have been kicked from the game, because there are too many players.");
+        }
+        else{
+            if(!guiModel.getEndGame()) {
+                sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CONNECTION_CLOSED));
+            }
+        }
     }
+
+
 }

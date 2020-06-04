@@ -470,8 +470,9 @@ public class Game extends ModelEventEmitter implements Serializable{
                 ModelEvent evt2 = new WinModelEvent(players.get(0));
                 emitEvent(evt2);
             }else {
-                ModelEvent evt = new PlayerDefeatModelEvent(getCurrentPlayer(), false);
+                ModelEvent evt = new PlayerDefeatModelEvent(currentPlayer, false);
                 emitEvent(evt);
+                playerDefeat(currentPlayer);
                 nextTurn(nextPlayer);
             }
             //Control if he has lost then if there is another player emit win event
@@ -488,8 +489,14 @@ public class Game extends ModelEventEmitter implements Serializable{
                 return turn.isLoseCondition(board);
             } else {
                 if(turn.isLoseCondition(board)) {
-                    ModelEvent evt = new PlayerDefeatModelEvent(getCurrentPlayer(), true);
+                    return true;
+                    /*List<Position> positions = new ArrayList<>();
+                    for(int i=0;i<getCurrentPlayer().getNumWorkers();i++){
+                        positions.add(getCurrentPlayer().getWorkerPosition(i));
+                    }
+                    ModelEvent evt = new PlayerDefeatModelEvent(getCurrentPlayer(), positions, true);
                     emitEvent(evt);
+                    playerDefeat(getCurrentPlayer());*/
                 }
                 return false;
             }

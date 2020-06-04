@@ -22,10 +22,11 @@ public class ConnectionMessage extends GameMessage {
 
     @Override
     public void accept(MessageVisitor visitor) {
-        visitor.visit(this);
+
+        //visitor.visit(this);
     }
 
     public void accept(SetUpMessageVisitor visitor){
-        visitor.visit(this);
+        //visitor.visit(this);
     }
 }

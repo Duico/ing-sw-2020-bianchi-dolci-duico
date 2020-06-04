@@ -496,6 +496,17 @@ public class MainController implements GuiEventEmitter {
         });
     }
 
+    public void removeWorker(Position position, PlayerColor color){
+        Platform.runLater(()->{
+            Node removeWorker = workersMap.get(position);
+            opponentWorkers.getChildren().remove(Models.fromColor(color));
+            myWorkers.getChildren().remove(Models.fromColor(color));
+            opponentWorkers.getChildren().remove((removeWorker));
+            myWorkers.getChildren().remove(removeWorker);
+            workersMap.remove(position, removeWorker);
+        });
+    }
+
     private void buildPlatform(Point3D pos){
         Color transparentKhaki = new Color(Color.DARKKHAKI.getRed(), Color.DARKKHAKI.getGreen(), Color.DARKKHAKI.getBlue(), 0);
         Cube platform = new Cube(3,3,0.001, transparentKhaki);

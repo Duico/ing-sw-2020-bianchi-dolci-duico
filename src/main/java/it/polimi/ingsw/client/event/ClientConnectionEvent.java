@@ -24,7 +24,8 @@ public class ClientConnectionEvent extends Message {
         PING_FAIL,
         OBJECT_IO_EXCEPTION,
         ERROR_ON_THE_SOCKET,
-        CONNECTION_LOST
+        CONNECTION_LOST,
+        DISCONNECTION_TOO_MANY_PLAYERS
         ;
     }
 

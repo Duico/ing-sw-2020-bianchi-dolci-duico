@@ -41,7 +41,9 @@ public class GuiMessageVisitor implements MessageVisitor {
     }
 
     @Override
-    public void visit(ConnectionMessage evt){evt.accept(setUpMessageVisitor);}
+    public void visit(ConnectionMessage evt){
+        //evt.accept(setUpMessageVisitor);
+    }
 
     @Override
     public void visit(ClientConnectionEvent evt) { evt.accept(clientConnectionEventVisitor);}
