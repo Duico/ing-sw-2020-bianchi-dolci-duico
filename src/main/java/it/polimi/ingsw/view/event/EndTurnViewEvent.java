@@ -7,8 +7,8 @@ import it.polimi.ingsw.view.ViewEventVisitor;
 
 public class EndTurnViewEvent extends GameViewEvent{
 
-    public EndTurnViewEvent(RemoteView view) {
-        super(view);
+    public EndTurnViewEvent(Player player) {
+        super(player);
     }
     public EndTurnViewEvent(){
         this(null);

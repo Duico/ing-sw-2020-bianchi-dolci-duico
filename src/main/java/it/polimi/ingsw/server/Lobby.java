@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.GameViewEventListener;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.event.ModelEvent;
+import it.polimi.ingsw.view.ControllerResponseListener;
 import it.polimi.ingsw.view.ModelEventListener;
 import it.polimi.ingsw.view.RemoteView;
 
@@ -203,6 +204,7 @@ public class Lobby {
             game.resumeGame();
         }else {
             System.out.println("Starting new game");
+
             game.startGame(playingPlayers, true);
         }
     }
@@ -219,6 +221,7 @@ public class Lobby {
     public void addRemoteView(RemoteView remoteView) {
 //        playingPlayers.add(player);
         remoteView.addEventListener(GameViewEventListener.class, controller);
+        controller.addEventListener(ControllerResponseListener.class, remoteView);
 //        remoteViews.add(remoteView);
         game.addEventListener(ModelEventListener.class, remoteView);
     }

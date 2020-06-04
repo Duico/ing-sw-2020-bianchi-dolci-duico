@@ -1,13 +1,14 @@
 
 package it.polimi.ingsw.view.event;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.ViewEventVisitor;
 
 public class CardViewEvent extends GameViewEvent {
     private String cardName;
 
-    public CardViewEvent(RemoteView view, String cardName){
-        super(view);
+    public CardViewEvent(Player player, String cardName){
+        super(player);
         this.cardName=cardName;
     }
     public CardViewEvent(String cardName){

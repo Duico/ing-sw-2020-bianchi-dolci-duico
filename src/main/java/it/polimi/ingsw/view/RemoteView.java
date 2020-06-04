@@ -10,7 +10,7 @@ import it.polimi.ingsw.view.event.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RemoteView extends View implements ViewEventListener, ModelEventListener {
+public class RemoteView extends View implements ViewEventListener, ModelEventListener, ControllerResponseListener {
 
     private ViewConnection viewConnection;
 
@@ -51,15 +51,20 @@ public class RemoteView extends View implements ViewEventListener, ModelEventLis
 
     @Override
     public void handleEvent(ViewEvent evt){
-        evt.setView(this);
+        evt.setPlayer(getPlayer());
         evt.accept(this);
 
     }
 
+    @Override
     public void eventResponse(ControllerResponse response){
         //we don't want to send the remote view to client
-        response.getEvent().setView(null);
-        viewConnection.asyncSend(response);
+        System.out.println(getPlayer());
+        System.out.println(response.getEvent().getPlayer());
+        if(response.getEvent().getPlayer().equalsUuid(getPlayer())) {
+            //response.getEvent().setPlayer(null);
+            viewConnection.asyncSend(response);
+        }
     }
 
 

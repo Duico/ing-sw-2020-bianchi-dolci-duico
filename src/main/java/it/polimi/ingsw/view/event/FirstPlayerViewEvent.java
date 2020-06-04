@@ -8,9 +8,9 @@ import it.polimi.ingsw.view.ViewEventVisitor;
 public class FirstPlayerViewEvent extends GameViewEvent {
     private Player player;
 
-    public FirstPlayerViewEvent(RemoteView view, Player player){
-        super(view);
-        this.player=player;
+    public FirstPlayerViewEvent(Player player, Player firstPlayer){
+        super(player);
+        this.player=firstPlayer;
     }
     public FirstPlayerViewEvent(Player player){
         this(null, player);

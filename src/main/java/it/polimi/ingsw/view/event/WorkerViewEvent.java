@@ -12,8 +12,8 @@ public abstract class WorkerViewEvent extends GameViewEvent {
     protected Position workerPosition;
 
 
-    public WorkerViewEvent(RemoteView view, Position workerPosition) {
-        super(view);
+    public WorkerViewEvent(Player player, Position workerPosition) {
+        super(player);
         this.workerPosition = workerPosition;
     }
 
