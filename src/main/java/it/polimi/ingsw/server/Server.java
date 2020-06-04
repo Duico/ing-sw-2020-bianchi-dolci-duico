@@ -210,7 +210,7 @@ public class Server {
             lobby.addWaitingPlayer(nickName);
             waitingConnection.put(connection, nickName);
 
-            if (lobby.getNumPlayers() != null && waitingConnection.size() >= lobby.getNumPlayers()) {
+            if (waitingConnection.containsKey(getFirstConnection()) && waitingConnection.size() >= lobby.getNumPlayers()) {
                 createNewGame();
             } else {
                 //client has to wait
