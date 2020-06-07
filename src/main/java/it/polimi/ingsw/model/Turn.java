@@ -5,13 +5,15 @@ import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
 import java.io.PipedOutputStream;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Timer;
 import java.util.UUID;
+import java.util.concurrent.*;
 
 public abstract class Turn implements Serializable {
     final Player currentPlayer;
     protected boolean isUndoAvailable = false; // false when deserializing for undo
     final private TurnPhase phase;
-
+    protected transient ScheduledFuture<?> undoTimer;
 
     public Turn(TurnPhase turnPhase, Player currentPlayer){
         this.phase = turnPhase;

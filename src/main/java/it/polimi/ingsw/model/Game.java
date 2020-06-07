@@ -6,6 +6,10 @@ import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
 import java.io.Serializable;
 import java.util.*;
 import java.util.Timer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -17,12 +21,13 @@ public class Game extends ModelEventEmitter implements Serializable{
     boolean useCards = false;
     private CardDeck cardDeck;
 
-
     private ArrayList<Card> chosenCards;
     private Player firstPlayer;
     private final int numWorkers;
     private Board board;
     private transient UndoBlob undoBlob;
+    private final transient ScheduledExecutorService undoExecutorService = Executors.newScheduledThreadPool(2);
+
 
     public Game() {
         this(5, 5, 2);
@@ -256,25 +261,6 @@ public class Game extends ModelEventEmitter implements Serializable{
         }
         emitEvent(new ChosenCardsModelEvent(player, cardDeck.getCardNames(), old_chosenCards));
     }
-
-    //TODO: Chiedere ad ale
-    /*public boolean firstTurn(Player player) {
-        if(!setFirstPlayer(player)){
-            return false;
-        }
-        emitEvent(new NewTurnModelEvent(player, TurnPhase.NORMAL));
-        nextTurn(player);
-        return true;
-    }
-
-    private boolean setFirstPlayer(Player player){
-        if(players.contains(player)) {
-            this.firstPlayer = players.get(players.indexOf(player));
-            return true;
-        }
-        return false;
-    }
-    */
 
     public boolean firstTurn(Player player) {
         Player firstPlayer = setFirstPlayer(player);
@@ -592,18 +578,21 @@ public class Game extends ModelEventEmitter implements Serializable{
 //    }
 
     public void startTimerUndo() {
-        java.util.Timer timer = new Timer();
-        int delta = 5000;
-        timer.schedule(new java.util.TimerTask() {
-            @Override
-            public void run() {
-                turn.isUndoAvailable = false;
+        if(turn.undoTimer != null) {
+            turn.undoTimer.cancel(true);
+        }
+        Turn undoTurn = turn;
+        turn.undoTimer = undoExecutorService.schedule(() -> {
+                if(undoTurn == null){
+                    System.out.print("Revoking undo after turn has been reset");
+                }
+                undoTurn.isUndoAvailable = false;
                 checkHasLost();
-            }
-        }, delta);
+        }, 5, TimeUnit.SECONDS);
     }
 
     public void resumeGame(){
+       startTimerUndo();
        emitEvent(makePersistencyEvent());
     }
     private PersistencyEvent makePersistencyEvent(){
