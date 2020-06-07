@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ModelEventVisitor;
-import it.polimi.ingsw.client.cli.CliText;
 import it.polimi.ingsw.model.Card;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
@@ -98,7 +97,7 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         Player playerDefeat = evt.getPlayer();
         if(guiModel.getMyPlayer().getUuid().equals(playerDefeat.getUuid())) {
             guiModel.setMessage("You are blocked, you lose");
-            guiModel.winCondition();
+            guiModel.endGameCondition();
         } else{
             guiModel.setMessage(playerDefeat.getNickName()+" lose the game!");
 
@@ -111,10 +110,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         Player winner = evt.getPlayer();
         if(guiModel.getMyPlayer().getUuid().equals(winner.getUuid())) {
             guiModel.setMessage("My best compliments, you win!");
-            guiModel.winCondition();
+            guiModel.endGameCondition();
         } else{
             guiModel.setMessage("You lose, "+winner.getNickName()+" wins!");
-            guiModel.winCondition();
+            guiModel.endGameCondition();
         }
     }
 

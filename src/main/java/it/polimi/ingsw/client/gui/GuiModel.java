@@ -251,7 +251,7 @@ class GuiModel extends ClientEventEmitter implements GuiEventListener {
 //        return mainController !=null;
 //    }
 
-    public void winCondition(){
+    public void endGameCondition(){
         this.endGame=true;
         mainController.disableAll();
 

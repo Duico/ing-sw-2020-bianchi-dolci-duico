@@ -48,6 +48,7 @@ public class MainController implements GuiEventEmitter {
     private final int TRIGLIPH_HEIGHT = 40;
     final double boardSize=15;
     final double baseZ = 0;
+    private SubScene subScene;
     private final Group root = new Group();
     private final Group workers = new Group();
     private final Group myWorkers= new Group();
@@ -243,6 +244,7 @@ public class MainController implements GuiEventEmitter {
 
     public void disableAll(){
         Platform.runLater(()-> {
+            subScene.setMouseTransparent(true);
             undoButton.setMouseTransparent(true);
             moveButton.setMouseTransparent(true);
             buildButton.setMouseTransparent(true);
@@ -862,8 +864,7 @@ public class MainController implements GuiEventEmitter {
 
     public Scene gameScene(){
         create3DScene();
-
-        SubScene subScene = new SubScene(root, WIDTH, HEIGHT, true, SceneAntialiasing.BALANCED);
+        subScene = new SubScene(root, WIDTH, HEIGHT, true, SceneAntialiasing.BALANCED);
         PerspectiveCamera camera = new PerspectiveCamera(true);
         double cameraAngle = 50;
         double perfectX = 25 / Math.tan(cameraAngle / 180 * Math.PI);
