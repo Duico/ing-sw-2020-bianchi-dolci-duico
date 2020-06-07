@@ -343,6 +343,7 @@ public class MainController implements GuiEventEmitter {
         innerWalls.getTransforms().addAll(new Translate(9.9, -10, 4.5), new Rotate(+90, Rotate.X_AXIS), new Scale(1.15, 1, 1.15));
 
         PointLight light = new PointLight();
+        AmbientLight ambientLight = new AmbientLight();
         light.setColor(new Color(1, 1, 0.8, 1)); //yellow
         Group lightGroup = new Group();
         lightGroup.getChildren().add(light);
@@ -352,7 +353,7 @@ public class MainController implements GuiEventEmitter {
         light.setRotate(45);
 
         workers.getChildren().addAll(myWorkers, opponentWorkers);
-        root.getChildren().addAll(board, cliff, islands, innerWalls, sea, workers, buildings);
+        root.getChildren().addAll(board, cliff, islands, innerWalls, sea, workers, buildings, lightGroup);
 
 
     }
