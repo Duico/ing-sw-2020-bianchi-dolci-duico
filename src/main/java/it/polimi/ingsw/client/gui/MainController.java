@@ -131,13 +131,6 @@ public class MainController implements GuiEventEmitter {
         return currentOperation;
     }
 
-    public void addButtonEvents(){
-        addOnClickEventMoveButton(moveButton);
-//        addOnClickEventUndoButton(undoButton);
-        addOnClickEventBuildButton(buildButton);
-//        addOnClickEventEndTurnButton(endTurnButton);
-    }
-
     private boolean isOperationSet(){
         return currentOperation!=null;
     }
@@ -169,11 +162,12 @@ public class MainController implements GuiEventEmitter {
 
     public void addOnClickEventEndTurnButton(Node node){
         node.setOnMouseClicked(event->{
-            System.out.println("endturn");
+            System.out.println("Emit endturn");
             emitEndTurn();
         });
     }
     public void addOnClickEventUndoButton(Node node){
+        System.out.println("Emit undo");
         node.setOnMouseClicked(event->{
             emitUndo();
         });
@@ -201,36 +195,51 @@ public class MainController implements GuiEventEmitter {
     }
 
     public void refreshButtons(){
-        moveButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), currentOperation.equals(Operation.MOVE));
-        buildButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), currentOperation.equals(Operation.BUILD));
+        moveButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), currentOperation!=null && currentOperation.equals(Operation.MOVE));
+        buildButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), currentOperation!=null && currentOperation.equals(Operation.BUILD));
         buildButton.getStyleClass().removeAll("buildDome_button", "build_button");
         buildButton.getStyleClass().add(isBuildDome?"buildDome_button":"build_button");
     }
 
-    public void updateButtons(TurnPhase turnPhase, boolean isAllowedToMove, boolean isAllowedToBuild, boolean isRequiredToMove, boolean isRequiredToBuild){
+    public void updateButtons(boolean isMyTurn, TurnPhase turnPhase, boolean isAllowedToMove, boolean isAllowedToBuild, boolean isRequiredToMove, boolean isRequiredToBuild){
+//        if(!isMyTurn){
+//            disableAllButtons();
+//            return;
+//        }
+        System.out.println("Updating buttons: "+"isAllowedToMove: "+isAllowedToMove
+                +" isAllowedToBuild: "+isAllowedToBuild+" isRequiredToMove: "+isRequiredToMove
+                +" isRequiredToBuild: "+isRequiredToBuild);
         if(turnPhase.equals(TurnPhase.PLACE_WORKERS)){
             currentOperation = Operation.PLACE_WORKER;
         }else if(isAllowedToMove){
             currentOperation = Operation.MOVE;
         }else if(isAllowedToBuild) {
             currentOperation = Operation.BUILD;
+        }else{
+            currentOperation = null;
         }
         isBuildDome = false;
-        disableButtons(false, false, !isAllowedToMove, !isAllowedToBuild);
-        //if(isRequiredToMove || isRequiredToBuild) disable endTurn
+//        disableButtons(false, false, !isAllowedToMove, !isAllowedToBuild);
+        disableButtons(isRequiredToMove||isRequiredToBuild, false, !isAllowedToMove, !isAllowedToBuild);
         Platform.runLater(this::refreshButtons);
     }
 
     public void disableButtons(boolean endTurnButtonDisabled, boolean undoButtonDisabled, boolean moveButtonDisabled, boolean buildButtonDisabled){
         //subScene.setMouseTransparent(true);
         Platform.runLater(()-> {
-            endTurnButton.setMouseTransparent(endTurnButtonDisabled);
-            undoButton.setMouseTransparent(undoButtonDisabled);
-            moveButton.setMouseTransparent(moveButtonDisabled);
-            buildButton.setMouseTransparent(buildButtonDisabled);
+            refreshButtons();
+            setDisabledButton(endTurnButton, endTurnButtonDisabled);
+            setDisabledButton(undoButton, undoButtonDisabled);
+            setDisabledButton(moveButton, moveButtonDisabled);
+            setDisabledButton(buildButton, buildButtonDisabled);
         });
     }
+    private void setDisabledButton(Button button, boolean disabled){
+        button.setOpacity(disabled?0.5:1);
+        button.setMouseTransparent(disabled);
+    }
     public void disableAllButtons(){
+        currentOperation = null;
         disableButtons(true, true, true, true);
     }
     public void endGame() {
@@ -239,30 +248,24 @@ public class MainController implements GuiEventEmitter {
     }
 
     public void clearStartPosition() {
-        setStartPosition(null);
+        Platform.runLater( () -> {
+            setStartPosition(null);
+        });
     }
 
     private void setStartPosition(Position position) {
-        if(position!= null && !isMyWorker(position)){
+        if(position!=null && !isMyWorker(position)){
             return;
         }
-        startPosition = position;
-        if (startPosition == null){
-            startPositionIndicator.setVisible(false);
-
-        }else{
-            if(startPositionIndicator==null) {
-
-                startPositionIndicator = new Cube(3, 3, 0.001, Color.WHITE, "/graphics/red_glow.png");
-                root.getChildren().add(startPositionIndicator);
-                startPositionIndicator.setMouseTransparent(true);
-            }
-            Point3D pos = map.getCoordinate(position);
-            startPositionIndicator.getTransforms().clear();
-            startPositionIndicator.getTransforms().add(new Translate(pos.getX(), pos.getY(), pos.getZ()+0.98));
-            startPositionIndicator.setVisible(true);
+        if(startPositionIndicator==null) {
+            startPositionIndicator = new Cube(3, 3, 0.001, Color.WHITE, "/graphics/red_glow.png");
+            root.getChildren().add(startPositionIndicator);
+            startPositionIndicator.setMouseTransparent(true);
         }
+        startPosition = position;
+        drawIndicator(startPosition, startPositionIndicator);
     }
+
 
     private void showCellHoverIndicator(Position position){
         if(hoverPosition==null || !hoverPosition.equals(position)){
@@ -278,13 +281,17 @@ public class MainController implements GuiEventEmitter {
             root.getChildren().add(hoverPositionIndicator);
             hoverPositionIndicator.setMouseTransparent(true);
         }
-        if (hoverPosition == null) {
-            hoverPositionIndicator.setVisible(false);
+        drawIndicator(hoverPosition, hoverPositionIndicator);
+    }
+
+    private void drawIndicator(Position position, Node indicator) {
+        if (position == null){
+            indicator.setVisible(false);
         }else{
             Point3D pos = map.getCoordinate(position);
-            hoverPositionIndicator.getTransforms().clear();
-            hoverPositionIndicator.getTransforms().add(new Translate(pos.getX(), pos.getY(), pos.getZ()+0.98));
-            hoverPositionIndicator.setVisible(true);
+            indicator.getTransforms().clear();
+            indicator.getTransforms().add(new Translate(pos.getX(), pos.getY(), pos.getZ()+0.98));
+            indicator.setVisible(true);
         }
     }
 
@@ -630,14 +637,9 @@ public class MainController implements GuiEventEmitter {
            if(currentOperation!=null){
                if (currentOperation.equals(Operation.MOVE)) {
                    emitMove(startPosition, destinationPosition);
-//                   setStartPosition(null);
                } else if (currentOperation.equals(Operation.BUILD)){
                    emitBuild(startPosition, destinationPosition, isBuildDome);
-//                   setStartPosition(null);
                }
-//                    else if (operation.equals(Operation.BUILD_DOME))
-
-//                            emitViewEvent(new BuildViewEvent(startPosition, destinationPosition, true));
            }
         } else {
             //set start position
@@ -730,8 +732,13 @@ public class MainController implements GuiEventEmitter {
 
     public void moveWorker(Position startPosition, Position destinationPosition, Position pushPosition){
         Node tmpWorker = workersMap.get(startPosition);
+        boolean isMyWorker = myWorkers.getChildren().contains(tmpWorker);
         Node pushedWorker = workersMap.get(destinationPosition);
         updateWorkersMap(startPosition, destinationPosition, pushPosition);
+        //for seamless multiple operations
+        if(isMyWorker){
+            setStartPosition(destinationPosition);
+        }
         Platform.runLater(()-> {
 
 //                    }

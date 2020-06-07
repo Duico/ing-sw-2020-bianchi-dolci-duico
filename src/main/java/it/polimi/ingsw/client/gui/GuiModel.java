@@ -55,9 +55,21 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         }
     }
 
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public boolean isMyTurn(){
+        return currentPlayer.equalsUuid(myPlayer);
+    }
+
     public void requireButtonUpdate(){
-        System.out.println("Require Button Update");
-//        emitViewEvent(new InfoViewEvent());
+        if(isMyTurn()) {
+            System.out.println("Require Button Update");
+            emitViewEvent(new InfoViewEvent());
+        }else{
+            mainController.disableAllButtons();
+        }
     }
 
     public void setButtonInfo(boolean isAllowedToMove, boolean isAllowedToBuild, boolean isRequiredToMove, boolean isRequiredToBuild){
@@ -65,7 +77,7 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         this.isAllowedToBuild = isAllowedToBuild;
         this.isRequiredToMove = isRequiredToMove;
         this.isRequiredToBuild = isRequiredToBuild;
-        mainController.updateButtons(turnPhase, isAllowedToMove, isAllowedToBuild, isRequiredToMove, isRequiredToBuild);
+        mainController.updateButtons(isMyTurn(), turnPhase, isAllowedToMove, isAllowedToBuild, isRequiredToMove, isRequiredToBuild);
     }
 
     private void clearButtonInfo(boolean isPlaceWorkers) {
@@ -134,14 +146,6 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         this.myPlayer=myPlayer;
     }
 
-    public void setCurrentPlayer(Player currentPlayer){
-        this.currentPlayer=currentPlayer;
-    }
-
-    public Player getCurrentPlayer(){
-        return this.currentPlayer;
-    }
-
     public void setPlayers(List<Player> players) {
        if(players!=null){
            this.players = players;
@@ -165,14 +169,14 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         this.turnPhase = turnPhase;
     }
 
-    public void newTurn(Player currentPlayer, TurnPhase turnPhase){
+    public void newTurn(TurnPhase turnPhase){
         setTurnPhase(turnPhase);
         if(turnPhase.equals(TurnPhase.PLACE_WORKERS) || turnPhase.equals(TurnPhase.NORMAL)){
             if(players !=null) {
                 mainController.displayPlayers(players);
             }
-            //requireButtonUpdate();
-            //mainController.clearStartPosition();
+            requireButtonUpdate();
+            mainController.clearStartPosition();
         }
         if(myPlayer.equalsUuid(currentPlayer)){
             setMessage("Your turn to play");
@@ -203,25 +207,17 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         if (turnPhase.equals(TurnPhase.PLACE_WORKERS)) {
             mainController.setOperation(MainController.Operation.PLACE_WORKER);
         } else if (turnPhase.equals(TurnPhase.NORMAL)) {
-            //updateGameButtons();
-                //addGameButtonEvents();
-                mainController.setOperation(null);
+            mainController.setOperation(MainController.Operation.MOVE);
         }
     }
 
-//    public void addGameButtonEvents(){
-//        mainController.addButtonEvents();
+//    private boolean checkDistance(Position start, Position destination){
+//        int dx = start.getX()-destination.getX();
+//        int dy = start.getY()-destination.getY();
+//        if(dx<=1 && dx>=-1 && dy<=1 && dy>=-1)
+//            return true;
+//        return false;
 //    }
-
-
-
-    private boolean checkDistance(Position start, Position destination){
-        int dx = start.getX()-destination.getX();
-        int dy = start.getY()-destination.getY();
-        if(dx<=1 && dx>=-1 && dy<=1 && dy>=-1)
-            return true;
-        return false;
-    }
 
 
     public LoginController getLoginController() {
@@ -304,14 +300,18 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
 //        mainController.updateOperationButtons(true, true);
         });
     }
+    public void failedOperation() {
+        if(turnPhase.equals(TurnPhase.PLACE_WORKERS) || turnPhase.equals(TurnPhase.NORMAL)){
+            mainController.clearStartPosition();
+        }
+    }
 
-
-    public void resumeGame(Player currentPlayer) {
+    public void resumeGame() {
         if(!(turnPhase.equals(TurnPhase.PLACE_WORKERS)||turnPhase.equals(TurnPhase.NORMAL))) {
             throw new RuntimeException("Trying to resume from an invalid game... quitting");
         }
         mainController.displayPlayers(players);
-        //requireButtonUpdate();
+        requireButtonUpdate();
         undoOnTheBoard();
         if(myPlayer.equalsUuid(currentPlayer)){
             setMessage("Resumed game: Your turn to play.");

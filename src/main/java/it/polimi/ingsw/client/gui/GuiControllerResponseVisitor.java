@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ControllerResponseVisitor;
-import it.polimi.ingsw.client.cli.CliText;
 import it.polimi.ingsw.controller.response.*;
 import it.polimi.ingsw.model.Operation;
 import javafx.application.Platform;
@@ -15,7 +14,7 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
 
     @Override
     public void visit(FailedOperationControllerResponse r) {
-
+        guiModel.failedOperation();
         if(r.getOperation().equals(Operation.PLACE)){
             if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_FEASIBLE)){
                 guiModel.setMessage("Your worker are already place");

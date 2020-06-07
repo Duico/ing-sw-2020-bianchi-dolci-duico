@@ -20,14 +20,15 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
 
     @Override
     public void visit(BuildWorkerModelEvent evt) {
-        System.out.println("correctBuild");
+//        System.out.println("correctBuild");
         guiModel.buildOnTheBoard(evt.getStartPosition(), evt.getDestinationPosition(), evt.isDome());
         guiModel.requireButtonUpdate();
+
     }
 
     @Override
     public void visit(MoveWorkerModelEvent evt) {
-        System.out.println("correct move");
+//        System.out.println("correct move");
         guiModel.moveOnTheBoard(evt.getStartPosition(), evt.getDestinationPosition(), evt.getPushPosition());
         guiModel.requireButtonUpdate();
     }
@@ -69,7 +70,8 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         Player currentPlayer = evt.getPlayer();
         changeScene(turnPhase);
         guiModel.setPlayers(evt.getPlayers());
-        guiModel.newTurn(currentPlayer, turnPhase);
+        guiModel.setCurrentPlayer(currentPlayer);
+        guiModel.newTurn(turnPhase);
     }
 
     @Override
@@ -77,10 +79,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         System.out.print("Resuming game");
         sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.MAIN));
         guiModel.setPlayers(evt.getPlayers());
-//        guiModel.setCurrentPlayer(evt.getPlayer());
+        guiModel.setCurrentPlayer(evt.getPlayer());
         guiModel.setBoard(evt.getBoard());
         guiModel.setTurnPhase(evt.getTurnPhase());
-        guiModel.resumeGame(evt.getPlayer());
+        guiModel.resumeGame();
     }
 
     private void changeScene(TurnPhase turnPhase){

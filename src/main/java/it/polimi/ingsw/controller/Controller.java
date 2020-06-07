@@ -23,6 +23,10 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
     }
 
     public void requiredTurnInfo(InfoViewEvent message){
+        //needed to avoid the wrong player receiving currentPlayer's answer
+        if(checkIsWrongPlayer(message)){
+            return;
+        }
         boolean isRequiredToMove = game.isRequiredToMove();
         boolean isRequiredToBuild = game.isRequiredToBuild();
         boolean isAllowedToMove = game.isAllowedToMove();
