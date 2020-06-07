@@ -49,14 +49,14 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
 
     @Override
     public void visit(ConnectionMessage connectionMessage) {
-        if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
+        /*if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
             //cli.printClientConnectionEvent(connectionMessage);
             cli.print(System.lineSeparator() + Color.RED_UNDERLINED.escape("Game over, player disconnected..."));
             cli.shutdown();
         }else if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
             cli.print(System.lineSeparator() + Color.RED_UNDERLINED.escape("You have been kicked from the game, because there were too many players."));
             cli.shutdown();
-        }
+        }*/
     }
 
     private CliRunnable askSetUpInfo(boolean askNumPlayers, boolean askPersistency) {

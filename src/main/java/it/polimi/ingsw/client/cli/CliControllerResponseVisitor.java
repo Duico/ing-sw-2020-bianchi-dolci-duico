@@ -58,6 +58,7 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
     @Override
     public void visit(IllegalCardNamesListControllerResponse r) {
         cli.println(Color.YELLOW_BOLD.escape("illegal list of cards"));
+
     }
 
     @Override
@@ -67,7 +68,7 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
 
     @Override
     public void visit(IllegalTurnPhaseControllerResponse r) {
-        cli.println(Color.YELLOW_BOLD.escape("illegal turn phase"));
+        printAll(CliText.ILLEGAL_TURN_PHASE.toString());
     }
 
     @Override
@@ -84,7 +85,7 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
 
     @Override
     public void visit(NotCurrentPlayerControllerResponse r) {
-        cli.println(Color.YELLOW_BOLD.escape("incorrectPlayer"));
+        printAll(CliText.NOT_CURRENT_PLAYER.toString());
     }
 
     @Override

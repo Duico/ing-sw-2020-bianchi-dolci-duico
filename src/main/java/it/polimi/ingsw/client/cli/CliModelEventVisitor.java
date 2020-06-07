@@ -140,12 +140,12 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
         }
         cliModel.removePlayer(playerDefeat);
 
-
     }
 
     @Override
     public void visit(WinModelEvent evt) {
         Player winner = evt.getPlayer();
+        cliModel.setEndGame();
         if(cliModel.getMyPlayer().getUuid().equals(winner.getUuid())) {
             printAll(CliText.WINNER.toString());
         } else{

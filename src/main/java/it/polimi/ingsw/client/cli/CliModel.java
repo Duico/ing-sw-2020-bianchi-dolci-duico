@@ -15,6 +15,7 @@ public class CliModel {
     private Player myPlayer;
     private Player currentPlayer;
     protected List<Player> players;
+    private boolean endGame = false;
 
     protected boolean isTurnOK;
     private List<String> cards;
@@ -110,9 +111,11 @@ public class CliModel {
         for (Player player : players) {
             Optional<Integer> workerId = player.getWorkerId(startPosition);
             if (!workerId.isPresent() || workerId.get() == null) {
-                return false;
+                //return false;
+            }else{
+                player.setWorkerPosition(workerId.get(), destPosition);
             }
-            player.setWorkerPosition(workerId.get(), destPosition);
+            //player.setWorkerPosition(workerId.get(), destPosition);
 
         }
         if(pushPosition!=null) {
@@ -120,10 +123,11 @@ public class CliModel {
                 if (!player.equalsUuid(playerEvent)) {
                     Optional<Integer> workerId = player.getWorkerId(destPosition);
                     if (!workerId.isPresent() || workerId.get() == null) {
-                        System.out.println("Entro qui nel false worker ID");
-                        return false;
+                        //System.out.println("Entro qui nel false worker ID");
+                        //return false;
+                    }else{
+                        player.setWorkerPosition(workerId.get(), pushPosition);
                     }
-                    player.setWorkerPosition(workerId.get(), pushPosition);
 
                 }
             }
@@ -280,5 +284,13 @@ public class CliModel {
     }
     public String getLastInfoMessage(){
         return lastInfoMessage;
+    }
+
+    public void setEndGame(){
+        this.endGame=true;
+    }
+
+    public boolean getEndGame(){
+        return this.endGame;
     }
 }

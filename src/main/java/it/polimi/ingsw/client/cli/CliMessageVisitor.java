@@ -27,7 +27,7 @@ public class CliMessageVisitor implements MessageVisitor {
         this.modelEventVisitor = new CliModelEventVisitor(cli, cliModel);
         this.controllerResponseVisitor = new CliControllerResponseVisitor(cli, cliModel);
         this.setUpMessageVisitor = new CliSetUpMessageVisitor(cli, cliModel);
-        this.clientConnectionEventVisitor = new CliClientConnectionEventVisitor(cli);
+        this.clientConnectionEventVisitor = new CliClientConnectionEventVisitor(cli, cliModel);
 
     }
 
