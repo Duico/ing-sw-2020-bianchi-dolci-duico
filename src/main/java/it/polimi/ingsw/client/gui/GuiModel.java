@@ -158,7 +158,8 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
             setMessage("Your turn to play");
             setDefaultOperation();
         }else{
-            setMessage("Wait, it's not your turn...");
+            if(!this.endGame)
+                setMessage("Wait, it's not your turn...");
         }
     }
 

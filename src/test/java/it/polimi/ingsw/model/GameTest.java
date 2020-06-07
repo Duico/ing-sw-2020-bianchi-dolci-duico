@@ -134,7 +134,7 @@ class GameTest {
         assertEquals(TurnPhase.NORMAL, game.getTurnPhase());
     }
 
-    /*
+
     @Test
     void checkIncorrectOperationPlaceWorkerTurn(){
         Game game=setGameWithoutCards();
@@ -159,7 +159,7 @@ class GameTest {
 
     }
 
-     */
+
 
     @Test
     void checkCorrectPlayer(){
@@ -334,7 +334,7 @@ class GameTest {
     void setWorkerOnTheBoard() throws PositionOutOfBoundsException {
         Game game= setGameWithoutCards();
         Position workerPosition = new Position (0,0);
-        assertEquals(game.place(workerPosition),0);
+        assertNotEquals(game.place(workerPosition),null);
         assertTrue(game.isAnyWorkerNotPlaced());
     }
 
@@ -361,7 +361,7 @@ class GameTest {
         assertFalse(game.isAnyWorkerNotPlaced());
         game.nextTurn();
         assertTrue(game.isAnyWorkerNotPlaced());
-        assertEquals(-1, game.place(workerPosition));
+        assertNotEquals(null, game.place(workerPosition));
     }
 
     @Test
