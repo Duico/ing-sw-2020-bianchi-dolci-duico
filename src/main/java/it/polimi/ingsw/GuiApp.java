@@ -32,25 +32,18 @@ public class GuiApp extends Application {
         SceneEventEmitter sceneEventEmitter = sceneManager.startGame(guiModel.getLoginController(), guiModel.getChooseCardController(), guiModel.getMainController());
         GuiMessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModel, sceneEventEmitter);
 
-//        ClientConnection clientConnection = new ClientConnection(argsIpAddress, argsPort, guiMessageVisitor);
-        Map<String, String> params = getParameters().getNamed();
-        String paramsIp = null;
-        Integer paramsPort = null;
-        if(params.containsKey("ip")){ //regexp
-            paramsIp = params.get("ip");
-        }else if(params.containsKey("addr")){
-            paramsIp = params.get("addr");
-        }
-        if(paramsIp==null || !paramsIp.matches("^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}$")){
+        TcpParamsParser parser = new TcpParamsParser(getParameters());
+        String paramsIp = "127.0.0.1";
+        Integer paramsPort = 38612;
+        try {
+            paramsIp = parser.getIp();
+        }catch (TcpParamsParser.IllegalParameterException e){
             System.out.println("Missing or wrong IP address inserted. Reverting to default.");
-            paramsIp = "127.0.0.1";
         }
-        if(params.containsKey("port")){
-            paramsPort = Integer.parseInt(params.get("port"));
-        }
-        if(paramsPort == null || paramsPort>65535 || paramsPort<1024){
+        try{
+            paramsPort = parser.getPort();
+        } catch (TcpParamsParser.IllegalParameterException e) {
             System.out.println("Missing or wrong port selected. Reverting to default.");
-            paramsPort = 38612;
         }
         System.out.println("Connecting to "+paramsIp+":"+paramsPort);
         ClientConnection clientConnection = new ClientConnection(paramsIp, paramsPort, guiMessageVisitor);
@@ -62,9 +55,7 @@ public class GuiApp extends Application {
         });
         Thread connectionThread = new Thread(clientConnection::run);
         connectionThread.start();
-
     }
-
 
     public static void main(String[] args) {
         launch(args);

@@ -7,6 +7,7 @@ import it.polimi.ingsw.view.RemoteView;
 
 import java.io.IOException;
 import java.io.StreamCorruptedException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -14,8 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
-
-    private static final int PORT = 38612;
     private Lobby lobby;
 //    private Game game;
     private ServerSocket serverSocket;
@@ -25,8 +24,9 @@ public class Server {
     private boolean hasGameStarted = false;
     private boolean isPersistencyAvailable;
 
-    public Server() throws IOException {
-        this.serverSocket = new ServerSocket(PORT);
+    public Server(Integer port) throws IOException {
+        this.serverSocket = new ServerSocket(port);
+        System.out.println("Listening on 0.0.0.0:"+serverSocket.getLocalPort());
     }
 
     public synchronized void clientCloseConnection(ViewConnection c) {
