@@ -1,14 +1,11 @@
-
 package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.ViewEventVisitor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ChallengerCardViewEvent extends GameViewEvent {
+public class ChallengerCardViewEvent extends GameViewEvent{
     List<String> cardNamesList;
     public ChallengerCardViewEvent(Player player, List<String> cardNamesList) {
         super(player);
@@ -27,4 +24,3 @@ public class ChallengerCardViewEvent extends GameViewEvent {
         visitor.emitEvent(this);
     }
 }
-
