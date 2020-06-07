@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-class GuiModel extends ClientEventEmitter implements GuiEventListener {
+public class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     private SceneEvent.SceneType sceneType;
 

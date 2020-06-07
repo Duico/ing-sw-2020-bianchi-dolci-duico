@@ -19,52 +19,29 @@ public class SceneManager implements SceneEventListener {
     private final Stage stage;
     //private final ClientConnection clientConnection;
     private FXMLLoader fxmlLoader = new FXMLLoader();
-    private GuiModel guiModel;
     private SceneEvent.SceneType sceneType;
-    private ClientConnection clientConnection;
+    private LoginController loginController;
+    private ChooseCardController chooseCardController;
+    private MainController mainController;
+    //private EndController endController;
 
-    public SceneManager(Stage stage/*, ClientConnection clientConnection*/){
+    public SceneManager(Stage stage){
         this.stage = stage;
         //this.clientConnection = clientConnection;
     }
 
-    public void startGame(){
-        guiModel = new GuiModel();
-        LoginController loginController = new LoginController();
-        loginController.setEventListener(guiModel);
-        guiModel.setLoginController(loginController);
-
-        ChooseCardController chooseCardController = new ChooseCardController();
-        chooseCardController.setEventListener(guiModel);
-        guiModel.setChooseCardController(chooseCardController);
-
-        MainController mainController = new MainController();
-        mainController.setEventListener(guiModel);
-        guiModel.setMainController(mainController);
-
+    public SceneEventEmitter startGame(LoginController loginController, ChooseCardController chooseCardController, MainController mainController){
+        this.loginController = loginController;
+        this.chooseCardController = chooseCardController;
+        this.mainController = mainController;
 
         SceneEventEmitter sceneEventEmitter = new SceneEventEmitter();
         sceneEventEmitter.addEventListener(SceneEventListener.class, this);
-        //GuiModelEventVisitor guiModelEventVisitor = new GuiModelEventVisitor(guiModel, sceneEventEmitter);
-        //GuiClientConnectionEventVisitor guiClientConnectionEventVisitor = new GuiClientConnectionEventVisitor(guiModel, sceneEventEmitter);
-        //GuiMessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModelEventVisitor, new GuiControllerResponseVisitor(guiModel), new GuiSetUpMessageVisitor(guiModel), guiClientConnectionEventVisitor);
-        //setConnectionListener(guiMessageVisitor);
-        MessageVisitor guiMessageVisitor = new GuiMessageVisitor(guiModel, sceneEventEmitter);
-//        ClientConnection clientConnection = new ClientConnection("3.17.117.250", 11086, guiMessageVisitor);
-        ClientConnection clientConnection = new ClientConnection("127.0.0.1", 38612, guiMessageVisitor);
-        guiModel.addEventListener(ViewEventListener.class, clientConnection);
-        guiModel.addEventListener(SignUpListener.class,clientConnection);
+
         this.sceneType= SceneEvent.SceneType.LOGIN;
         loadScene(SceneEvent.SceneType.LOGIN);
-        Thread connectionThread = new Thread(clientConnection::run);
-        connectionThread.start();
 
-        stage.setOnCloseRequest((windowEvent) -> {
-            //disconnect
-            //TODO handle interruptedException
-            clientConnection.closeConnection();
-            System.out.println("Window closed... Closing connection.");
-        });
+        return sceneEventEmitter;
     }
 
     @Override
@@ -86,22 +63,22 @@ public class SceneManager implements SceneEventListener {
     private void loadScene(SceneEvent.SceneType sceneType) {
         if(sceneType.equals(SceneEvent.SceneType.LOGIN)){
 //            Platform.runLater( () -> {
-                showFXMLScene(getClass().getResource("/fxml/login.fxml"), guiModel.getLoginController());
+                showFXMLScene(getClass().getResource("/fxml/login.fxml"), loginController);
 //            });
 
         }else if(sceneType.equals(SceneEvent.SceneType.CHOSE_CARDS)){
 //            Platform.runLater( () -> {
-                showFXMLScene(getClass().getResource("/fxml/chooseCard.fxml"), guiModel.getChooseCardController());
+                showFXMLScene(getClass().getResource("/fxml/chooseCard.fxml"), chooseCardController);
 //                    });
 
         }else if(sceneType.equals(SceneEvent.SceneType.MAIN)){
 //            Platform.runLater(()->{
-                showMainScene(guiModel.getMainController());
+                showMainScene(mainController);
 //            });
 
         }else if(sceneType.equals(SceneEvent.SceneType.CONNECTION_CLOSED)){
 //            showFXMLScene();
-            showFXMLScene(getClass().getResource("/fxml/endGame.fxml"), guiModel.getLoginController());
+            showFXMLScene(getClass().getResource("/fxml/endGame.fxml"), loginController);
         }
     }
 
