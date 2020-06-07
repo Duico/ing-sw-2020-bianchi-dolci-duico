@@ -94,6 +94,7 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
 
     @Override
     public void visit(TurnInfoControllerResponse r) {
+        guiModel.setButtonInfo(r.isAllowedToMove(), r.isAllowedToBuild(), r.isRequiredToMove(), r.isRequiredToBuild());
 
     }
 

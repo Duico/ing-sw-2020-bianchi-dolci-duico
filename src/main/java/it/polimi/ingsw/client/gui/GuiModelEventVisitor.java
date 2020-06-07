@@ -22,14 +22,14 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
     public void visit(BuildWorkerModelEvent evt) {
         System.out.println("correctBuild");
         guiModel.buildOnTheBoard(evt.getStartPosition(), evt.getDestinationPosition(), evt.isDome());
-        guiModel.updateGameButtons();
+        guiModel.requireButtonUpdate();
     }
 
     @Override
     public void visit(MoveWorkerModelEvent evt) {
         System.out.println("correct move");
         guiModel.moveOnTheBoard(evt.getStartPosition(), evt.getDestinationPosition(), evt.getPushPosition());
-        guiModel.updateGameButtons();
+        guiModel.requireButtonUpdate();
     }
 
     @Override
@@ -37,6 +37,7 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         Player player = evt.getPlayer();
         Position position = evt.getPlacePosition();
         guiModel.placeWorker(position, player);
+        guiModel.requireButtonUpdate();
     }
 
     @Override
@@ -69,7 +70,6 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         changeScene(turnPhase);
         guiModel.setPlayers(evt.getPlayers());
         guiModel.newTurn(currentPlayer, turnPhase);
-
     }
 
     @Override
@@ -77,11 +77,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         System.out.print("Resuming game");
         sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.MAIN));
         guiModel.setPlayers(evt.getPlayers());
-        guiModel.setCurrentPlayer(evt.getPlayer());
+//        guiModel.setCurrentPlayer(evt.getPlayer());
         guiModel.setBoard(evt.getBoard());
         guiModel.setTurnPhase(evt.getTurnPhase());
-        guiModel.resumeGame();
-        guiModel.updateGameButtons();
+        guiModel.resumeGame(evt.getPlayer());
     }
 
     private void changeScene(TurnPhase turnPhase){
@@ -130,6 +129,7 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         guiModel.setBoard(evt.getBoard());
         guiModel.undoOnTheBoard();
         guiModel.setMessage(evt.getPlayer().getNickName()+" used the undo function.");
+        guiModel.requireButtonUpdate();
     }
 
 

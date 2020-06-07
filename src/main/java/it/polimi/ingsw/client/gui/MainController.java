@@ -4,13 +4,11 @@ package it.polimi.ingsw.client.gui;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import it.polimi.ingsw.client.gui.event.GuiEventEmitter;
 import it.polimi.ingsw.client.gui.event.GuiEventListener;
-import it.polimi.ingsw.model.Level;
-import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.PlayerColor;
-import it.polimi.ingsw.model.Position;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.css.PseudoClass;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
@@ -72,10 +70,10 @@ public class MainController implements GuiEventEmitter {
 
 
     private Operation currentOperation;
+    private boolean isBuildDome;
     /**
      * If true, the next build attempt will be a dome
      */
-    private boolean isBuildDome;
     private final CoordinateMap map = new CoordinateMap(boardSize, baseZ);
     private Map<Position, Node> workersMap = new LinkedHashMap<>();
     private Node startPositionIndicator = null;
@@ -85,6 +83,8 @@ public class MainController implements GuiEventEmitter {
     public boolean isActive() {
         return active;
     }
+
+
 
     public enum Operation {
         MOVE,
@@ -181,75 +181,65 @@ public class MainController implements GuiEventEmitter {
 
     public void addOnClickEventMoveButton(Node node){
         node.setOnMouseClicked(event->{
-            if(!isOperationSet())
+            if(!isOperationSet() || !currentOperation.equals(Operation.MOVE))
             {
-                startPosition=null;
-                moveButton.getStyleClass().clear();
-                moveButton.getStyleClass().add("selectedMove_button");
                 setOperation(Operation.MOVE);
-            }else{
-               if(!currentOperation.equals(Operation.MOVE)){
-                   buildButton.getStyleClass().clear();
-                   buildButton.getStyleClass().add("build_button");
-                   moveButton.getStyleClass().clear();
-                   moveButton.getStyleClass().add("selectedMove_button");
-                   setOperation(Operation.MOVE);
-               }else{
-                   moveButton.getStyleClass().clear();
-                   moveButton.getStyleClass().add("move_button");
-                   setOperation(null);
-               }
             }
-
+            refreshButtons();
         });
     }
 
     public void addOnClickEventBuildButton(Node node){
         node.setOnMouseClicked(event->{
-            if(!isOperationSet()){
-                startPosition = null;
-                buildButton.getStyleClass().clear();
-                buildButton.getStyleClass().add("selectedBuild_button");
+            if(!isOperationSet() || !currentOperation.equals(Operation.BUILD)){
                 setOperation(Operation.BUILD);
             }else{
-                if(!currentOperation.equals(Operation.BUILD)){
-                    moveButton.getStyleClass().clear();
-                    moveButton.getStyleClass().add("move_button");
-                    buildButton.getStyleClass().clear();
-                    buildButton.getStyleClass().add("selectedBuild_button");
-                    setOperation(Operation.BUILD);
-                }else{
-                    isBuildDome=!isBuildDome;
-                    if(isBuildDome){
-                        buildButton.getStyleClass().clear();
-                        buildButton.getStyleClass().add("buildDome_button");
-                    }else{
-                        buildButton.getStyleClass().clear();
-                        buildButton.getStyleClass().add("build_button");
-                        setOperation(null);
-                    }
-                }
+                isBuildDome=!isBuildDome;
             }
+            refreshButtons();
         });
     }
 
-    public void updateButtons(){
-        Platform.runLater(()->{
-            buildButton.getStyleClass().clear();
-            moveButton.getStyleClass().clear();
-            buildButton.getStyleClass().add("build_button");
-            moveButton.getStyleClass().add("move_button");
-        });
+    public void refreshButtons(){
+        moveButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), currentOperation.equals(Operation.MOVE));
+        buildButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), currentOperation.equals(Operation.BUILD));
+        buildButton.getStyleClass().removeAll("buildDome_button", "build_button");
+        buildButton.getStyleClass().add(isBuildDome?"buildDome_button":"build_button");
     }
 
-    public void disableAll(){
+    public void updateButtons(TurnPhase turnPhase, boolean isAllowedToMove, boolean isAllowedToBuild, boolean isRequiredToMove, boolean isRequiredToBuild){
+        if(turnPhase.equals(TurnPhase.PLACE_WORKERS)){
+            currentOperation = Operation.PLACE_WORKER;
+        }else if(isAllowedToMove){
+            currentOperation = Operation.MOVE;
+        }else if(isAllowedToBuild) {
+            currentOperation = Operation.BUILD;
+        }
+        isBuildDome = false;
+        disableButtons(false, false, !isAllowedToMove, !isAllowedToBuild);
+        //if(isRequiredToMove || isRequiredToBuild) disable endTurn
+        Platform.runLater(this::refreshButtons);
+    }
+
+    public void disableButtons(boolean endTurnButtonDisabled, boolean undoButtonDisabled, boolean moveButtonDisabled, boolean buildButtonDisabled){
+        //subScene.setMouseTransparent(true);
         Platform.runLater(()-> {
-            subScene.setMouseTransparent(true);
-            undoButton.setMouseTransparent(true);
-            moveButton.setMouseTransparent(true);
-            buildButton.setMouseTransparent(true);
-            endTurnButton.setMouseTransparent(true);
+            endTurnButton.setMouseTransparent(endTurnButtonDisabled);
+            undoButton.setMouseTransparent(undoButtonDisabled);
+            moveButton.setMouseTransparent(moveButtonDisabled);
+            buildButton.setMouseTransparent(buildButtonDisabled);
         });
+    }
+    public void disableAllButtons(){
+        disableButtons(true, true, true, true);
+    }
+    public void endGame() {
+        subScene.setMouseTransparent(true);
+        disableAllButtons();
+    }
+
+    public void clearStartPosition() {
+        setStartPosition(null);
     }
 
     private void setStartPosition(Position position) {
@@ -311,7 +301,7 @@ public class MainController implements GuiEventEmitter {
     public void drawBoardCell(Position position, Level level, boolean isDome){
         int i;
         for(i=0;i<=level.getOrd();i++){
-            System.out.print("drawBoardCell "+position.getX()+" "+position.getY()+" level "+Level.fromIntToLevel(i));
+//            System.out.print("drawBoardCell "+position.getX()+" "+position.getY()+" level "+Level.fromIntToLevel(i));
             makeBlockBuild(position, Level.fromIntToLevel(i));
         }
         if(isDome)
@@ -640,10 +630,10 @@ public class MainController implements GuiEventEmitter {
            if(currentOperation!=null){
                if (currentOperation.equals(Operation.MOVE)) {
                    emitMove(startPosition, destinationPosition);
-                   setStartPosition(null);
+//                   setStartPosition(null);
                } else if (currentOperation.equals(Operation.BUILD)){
                    emitBuild(startPosition, destinationPosition, isBuildDome);
-                   setStartPosition(null);
+//                   setStartPosition(null);
                }
 //                    else if (operation.equals(Operation.BUILD_DOME))
 
@@ -876,7 +866,6 @@ public class MainController implements GuiEventEmitter {
         BorderPane background = new BorderPane();
 
         initGameButtons();
-
         vbButtons.getChildren().addAll(endTurnButton,undoButton, moveButton, buildButton);
 
         initMessageBox();
@@ -916,19 +905,17 @@ public class MainController implements GuiEventEmitter {
 
     private void initGameButtons(){
         undoButton.setPrefSize(80,80);
-        undoButton.getStylesheets().add("/css/mainscene.css");
-        undoButton.getStyleClass().add("undo_button");
+        undoButton.getStyleClass().addAll("undo_button","santorini_button");
         moveButton.setPrefSize(80,80);
-        moveButton.getStylesheets().add("/css/mainscene.css");
-        moveButton.getStyleClass().add("move_button");
+        moveButton.getStyleClass().addAll("move_button","santorini_button");
         buildButton.setPrefSize(80,80);
-        buildButton.getStylesheets().add("/css/mainscene.css");
-        buildButton.getStyleClass().add("build_button");
+        buildButton.getStyleClass().addAll("build_button", "santorini_button");
         endTurnButton.setPrefSize(80, 80);
-        endTurnButton.getStylesheets().add("/css/mainscene.css");
-        endTurnButton.getStyleClass().add("endTurn_button");
+        endTurnButton.getStyleClass().addAll("endTurn_button", "santorini_button");
         addOnClickEventEndTurnButton(endTurnButton);
         addOnClickEventUndoButton(undoButton);
+        addOnClickEventMoveButton(moveButton);
+        addOnClickEventBuildButton(buildButton);
     }
 
 
