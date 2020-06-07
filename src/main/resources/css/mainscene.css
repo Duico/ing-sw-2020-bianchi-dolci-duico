@@ -70,7 +70,7 @@
 
 .move_button{
         -fx-background-image: url("/textures/moveImage.png");
-        -fx-background-color: #c8acfa;
+        -fx-background-color: #8db0b9;
         -fx-background-radius: 15 15 15 15;
         -fx-border-color: black;
         -fx-border-width: 2 2 2 2;
@@ -105,7 +105,7 @@
 }
 
 .build_button{
-        -fx-background-color: #c8acfa;
+        -fx-background-color: #8db0b9;
         -fx-background-image: url("/textures/buildImage.png");
         -fx-background-radius: 15 15 15 15;
         -fx-border-color: black;
@@ -166,7 +166,7 @@
 
 .endTurn_button{
         -fx-background-image: url("/textures/endturn.png");
-        -fx-background-color: #c8acfa;
+        -fx-background-color: #8db0b9;
         -fx-background-radius: 15 15 15 15;
         -fx-border-color: black;
         -fx-border-width: 2 2 2 2;
@@ -184,7 +184,7 @@
 
 .undo_button{
         -fx-background-image: url("/textures/undo.png");
-        -fx-background-color: #c8acfa;
+        -fx-background-color: #8db0b9;
         -fx-background-radius: 15 15 15 15;
         -fx-border-color: black;
         -fx-border-width: 2 2 2 2;
