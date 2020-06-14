@@ -115,7 +115,6 @@ class NormalTurnTest {
         setWorkerOnTheBoard();
         //initial phase of the turn, the currentWorkerId is not set
         assertFalse(turn.isSetCurrentWorker());
-        assertEquals(Optional.empty(), turn.getCurrentWorkerId());
         assertTrue(turn.checkCurrentWorker(worker1.getCurrentPosition()));
         assertTrue(turn.checkCurrentWorker(worker2.getCurrentPosition()));
 
@@ -124,7 +123,7 @@ class NormalTurnTest {
         assertTrue(turn.isSetCurrentWorker());
         assertTrue(turn.checkCurrentWorker(worker1.getCurrentPosition()));
         assertFalse(turn.checkCurrentWorker(worker2.getCurrentPosition()));
-        assertEquals(Optional.of(0), turn.getCurrentWorkerId());
+        assertNotNull(turn.getCurrentWorkerId());
     }
 
     /**
@@ -286,7 +285,7 @@ class NormalTurnTest {
         assertFalse(turn.isSetCurrentWorker());
         turn.boardMove(board,worker1.getCurrentPosition(), pos1);
         assertTrue(turn.isSetCurrentWorker());
-        assertEquals(0, turn.getCurrentWorkerId());
+        assertNotNull( turn.getCurrentWorkerId());
         assertEquals(pos1, player1.getWorkerPosition(0));
         assertEquals(Operation.MOVE, worker1.getLastOperation());
     }
@@ -385,7 +384,7 @@ class NormalTurnTest {
         //control that the worker has built a base construction
         //assertEquals(Level.BASE, board.getBoardCell(pos1).getLevel());
         assertTrue(turn.isSetCurrentWorker());
-        assertEquals(0, turn.getCurrentWorkerId());
+        assertNotNull(turn.getCurrentWorkerId());
 
     }
 

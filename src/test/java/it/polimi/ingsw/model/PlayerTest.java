@@ -27,7 +27,10 @@ class PlayerTest {
     @Test
     void checkIfCardIsSet() throws StrategyNameNotFound {
         Card card = new Card("Default","Default", "Default", "Default", "Default", "Default");
+        assertNull(player1.getCard());
         assertTrue(player1.setCard(card));
+        assertEquals("Default", player1.getCard().getName());
+
     }
 
     /**
