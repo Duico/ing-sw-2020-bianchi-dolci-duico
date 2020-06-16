@@ -16,7 +16,6 @@ public class PlaceWorkersTurn extends Turn {
         Worker newWorker = new Worker();
         if(board.setWorker(newWorker, placePosition)) {
             Optional<Integer> workerId = currentPlayer.addWorker(newWorker);
-            System.out.println(workerId.get());
             if(!workerId.isPresent())
                 throw new RuntimeException("Worker set in the board without reference from player");
             return workerId;

@@ -1,14 +1,10 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.controller.response.ControllerResponse;
-import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.server.ViewConnection;
 import it.polimi.ingsw.view.event.*;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 public class RemoteView extends View implements ViewEventListener, ModelEventListener, ControllerResponseListener {
 
@@ -43,9 +39,9 @@ public class RemoteView extends View implements ViewEventListener, ModelEventLis
     }
 
     @Override
-    public void defeatPlayer(Player player) {
+    public void removeDefeatedPlayer(Player player) {
         if(getPlayer().equalsUuid(player))
-            viewConnection.playerDefeat();
+            viewConnection.removeDefeatedPlayer();
     }
 
 

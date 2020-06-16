@@ -43,8 +43,6 @@ public class Server {
                     connections.clear();
                     //it is safe not to clear lobby.waitingPlayers if we unset the lobby later
                     waitingConnection.clear();
-//                   !!!!!!!!!!!!!!!
-//                    TODO ENABLE
                     lobby.persistencySaveGame();
                     lobby.clearGame();
                     this.lobby = null;

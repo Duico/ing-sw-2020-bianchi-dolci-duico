@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class Lobby {
     String persistencyFilename = "./game.ser";
     //TODO should be in a configuration file
-    private  Game game = null;
+    private Game game = null;
     private Controller controller;
     private Integer numPlayers;
     //only needed to check for duplicate nicknames
@@ -150,6 +150,10 @@ public class Lobby {
 
     public boolean persistencySaveGame(){
         if(this.game == null){
+            return false;
+        }
+        if(!this.game.isActive()){
+            System.out.println("Game is over. Skipping save to disk.");
             return false;
         }
         TurnPhase turnPhase = this.game.getTurnPhase();

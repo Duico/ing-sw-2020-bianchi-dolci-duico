@@ -5,8 +5,6 @@ import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.Timer;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +24,8 @@ public class Game extends ModelEventEmitter implements Serializable{
     private final int numWorkers;
     private Board board;
     private transient UndoBlob undoBlob;
-    private final transient ScheduledExecutorService undoExecutorService = Executors.newScheduledThreadPool(2);
+    private transient ScheduledExecutorService undoExecutorService = Executors.newScheduledThreadPool(2);
+    private boolean active;
 
 
     public Game() {
@@ -61,7 +60,7 @@ public class Game extends ModelEventEmitter implements Serializable{
      * @return
      */
     public void startGame(List<Player> players, boolean useCards) {
-
+        this.active = true;
         this.useCards = useCards;
         this.firstPlayer=null;
         int numPlayers = players.size();
@@ -334,15 +333,8 @@ public class Game extends ModelEventEmitter implements Serializable{
         emitEvent(evt);
 
         if(isWinner){
-            ModelEvent evt2 = new WinModelEvent(getCurrentPlayer());
-            emitEvent(evt2);
+            winEvent(getCurrentPlayer());
         }
-
-        /*
-        if(checkHasLost() && players.size()==1) {
-            ModelEvent evt3 = new WinModelEvent(players.get(0));
-            emitEvent(evt3);
-        }*/
     }
 
     public boolean isAllowedToMove(){
@@ -450,23 +442,33 @@ public class Game extends ModelEventEmitter implements Serializable{
                 Position workerPosition = currentPlayer.getWorkerPosition(i);
                 board.removeWorker(workerPosition);
             }
-            Player nextPlayer = this.getNextPlayer();
             players.remove(currentPlayer);
             if(players.size()==1) {
-                ModelEvent evt2 = new WinModelEvent(players.get(0));
-                emitEvent(evt2);
+                winEvent(players.get(0));
             }else {
+                Player nextPlayer = this.getNextPlayer();
                 ModelEvent evt = new PlayerDefeatModelEvent(currentPlayer, false);
                 emitEvent(evt);
-                playerDefeat(currentPlayer);
+                emitPlayerDefeat(currentPlayer);
                 nextTurn(nextPlayer);
             }
-            //Control if he has lost then if there is another player emit win event
+            //Check if player has lost then, if there is another player, emit win event
 
 
             return true;
         }
         return false;
+    }
+
+    private void winEvent(Player winnerPlayer){
+        ModelEvent winModelEvent = new WinModelEvent(winnerPlayer);
+        emitEvent(winModelEvent);
+        active = false;
+        System.out.println("GAME OVER. "+winnerPlayer.getNickName()+" wins!");
+    }
+
+    public boolean isActive(){
+        return active;
     }
 
     private boolean hasLost(){
@@ -511,7 +513,6 @@ public class Game extends ModelEventEmitter implements Serializable{
         players = undoPlayers;
         //change isUndoAvailable in currentPlayer
         turn.isUndoAvailable = false;
-        //TODO event
         ModelEvent evt = new UndoModelEvent(getCurrentPlayer(), board, players);
         emitEvent(evt);
         return true;
@@ -578,6 +579,7 @@ public class Game extends ModelEventEmitter implements Serializable{
 //    }
 
     public void startTimerUndo() {
+        checkUndoExecutorService();
         if(turn.undoTimer != null) {
             turn.undoTimer.cancel(true);
         }
@@ -589,6 +591,12 @@ public class Game extends ModelEventEmitter implements Serializable{
                 undoTurn.isUndoAvailable = false;
                 checkHasLost();
         }, 5, TimeUnit.SECONDS);
+    }
+
+    private void checkUndoExecutorService() {
+        if(undoExecutorService == null){
+            undoExecutorService = Executors.newScheduledThreadPool(2);
+        }
     }
 
     public void resumeGame(){
@@ -606,6 +614,4 @@ public class Game extends ModelEventEmitter implements Serializable{
         }
         return clonedPlayers;
     }
-
-    
 }

@@ -11,5 +11,5 @@ public interface ViewConnection {
 
     void asyncSend(Object message);
 
-    void playerDefeat();
+    void removeDefeatedPlayer();
 }

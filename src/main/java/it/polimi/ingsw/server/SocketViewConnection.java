@@ -84,7 +84,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     }
 
     @Override
-    public void playerDefeat() {
+    public void removeDefeatedPlayer() {
         System.out.println("dovrei farela disconnessione");
         server.removeFromGameConnectionList(this);
     }

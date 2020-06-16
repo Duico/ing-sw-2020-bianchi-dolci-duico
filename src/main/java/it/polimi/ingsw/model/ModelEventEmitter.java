@@ -11,7 +11,7 @@ public class ModelEventEmitter extends EventEmitter {//for View
     public void emitEvent(ModelEvent evt){
         executeEventListeners(listener -> listener.sendMessage(evt) );
     }
-    public void playerDefeat(Player player){ executeEventListeners(listener -> listener.defeatPlayer(player) );}
+    public void emitPlayerDefeat(Player player){ executeEventListeners(listener -> listener.removeDefeatedPlayer(player) );}
 
     private void executeEventListeners(EventHandler<ModelEventListener> eventHandler){
         executeEventListeners(ModelEventListener.class, eventHandler);
