@@ -97,24 +97,6 @@ public class Lobby {
         waitingPlayers.removeIf(player -> player.equals(nickname));
     }
 
-
-//    public boolean isAdmin(Player player){
-//        if(this.players==null){
-//            return false;
-//        }
-//        return this.players.get(0).equals(player);
-//    }
-
-    /*public void startGame() throws NotEnoughPlayersException {
-        if(players.size() < getNumPlayers()) {
-            throw new NotEnoughPlayersException();
-        } else if(players.size() > getNumPlayers()){
-            //ask to choose which players are going to play
-        }
-        game.startGame(players, true); //TODO when view pass useCards
-
-    }*/
-
     /**
      * Read a serialized Game
      * @return Null if read Game is not valid, a Game if it is valid

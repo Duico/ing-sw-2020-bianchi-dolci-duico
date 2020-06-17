@@ -296,7 +296,6 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
             mainController.clearBoard();
             placeAllBuildings();
             placeAllWorkers();
-            //TODO infoEvent
 //        mainController.updateOperationButtons(true, true);
         });
     }

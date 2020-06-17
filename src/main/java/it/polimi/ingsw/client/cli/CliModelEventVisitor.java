@@ -55,13 +55,9 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     @Override
     public void visit(ChosenCardsModelEvent evt) {
-                //System.out.println(Color.YELLOW_BOLD.escape("Chosen Cards"));
         List<String> cardDeck = evt.getCardDeck();
         List<String> cards = evt.getChosenCards();
         Player player = evt.getPlayer();
-
-        //TODO remove
-//        System.err.print("ChosenCards "+evt.toString());
 
         cliModel.setCards(cards);
         cliModel.setCardDeck(cardDeck);
@@ -93,29 +89,7 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
             cliModel.setPlayersIfNotSet(evt.getPlayers());
             cliModel.setCurrentPlayer(player);
             boolean myTurn = player.equalsUuid(cliModel.getMyPlayer());
-//            if (player.equalsUuid(cliController.getMyPlayer())) {
-//                myTurn = true;
-//                switch (turnPhase) {
-//                    case CHOSE_CARDS:
-//                        break;
-//                    case PLACE_WORKERS:
-//                    case NORMAL:
-//                        //do nothing (cliController.setTurnPhase is enough)
-//                        //wait for command to be input
-//                        break;
-//                }
-//            } else {
-//                myTurn = false;
-//            }
-            //hasPrintedTurnMessage = true;
-            //out.notifyAll();
 
-        //printed inside printAll
-//            if (myTurn) {
-//                cli.print(System.lineSeparator() + CliText.YOUR_TURN.toString());
-//            } else {
-//                cli.print(System.lineSeparator() + CliText.WAIT_TURN.toString(cliModel.getCurrentPlayer().getNickName()));
-//            }
             nextOperation(myTurn);
     }
 
@@ -169,20 +143,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
         cli.print(System.lineSeparator() + cliText.toString(evt.getCard().getName(), evt.getPlayer().getNickName()));
 
 
-        /*cli.execInputRequest( () -> {
-        CliText cliText;
-            if(isOwnCard){
-                cliText = CliText.SET_CARD_OWN;
-            }else{
-                cliText = CliText.SET_CARD_OTHER;
-            }
-
-            //TODO generalize
-            //ORIGINALLY infoOut instead of cli
-                //cli.print(System.lineSeparator() + cliText.toString(evt.getCardName(), evt.getPlayer().getNickName()));
-        });*/
-//        askFirstPlayerLock.notifyAll();
-
     }
 
     @Override
@@ -198,11 +158,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
         nextOperation(cliModel.isMyTurn());
     }
     protected void nextOperation(boolean myTurn) {
-//        out.print(infoString.getBuffer());
-//        //TODO
-//        infoString = new StringWriter();
-//        infoOut = new PrintWriter(infoString);
-
         String turnText = myTurn?CliText.YOUR_TURN.toString():CliText.WAIT_TURN.toString(cliModel.getCurrentPlayer().getNickName());
         switch (cliModel.getTurnPhase()) {
             case CHOSE_CARDS:
@@ -424,11 +379,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
                 }
             }
         }
-        //printAll on WorkerModelEvent
-        //TODO remove
-//        if(event == null){
-//            printAll(myTurn);
-//        }
         return true;
     }
 }

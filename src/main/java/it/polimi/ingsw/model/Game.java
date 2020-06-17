@@ -71,9 +71,8 @@ public class Game extends ModelEventEmitter implements Serializable{
         this.players = players;
 
 
-        if (this.useCards) {
-            createCardDeck();
-
+        if (this.useCards && createCardDeck()) {
+            //OK
         } else {
             dealDefaultCard(numPlayers);
         }
@@ -96,11 +95,13 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
 
-    private void createCardDeck() {
+    private boolean createCardDeck() {
         try {
             this.cardDeck = new CardDeck();
+            return true;
         } catch (Exception e) {
-            System.err.println("Error reading XML configuration file");
+            System.err.println("Error reading XML configuration file. Playing without cards.");
+            return false;
         }
     }
 

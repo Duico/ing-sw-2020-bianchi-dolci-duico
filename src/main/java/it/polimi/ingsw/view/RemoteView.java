@@ -29,12 +29,12 @@ public class RemoteView extends View implements ViewEventListener, ModelEventLis
         //sendMessage(message)
     }
     public void sendMessage(Object message){
-        viewConnection.asyncSend(message);
+        viewConnection.send(message);
     }
 
     @Override
     public void sendMessage(ModelEvent modelEvent){
-        viewConnection.asyncSend(modelEvent);
+        viewConnection.send(modelEvent);
         //sendMessage(modelEvent);
     }
 
@@ -59,7 +59,7 @@ public class RemoteView extends View implements ViewEventListener, ModelEventLis
         System.out.println(response.getEvent().getPlayer());
         if(response.getEvent().getPlayer().equalsUuid(getPlayer())) {
             //response.getEvent().setPlayer(null);
-            viewConnection.asyncSend(response);
+            viewConnection.send(response);
         }
     }
 

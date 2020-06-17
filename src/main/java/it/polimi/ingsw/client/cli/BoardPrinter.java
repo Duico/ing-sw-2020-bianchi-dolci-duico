@@ -276,7 +276,6 @@ public class BoardPrinter {
             sb.appendln("");
         }
         for(Player player : players){
-            //todo
             String playerName = resizedPlayerName(player.getNickName(), playerWidth);
             String cardName = player.getCard().getName();
                                                                     //true if currentPlayer

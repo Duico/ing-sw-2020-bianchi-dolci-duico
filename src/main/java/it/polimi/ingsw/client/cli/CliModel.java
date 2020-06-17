@@ -92,21 +92,6 @@ public class CliModel {
         }
     }
 
-    /*//TODO
-    public boolean moveWorker(Position startPosition, Position destPosition){
-        for(Player player: players){
-            Integer workerId = player.getWorkerId(startPosition);
-            if(workerId == null){
-                System.out.println("Entro qui");
-                return false;
-            }
-
-   //         return player.setWorkerPosition(workerId, destPosition);
-             player.setWorkerPosition(workerId, destPosition);
-        }
-        return false;
-    }*/
-
     public boolean moveWorker(Position startPosition, Position destPosition, Position pushPosition, Player playerEvent){
         for (Player player : players) {
             Optional<Integer> workerId = player.getWorkerId(startPosition);
@@ -140,10 +125,8 @@ public class CliModel {
     }
 
 
-//    TODO
     public boolean buildWorker(Position workerPosition, Position buildPosition, boolean isDome){
         //board .build() is too complex for the Client
-
         board.build(workerPosition, buildPosition, isDome);
         return true;
     }

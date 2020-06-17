@@ -9,7 +9,7 @@ public interface ViewConnection {
 
     void addObserver(ViewEventListener observer);
 
-    void asyncSend(Object message);
+    void send(Object message);
 
     void removeDefeatedPlayer();
 }

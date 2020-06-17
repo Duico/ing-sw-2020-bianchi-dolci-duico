@@ -102,7 +102,6 @@ public class MainController implements GuiEventEmitter {
         Platform.runLater(()->{
             messageBox.setText(message);
             messageBox.setOpacity(1);
-            //TODO clear
             if(messageBoxFade != null) {
                 messageBoxFade.playFromStart();
             }
@@ -408,7 +407,6 @@ public class MainController implements GuiEventEmitter {
                         //Point3D verticalAxis = localTransform.inverseDeltaTransform(xAxis); //X axis
                         //System.out.println(verticalAxis);
 
-                        //TODO rotate by a variable amount dependent on tan()
                         //Point3D minusY = localTransform.deltaTransform(new Point3D(0,-1,0));
                         //System.out.println(minusY);
 
@@ -436,10 +434,10 @@ public class MainController implements GuiEventEmitter {
                         //Point3D verticalAxis = localTransform.inverseDeltaTransform(xAxis); //X axis
                         //System.out.println(verticalAxis);
 
-                        //TODO rotate by a variable amount dependent on 1/tan()
                         //Point3D minusY = localTransform.deltaTransform(new Point3D(0,-1,0));
 
 
+                        //rotate by a variable amount dependent on 1/tan()
                         //ANGLE
                         Point3D camPosition = toSceneTransform.transform(new Point3D(0,0,0));
                         Point3D camXYProjection = new Point3D(camPosition.getX(), camPosition.getY(), 0);
@@ -700,15 +698,13 @@ public class MainController implements GuiEventEmitter {
                 if(isSelectedWorker() || isMyWorker){
                     handleCellClickEvent(workerPosition);
                 }else{
-                    setMessage("Not your worker");
-                    //TODO multiline
-//                    setMessage("You can't move the opponent's workers.");
+//                    setMessage("Not your worker");
+                    setMessage("You can't move the opponent's workers.");
                 }
             });
             addHoverIndicator(node, pr -> getClickPosition(node.getBoundsInParent().getCenterX(), node.getBoundsInParent().getCenterY()));
     }
 
-    //TODO
     private void updateWorkersMap(Position startPosition, Position destinationPosition, Position pushPosition){
         Node worker1 = workersMap.get(startPosition);
         Node worker2 = workersMap.get(destinationPosition);

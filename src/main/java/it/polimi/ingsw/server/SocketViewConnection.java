@@ -1,7 +1,6 @@
 
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.server.message.*;
 import it.polimi.ingsw.client.message.SignUpMessage;
 import it.polimi.ingsw.view.event.ViewEvent;
@@ -37,7 +36,8 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         return active;
     }
 
-    private synchronized void send(Object message) {
+    @Override
+    public synchronized void send(Object message) {
         try {
             out.reset();
         } catch(IOException e){
@@ -71,17 +71,10 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         System.out.println("Gracefully closing connection to remaining player.");
     }
 
-    @Override
-    public void asyncSend(final Object message){
-        //TODO make single-threaded
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-                send(message);
-//            }
-//        }).start();
-    }
+//    @Override
+//    public void send(final Object message){
+//                send(message);
+//    }
 
     @Override
     public void removeDefeatedPlayer() {
@@ -125,7 +118,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         Timer timer = new Timer();
         TimeOutCheckerInterface timeOutChecker = () -> {
             if (isActive()){
-                asyncSend(new ConnectionMessage(ConnectionMessage.Type.PING));
+                this.send(new ConnectionMessage(ConnectionMessage.Type.PING));
                 return false;
             }else{
                 System.out.println("The connection is inactive");
@@ -160,7 +153,6 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         } catch (IOException | NoSuchElementException | InterruptedException e) {
             //TODO change text
             System.err.println("Error! Entra qui" + e.getMessage());
-            System.out.println("ciaooo");
         } finally{
             close();
         }

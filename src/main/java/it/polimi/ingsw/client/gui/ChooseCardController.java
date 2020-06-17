@@ -130,98 +130,6 @@ public class ChooseCardController implements GuiEventEmitter {
 //            chooseText.setText("Your choice is: "+chosenCard+"!");
         });
     }
-//
-//    public void initGridNotChallenger(List<String> chosenCards){
-//          for(int i=0;i<cardDeck.size();i++){
-//              if(chosenCards.contains(cardDeck.get(i))){
-//                  ImageView image = image(cardDeck.get(i));
-//                  HBox.setMargin(image, new Insets(0, (i==cardDeck.size()-1)?0:10, 0, i==0?0:10));
-//                  cards.getChildren().addAll(image);
-//              }
-//          }
-//    }
-
-//    //TODO remove
-//    public void initGridChallenger(List<String> chosenCards){
-//        List<String> cardstmp = new LinkedList<String>();
-//        cardstmp.add("Athena");
-//        cardstmp.add("Prometheus");
-//        cardstmp.add("Atlas");
-//        initGridNotChallenger(cardstmp);
-//    }
-//
-//    public void initGridChallenger(){
-//        for(int i=0;i<cardDeck.size();i++){
-//            ImageView image = image(cardDeck.get(i));
-//            HBox.setMargin(image, new Insets(0, (i==cardDeck.size()-1)?0:10, 0, i==0?0:10));
-//            cards.getChildren().add(image);
-//        }
-//    }
-
-//
-//    //Events must be added on the single ImageView
-//    public void addGridEventChallenger() {
-//        cards.getChildren().forEach(item -> {
-//            item.setOnMouseClicked( event -> {
-//                if (event.getClickCount() == 1) {
-//                    if(numSelectedCards<numPlayers) {
-//                        Node node = (Node) event.getSource();
-////                        int n = GridPane.getColumnIndex(node);
-//                        int i;
-//                       for(i=0;i<cards.getChildren().size();i++){
-//                           if(node.equals(cards.getChildren().get(i)))
-//                               break;
-//                       }
-//                        String choice = cardDeck.get(i);
-//                        chosenCardsChallenger.add(choice);
-////                        updateText();
-//                        numSelectedCards++;
-//                    }
-//                }
-//        });
-//    });
-//    }
-
-
-//    private void updateText(){
-//        chooseText.setText(getUpdateText());
-//    }
-
-//    private String getUpdateText(){
-//        String text= "Your choices are: ";
-//        for(int i=0;i<chosenCardsChallenger.size();i++){
-//            text=text+chosenCardsChallenger.get(i)+", ";
-//        }
-//        return text;
-//    }
-//
-
-
-
-
-//    public void addGridEventNotChallenger() {
-//
-//              cards.getChildren().forEach(item -> {
-//                  item.setOnMouseClicked( event -> {
-//                      if (event.getClickCount() == 1) {
-//                          Node node = (Node) event.getSource();
-////                          int n = GridPane.getColumnIndex(node);
-//                          int i;
-//                          for(i=0;i<cards.getChildren().size();i++){
-//                              if(node.equals(cards.getChildren().get(i)))
-//                                  break;
-//                          }
-//                          chosenCard=chosenCardsChallenger.get(i);
-//                          chooseText.setText("Your choice is: "+chosenCard+"!");
-//                      }
-//                  });
-//
-//              });
-//    }
-
-
-
-
 
     public Scene chooseCardScene() throws IOException {
         Parent page = FXMLLoader.load(getClass().getResource("/fxml/chooseCard.fxml"));
@@ -237,16 +145,6 @@ public class ChooseCardController implements GuiEventEmitter {
             waitBox.setVisible(true);
         });
     }
-
-//    //not challenger
-//    //TODO remove
-//    public void waitForChallenger(){
-//        Platform.runLater(()->{
-//            cardsBox.setVisible(false);
-//            waitLabel.setText("Wait for the challenger");
-//            waitBox.setVisible(true);
-//        });
-//    }
 
     //challenger
     public void showChooseFirstPlayer(List<String> usernames){
@@ -272,32 +170,6 @@ public class ChooseCardController implements GuiEventEmitter {
             initGrid(cardDeck);
         });
     }
-
-//    private void checkValidStartChallenger(){
-//
-//        if(numSelectedCards==numPlayers) {
-//            emitChallengerCards(chosenCardsChallenger);
-//            waitChooseCards();
-//        }else
-//            alert("Check if you have selected "+numPlayers+" cards!");
-//
-//    }
-//
-//    private void checkValidStart(){
-//        if(chosenCard==null)
-//            alert("Choose a Card!");
-//        else{
-//            emitChosenCard(chosenCard);
-//        }
-//    }
-
-
-//    public void sendCards(ActionEvent actionEvent){
-//        if(isChallenger)
-//            checkValidStartChallenger();
-//        else
-//            checkValidStart();
-//    }
 
     public void sendCards(ActionEvent actionEvent){
         checkValidStart();
@@ -340,24 +212,6 @@ public class ChooseCardController implements GuiEventEmitter {
     public void sendFirstPlayer(ActionEvent actionEvent) {
         emitFirstPlayer(getFirstPlayer());
     }
-
-
-//    public void launchGame(){
-//        MainController mainController = new MainController();
-//        for(int i = 0; i< GuiModel.getInstance().getNumPlayers(); i++)
-//            GuiModel.getInstance().addCard(chosenCardsChallenger.get(i));
-//        Stage stage = new Stage();
-//        stage.setScene(mainController.gameScene());
-//        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-//        stage.setX(primaryScreenBounds.getMinX());
-//        stage.setY(primaryScreenBounds.getMinY());
-//        stage.setWidth(primaryScreenBounds.getWidth());
-//        stage.setHeight(primaryScreenBounds.getHeight());
-//        stage.show();
-////        ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
-//    }
-//
-
 
     private void emitChosenCard(String chosenCard){
         listener.onChooseCard(chosenCard);

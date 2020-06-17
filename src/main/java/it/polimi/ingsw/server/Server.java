@@ -7,7 +7,6 @@ import it.polimi.ingsw.view.RemoteView;
 
 import java.io.IOException;
 import java.io.StreamCorruptedException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -38,7 +37,7 @@ public class Server {
 
                     //ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
                     for (ViewConnection connection : connections) {
-                        connection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
+                        connection.send(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
                     }
                     connections.clear();
                     //it is safe not to clear lobby.waitingPlayers if we unset the lobby later
@@ -93,7 +92,7 @@ public class Server {
                     }else if(viewConnection != firstConnection){
                         waitingConnectionRemove(viewConnection);
                         connections.remove(viewConnection);
-                        viewConnection.asyncSend(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS));
+                        viewConnection.send(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS));
                         //clientCloseConnection(viewConnection);
                         //viewConnection.closeConnection();
                     }
@@ -125,7 +124,7 @@ public class Server {
             }
         }
         initRemoteView(player, connection);
-        connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING, player));
+        connection.send(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING, player));
         return true;
     }
 
@@ -137,7 +136,7 @@ public class Server {
     private void notifyPersistencyFail(ViewConnection connection){
         //emit persistency fail event
         //close all connections
-        connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME_PERSISTENCY));
+        connection.send(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME_PERSISTENCY));
         //TEMP >
         clientCloseConnection(connection);
     }
@@ -165,16 +164,16 @@ public class Server {
             createNewLobby();
         }
         if(socketConnection == getFirstConnection()){
-            socketConnection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.STARTGAME, isPersistencyAvailable));
+            socketConnection.send(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.STARTGAME, isPersistencyAvailable));
         }else {
-            socketConnection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.NICKNAME, isPersistencyAvailable));
+            socketConnection.send(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.NICKNAME, isPersistencyAvailable));
         }
     }
 
     public void checkUpRegistration(String nickName, Integer numPlayers, boolean wantsPersistency, SocketViewConnection connection){
         if(lobby == null){
             System.out.println("NULL lobby!!!");
-            connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.NULL_LOBBY));
+            connection.send(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.NULL_LOBBY));
             return;
         }
         if(waitingConnection.containsKey(connection)){
@@ -183,7 +182,7 @@ public class Server {
         }
         if(!hasGameStarted) {
             if (!lobby.validateNickname(nickName)) {
-                connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME));
+                connection.send(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME));
                 return;
             }
             if (connection == getFirstConnection()) {
@@ -192,7 +191,7 @@ public class Server {
                         lobby.clearGame();
                         isPersistencyAvailable = false;
                         if (numPlayers == null || !lobby.setNumPlayers(numPlayers)) {
-                            connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
+                            connection.send(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
                             return;
                         }
 //                        if (!lobby.setNumPlayers(numPlayers)) {
@@ -212,10 +211,10 @@ public class Server {
                 createNewGame();
             } else {
                 //client has to wait
-                connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT));
+                connection.send(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT));
             }
         }else{
-            connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.GAME_ALREADY_START));
+            connection.send(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.GAME_ALREADY_START));
         }
 
     }
