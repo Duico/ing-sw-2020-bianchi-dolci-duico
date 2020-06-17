@@ -74,6 +74,7 @@ public class Game extends ModelEventEmitter implements Serializable{
         if (this.useCards && createCardDeck()) {
             //OK
         } else {
+            this.useCards = false;
             dealDefaultCard(numPlayers);
         }
 
