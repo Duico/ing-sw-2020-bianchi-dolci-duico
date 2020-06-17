@@ -76,6 +76,7 @@ public class GameSerializer {
             if(inputGame==null)
                 return null;
 
+//          game.undoBlob is not serializable
             inputGame.regenerateUndo();
         }catch (InvalidClassException | FileNotFoundException e){
             throw e;

@@ -602,7 +602,9 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
     public void resumeGame(){
-       startTimerUndo();
+        //undoBlob can't be serialized
+       turn.isUndoAvailable = false;
+       checkHasLost();
        emitEvent(makePersistencyEvent());
     }
     private PersistencyEvent makePersistencyEvent(){
