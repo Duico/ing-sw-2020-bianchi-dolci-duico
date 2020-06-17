@@ -342,7 +342,7 @@ public class MainController implements GuiEventEmitter {
         innerWalls.getTransforms().addAll(new Translate(9.9, -10, 4.5), new Rotate(+90, Rotate.X_AXIS), new Scale(1.15, 1, 1.15));
 
         PointLight light = new PointLight();
-        AmbientLight ambientLight = new AmbientLight(new Color(.7,.7,.7, 1));
+        AmbientLight ambientLight = new AmbientLight(new Color(.6,.6,.6, 1));
         light.setColor(new Color(.7, .7, 0.56, 1)); //yellow
         Group lightGroup = new Group();
         lightGroup.getChildren().addAll(light, ambientLight);
@@ -565,7 +565,6 @@ public class MainController implements GuiEventEmitter {
 
     private void makeDomeBuild(Position position){
         Platform.runLater(()-> {
-            System.out.println("dovrei disegnare una dome");
             Point3D pos = map.getCoordinate(position);
             Group dome = Models.DOME.getModel();
             dome.getTransforms().addAll(new Translate(pos.getX(), pos.getY(), pos.getZ() + 0.86), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3, 0.3, 0.3));
