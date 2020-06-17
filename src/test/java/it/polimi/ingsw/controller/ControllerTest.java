@@ -404,18 +404,46 @@ class ControllerTest {
            assertTrue(currentPlayer.getNumBuildsWorker(0)==0);
        }
 
-//        @Test
-//        void checkUndo() throws PositionOutOfBoundsException {
-//            placeAllWorkers();
-//            Player currentPlayer = game.getCurrentPlayer();
-//            Position start = currentPlayer.getWorkerPosition(0);
-//            Position destination = new Position(0,1);
-//            game.move(start, destination);
-//            assertTrue(currentPlayer.getNumMovesWorker(0)==1);
-//            controller.undo(new UndoViewEvent(currentPlayer));
-//            //manca timer
-//            assertTrue(currentPlayer.getNumMovesWorker(0)==0);
-//        }
+        @Test
+        void checkUndo() throws PositionOutOfBoundsException {
+            placeAllWorkers();
+            Player currentPlayer = game.getCurrentPlayer();
+            Position start = currentPlayer.getWorkerPosition(0);
+            Position destination = new Position(0,1);
+            controller.move(new MoveViewEvent(currentPlayer, start, destination));
+            assertTrue(currentPlayer.getNumMovesWorker(0)==1);
+            controller.undo(new UndoViewEvent(currentPlayer));
+            assertTrue(currentPlayer.getWorkerPosition(0).equals(start));
+        }
+
+        @Test
+        void checkTurnInfo() throws PositionOutOfBoundsException {
+            placeAllWorkers();
+            Player currentPlayer = game.getCurrentPlayer();
+            controller.requiredTurnInfo(new InfoViewEvent(currentPlayer));
+            assertTrue(game.getCurrentPlayer().getUuid().equals(currentPlayer.getUuid()));
+        }
+
+    @Test
+    void checkWrongTurnInfo() throws PositionOutOfBoundsException {
+        placeAllWorkers();
+        Player firstPlayer = game.getCurrentPlayer();
+        controller.requiredTurnInfo(new InfoViewEvent(firstPlayer));
+        assertTrue(game.getCurrentPlayer().getUuid().equals(firstPlayer.getUuid()));
+        game.nextTurn();
+        Player currentPlayer = game.getCurrentPlayer();
+        controller.requiredTurnInfo(new InfoViewEvent(firstPlayer));
+        assertTrue(game.getCurrentPlayer().getUuid().equals(currentPlayer.getUuid()));
+    }
+
+        @Test
+        void checkWrongTurnPhase() throws PositionOutOfBoundsException {
+            placeAllWorkers();
+            Player currentPlayer = game.getCurrentPlayer();
+            String currentCardName = currentPlayer.getCard().getName();
+            controller.setPlayerCard(new CardViewEvent(currentPlayer, "Prometheus"));
+            assertTrue(currentPlayer.getCard().getName().equals(currentCardName));
+        }
 
         @Test
         void checkWrongTurnPhaseMove() throws PositionOutOfBoundsException {
