@@ -109,10 +109,12 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
         Player playerDefeat = evt.getPlayer();
         if(cliModel.getMyPlayer().getUuid().equals(playerDefeat.getUuid())) {
             printAll(CliText.LOSER_BLOCK.toString());
+            cliModel.setEndGame();
         } else{
             printAll(CliText.ADVISE_LOSER_BLOCK.toString(playerDefeat.getNickName()));
         }
         cliModel.removePlayer(playerDefeat);
+
 
     }
 
@@ -303,7 +305,7 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 //        return () -> {
             cliModel.setLastInfoMessage(infoMessage);
             BoardPrinter bp = cliModel.createBoardPrinter();
-            cli.printAll(bp, myTurn, infoMessage);
+            cli.printAll(bp, myTurn, infoMessage, cliModel.getEndGame());
             //command is read by another thread
 //        };
     }
@@ -344,7 +346,8 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
         if (line.equals("")) {
             return null;
         } else if(!line.matches("^([A-Za-z\\-\\+][A-Za-z0-9\\-\\+]{0,60}\\s{0,3}){1,6}$")){
-            printAll(CliText.BAD_COMMAND.toString());
+            if (!cliModel.getEndGame())
+                printAll(CliText.BAD_COMMAND.toString());
 //            cli.println(CliText.BAD_COMMAND);
             return null;
         }
@@ -368,14 +371,16 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
             commandParser = new CommandParser(cliModel);
             event = commandParser.parseEvent(cmd);
             if(event == null){
-                printAll(CliText.BAD_COMMAND.toString());
+                if (!cliModel.getEndGame())
+                    printAll(CliText.BAD_COMMAND.toString());
 //                cli.execInputRequest(printAll);
                 return false;
             }else{
-                if (myTurn) {
+                if (myTurn && !cliModel.getEndGame()) {
                     emitViewEvent(event);
                 }else{
-                    printAll(CliText.WAIT_TURN_RED.toString(cliModel.getCurrentPlayer().getNickName()));
+                    if (!cliModel.getEndGame())
+                        printAll(CliText.WAIT_TURN_RED.toString(cliModel.getCurrentPlayer().getNickName()));
                 }
             }
         }

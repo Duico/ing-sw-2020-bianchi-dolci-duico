@@ -241,8 +241,6 @@ public class Server {
     public void removeFromGameConnectionList(ViewConnection c) {
         waitingConnectionRemove(c);
         connections.remove(c);
-        System.out.println("waiting "+waitingConnection.size());
-        System.out.println("waiting "+connections.size());
     }
 }
 

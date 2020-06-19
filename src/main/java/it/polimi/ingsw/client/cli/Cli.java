@@ -160,13 +160,14 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
         sb.printOut(out);
     }
 
-    public void printAll(BoardPrinter bp, boolean myTurn, String infoMessage) {
+    public void printAll(BoardPrinter bp, boolean myTurn, String infoMessage, boolean endGame) {
         clear();
         bp.setCellWidth(getBPcellWidth());
         print(" " + System.lineSeparator() + System.lineSeparator());
         print(bp.printAll(infoMessage));
         CliText promptText = myTurn ? CliText.YOUR_TURN_COMMAND : CliText.ENTER_COMMAND;
-        print(promptText.toPrompt());
+        if (!endGame)
+            print(promptText.toPrompt());
     }
 
     public void printClientConnectionEvent(ConnectionMessage evt) {
