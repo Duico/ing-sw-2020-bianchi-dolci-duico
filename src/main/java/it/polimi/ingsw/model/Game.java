@@ -2,7 +2,11 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
+import it.polimi.ingsw.model.exception.ReadConfigurationXMLException;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -71,10 +75,9 @@ public class Game extends ModelEventEmitter implements Serializable{
         this.players = players;
 
 
-        if (this.useCards && createCardDeck()) {
-            //OK
+        if (this.useCards) {
+            createCardDeck();
         } else {
-            this.useCards = false;
             dealDefaultCard(numPlayers);
         }
 
@@ -86,7 +89,6 @@ public class Game extends ModelEventEmitter implements Serializable{
         }
 
         board = new Board();
-        //chosenCards = new ArrayList<>();
         Player challenger = pickFirstPlayer();
         challenger.setIsChallenger(true);
         //emitEvent(new FullInfoModelEvent(challenger, players, board, cardDeck));
@@ -98,10 +100,17 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     private boolean createCardDeck() {
         try {
-            this.cardDeck = new CardDeck();
+            this.cardDeck = new CardDeck("./card-config.xml");
             return true;
         } catch (Exception e) {
-            System.err.println("Error reading XML configuration file. Playing without cards.");
+            System.err.println("Error reading XML configuration file. Loading default deck.");
+            try {
+                this.cardDeck = new CardDeck(getClass().getResourceAsStream("/xml/card-config.xml"));
+            } catch (Exception f) {
+                f.printStackTrace();
+//                System.err.println("Missing fallback card-config.xml. Aborting");
+                throw new RuntimeException("Missing fallback card-config.xml. Aborting");
+            }
             return false;
         }
     }

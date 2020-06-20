@@ -200,7 +200,7 @@ public class NormalTurn extends Turn {
             pushDestPosition = card.getOpponentStrategy().destinationPosition(startPosition, destinationPosition);
         }catch (InvalidPushCell e){
             pushDestPosition = null;
-            System.out.print("Invalid push cell");
+//            System.out.println("Invalid push cell");
         }
             board.putWorkers(startPosition, destinationPosition, pushDestPosition);
             this.updateCurrentWorker(workerId.get());

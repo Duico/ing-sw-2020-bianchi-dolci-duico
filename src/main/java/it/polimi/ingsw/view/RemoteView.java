@@ -55,8 +55,6 @@ public class RemoteView extends View implements ViewEventListener, ModelEventLis
     @Override
     public void eventResponse(ControllerResponse response){
         //we don't want to send the remote view to client
-        System.out.println(getPlayer());
-        System.out.println(response.getEvent().getPlayer());
         if(response.getEvent().getPlayer().equalsUuid(getPlayer())) {
             //response.getEvent().setPlayer(null);
             viewConnection.send(response);

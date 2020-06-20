@@ -45,7 +45,7 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
     }
 
     public void endTurn(EndTurnViewEvent message) {
-        System.out.println("Il player è " + message.getPlayer());
+//        System.out.println("Il player è " + message.getPlayer());
         if (checkIsWrongPlayer(message)) {
             return;
         }
