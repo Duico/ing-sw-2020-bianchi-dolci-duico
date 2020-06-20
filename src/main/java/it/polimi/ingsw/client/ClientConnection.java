@@ -23,17 +23,16 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
     private final Queue<Message> gameMessages = new LinkedBlockingQueue<>();
     private MessageVisitor gameMessageVisitor;
     private ExecutorService connectionThreads = Executors.newFixedThreadPool(3);
-    //private TimeoutCounter timerTask;
 
 
 
-//previously ClientGuiConnection
+
+
     public ClientConnection(String ip, int port, MessageVisitor gameMessageVisitor){
         this.ip = ip;
         this.port = port;
         this.gameMessageVisitor = gameMessageVisitor;
-//        this.toSend = toSend;
-//        this.readMessages = readMessages;
+
     }
 
     private boolean active = true;
@@ -77,7 +76,6 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                 try {
                     gameMessages.wait();
                 } catch (InterruptedException e) {
-//                    e.printStackTrace();
                     return null;
                 }
             }
@@ -106,13 +104,6 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
             new ClientConnectionEvent(ClientConnectionEvent.Reason.ERROR_ON_THE_SOCKET).accept(gameMessageVisitor);
         } finally {
 
-//            try {
-//                if(socket != null) {
-//                    socket.close();
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
         }
     }
 
@@ -218,14 +209,11 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                         }
                     }
 
-//                    System.out.println("Esco dal thread out message ");
 
                 } catch (IOException e) {
                     new ClientConnectionEvent(ClientConnectionEvent.Reason.IO_EXCEPTION).accept(gameMessageVisitor);
                 } catch (InterruptedException e) {
-                    //emitEvent(new ClientConnectionEvent(ClientConnectionEvent.Reason.INTERRUPTED));
                     //QUANDO C'E' DISCONNESSIONE PLAYER ENTRA QUA
-                    //new ClientConnectionEvent(ClientConnectionEvent.Reason.INTERRUPTED).accept(gameMessageVisitor);
                 }finally {
                         try {
                             socketOut.close();

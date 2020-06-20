@@ -10,20 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientEventEmitter extends EventEmitter {
-//    private final List<ViewEventListener> listeners = new ArrayList<>();
 
-//    public void addViewEventListener(ViewEventListener listener){
-//        synchronized (listeners) {
-//            listeners.add(listener);
-//        }
-//    }
-//
-//    public void removeViewEventListener(ViewEventListener listener){
-//        synchronized (listeners) {
-//            listeners.remove(listener);
-//        }
-//    }
-//
     protected void emitViewEvent(ViewEvent message){
         executeEventListeners(ViewEventListener.class, (listener)->{
             listener.handleEvent(message);
