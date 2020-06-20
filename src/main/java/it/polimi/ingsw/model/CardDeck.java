@@ -10,29 +10,43 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CardDeck implements Serializable {
     private ArrayList<Card> cardDeck;
 
-    public CardDeck() throws IOException, SAXException, ParserConfigurationException, ReadConfigurationXMLException {
-        this("./card-config.xml");
-    }
-
-    public CardDeck(String pathname) throws IOException, SAXException, ParserConfigurationException, ReadConfigurationXMLException{
+//    public CardDeck() throws IOException, SAXException, ParserConfigurationException, ReadConfigurationXMLException {
+//        this("./card-config.xml");
+//    }
+    public CardDeck(File file) throws ReadConfigurationXMLException, ParserConfigurationException, SAXException, IOException {
         cardDeck = new ArrayList<>();
-        readConfigurationXML(pathname);
-    }
-
-
-
-    private void readConfigurationXML(String pathname) throws ReadConfigurationXMLException, ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(file);
+        readConfigurationXML(document);
+    }
+    public CardDeck(String pathname) throws IOException, SAXException, ParserConfigurationException, ReadConfigurationXMLException{
+        this(new File(pathname));
+    }
+//    public CardDeck(URL resource) throws IOException, ReadConfigurationXMLException, ParserConfigurationException, SAXException {
+//        this(resource.getFile());
+//    }
 
-        Document document = builder.parse(new File(pathname));
+    public CardDeck(InputStream resourceAsStream) throws ParserConfigurationException, IOException, SAXException, ReadConfigurationXMLException {
+        cardDeck = new ArrayList<>();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(resourceAsStream);
+        readConfigurationXML(document);
+    }
+
+    private void readConfigurationXML(Document document) throws ReadConfigurationXMLException {
         document.getDocumentElement().normalize();
         NodeList nList = document.getElementsByTagName("card");
 
@@ -108,14 +122,24 @@ public class CardDeck implements Serializable {
         int i;
         for(i=0; i<cardDeck.size();i++){
             if(name.equals(cardDeck.get(i).getName()))
-                break;
+                return cardDeck.get(i);
+                //break;
         }
-        return cardDeck.get(i);
+        return null;
 
     }
     private String getPropertyName(Element node, String tagName){
         Node leaf = node.getElementsByTagName(tagName).item(0);
         return (leaf != null)? leaf.getTextContent():"Default";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CardDeck cardDeck1 = (CardDeck) o;
+        return Objects.equals(cardDeck, cardDeck1.cardDeck);
+    }
+    
 }
 

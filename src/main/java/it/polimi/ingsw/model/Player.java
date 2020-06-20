@@ -1,28 +1,38 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
+        import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
 
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.UUID;
+        import java.io.Serializable;
+        import java.util.Objects;
+        import java.util.UUID;
 
-public class Player implements Serializable {
+public class Player implements Serializable, Cloneable {
     private final String nickName;
     private final UUID uuid;
     private Card card; //FIX add final when tests are over
+    //private String cardName;
     private FixedArray<Worker> workers;
     private boolean isChallenger;
+    private PlayerColor color; //TODO
 
 
     public Player(String nickName) {
         this.uuid = UUID.randomUUID();
         this.nickName = nickName;
-        this.isChallenger = false;
-        //
+        this.isChallenger = false;//
         //this.initWorkers(numWorkers);
     }
 
-//    private void initWorkers(int numWorkers){
+//    //TODO remove
+//    public Player(String nickName){
+//        this(nickName, PlayerColor.randomEnum());
+//    }
+
+    public void setColor(PlayerColor color) {
+        this.color = color;
+    }
+
+    //    private void initWorkers(int numWorkers){
 //        for(int i=0; i < numWorkers; i++){
 //            workers.add(new Worker());
 //        }
@@ -40,6 +50,24 @@ public class Player implements Serializable {
             return true;
         }
     }
+
+    public String getCardName(){
+        if(card!=null){
+            return card.getName();
+        }else{
+            //TODO DA RIVEDERE SE  E' CORRETTO
+            return null;
+        }
+    }
+
+    /*public boolean setCardName(String cardName){
+        boolean alreadySet = false;
+        if(cardName != null){
+            alreadySet = true;
+        }
+        this.cardName = cardName;
+        return alreadySet;
+    }*/
 
     public void initWorkers(int numWorkers){
         workers = new FixedArray<>(numWorkers);
@@ -66,8 +94,8 @@ public class Player implements Serializable {
     }
 
 
-    public Position getWorkerCurrentPosition(int currentWorkerId) {
-        Worker worker = workers.get(currentWorkerId);
+    public Position getWorkerPosition(int workerId) {
+        Worker worker = workers.get(workerId);
         if (worker == null) {
             return null;
         }
@@ -83,9 +111,8 @@ public class Player implements Serializable {
         return (workers.get(i) != null);
     }
 
-    public int addWorker(Worker newWorker) {
-        int workerId = workers.add(newWorker);
-        return workerId;
+    public Optional<Integer> addWorker(Worker newWorker) {
+        return workers.add(newWorker);
     }
 
     public boolean isAnyWorkerNotPlaced() {
@@ -99,7 +126,9 @@ public class Player implements Serializable {
     public UUID getUuid() {
         return uuid;
     }
-
+    public PlayerColor getColor(){
+        return color;
+    }
 
     public void resetAllWorkers() {
         for (int i = 0; i < getNumWorkers(); i++) {
@@ -112,8 +141,12 @@ public class Player implements Serializable {
     public boolean isOwnWorkerInPosition(Position destinationPosition) {
 
         for (int i = 0; i < getNumWorkers(); i++) {
-            if (getWorkerCurrentPosition(i).equals(destinationPosition))
-                return true;
+            try {
+                if (workers.get(i).getCurrentPosition().equals(destinationPosition))
+                    return true;
+            }catch(WorkerPositionNotSetException e){
+
+            }
         }
         return false;
     }
@@ -131,12 +164,48 @@ public class Player implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return Objects.equals(getUuid(), player.getUuid()) &&
+        boolean eq = Objects.equals(getUuid(), player.getUuid()) &&
                 Objects.equals(getNickName(), player.getNickName()) &&
                 Objects.equals(getCard(), player.getCard()) &&
                 Objects.equals(workers, player.workers);
+        return eq;
+    }
+    public boolean equalsUuid(Player player){
+        if (this == player) return true;
+        return Objects.equals(getUuid(), player.getUuid());
+    }
+
+    @Override
+    public Player clone(){
+        try {
+            return (Player) super.clone();
+        }catch (CloneNotSupportedException e){
+            throw new RuntimeException("Clone not supported in Player");
+        }
+
     }
 
 
+    public Optional<Integer> getWorkerId(Position workerPosition) {
+        for(int i=0; i<workers.size(); i++){
+            Worker worker = workers.get(i);
+            try{
+                if(worker!=null && worker.getCurrentPosition().equals(workerPosition)){
+                    return Optional.of(i);
+                }
+            }catch (WorkerPositionNotSetException e){
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
+    }
 
+    public boolean setWorkerPosition(int i, Position destPosition) {
+        try{
+            workers.get(i).addMove(destPosition);
+            return true;
+        }catch (IndexOutOfBoundsException e){
+            return false;
+        }
+    }
 }

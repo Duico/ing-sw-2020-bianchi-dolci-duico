@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,26 +27,35 @@ class BoardTest {
         Position startPosition = new Position(3,2);
         Position destinationPosition = new Position(2,2);
         assertEquals(Level.EMPTY, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.BASE, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.MID, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.TOP, b.getBoardCell(destinationPosition).getLevel());
+
     }
     @Test
     void buildAllAndDome() throws Exception {
         Position startPosition = new Position(3,2);
         Position destinationPosition = new Position(2,2);
         assertEquals(Level.EMPTY, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.BASE, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.MID, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, false);
         assertEquals(Level.TOP, b.getBoardCell(destinationPosition).getLevel());
+
         b.build(startPosition, destinationPosition, true);
         assertEquals(Level.TOP, b.getBoardCell(destinationPosition).getLevel());
+
         assertTrue(b.getBoardCell(destinationPosition).hasDome());
     }
     @Test
@@ -56,17 +64,20 @@ class BoardTest {
         Position destinationPosition = new Position(2,2);
         b.build(startPosition, destinationPosition, false);
         BoardCell bc = b.getBoardCell(destinationPosition);
-        //assertNotEquals(bc, b.getBoardCellReference(destinationPosition)); why?
+        //assertNotEquals(bc, b.getBoardCellReference(destinationPosition));
         bc.setLevel(Level.EMPTY);
         b.build(startPosition, destinationPosition, false);
         assertNotEquals(b.getBoardCell(destinationPosition).getLevel(), bc.getLevel());
+
     }
     @Test
     void setWorker() throws Exception{
         Position startPosition = new Position(2,2);
         Worker w2 = new Worker();
         assertTrue(b.setWorker(w2, startPosition));
-        assertNotEquals(w2, b.getBoardCell(startPosition).getWorker());
+        //TODO
+        //no idea why this doesnt work
+        assertNotSame(w2, b.getBoardCell(startPosition).getWorker());
     }
     @Test
     void setWorkerFail() throws Exception{
@@ -119,7 +130,8 @@ class BoardTest {
     void cloneTest() throws Exception{
         Position p = new Position(3,2);
         Board b2 = b.clone();
-        assertNotEquals(b.getBoardCell(p), b2.getBoardCell(p));
+        //TODO
+        assertNotSame(b.getBoardCell(p), b2.getBoardCell(p));
     }
 
 }

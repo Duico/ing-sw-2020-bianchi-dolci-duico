@@ -1,0 +1,17 @@
+.foreground_messagebox{
+    -fx-pref-width: 350;
+    -fx-pref-height: 69;
+    -fx-background-size: contain;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-image: url("/graphics/Santorini_GenericPopup.png");
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(one-pass-box, black, 8, 0, 2, 2);
+    -fx-padding: 8px 20px;
+    -fx-text-alignment: justify;
+    -fx-alignment: center;
+}
+
+{
+-fx-pref-width: 350;
+}

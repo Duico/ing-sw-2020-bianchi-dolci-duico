@@ -1,3 +1,4 @@
+/*
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.exception.NotEnoughPlayersException;
@@ -19,35 +20,43 @@ class LobbyTest {
 //        lobby.startGame();
     }
 
-    /**
+    */
+/**
      * check if there are no duplicate nicknames in the lobby
-     */
+     *//*
+
     @Test
     void checkAddPlayer(){
         lobby.addPlayer("player1");
         assertTrue(lobby.addPlayer("player1")==null);
     }
 
-    /**
+    */
+/**
      * check if there are no duplicate nicknames in the lobby
-     */
+     *//*
+
     @Test
     void checkAddPlayer2(){
         lobby.addPlayer("player1");
         assertTrue(lobby.addPlayer("player2")!=null);
     }
 
-    /**
+    */
+/**
      * check if player's nickname is allowed
-     */
+     *//*
+
     @Test
     void checkValidateNickname1(){
         assertFalse(lobby.validateNickname("player.1"));
     }
 
-    /**
+    */
+/**
      * check if player's nickname is allowed
-     */
+     *//*
+
     @Test
     void checkValidateNickname2(){
         assertFalse(lobby.validateNickname(""));
@@ -72,4 +81,4 @@ class LobbyTest {
 
 
 
-}
+}*/

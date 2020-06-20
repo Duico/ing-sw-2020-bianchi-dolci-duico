@@ -6,16 +6,25 @@ import java.util.EventListener;
 public abstract class EventEmitter {
     protected EventListenerList listenerList = new EventListenerList();
 
-    public <T extends EventListener> void addEventListener(Class<T> listenerClass, T listener){
+    synchronized public <T extends EventListener> void addEventListener(Class<T> listenerClass, T listener){
         listenerList.add(listenerClass, listener);
     }
 
 
-    public <T extends EventListener> void removeEventListener(Class<T> listenerClass, T listener){
+    synchronized public <T extends EventListener> void removeEventListener(Class<T> listenerClass, T listener){
         listenerList.remove(listenerClass, listener);
     }
 
-    protected <T extends EventListener>  void executeEventListeners(Class<T> listenerClass, EventHandler<T> eventHandler){
+    synchronized public <T extends EventListener> void clearEventListeners(Class<T> listenerClass){
+        Object[] listeners = listenerList.getListenerList();
+        for(int i=0; i<listeners.length; i+=2){
+            if(listeners[i] == listenerClass){
+                listenerList.remove(listenerClass, (T) listeners[i+1]);
+            }
+        }
+    }
+
+    synchronized protected <T extends EventListener>  void executeEventListeners(Class<T> listenerClass, EventHandler<T> eventHandler){
         Object[] listeners = listenerList.getListenerList();
         /*
         i is increased by 2 at every loop because:

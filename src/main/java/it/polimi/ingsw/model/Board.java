@@ -3,17 +3,30 @@ package it.polimi.ingsw.model;
 import java.io.Serializable;
 
 public class Board implements Cloneable, Serializable {
-    BoardCell[][] grid;
+    private BoardCell[][] grid;
+    private final int width;
+    private final int height;
 
     public Board() { //decide if throws exception or not
-        int width = Position.width;
-        int height = Position.height;
+        this(Position.width, Position.height);
+    }
+    public Board(int width, int height){
+        this.width = width;
+        this.height = height;
         grid = new BoardCell[width][height];
         for(int i=0;i<height;i++){
             for(int j=0; j<width; j++){
                 grid[i][j]= new BoardCell();
             }
         }
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public void build(Position startPosition, Position destinationPosition, boolean isDome) {
@@ -24,8 +37,9 @@ public class Board implements Cloneable, Serializable {
         if(isDome){
             getBoardCellReference(destinationPosition).setDome(true);
         }else{
-            int previousLevel = getBoardCellReference(destinationPosition).getLevel().ordinal();
+            int previousLevel = getBoardCellReference(destinationPosition).getLevel().getOrd();
             getBoardCellReference(destinationPosition).setLevel(Level.values()[previousLevel+1]);
+
         }
         worker.addBuild(destinationPosition);
     }
@@ -35,8 +49,12 @@ public class Board implements Cloneable, Serializable {
             return cell;
     }
 
-    private BoardCell getBoardCellReference(Position position){
-        return grid[position.getX()][position.getY()];
+    private BoardCell getBoardCellReference(Position position) throws NullPointerException,IndexOutOfBoundsException{
+        try{
+            return grid[position.getX()][position.getY()];
+        }catch(NullPointerException |IndexOutOfBoundsException e){
+            throw e;
+        }
     }
 
 
@@ -100,4 +118,17 @@ public class Board implements Cloneable, Serializable {
         return board;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Board board = (Board) o;
+        boolean eq = true;
+        for(int i=0;i<Position.width;i++){
+            for(int j=0; j<Position.height; j++){
+                eq = eq && grid[i][j].equals(board.grid[i][j]);
+            }
+        }
+        return eq;
+    }
 }

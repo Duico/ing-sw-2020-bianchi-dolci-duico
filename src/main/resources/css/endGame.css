@@ -1,0 +1,32 @@
+Pane{
+ -fx-font-family: Georgia, serif;
+}
+
+
+#waitLabel{
+ -fx-font-size: 25;
+ -fx-alignment: top-center;
+ -fx-translate-y: 280px;
+}
+
+
+#waitLabel Label{
+ -fx-alignment: center;
+ -fx-text-alignment: center;
+}
+
+
+
+.full_window{
+ -fx-text-fill: #222222;
+}
+
+.title{
+ -fx-translate-y: 110px;
+ -fx-translate-x: 205px;
+}
+
+.background-image{
+ -fx-opacity: 0.5;
+}
+

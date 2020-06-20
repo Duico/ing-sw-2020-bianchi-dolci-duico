@@ -2,11 +2,11 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.event.BoardListener;
-import it.polimi.ingsw.view.event.ViewEventEmitter;
+//import it.polimi.ingsw.view.event.ViewEventEmitter;
 
 import java.io.Serializable;
 
-public abstract class View extends ViewEventEmitter implements BoardListener, Serializable {
+public abstract class View extends ViewEventVisitor implements BoardListener, Serializable {
     private Player player;
 
     public View(Player player) {
@@ -17,3 +17,4 @@ public abstract class View extends ViewEventEmitter implements BoardListener, Se
         return player;
     }
 }
+

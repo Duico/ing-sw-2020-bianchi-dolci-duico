@@ -27,7 +27,10 @@ class PlayerTest {
     @Test
     void checkIfCardIsSet() throws StrategyNameNotFound {
         Card card = new Card("Default","Default", "Default", "Default", "Default", "Default");
+        assertNull(player1.getCard());
         assertTrue(player1.setCard(card));
+        assertEquals("Default", player1.getCard().getName());
+
     }
 
     /**
@@ -59,7 +62,7 @@ class PlayerTest {
         Worker worker1 = new Worker();
         Worker worker2 = new Worker();
         player1.addWorker(worker1);
-        assertTrue(player1.addWorker(worker2)==1);
+        assertTrue(player1.addWorker(worker2).get() == 1);
     }
 
     /**
@@ -103,7 +106,7 @@ class PlayerTest {
         Position position = new Position(0,0);
         player1.addWorker(worker1);
         board.setWorker(worker1,position);
-        assertTrue(player1.getWorkerCurrentPosition(0)!=null);
+        assertTrue(player1.getWorkerPosition(0)!=null);
     }
 
 

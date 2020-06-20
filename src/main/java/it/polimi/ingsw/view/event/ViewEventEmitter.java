@@ -1,21 +1,24 @@
+/*
 package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.LobbyController;
 import it.polimi.ingsw.event.EventEmitter;
 import it.polimi.ingsw.event.EventHandler;
-import it.polimi.ingsw.model.Lobby;
+import it.polimi.ingsw.server.Lobby;
 
 import java.util.EventListener;
 
 
 public class ViewEventEmitter extends EventEmitter {
 
-   /* public void emitEvent(PingViewEvent evt){
+
+    public void emitEvent(PingViewEvent evt){
         executeLobbyEventListeners( (listener)->{
             listener.ping(evt);
         });
-    }*/
+    }
+
 
     public void emitEvent(MoveViewEvent evt){
         executeGameEventListeners( (listener)->{
@@ -35,11 +38,13 @@ public class ViewEventEmitter extends EventEmitter {
         });
     }
 
-    /*public void emitEvent(JoinLobbyViewEvent evt){
+
+    public void emitEvent(JoinLobbyViewEvent evt){
         executeLobbyEventListeners( (listener)->{
             listener.addPlayer(evt);
         });
-    }*/
+    }
+
 
     private void executeGameEventListeners(EventHandler<Controller> eventHandler){
         executeEventListeners(Controller.class, eventHandler);
@@ -73,3 +78,5 @@ public class ViewEventEmitter extends EventEmitter {
 //        });
 //    }
 //}
+
+*/

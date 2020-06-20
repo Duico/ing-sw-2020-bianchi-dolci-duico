@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Position implements Serializable, Cloneable{
     private final int x;
@@ -31,10 +32,17 @@ public class Position implements Serializable, Cloneable{
 
     }
 
+
+
     public boolean equals(Object object) {
         if (!(object instanceof Position))
             return false;
         Position position= (Position) object;
         return (this.x==position.x && this.y == position.y);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getX(), getY());
     }
 }

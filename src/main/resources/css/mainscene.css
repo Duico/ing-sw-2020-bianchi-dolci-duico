@@ -1,0 +1,127 @@
+.background{
+    -fx-pref-height: 600;
+    -fx-pref-width: 800;
+    -fx-background-color:black;
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 15, 0, 0, 0 );
+    -fx-alignment: top-center;
+}
+
+.left_vbox, .right_vbox{
+    -fx-alignment: center;
+    -fx-background-color: #c8bfe7;
+}
+
+.right_vbox{
+    -fx-padding: 20px 26px 20px 32px;
+    -fx-effect: innershadow( gaussian, rgba( 255, 255, 255, 0.5 ), 10, 0, 10, -5);
+}
+
+.left_vbox{
+    -fx-padding: 12px 22px 12px 20px
+;
+    -fx-effect: innershadow( gaussian, rgba( 255, 255, 255, 0.5 ), 10, 0, -10, -5);
+
+}
+
+.player_box{
+    -fx-alignment: center;
+}
+.player_box Label{
+    -fx-font-family: "Georgia", serif;
+    -fx-text-fill: white;
+    -fx-stroke: black;
+    -fx-font-size: 20px;
+    -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.8) , 8 , 0.0 , -2 , 2);
+    -fx-text-alignment: justify;
+    -fx-alignment: bottom-center;
+    -fx-translate-y: -6px;
+    -fx-min-width: 120;
+    -fx-max-width: 120;
+    -fx-padding: 8px;
+    -fx-border-radius: 4px;
+
+}
+.player_box VBox{
+    -fx-background-image: url("/textures/playerName-pink.png");
+    -fx-background-size: 100% auto;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 0px 4px;
+    -fx-min-height: 50px;
+    -fx-min-width: 140px;
+    -fx-alignment: center;
+}
+.player_box ImageView{
+    -fx-smooth: true;
+    /*
+    -fx-fit-to-width: 168;
+    -fx-fit-to-height: 282;
+     */
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 6, 0, 0, 0);
+}
+
+.trigliph{
+    -fx-min-height: 40px;
+    -fx-background-image: url("/textures/ps_bottom_bar_tile.png");
+    -fx-background-position: 0px -6px;
+    -fx-background-size: auto 52px;
+    -fx-background-repeat: repeat-x;
+}
+.move_button{
+    -fx-background-image: url("/textures/moveImage.png");
+}
+.build_button{
+    -fx-background-image: url("/textures/buildImage.png");
+}
+.endTurn_button{
+    -fx-background-image: url("/textures/endturn.png");
+}
+
+.undo_button{
+    -fx-background-image: url("/textures/Undo.png");
+}
+.buildDome_button{
+    -fx-background-image: url("/textures/builddome.png");
+}
+.santorini_button{
+        -fx-background-color: #8db0b9;
+        -fx-background-radius: 15 15 15 15;
+        -fx-border-color: black;
+        -fx-border-width: 2 2 2 2;
+        -fx-border-radius: 15;
+}
+.santorini_button:selected{
+    -fx-background-color: #7e71c9;
+    -fx-background-radius: 15 15 15 15;
+    -fx-border-color: black;
+    -fx-border-width: 4 4 4 4;
+    -fx-border-radius: 15;
+}
+
+.santorini_button:hover{
+
+    -fx-background-color: #7e71c9;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+.santorini_button:selected:hover{
+    -fx-background-color: #705cc9;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 0);
+}
+
+.santorini_button:pressed{
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.5 ), 10, 0, 5, 5 ), dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+.build_button:selected:hover{
+    -fx-background-color: #705cc9;
+}
+
+.buildDome_button:selected{
+    -fx-background-color: #705cc9;
+}
+
+.buildDome_button:selected:hover{
+    -fx-background-color: #6042c9;
+}
+

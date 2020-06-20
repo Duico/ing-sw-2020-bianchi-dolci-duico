@@ -26,16 +26,16 @@ public class BuildAtFirstMove implements MoveStrategy {
                 return false;
             else if (dx < -1 || dx > 1 || dy < -1 || dy > 1)
                 return false;
-            else if(destCell.hasDome() == true)
+            else if(destCell.hasDome())
                 return false;
 
             else if (startCell.getWorker().getNumBuilds() == 0) {
-                if ((startCell.getLevel().ordinal()+1) >= destCell.getLevel().ordinal())
+                if ((startCell.getLevel().getOrd()+1) >= destCell.getLevel().getOrd())
                     return true;
                 else
                     return false;
             } else {
-                if (startCell.getLevel().ordinal() >= destCell.getLevel().ordinal())
+                if (startCell.getLevel().getOrd() >= destCell.getLevel().getOrd())
                     return true;
                 else
                     return false;

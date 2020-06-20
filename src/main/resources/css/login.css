@@ -1,0 +1,68 @@
+Pane{
+ -fx-font-family: Georgia, serif;
+}
+
+
+#waitLabel{
+ -fx-font-size: 25;
+ -fx-alignment: top-center;
+ -fx-translate-y: 280px;
+}
+
+
+#waitLabel Label{
+ -fx-alignment: center;
+ -fx-text-alignment: center;
+}
+
+#choiceBox{
+ -fx-pref-height: 34;
+ -fx-pref-width: 226;
+ -fx-text-alignment: center;
+
+}
+#textfield{
+ -fx-pref-height: 34;
+ -fx-max-width: 226;
+ -fx-text-alignment: center;
+
+}
+
+#loginPane{
+ -fx-pref-width: 299px;
+ -fx-pref-height: 232px;
+}
+
+
+.full_window{
+ -fx-text-fill: #222222;
+}
+
+.enter_button{
+ -fx-background-color: #e4dff3;
+ -fx-text-fill: #222222;
+ -fx-font-size: 16;
+ -fx-font-weight: bolder;
+ -fx-border-radius: 4px;
+ -fx-pref-width: 180px;
+ -fx-translate-y: 30px;
+}
+
+.enter_button:hover{
+ -fx-background-color: white;
+ -fx-text-fill: black;
+ -fx-font-size: 18;
+ -fx-font-weight: bolder;
+ -fx-border-radius: 4px;
+ -fx-pref-width: 180px;
+ -fx-translate-y: 30px;
+}
+
+.title{
+ -fx-translate-y: 50px;
+ -fx-translate-x: 205px;
+}
+
+#persistencyCheckBox{
+ -fx-alignment: center;
+}

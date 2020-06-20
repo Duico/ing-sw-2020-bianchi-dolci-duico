@@ -3,16 +3,29 @@ package it.polimi.ingsw.view.event;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.view.RemoteView;
+import it.polimi.ingsw.view.ViewEventVisitor;
 
-public class PlaceViewEvent extends ViewEvent{
-    private Position destinstionPosition;
+import java.io.Serializable;
 
-    public PlaceViewEvent(RemoteView view, Player player, Position destPosition) {
-        super(view);
-        this.destinstionPosition = destPosition;
+public class PlaceViewEvent extends WorkerViewEvent implements Serializable {
+
+
+    public PlaceViewEvent(Player player, Position destinationPosition){
+        super(player,destinationPosition);
+
+    }
+    public PlaceViewEvent(Position destinationPosition){
+        this(null,destinationPosition);
+
     }
 
-    public Position getDestinationPosition() {
-        return destinstionPosition;
+
+
+    @Override
+    public void accept(ViewEventVisitor visitor) {
+        visitor.emitEvent(this);
     }
+
+
 }
+

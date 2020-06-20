@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Array with final size, which doesn't allow resizing
@@ -30,14 +31,14 @@ public class FixedArray<T> implements Serializable {
      * @param elem Element to add
      * @return index of the added element, -1 if not added
      */
-    public int add(T elem){
+    public Optional<Integer> add(T elem){
         for(int i=0; i<size; i++){
             if(array.get(i)==null){
                 array.set(i, elem);
-                return i;
+                return Optional.of(i);
             }
         }
-        return -1;
+        return Optional.empty();
     }
 
     /**
@@ -82,6 +83,27 @@ public class FixedArray<T> implements Serializable {
             }
         }
        return count;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (obj.getClass() == getClass()){
+            FixedArray<T> fa = (FixedArray<T>) obj;
+            return Objects.equals(array, fa.array);
+
+        }
+        return super.equals(obj);
+    }
+
+    public FixedArray<?> clone(){
+        FixedArray<?> fixedArray = null;
+        try{
+            fixedArray = (FixedArray<?>) super.clone();
+        }catch(CloneNotSupportedException e){
+            throw new RuntimeException("Clone not supported in FixedArray");
+        }
+        return fixedArray;
     }
 }
 

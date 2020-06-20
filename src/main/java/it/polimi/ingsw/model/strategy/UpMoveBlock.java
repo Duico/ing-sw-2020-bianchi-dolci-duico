@@ -9,7 +9,7 @@ public class UpMoveBlock implements BlockStrategy {
     public boolean isBlockMove(Position startPosition, Position destinationPosition, Board board) {
         BoardCell startCell = board.getBoardCell(startPosition);
         BoardCell destCell = board.getBoardCell(destinationPosition);
-        if (startCell.getLevel().ordinal()<destCell.getLevel().ordinal())
+        if (startCell.getLevel().getOrd()<destCell.getLevel().getOrd())
             return true;
         else
             return false;
@@ -19,7 +19,7 @@ public class UpMoveBlock implements BlockStrategy {
     public boolean blockNextPlayer(Position startPosition, Position destinationPosition, Board board){
         BoardCell startCell = board.getBoardCell(startPosition);
         BoardCell destCell = board.getBoardCell(destinationPosition);
-        if (startCell.getLevel().ordinal()<destCell.getLevel().ordinal())
+        if (startCell.getLevel().getOrd()<destCell.getLevel().getOrd())
             return true;
         else
             return false;

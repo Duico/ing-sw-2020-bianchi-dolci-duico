@@ -1,15 +1,28 @@
 package it.polimi.ingsw.model.event;
 
+import it.polimi.ingsw.client.ModelEventVisitor;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
 
-import java.util.UUID;
-
 public class BuildWorkerModelEvent extends WorkerModelEvent {
-    private Position startPosition;
     private Position destinationPosition;
-    public BuildWorkerModelEvent(UUID playerUUID, int workerId, Position startPosition, Position destinationPosition) {
-        super(playerUUID, workerId);
-        this.startPosition = startPosition;
+    private boolean isDome;
+    public BuildWorkerModelEvent(Player player, Position startPosition, Position destinationPosition, boolean isDome) {
+        super(player, startPosition);
         this.destinationPosition = destinationPosition;
+        this.isDome=isDome;
+    }
+
+    public Position getDestinationPosition() {
+        return destinationPosition;
+    }
+
+    public boolean isDome() {
+        return isDome;
+    }
+
+    @Override
+    public void accept(ModelEventVisitor visitor){
+        visitor.visit(this);
     }
 }
