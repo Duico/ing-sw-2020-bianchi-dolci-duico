@@ -453,14 +453,16 @@ public class Game extends ModelEventEmitter implements Serializable{
                 Position workerPosition = currentPlayer.getWorkerPosition(i);
                 board.removeWorker(workerPosition);
             }
-            players.remove(currentPlayer);
-            if(players.size()==1) {
+
+            if(players.size()==2) {
+                players.remove(currentPlayer);
                 winEvent(players.get(0));
             }else {
                 Player nextPlayer = this.getNextPlayer();
                 ModelEvent evt = new PlayerDefeatModelEvent(currentPlayer, false);
                 emitEvent(evt);
                 emitPlayerDefeat(currentPlayer);
+                players.remove(currentPlayer);
                 nextTurn(nextPlayer);
             }
             //Check if player has lost then, if there is another player, emit win event

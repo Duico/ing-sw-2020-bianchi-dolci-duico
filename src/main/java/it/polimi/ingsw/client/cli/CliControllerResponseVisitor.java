@@ -115,7 +115,7 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
 //        return () -> {
         cliModel.setLastInfoMessage(infoMessage);
         BoardPrinter bp = cliModel.createBoardPrinter();
-        cli.printAll(bp, myTurn, infoMessage);
+        cli.printAll(bp, myTurn, infoMessage, false);
         //command is read by another thread
 //        };
     }
