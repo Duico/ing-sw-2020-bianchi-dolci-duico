@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.ClientEventEmitter;
 
+import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,9 +16,13 @@ public class CliInputHandler extends ClientEventEmitter implements Runnable{
         while (true) {
                 Scanner stdin = new Scanner(System.in);
                 //while (stdin.hasNextLine()) {
-                readLines.add(stdin.nextLine());
+                try {
+                    readLines.add(stdin.nextLine());
+                }catch(NoSuchElementException e){
+                    //do nothing
+                }
             synchronized (this) {
-                    this.notify();
+                this.notify();
             }
 //                    System.err.println("readLines.size() = "+readLines.size());
                 //}
