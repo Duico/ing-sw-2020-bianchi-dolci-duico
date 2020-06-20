@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 
 public class Server {
     private Lobby lobby;
-//    private Game game;
     private ServerSocket serverSocket;
     private ExecutorService executor = Executors.newFixedThreadPool(100);
     private Map<ViewConnection,String> waitingConnection = new LinkedHashMap<>();
@@ -31,16 +30,13 @@ public class Server {
     public synchronized void clientCloseConnection(ViewConnection c) {
         boolean isFirstConnection = c == getFirstConnection();
             if (isFirstConnection || (waitingConnection.containsKey(c) && hasGameStarted)) {
-//                if(waitingConnection.containsKey(c)) {
                     waitingConnectionRemove(c);
                     connections.remove(c);
 
-                    //ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
                     for (ViewConnection connection : connections) {
                         connection.send(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
                     }
                     connections.clear();
-                    //it is safe not to clear lobby.waitingPlayers if we unset the lobby later
                     waitingConnection.clear();
                     lobby.persistencySaveGame();
                     lobby.clearGame();
@@ -48,11 +44,9 @@ public class Server {
                     System.out.println("game, lobby set to null");
                     hasGameStarted = false;
             } else {
-                //client disconnected from lobby
-//                if(waitingConnection.containsKey(c)) {
                     waitingConnectionRemove(c);
                     connections.remove(c);
-//                }
+
             }
 
 
@@ -65,7 +59,7 @@ public class Server {
 
 
     public synchronized void createNewGame(){
-//            if(!lobby.isSetGame()) {
+
                 System.out.println("Players waiting: "+waitingConnection.size());
                 Integer numPlayers = lobby.getNumPlayers();
 
@@ -74,7 +68,6 @@ public class Server {
 
                 hasGameStarted = true;
                 lobby.newController();
-                //add firstConnection player
                 if(!initPlayerOfConnection(firstConnection)){
                     return;
                 }
@@ -93,15 +86,11 @@ public class Server {
                         waitingConnectionRemove(viewConnection);
                         connections.remove(viewConnection);
                         viewConnection.send(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS));
-                        //clientCloseConnection(viewConnection);
-                        //viewConnection.closeConnection();
+
                     }
                 }
                 lobby.startGame(isPersistencyAvailable);
 
-//        }else{
-//            System.out.println("Entro nel controllo nickname persistenza");
-//        }
     }
 
     private boolean initPlayerOfConnection(ViewConnection connection){
@@ -113,14 +102,11 @@ public class Server {
                 notifyPersistencyFail(connection);
                 return false;
             }
-//            else{
-//                connection.asyncSend(new InitSetUpMessage(SetUpType.SIGN_UP, InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING, player));
-//            }
+
         }else{
             player = lobby.addPlayingPlayer(playerName);
             if(player == null){
                 throw new RuntimeException("Newly created player from lobby is null");
-//                return false;
             }
         }
         initRemoteView(player, connection);
@@ -160,7 +146,7 @@ public class Server {
     }
 
     public void initMessageClient(SocketViewConnection socketConnection){
-        if(/*lobby.getNumPlayers()==0*/ lobby==null) {
+        if( lobby==null) {
             createNewLobby();
         }
         if(socketConnection == getFirstConnection()){
@@ -186,7 +172,7 @@ public class Server {
                 return;
             }
             if (connection == getFirstConnection()) {
-//                if(isPersistencyAvailable){
+
                     if(!isPersistencyAvailable || !wantsPersistency){
                         lobby.clearGame();
                         isPersistencyAvailable = false;
@@ -194,13 +180,7 @@ public class Server {
                             connection.send(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
                             return;
                         }
-//                        if (!lobby.setNumPlayers(numPlayers)) {
-//                            connection.asyncSend(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
-//                            return;
-//                        }
-//                    }else{//isPersistency
-                        //numPlayers set by the lobby
-//                    }
+
                     }
 
             }

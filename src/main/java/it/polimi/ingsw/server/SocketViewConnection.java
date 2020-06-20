@@ -42,7 +42,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
             out.reset();
         } catch(IOException e){
             System.out.println("Send of "+message.getClass()+" failed");
-            //e.printStackTrace();
+
         }
         try{
             out.writeObject(message);
@@ -71,10 +71,6 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         System.out.println("Gracefully closing connection to remaining player.");
     }
 
-//    @Override
-//    public void send(final Object message){
-//                send(message);
-//    }
 
     @Override
     public void removeDefeatedPlayer() {
@@ -97,9 +93,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
                         ViewEvent event = (ViewEvent) inputObject;
                         eventNotify(event);
                     }
-                    /*else if(inputObject instanceof SetUpMessage){
-                        System.out.println("Arriva");
-                    }*/
+
                 }
             } catch (IOException | NoSuchElementException | ClassNotFoundException e) {
                 //System.err.println("Error!" + e.getMessage());
@@ -132,7 +126,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     }
 
    public void createObjectStream() throws IOException{
-//       try {
+
            out = new ObjectOutputStream(socket.getOutputStream());
            in = new ObjectInputStream(socket.getInputStream());
 
@@ -151,7 +145,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
             in.close();
         } catch (IOException | NoSuchElementException | InterruptedException e) {
             //TODO change text
-            System.err.println("Error! Entra qui" + e.getMessage());
+            System.err.println("Error! " + e.getMessage());
         } finally{
             close();
         }

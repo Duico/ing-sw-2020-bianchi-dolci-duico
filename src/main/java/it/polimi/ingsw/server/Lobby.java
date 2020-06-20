@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class Lobby {
     String persistencyFilename = "./game.ser";
-    //TODO should be in a configuration file
+
     private Game game = null;
     private Controller controller;
     private Integer numPlayers;
@@ -25,10 +25,10 @@ public class Lobby {
     private List<Player> playingPlayers;
     private List<Player> persistencyPlayers;
 
-    //ArrayList<Player> players;//fix ArrayList<String> -> ArrayList<Player>
+
 
     public Lobby() {
-        //players = new ArrayList<Player>();
+
         waitingPlayers = new ArrayList<>();
     }
     public Lobby(String persistencyFilename){
@@ -36,17 +36,7 @@ public class Lobby {
         this.persistencyFilename = persistencyFilename;
     }
 
-    /*public boolean validateNickname(String nickname){
-        for(Player player: players){
-            if(player.getNickName() == nickname)
-                return false;
-        }
-        final Pattern pattern = Pattern.compile("^[A-Za-z0-9\\-_]{3,32}$");
-        if (!pattern.matcher(nickname).matches()) {
-            return false;
-        }
-        return true;
-    }*/
+
 
     public boolean validateNickname(String nickname){
         for(String player: waitingPlayers){
@@ -69,9 +59,7 @@ public class Lobby {
             System.out.print("Error with loading players from persistency.");
             return null;
         }
-//        if(!validateNickname(nickname)){
-//            return false;
-//        }
+
         for(Player player : persistencyPlayers){
             if(player.getNickName().equals(nickname)){
                 //to avoid multiple players taking the same name
@@ -80,9 +68,7 @@ public class Lobby {
             }
         }
         return null;
-//        Player player = new Player(nickname);
-//        waitingPlayers.add(player);
-//        return player;
+
 
     }
 
@@ -116,15 +102,11 @@ public class Lobby {
         if(!Game.validateGame(readGame)){
             return false;
         }
-//        PersistencyEvent persistencyEvent = game.makePersistencyEvent();
-//        if(!validatePlayersPersistency(persistencyEvent)){
-//            return null;
-//        }
+
         System.out.println("Game save found on disk: persistency available.");
         this.persistencyPlayers = readGame.getPlayers();
         setNumPlayers(persistencyPlayers.size());
-//        String names = persistencyPlayers.stream().
-//        System.out.println()
+
         this.game = readGame;
         game.clearEventListeners(ModelEventListener.class);
         return true;
@@ -158,8 +140,7 @@ public class Lobby {
         if(numPlayers == null){
             return false;
         }
-//        if(this.numPlayers!=null)
-//            return false;
+
         if(2<=numPlayers && numPlayers<=3) {
             this.numPlayers = numPlayers;
             return true;
@@ -205,10 +186,8 @@ public class Lobby {
     }
 
     public void addRemoteView(RemoteView remoteView) {
-//        playingPlayers.add(player);
         remoteView.addEventListener(GameViewEventListener.class, controller);
         controller.addEventListener(ControllerResponseListener.class, remoteView);
-//        remoteViews.add(remoteView);
         game.addEventListener(ModelEventListener.class, remoteView);
     }
 
