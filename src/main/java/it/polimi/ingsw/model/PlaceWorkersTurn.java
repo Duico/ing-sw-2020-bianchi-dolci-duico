@@ -1,11 +1,20 @@
 package it.polimi.ingsw.model;
 
+/**
+ *  Represent a specific type of game Turn on which players are allowed just to place their workers on the Board
+ */
 public class PlaceWorkersTurn extends Turn {
 
     public PlaceWorkersTurn(Player currentPlayer) {
         super(TurnPhase.PLACE_WORKERS, currentPlayer);
     }
 
+    /**
+     * places worker on Board at place position if current player has not placed both his workers yet
+     * @param board Board of the game
+     * @param placePosition position where a worker is placed
+     * @return workerID if worker is placed
+     */
     protected Optional<Integer> boardPlace(Board board, Position placePosition){
         Player currentPlayer = this.getCurrentPlayer();
         //for extra security
@@ -24,11 +33,7 @@ public class PlaceWorkersTurn extends Turn {
         return Optional.empty();
     }
 
-    /*@Override
-    public boolean isValidPlace(Board board, Position placePosition) {
-        Worker newWorker = new Worker();
-        return board.setWorker(newWorker, placePosition);
-    }*/
+
 }
 
 

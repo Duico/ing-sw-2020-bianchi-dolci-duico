@@ -44,6 +44,11 @@ public class GameSerializer {
         return inputStream;
     }
 
+    /**
+     * saves game state on file
+     * @param game current Game
+     * @return True if game is successfully saved
+     */
     public boolean writeGame(Game game){
         boolean success = false;
         ObjectOutputStream out = null;
@@ -65,6 +70,12 @@ public class GameSerializer {
         return success;
     }
 
+    /**
+     * reads from file and loads the Game
+     * @return Game object
+     * @throws FileNotFoundException
+     * @throws InvalidClassException
+     */
     public Game readGame() throws FileNotFoundException, InvalidClassException{
         ObjectInputStream in = null;
         Game inputGame = null;

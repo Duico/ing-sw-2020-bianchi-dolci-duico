@@ -4,7 +4,9 @@ import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 
-//has now also taken the role of SwapMove
+/**
+ * Class that implements the power to move in a occupied cell
+ */
 public class PushMove implements MoveStrategy {
 
     @Override
@@ -29,8 +31,6 @@ public class PushMove implements MoveStrategy {
         }catch (NullPointerException e){
             throw new NullPointerException();
         }
-        // how to control if the next level is the dome?
-        // possibility of exception?
 
     }
 

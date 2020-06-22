@@ -36,6 +36,9 @@ public class Card implements Serializable {
 
     }
 
+    /**
+     * @return Card with all properties set as Default Strategy
+     */
     public static Card getDefaultCard(){
         try {
             Card defaultCard = new Card("Default", "Default", "Default", "Default", "Default", "Default");
@@ -68,6 +71,11 @@ public class Card implements Serializable {
         this.name = name;
     }*/
 
+    /**
+     * sets MoveStrategy related to parameter
+     * @param moveStrategy specifies strategy to set
+     * @throws StrategyNameNotFound
+     */
     private void setMoveStrategy(String moveStrategy) throws StrategyNameNotFound {
 
         if (moveStrategy.equals("Default")){
@@ -89,6 +97,11 @@ public class Card implements Serializable {
         }
     }
 
+    /**
+     * sets BuildStrategy related to parameter
+     * @param buildStrategy specifies strategy to set
+     * @throws StrategyNameNotFound
+     */
     private void setBuildStrategy(String buildStrategy) throws StrategyNameNotFound {
 
         if (buildStrategy.contentEquals("Default")){
@@ -110,6 +123,11 @@ public class Card implements Serializable {
         }
     }
 
+    /**
+     * sets WinStrategy related to parameter
+     * @param winStrategy specifies strategy to set
+     * @throws StrategyNameNotFound
+     */
     private void setWinStrategy(String winStrategy) throws StrategyNameNotFound {
         if (winStrategy.contentEquals("Default")){
             this.winStrategy = new DefaultWin();
@@ -121,6 +139,11 @@ public class Card implements Serializable {
         }
     }
 
+    /**
+     * sets BlockStrategy related to parameter
+     * @param blockStrategy specifies strategy to set
+     * @throws StrategyNameNotFound
+     */
     private void setBlockStrategy(String blockStrategy) throws StrategyNameNotFound {
         if (blockStrategy.contentEquals("Default")){
             this.blockStrategy = new DefaultBlock();
@@ -132,6 +155,11 @@ public class Card implements Serializable {
         }
     }
 
+    /**
+     * sets OpponentStrategy related to parameter
+     * @param opponentStrategy specifies strategy to set
+     * @throws StrategyNameNotFound
+     */
     private void setOpponentStrategy(String opponentStrategy) throws StrategyNameNotFound {
 
         if (opponentStrategy.contentEquals("Default")){

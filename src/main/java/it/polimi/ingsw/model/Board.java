@@ -2,6 +2,9 @@ package it.polimi.ingsw.model;
 
 import java.io.Serializable;
 
+/**
+ * Represent the  Board of the game where player can place, move or build with their workers
+ */
 public class Board implements Cloneable, Serializable {
     private BoardCell[][] grid;
     private final int width;
@@ -29,6 +32,13 @@ public class Board implements Cloneable, Serializable {
         return height;
     }
 
+    /**
+     * increment level in the destination position BoardCell it is not a dome build
+     * if it is a dome build sets the boolean attribute that specifies if a dome is built in the destination position BoardCell
+     * @param startPosition position where the worker is located
+     * @param destinationPosition build position
+     * @param isDome specifies whether or not the player is building a dome
+     */
     public void build(Position startPosition, Position destinationPosition, boolean isDome) {
         Worker worker = this.getBoardCellReference(startPosition).getWorker();
         if(worker == null){
@@ -49,6 +59,13 @@ public class Board implements Cloneable, Serializable {
             return cell;
     }
 
+    /**
+     * return the BoardCell corresponding to the Position got from parameter
+     * @param position used to get related BoardCell reference
+     * @return
+     * @throws NullPointerException
+     * @throws IndexOutOfBoundsException
+     */
     private BoardCell getBoardCellReference(Position position) throws NullPointerException,IndexOutOfBoundsException{
         try{
             return grid[position.getX()][position.getY()];
@@ -57,7 +74,14 @@ public class Board implements Cloneable, Serializable {
         }
     }
 
-
+    /**
+     * removes the worker situated in the start position BoardCell and puts it in the
+     * destination position BoardCell
+     * updates the List containing the current worker's moves
+     * @param startPosition position where the worker is located
+     * @param destinationPosition position where the worker is moving
+     * @param pushDestPosition position where the worker located in destination position BoardCell is moving
+     */
     public void putWorkers(Position startPosition, Position destinationPosition, Position pushDestPosition){
         BoardCell startBoardCell = getBoardCellReference(startPosition);
         Worker startWorker = startBoardCell.getWorker();
@@ -78,6 +102,12 @@ public class Board implements Cloneable, Serializable {
         startWorker.addMove(destinationPosition);
     }
 
+    /**
+     * sets the worker got from parameter to the destination position BoardCell
+     * @param worker worker to set
+     * @param destPosition position where the worker is set
+     * @return
+     */
     public boolean setWorker(Worker worker, Position destPosition){
         if( this.getBoardCellReference(destPosition).getWorker() == null){
             this.getBoardCellReference(destPosition).setWorker(worker);
@@ -88,6 +118,11 @@ public class Board implements Cloneable, Serializable {
         }
     }
 
+    /**
+     * deletes Worker reference from the BoardCell corresponding to the position got from parameter
+     * @param position worker position
+     * @return
+     */
     public boolean removeWorker(Position position){
         if( this.getBoardCellReference(position).getWorker() != null ){
             this.getBoardCellReference(position).setWorker(null);

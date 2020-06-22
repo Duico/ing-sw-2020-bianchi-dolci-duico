@@ -7,9 +7,9 @@ import it.polimi.ingsw.model.strategy.MoveStrategy;
 import it.polimi.ingsw.model.strategy.OpponentStrategy;
 import it.polimi.ingsw.model.strategy.WinStrategy;
 
-import javax.swing.text.html.Option;
-
-
+/**
+ * Represent actual normal turn in Game where player can do movements and buildings with their workers
+ */
 public class NormalTurn extends Turn {
     private Optional<Integer> currentWorkerId;
     private Card previousTurnCard;
@@ -148,6 +148,11 @@ public class NormalTurn extends Turn {
     }*/
 
 
+    /**
+     * check if current player's worker is located in the exact same position as parameter position
+     * @param workerPosition position to check
+     * @return true if current player's worker position is same as parameter position
+     */
     public boolean checkCurrentWorker(Position workerPosition){
         if(isSetCurrentWorker())
             return workerPosition != null && workerPosition.equals(currentPlayer.getWorkerPosition(currentWorkerId.get()));
@@ -170,6 +175,11 @@ public class NormalTurn extends Turn {
     }
 
 
+    /**
+     * set current worker ID if it has not been set yet
+     * @param workerId worker ID to set at current player
+     * @return true if current worker ID is successfully set
+     */
     public boolean updateCurrentWorker(Integer workerId){
         if(!isSetCurrentWorker()){
             setCurrentWorker(workerId);
@@ -187,6 +197,15 @@ public class NormalTurn extends Turn {
         return this.previousTurnCard;
     }
 
+    /**
+     * moves worker placed in start position to destination position checking if destination position
+     * BoardCell is already occupied by a worker, in that case returns position where this last one is going to
+     * be pushed
+     * @param board Board of the Game
+     * @param startPosition position from which a movement is done
+     * @param destinationPosition position where the worker in start position is moving to
+     * @return position where worker placed in destination position is pushed to
+     */
     protected Position boardMove(Board board, Position startPosition, Position destinationPosition) {
         Player currentPlayer = this.getCurrentPlayer();
         Optional<Integer> workerId = currentPlayer.getWorkerId(startPosition);
@@ -209,6 +228,13 @@ public class NormalTurn extends Turn {
     }
 
 
+    /**
+     * builds on Board at destination position
+     * @param board Board of the game
+     * @param startPosition position from which a building is done
+     * @param destinationPosition position where the worker located in start position is building at
+     * @param isDome specifies if the worker is building a dome
+     */
     protected void boardBuild(Board board, Position startPosition, Position destinationPosition, boolean isDome){
         Player currentPlayer = this.getCurrentPlayer();
         Optional<Integer> workerId = currentPlayer.getWorkerId(startPosition);
@@ -222,6 +248,14 @@ public class NormalTurn extends Turn {
         return card.getBlockStrategy().blockNextPlayer(startPosition, destinationPosition, board);
     }
 
+    /**
+     * check current player's card strategies in order to verify a movement from start position to destination
+     * position is feasible
+     * @param board Board of the Game
+     * @param startPosition position from which the current player is trying to move
+     * @param destinationPosition position where the worker located in start position is trying to move to
+     * @return true if movement from start position to destination position is correct and feasible
+     */
     public boolean isFeasibleMove(Board board, Position startPosition, Position destinationPosition){
 
         Player currentPlayer = this.getCurrentPlayer();
@@ -242,6 +276,14 @@ public class NormalTurn extends Turn {
         }
     }
 
+    /**
+     * check current player's card strategies in order to verify a building from start position to destination
+     * position is feasible
+     * @param board Board of the Game
+     * @param startPosition position from which the current player is trying to build
+     * @param destinationPosition position where the worker located in start position is trying to build at
+     * @return true if building from start position to destination position is correct and feasible
+     */
     public boolean isFeasibleBuild(Board board, Position startPosition, Position destinationPosition, boolean isDome){
         Player currentPlayer = this.getCurrentPlayer();
         Card card = currentPlayer.getCard();
@@ -252,16 +294,26 @@ public class NormalTurn extends Turn {
         return isValidBuild;
     }
 
-    /*public boolean isBlockedMove(Board board, Position startPosition, Position destinationPosition){
-        Player currentPlayer = this.getCurrentPlayer();
-        return this.getPreviousTurnCard().getBlockStrategy().isBlockMove( startPosition, destinationPosition, board);
-    }*/
-
+    /**
+     * checks if previous players'card strategies disabled a movement from start position to destination position
+     * for other players
+     * @param board Board of the game
+     * @param startPosition position from which a movement has been selected
+     * @param destinationPosition destination position of the selected movement
+     * @return true if a movement from start to destination position is blocked by previous player
+     */
     public boolean isBlockedMove(Board board, Position startPosition, Position destinationPosition){
         Player currentPlayer = this.getCurrentPlayer();
         return this.getPreviousTurnCard().getBlockStrategy().isBlockMove( startPosition, destinationPosition, board);
     }
 
+    /**
+     * checks if moving from start to destination position is a winning move
+     * @param board Board of the game
+     * @param startPosition position from which a movement is done
+     * @param destinationPosition position where the worker located in start position is moved to
+     * @return true if a movement from start to destination position is a winning move
+     */
     public boolean isWinningMove(Board board, Position startPosition, Position destinationPosition){
         Player currentPlayer = this.getCurrentPlayer();
         Card card = currentPlayer.getCard();
@@ -270,7 +322,7 @@ public class NormalTurn extends Turn {
     }
 
     /**
-     * Checks is the chosen worker can move in any cell in the current operation, respecting all constraints imposed by cards
+     * Checks if the chosen worker can move in any cell in the current operation, respecting all constraints imposed by cards
      * @param currentPosition Position of the worker of currentPlayer you want to check
      * @return True if an adjacent cell exists where the player can move in the current operation
      */
@@ -338,25 +390,7 @@ public class NormalTurn extends Turn {
         return false;
     }
 
-    /*@Override
-    boolean isLoseCondition(Board board) {
-        Player currentPlayer = this.getCurrentPlayer();
-        boolean loseCondition = true;
-        if(this.isSetCurrentWorker()){
-            Position currentWorkerPosition = currentPlayer.getWorkerPosition(currentWorkerId);
-            loseCondition = cannotMakeRequiredOperation(board, currentWorkerPosition); //&& loseCondition
 
-        }else {//first operation of the turn can have workerId not set
-            for (int workerId = 0; workerId < currentPlayer.getNumWorkers(); workerId++) {
-                Position workerPosition = currentPlayer.getWorkerPosition(workerId);
-                loseCondition = cannotMakeRequiredOperation(board, workerPosition);
-                if(!loseCondition)
-                    return false;
-            }
-        }
-        return loseCondition;
-    }
-    */
 
     @Override
     boolean isLoseCondition(Board board) {

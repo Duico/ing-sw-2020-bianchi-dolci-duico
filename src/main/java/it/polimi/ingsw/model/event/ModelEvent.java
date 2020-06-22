@@ -5,6 +5,9 @@ import it.polimi.ingsw.client.ModelEventVisitor;
 import it.polimi.ingsw.server.message.GameMessage;
 import it.polimi.ingsw.model.Player;
 
+/**
+ * Represent generic event launched from Model
+ */
 public abstract class ModelEvent extends GameMessage  {
     protected Player player;
 

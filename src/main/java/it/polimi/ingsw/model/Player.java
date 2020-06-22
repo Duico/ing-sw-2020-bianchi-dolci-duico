@@ -6,6 +6,7 @@ package it.polimi.ingsw.model;
         import java.util.Objects;
         import java.util.UUID;
 
+
 public class Player implements Serializable, Cloneable {
     private final String nickName;
     private final UUID uuid;
@@ -13,7 +14,7 @@ public class Player implements Serializable, Cloneable {
     //private String cardName;
     private FixedArray<Worker> workers;
     private boolean isChallenger;
-    private PlayerColor color; //TODO
+    private PlayerColor color;
 
 
     public Player(String nickName) {
@@ -23,20 +24,12 @@ public class Player implements Serializable, Cloneable {
         //this.initWorkers(numWorkers);
     }
 
-//    //TODO remove
-//    public Player(String nickName){
-//        this(nickName, PlayerColor.randomEnum());
-//    }
+
 
     public void setColor(PlayerColor color) {
         this.color = color;
     }
 
-    //    private void initWorkers(int numWorkers){
-//        for(int i=0; i < numWorkers; i++){
-//            workers.add(new Worker());
-//        }
-//    }
 
     public Card getCard() {
         return card;
@@ -60,14 +53,6 @@ public class Player implements Serializable, Cloneable {
         }
     }
 
-    /*public boolean setCardName(String cardName){
-        boolean alreadySet = false;
-        if(cardName != null){
-            alreadySet = true;
-        }
-        this.cardName = cardName;
-        return alreadySet;
-    }*/
 
     public void initWorkers(int numWorkers){
         workers = new FixedArray<>(numWorkers);
@@ -93,7 +78,11 @@ public class Player implements Serializable, Cloneable {
         return workers.size();
     }
 
-
+    /**
+     *checks if worker related to workerId exists and return his position in the Board
+     * @param workerId related one of player's workers
+     * @return position where worker is located
+     */
     public Position getWorkerPosition(int workerId) {
         Worker worker = workers.get(workerId);
         if (worker == null) {
@@ -138,6 +127,12 @@ public class Player implements Serializable, Cloneable {
             worker.reset();
         }
     }
+
+    /**
+     * checks if there's a worker located in destination position
+     * @param destinationPosition position to check
+     * @return true if there is a worker located in destination position
+     */
     public boolean isOwnWorkerInPosition(Position destinationPosition) {
 
         for (int i = 0; i < getNumWorkers(); i++) {
@@ -170,6 +165,7 @@ public class Player implements Serializable, Cloneable {
                 Objects.equals(workers, player.workers);
         return eq;
     }
+
     public boolean equalsUuid(Player player){
         if (this == player) return true;
         return Objects.equals(getUuid(), player.getUuid());
@@ -200,6 +196,12 @@ public class Player implements Serializable, Cloneable {
         return Optional.empty();
     }
 
+    /**
+     * sets position to worker having Id equals to parameter
+     * @param i worker id
+     * @param destPosition position to set for worker
+     * @return true if position correctly set
+     */
     public boolean setWorkerPosition(int i, Position destPosition) {
         try{
             workers.get(i).addMove(destPosition);

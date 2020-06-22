@@ -2,13 +2,11 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
-import it.polimi.ingsw.model.exception.ReadConfigurationXMLException;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -47,6 +45,10 @@ public class Game extends ModelEventEmitter implements Serializable{
         this.numWorkers = numWorkers;
     }
 
+    /**
+     * @param readGame current game
+     * @return true if game is correctly set
+     */
     public static boolean validateGame(Game readGame) {
         //TODO improve
         return readGame != null &&
@@ -97,7 +99,9 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     }
 
-
+    /**
+     * @return True ii card deck is correctly created
+     */
     private boolean createCardDeck() {
         try {
             this.cardDeck = new CardDeck("./card-config.xml");
@@ -116,6 +120,10 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
 
+    /**
+     * sets a Default card to each player
+     * @param numPlayers number of players in the game
+     */
     private void dealDefaultCard(int numPlayers){
         Card defaultCard = Card.getDefaultCard();
         for (int n = 0; n < numPlayers; n++) {
@@ -125,6 +133,10 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     }
 
+    /**
+     * @param cards list of card names related to cards chosen by challenger player
+     * @return True if chosen cards are correctly set
+     */
     public boolean setChosenCards(List<String> cards){
         if(cards.size() != players.size()){
             return false;
@@ -144,6 +156,11 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
 
+    /**
+     * sets Card to current player
+     * @param nameCard name related to Card
+     * @return
+     */
     public boolean setPlayerCard(String nameCard){
         if(turn.getCurrentPlayer().getCard()==null) {
             for (int i = 0; i < chosenCards.size(); i++) {
@@ -191,6 +208,10 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
 
+    /**
+     * updates game Turn checking if current Game is played with cards or not
+     * @param challenger challenger player of the game
+     */
     public void initTurn(Player challenger) {
         if(!useCards){
             setFirstPlayer(challenger);
@@ -201,6 +222,11 @@ public class Game extends ModelEventEmitter implements Serializable{
             //event for the challenger view to choose the three or two cards
         }
     }
+
+    /**
+     * updates current game Turn to NormalTurn
+     * @param nextPlayer
+     */
     public void startNormalTurn(Player nextPlayer){
         Card previousTurnCard = turn.getCurrentPlayer().getCard();
         nextPlayer.resetAllWorkers();
@@ -217,10 +243,18 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     }
 
+    /**
+     * moves on to the next Turn
+     */
     public void nextTurn(){
         Player nextPlayer = this.getNextPlayer();
         nextTurn(nextPlayer);
     }
+
+    /**
+     * updates next Turn based on current TurnPhase
+     * @param nextPlayer
+     */
     private void nextTurn(Player nextPlayer) { //notify view in every case
         TurnPhase phase = turn.getPhase();
 
@@ -240,22 +274,22 @@ public class Game extends ModelEventEmitter implements Serializable{
             startNormalTurn(nextPlayer);
         }
 
-//        if(useCards && !isSetFirstPlayer()) {
-//            startChoseCardsTurn(nextPlayer);
-//            //emitEvent()
-//        }else if(isAnyPlayersWorkerNotPlaced()){
-//            startPlaceWorkersTurn(nextPlayer);
-//        }else { /*if(!turn.isAllowedToMove() && !turn.isAllowedToBuild())*/
-//            startNormalTurn(nextPlayer);
-//            //checkHasLost(); comment for testing
-//        }
     }
 
+    /**
+     * updates current Turn to PlaceWorkersTurn
+     * @param player new current Player
+     */
     private void startPlaceWorkersTurn(Player player){
         turn=new PlaceWorkersTurn(player);
         ModelEvent evt = new NewTurnModelEvent(player, TurnPhase.PLACE_WORKERS, null);
         emitEvent(evt);
     }
+
+    /**
+     * updates current Turn to ChoseCardsTurn
+     * @param player
+     */
     private void startChoseCardsTurn(Player player){
         turn = new ChoseCardsTurn(player);
         emitEvent(new NewTurnModelEvent(player, TurnPhase.CHOSE_CARDS, players));
@@ -272,6 +306,11 @@ public class Game extends ModelEventEmitter implements Serializable{
         emitEvent(new ChosenCardsModelEvent(player, cardDeck.getCardNames(), old_chosenCards));
     }
 
+    /**
+     * set first player of the game, chosen from the challenger player
+     * @param player
+     * @return True if first player is correctly set
+     */
     public boolean firstTurn(Player player) {
         Player firstPlayer = setFirstPlayer(player);
         if(firstPlayer == null){
@@ -284,6 +323,7 @@ public class Game extends ModelEventEmitter implements Serializable{
         emitEvent(evt);
         return true;
     }
+
 
     private Player setFirstPlayer(Player player){
 //        for(int i=0;i<players.size();i++)
@@ -304,6 +344,10 @@ public class Game extends ModelEventEmitter implements Serializable{
         return firstPlayer != null;
     }
 
+    /**
+     * generates random number in order to pick first player
+     * @return
+     */
     private Player pickFirstPlayer() {
             int rand = (int) Math.floor( Math.random() * (double) players.size() );
             Player randPlayer=players.get(rand);
@@ -311,6 +355,10 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
 
+    /**
+     * gets next player from order generated
+     * @return next player
+     */
     private Player getNextPlayer() {
         return scrubPlayers(1);
     }
@@ -331,7 +379,11 @@ public class Game extends ModelEventEmitter implements Serializable{
         }
     }
 
-
+    /**
+     * removed the worker situated in the start position BoardCell and moves it to the destination position BoardCell
+     * @param startPosition position of the current worker
+     * @param destinationPosition position where the worker is moving to
+     */
     public void move(Position startPosition, Position destinationPosition){
         if(turn.getPhase() != TurnPhase.NORMAL)
             throw new IllegalTurnPhaseException();
@@ -380,6 +432,12 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
 
+    /**
+     * updates BoardCell related to destination position
+     * @param startPosition position of the current worker
+     * @param destinationPosition position where the worker is building
+     * @param isDome specifies if is a dome build
+     */
     public void build(Position startPosition, Position destinationPosition, boolean isDome){
         if(turn.getPhase() != TurnPhase.NORMAL)
             throw new IllegalTurnPhaseException();
@@ -399,7 +457,11 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
 
-
+    /**
+     * updates BoardCell related to placePosition where a worker is set
+     * @param placePosition position where a worker is placed
+     * @return worker ID
+     */
     public Optional<Integer> place(Position placePosition) {
         if(turn.getPhase() != TurnPhase.PLACE_WORKERS)
             throw new IllegalTurnPhaseException();
@@ -442,7 +504,10 @@ public class Game extends ModelEventEmitter implements Serializable{
         return turn.checkCurrentWorker(currentWorkerPosition);
     }
 
-
+    /**
+     * check if current player is in loose condition
+     * @return true if current player has lost the game
+     */
     public boolean checkHasLost(){
 
         if(hasLost()){
@@ -473,6 +538,10 @@ public class Game extends ModelEventEmitter implements Serializable{
         return false;
     }
 
+    /**
+     * emit Win event
+     * @param winnerPlayer player that has won the game
+     */
     private void winEvent(Player winnerPlayer){
         ModelEvent winModelEvent = new WinModelEvent(winnerPlayer);
         emitEvent(winModelEvent);
@@ -484,6 +553,10 @@ public class Game extends ModelEventEmitter implements Serializable{
         return active;
     }
 
+    /**
+     *
+     * @return True if loose condition occurred on current turn
+     */
     private boolean hasLost(){
         if(!isAnyPlayersWorkerNotPlaced()) {
             if (!turn.isUndoAvailable) {
@@ -491,13 +564,6 @@ public class Game extends ModelEventEmitter implements Serializable{
             } else {
                 if(turn.isLoseCondition(board)) {
                     return true;
-                    /*List<Position> positions = new ArrayList<>();
-                    for(int i=0;i<getCurrentPlayer().getNumWorkers();i++){
-                        positions.add(getCurrentPlayer().getWorkerPosition(i));
-                    }
-                    ModelEvent evt = new PlayerDefeatModelEvent(getCurrentPlayer(), positions, true);
-                    emitEvent(evt);
-                    playerDefeat(getCurrentPlayer());*/
                 }
                 return false;
             }
@@ -510,6 +576,10 @@ public class Game extends ModelEventEmitter implements Serializable{
         return turn.isUndoAvailable;
     }
 
+    /**
+     * brings the game back to his previous state, before last operation occurred
+     * @return true if undo is successfull
+     */
     public boolean undo(){
         if(!turn.isUndoAvailable){
             return false;
@@ -531,28 +601,18 @@ public class Game extends ModelEventEmitter implements Serializable{
         return true;
     }
 
+    /**
+     * reactivates undo, setting at true available property
+     */
     private void backupUndo(){
-        //serialize turn, players
         this.undoBlob = new UndoBlob(turn, board, players);
         turn.isUndoAvailable = true;
-        //return true;
     }
 
     public void regenerateUndo(){
         backupUndo();
     }
-//
-//    //for persistency
-//    public PersistencyEvent generatePersistencyEvent() {
-//        List<Player> clonedPlayers = (List<Player>) players.clone();
-//        Turn clonedTurn = turn.clone();
-//        //useCards
-//        //firstPlayer;
-//        // int numWorkers;
-//        Board clonedBoard = board.clone();
-//        private UndoBlob undoBlob;
-//        return new PersistencyEvent();
-//    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -560,11 +620,6 @@ public class Game extends ModelEventEmitter implements Serializable{
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
         boolean playersEquals = true;
-       // return useCards == game.useCards &&
-                //Objects.equals(getTurn(), game.getTurn()) &&
-               //equals(getPreviousTurn(), game.getPreviousTurn()) &&
-                //Objects.equals(getPlayers(), game.getPlayers()) &&
-                //Objects.equals(cardDeck, game.cardDeck);
         for(int i=0; i<players.size(); i++){
             playersEquals = playersEquals && players.get(i).equals( game.players.get(i) );
         }
@@ -578,19 +633,9 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     }
 
-//    @Override
-//    protected Game clone() {
-//        Game newGame = null;
-//        try {
-//            newGame = (Game) super.clone();
-//            newGame.board.cleanWorkers();
-//
-//        }catch (CloneNotSupportedException e){
-//            e.printStackTrace();
-//        }
-//        return newGame;
-//    }
-
+    /**
+     * starts undo timer of 5 seconds
+     */
     public void startTimerUndo() {
         checkUndoExecutorService();
         if(turn.undoTimer != null) {
@@ -612,16 +657,24 @@ public class Game extends ModelEventEmitter implements Serializable{
         }
     }
 
+    /**
+     * resume Game state after player disconnection
+     */
     public void resumeGame(){
         //undoBlob can't be serialized
        turn.isUndoAvailable = false;
        checkHasLost();
        emitEvent(makePersistencyEvent());
     }
+
+
     private PersistencyEvent makePersistencyEvent(){
         return new PersistencyEvent(getCurrentPlayer(), getPlayers(), board, getTurnPhase());
     }
 
+    /**
+     * @return list of cloned players
+     */
     public List<Player> getPlayers(){
         List<Player> clonedPlayers = new ArrayList<>();
         for(Player p : players){

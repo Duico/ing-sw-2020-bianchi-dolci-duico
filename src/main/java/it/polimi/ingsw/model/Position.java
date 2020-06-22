@@ -5,6 +5,10 @@ import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * defines size of the Board and range of possible positions accepted
+ * every BoardCell is related to a Position
+ */
 public class Position implements Serializable, Cloneable{
     private final int x;
     private final int y;

@@ -2,7 +2,10 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.exception.ReadConfigurationXMLException;
 import it.polimi.ingsw.model.exception.StrategyNameNotFound;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -12,12 +15,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represent list of all the Cards that can be chosen by players
+ */
 public class CardDeck implements Serializable {
     private ArrayList<Card> cardDeck;
 
@@ -46,6 +50,12 @@ public class CardDeck implements Serializable {
         readConfigurationXML(document);
     }
 
+    /**
+     * read all rows from XML configuration card, creates a Card with each of them setting strategies using tag names
+     * and add all Cards created to CardDeck
+     * @param document contains XML configuration file
+     * @throws ReadConfigurationXMLException
+     */
     private void readConfigurationXML(Document document) throws ReadConfigurationXMLException {
         document.getDocumentElement().normalize();
         NodeList nList = document.getElementsByTagName("card");
@@ -87,29 +97,11 @@ public class CardDeck implements Serializable {
         return cardNames;
     }
 
-//    /**
-//     * Picks [numPlayers] random cards to be assigned to all players in the game
-//     * @param numPlayers Number of cards to extract,should be equal to the number of players
-//     * @return Deck of [numPlayers] cards
-//     */
-//    public ArrayList<Card> pickRandom(int numPlayers) {
-//        int rand;
-//        ArrayList<Card> randomDeck = new ArrayList<>();
-//        int i = 0;
-//        while(i < numPlayers)
-//        {
-//            Card randCard ;
-//            do {
-//                rand = (int) Math.floor( (Math.random() * (double) cardDeck.size()) );
-//                randCard=cardDeck.get(rand);
-//            }
-//            while(randomDeck.contains(randCard));
-//            randomDeck.add(randCard);
-//            i++;
-//        }
-//        return randomDeck;
-//    }
-
+    /**
+     * checks all Cards from CardDeck looking for one with a certain name
+     * @param name card name
+     * @return true if correlation between parameter and a Card name is found
+     */
     public boolean existsCardByName(String name){
         for(int i=0; i<cardDeck.size();i++){
             if(name.equals(cardDeck.get(i).getName()))
@@ -118,6 +110,11 @@ public class CardDeck implements Serializable {
         return false;
     }
 
+    /**
+     * searches for a certain Card in CardDeck
+     * @param name card name needed to get Card object
+     * @return
+     */
     public Card getCardByName(String name){
         int i;
         for(i=0; i<cardDeck.size();i++){

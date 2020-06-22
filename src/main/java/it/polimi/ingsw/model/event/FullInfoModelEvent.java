@@ -6,6 +6,9 @@ import it.polimi.ingsw.model.Player;
 
 import java.util.List;
 
+/**
+ * Represent event launched from Model that contains informations about the Board and the players
+ */
 public class FullInfoModelEvent extends ModelEvent {
     private InfoType type;
     private Board board;
