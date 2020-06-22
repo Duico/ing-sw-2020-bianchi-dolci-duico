@@ -3,6 +3,9 @@ package it.polimi.ingsw.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Represent a single Cell contained in the Board of the game
+ */
 public class BoardCell implements Cloneable, Serializable {
     private Level level;
     private boolean dome;

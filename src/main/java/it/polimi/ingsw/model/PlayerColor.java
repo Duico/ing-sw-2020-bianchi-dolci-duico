@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
-import java.lang.management.PlatformLoggingMXBean;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public enum PlayerColor {
     YELLOW,
@@ -24,6 +22,10 @@ public enum PlayerColor {
         }
     }
 
+    /**
+     * picks random color from (Yellow, Blue, Gray, White)
+     * @return color randomly picked
+     */
     public static PlayerColor randomEnum(){
         int x = new Random().nextInt(PlayerColor.class.getEnumConstants().length);
         return PlayerColor.class.getEnumConstants()[x];

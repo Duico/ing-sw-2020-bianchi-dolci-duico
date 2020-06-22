@@ -20,6 +20,10 @@ public class Worker implements Cloneable, Serializable {
         this.builds = new ArrayList<Position>();
         this.operations = new ArrayList<Operation>();
     }
+
+    /**
+     * reset current position, movement e building lists
+     */
     public void reset(){
         Position currentPosition = null;
         try{
@@ -63,52 +67,6 @@ public class Worker implements Cloneable, Serializable {
         return builds;
     }
 
-//    public List<Operation> play() {
-//        MoveStrategy moveStrategy = card.getMoveStrategy();
-//        BuildStrategy buildStrategy = card.getBuildStrategy();
-//        boolean isRequiredToMove = moveStrategy.isRequiredToMove(this);
-//        boolean isRequiredToBuild = buildStrategy.isRequiredToBuild(this);
-//        boolean isAllowedToMove = moveStrategy.isAllowedToMove(this);
-//        boolean isAllowedToBuild = buildStrategy.isAllowedToBuild(this);
-//
-//
-//        while (isRequiredToMove || isRequiredToBuild) {
-//            //make a choice between move and build
-//
-//            if (isAllowedToMove && isAllowedToBuild) {
-//                //can use both cursors
-//
-//            } else if (isAllowedToMove) {
-//                //change cursor to move
-//
-//            } else if (isAllowedToBuild) {
-//                //change cursor to build
-//
-//            } else {
-//                //undo or lose game
-//            }
-//
-//        }
-//
-//        while (isAllowedToMove || isAllowedToBuild) {
-//            //user is able to skip to next turn
-//
-//            if (isAllowedToMove && isAllowedToBuild) {
-//                //can use both cursors
-//            } else if (isAllowedToMove) {
-//                //change cursor to move
-//
-//            } else if (isAllowedToBuild) {
-//                //change cursor to build
-//
-//            } else {
-//                //next turn
-//            }
-//        }
-//
-//
-//
-//    }
 
 
     public void addMove(Position position) {
@@ -136,24 +94,7 @@ public class Worker implements Cloneable, Serializable {
             throw new RuntimeException("Clone not supported on BoardCell");
         }
         return newWorker;
-        //clone moves. Position operation are immutabile
-        /*ArrayList<Position> newMoves = new ArrayList<>();
-        for(Position move: this.moves){
-            newMoves.add(move);
-        }
-        newWorker.moves = newMoves;
-        //clone builds
-        ArrayList<Position> newBuilds = new ArrayList<>();
-        for(Position build: this.builds){
-            newBuilds.add(build);
-        }
-        newWorker.builds = newBuilds;
-        //clone operations
-        ArrayList<Operation> newOperations = new ArrayList<>();
-        for(Operation operation : this.operations){
-            newOperations.add(operation);
-        }
-        newWorker.operations = newOperations;*/
+
     }
 
 

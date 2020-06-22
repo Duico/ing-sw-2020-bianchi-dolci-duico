@@ -2,6 +2,9 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.client.gui.BuildingHeight;
 
+/**
+ * Represent building levels related to a single BoardCell, used for movements and buildings
+ */
 public enum Level {
 
     EMPTY(0),
@@ -32,6 +35,11 @@ public enum Level {
             return null;
     }
 
+    /**
+     * used by Gui controller to set exact Z coordinate in GuiModel
+     * @param level BoardCell level
+     * @return
+     */
     public static BuildingHeight fromLevelToBuildingHeight(Level level){
         if(level.equals(Level.EMPTY))
             return BuildingHeight.EMPTY;

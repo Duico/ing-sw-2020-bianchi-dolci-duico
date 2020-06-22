@@ -6,11 +6,18 @@ import it.polimi.ingsw.model.TurnPhase;
 
 import java.util.List;
 
+/**
+ * Represent event launched from Model when any kind of game Turn ends
+ */
 public class NewTurnModelEvent extends UpdateModelEvent {
     private TurnPhase turnPhase;
     private List<Player> players;
-    //private List<String> cardDeck;
 
+    /**
+     * @param player current player that end his turn
+     * @param turnPhase current turn phase
+     * @param players list of all players
+     */
     public NewTurnModelEvent(Player player, TurnPhase turnPhase, List<Player> players) {
         super(player);
         this.turnPhase = turnPhase;
@@ -18,9 +25,6 @@ public class NewTurnModelEvent extends UpdateModelEvent {
 
     }
 
-    /*public NewTurnModelEvent(Player player, TurnPhase turnPhase, List<Player> players){
-        this(player, turnPhase, players, null);
-    }*/
 
     public TurnPhase getTurnPhase() {
         return turnPhase;
@@ -30,9 +34,6 @@ public class NewTurnModelEvent extends UpdateModelEvent {
         return players;
     }
 
-    /*public List<String> getCardDeck(){
-        return cardDeck;
-    }*/
 
     @Override
     public void accept(ModelEventVisitor visitor){

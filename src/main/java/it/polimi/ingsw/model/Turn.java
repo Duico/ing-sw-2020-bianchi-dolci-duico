@@ -1,14 +1,13 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.exception.IllegalTurnPhaseException;
-
-import java.io.PipedOutputStream;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.Timer;
 import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.ScheduledFuture;
 
+/**
+ * defines a generic game Turn
+ */
 public abstract class Turn implements Serializable {
     final Player currentPlayer;
     protected boolean isUndoAvailable = false; // false when deserializing for undo

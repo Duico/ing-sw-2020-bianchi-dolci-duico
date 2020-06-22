@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class used to save and load Turn state in order to let players 'Undo' their last operation
+ */
 public class UndoBlob{
     private ByteArrayOutputStream ba;
     private Turn inputTurn;
@@ -35,6 +38,9 @@ public class UndoBlob{
         return new ObjectInputStream(inputFile);
     }
 
+    /**
+     * writes informations about Board, Turn and players on output stream
+     */
     private void writeBlob(){
         ObjectOutputStream out = null;
         try {
@@ -56,6 +62,9 @@ public class UndoBlob{
 
     }
 
+    /**
+     * reads informations about Board, Turn and players from input stream
+     */
     private void readBlob(){
         ObjectInputStream in = null;
         Turn turn = null;
