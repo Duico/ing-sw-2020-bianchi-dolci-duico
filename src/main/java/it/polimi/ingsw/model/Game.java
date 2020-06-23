@@ -137,7 +137,6 @@ public class Game extends ModelEventEmitter implements Serializable{
             tempCards.add(chosenCard);
         }
         chosenCards.addAll(tempCards);
-        //TODO DA DIRE AD ALE
         /*ModelEvent evt = new ChosenCardsModelEvent(getCurrentPlayer(), null, getChosenCardsNames());
         emitEvent(evt);*/
         return true;

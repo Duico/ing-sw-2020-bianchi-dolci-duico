@@ -21,7 +21,7 @@
            <Image url="@/textures/santorini-logo.png"/>
        </ImageView>
 
-       <VBox fx:id="loginPane" styleClass="prompt_vbox" alignment="TOP_CENTER" layoutX="240.0" layoutY="205.0" visible="false">
+       <VBox fx:id="loginPane" styleClass="prompt_vbox" layoutX="240.0" layoutY="205.0" visible="false">
             <!--  <Label layoutX="184.0" layoutY="102.0"/> -->
             <VBox>
                 <Label styleClass="prompt_label" layoutX="18.0" layoutY="23.0" text="Insert your username here:"/>
@@ -35,7 +35,7 @@
                 <Label text="Load saved game:" styleClass="prompt_label"/>
                 <CheckBox fx:id="persistencyCheckBox"  selected="false"> </CheckBox>
             </VBox>
-            <Button fx:id="start" styleClass="enter_button" layoutY="180.0" layoutX="40" mnemonicParsing="false"
+            <Button fx:id="start" styleClass="enter_button" layoutX="40" mnemonicParsing="false"
                     onAction="#startGame" text="Enter Game"/>
         </VBox>
         <VBox fx:id="waitLabel" prefHeight="480.0" prefWidth="770.0" styleClass="label_vbox" visible="false" >

@@ -43,7 +43,6 @@ public class MainController implements GuiEventEmitter {
     private boolean active = false;
     private final static int WIDTH = 900;
     private final static int HEIGHT = 500;
-    private final int TRIGLIPH_HEIGHT = 40;
     final double boardSize=15;
     final double baseZ = 0;
     private SubScene subScene;
@@ -64,7 +63,7 @@ public class MainController implements GuiEventEmitter {
     private double onClickXCoord,onClickYCoord;
     private double newOnClickXCoord,newOnClickYCoord;
 
-    private VBox vbPlayers=new VBox(32);
+    private VBox vbPlayers=new VBox(12);
     private VBox vbButtons=new VBox(28);
     private Pane trigliph = new Pane();
 
@@ -321,10 +320,18 @@ public class MainController implements GuiEventEmitter {
 
     private void create3DScene() {
 //        initBoard();
-        Cube sea = new Cube(200, 200, 0.4, Color.BLUE, "/textures/sea.jpg");
+        Box closeSea = new Box(72, 72, 0.4);
+        closeSea.setRotate(-45);
+        PhongMaterial seaTexture = new PhongMaterial();
+        seaTexture.setDiffuseMap(new Image("/textures/sea.png"));
+        closeSea.setMaterial(seaTexture);
+//        Cube distantSea = new Cube(10000, 10000, 0.4, new Color(59.0/255, 191.0/255, 241.0/255, 1));
+        Group sea = new Group();
+        sea.getChildren().addAll(closeSea);
         sea.getTransforms().add(new Translate(0, 0, 3.5));
+
         //this.board must refer to this one
-        Cube board = new Cube(boardSize, boardSize, 0.001, Color.DARKKHAKI);
+        Cube board = new Cube(boardSize, boardSize, 0.001, Color.WHITE, "/textures/walls_crop.png");
         board.getTransforms().add(new Translate(0, 0, 1));
         addOnClickEventBoard(board);
 //        String outerWallUrl = "models/outerwall.obj";
@@ -335,11 +342,11 @@ public class MainController implements GuiEventEmitter {
 //        outerWall.getTransforms().addAll(new Rotate(+90, Rotate.X_AXIS), new Translate(0, 1.4, 0), new Scale(1.1, 1.2, 1.1));
 
         Group cliff = loadModel(getClass().getResource(cliffUrl), "/textures/cliff.png");
-        cliff.getTransforms().addAll(new Rotate(+90, Rotate.X_AXIS), new Translate(0, 3.1, 0.05), new Scale(9.3, 8, 9.3));
+        cliff.getTransforms().addAll(new Rotate(+90, Rotate.X_AXIS), new Translate(-0.03, 3.02, 0.05), new Scale(9.3, 8, 9.3));
         Group islands = loadModel(getClass().getResource(islandUrl), "/textures/islands.png");
         islands.getTransforms().addAll(new Translate(-14, 4, 0), new Rotate(+90, Rotate.X_AXIS));
-        Group innerWalls = loadModel(getClass().getResource(innerWallsUrl), "/textures/walls.png");
-        innerWalls.getTransforms().addAll(new Translate(9.9, -10, 4.5), new Rotate(+90, Rotate.X_AXIS), new Scale(1.15, 1, 1.15));
+        Group innerWalls = loadModel(getClass().getResource(innerWallsUrl), Color.MINTCREAM, null);
+        innerWalls.getTransforms().addAll(new Translate(9.9, -10, 4.5), new Rotate(+90, Rotate.X_AXIS), new Rotate(90, Rotate.Y_AXIS), new Translate(19.97,0,0.06), new Scale(1.15, 1, 1.15));
 
         PointLight light = new PointLight();
         AmbientLight ambientLight = new AmbientLight(new Color(.6,.6,.6, 1));
@@ -813,16 +820,24 @@ public class MainController implements GuiEventEmitter {
 //        }
     }
 
-
-
     private static Group loadModel(URL url, String diffuseTexture){
+        return loadModel(url, null, diffuseTexture);
+    }
+    private static Group loadModel(URL url, Color color, String diffuseTexture){
         Group modelRoot = new Group();
         ObjModelImporter importer = new ObjModelImporter();
         importer.read(url);
 
         for(MeshView view : importer.getImport()){
-            PhongMaterial material = new PhongMaterial();
-            material.setDiffuseMap(new Image(diffuseTexture));
+            PhongMaterial material;
+            if(color!=null){
+                material = new PhongMaterial(color);
+            }else{
+                material = new PhongMaterial();
+            }
+            if(diffuseTexture!=null) {
+                material.setDiffuseMap(new Image(diffuseTexture));
+            }
             view.setMaterial(material);
             modelRoot.getChildren().add(view);
         }
@@ -856,6 +871,7 @@ public class MainController implements GuiEventEmitter {
 
 
     public Scene gameScene(){
+        final int TRIGLIPH_HEIGHT = 40;
         create3DScene();
         subScene = new SubScene(root, WIDTH, HEIGHT, true, SceneAntialiasing.BALANCED);
         PerspectiveCamera camera = new PerspectiveCamera(true);
@@ -863,11 +879,13 @@ public class MainController implements GuiEventEmitter {
         double perfectX = 25 / Math.tan(cameraAngle / 180 * Math.PI);
         camera.getTransforms().addAll(new Translate(0, perfectX, -25), new Rotate(cameraAngle - 10, Rotate.X_AXIS));
         camera.setFarClip(500);
-        subScene.setFill(Color.BLACK);
+        subScene.setFill(new Color(59.0/255, 191.0/255, 241.0/255, 1));
         subScene.setCamera(camera);
 
         BorderPane background = new BorderPane();
 
+//        vbButtons.setHgap(28);
+//        vbButtons.setPrefRows(4);
         initGameButtons();
         vbButtons.getChildren().addAll(endTurnButton,undoButton, moveButton, buildButton);
 
@@ -889,12 +907,15 @@ public class MainController implements GuiEventEmitter {
         vbButtons.getStyleClass().add("right_vbox");
         trigliph.getStyleClass().add("trigliph");
 
-
         Scene scene = new Scene(background);
 
         foreground.layoutXProperty().bind(scene.widthProperty().subtract(foreground.prefWidthProperty()).divide(2));
         vbButtons.prefHeightProperty().bind(scene.heightProperty().subtract(TRIGLIPH_HEIGHT));
         vbPlayers.prefHeightProperty().bind(scene.heightProperty().subtract(TRIGLIPH_HEIGHT));
+        vbPlayers.maxHeightProperty().bind(scene.heightProperty().subtract(TRIGLIPH_HEIGHT));
+        scene.heightProperty().addListener( e ->{
+           resizePlayers();
+        });
         background.maxHeightProperty().bind(scene.heightProperty());
         background.maxWidthProperty().bind(scene.widthProperty());
         subScene.heightProperty().bind(background.heightProperty().subtract(TRIGLIPH_HEIGHT));
@@ -904,6 +925,27 @@ public class MainController implements GuiEventEmitter {
 //        operation = Operation.PLACE_WORKER;
         active = true;
         return scene;
+    }
+
+    private void resizePlayers(){
+        int numPlayers = vbPlayers.getChildren().size();
+        if(numPlayers > 2 && subScene.getHeight()< 680){
+//                vbPlayers.getStyleClass().remove();
+            vbPlayers.getChildren().forEach( child -> {
+                child.setScaleY(.75);
+                child.setScaleX(.75);
+            });
+            vbPlayers.getStyleClass().add("left_vbox_tiny");
+//                vbPlayers.getStyleClass().remove("left_vbox_big");
+        }else{
+            vbPlayers.getChildren().forEach( child -> {
+                child.setScaleY(1);
+                child.setScaleX(1);
+            });
+            vbPlayers.getStyleClass().remove("left_vbox_tiny");
+//                vbPlayers.getStyleClass().add("left_vbox_big");
+
+        }
     }
 
     private void initGameButtons(){
@@ -934,10 +976,13 @@ public class MainController implements GuiEventEmitter {
                 username.getChildren().add(new Label(player.getNickName()));
                 ImageView cardImage = cardImage(player.getCard().getName());
                 VBox addPlayer = new VBox(5);
+                Pane playerPane = new Pane();
                 addPlayer.getStyleClass().add("player_box");
                 addPlayer.getChildren().addAll(username, cardImage);
-                vbPlayers.getChildren().add(addPlayer);
+                playerPane.getChildren().add(addPlayer);
+                vbPlayers.getChildren().add(playerPane);
             }
+            resizePlayers();
         });
     }
 
