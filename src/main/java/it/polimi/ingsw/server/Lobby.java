@@ -2,8 +2,10 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.GameViewEventListener;
-import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.event.ModelEvent;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.GameSerializer;
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.view.ControllerResponseListener;
 import it.polimi.ingsw.view.ModelEventListener;
 import it.polimi.ingsw.view.RemoteView;
@@ -14,6 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * class that manages login of players, creation of the lobby and start the game
+ * allows to reload a game that was interrupted by reading a configuration file where game state has been saved
+ */
 public class Lobby {
     String persistencyFilename = "./game.ser";
 
@@ -26,9 +32,7 @@ public class Lobby {
     private List<Player> persistencyPlayers;
 
 
-
     public Lobby() {
-
         waitingPlayers = new ArrayList<>();
     }
     public Lobby(String persistencyFilename){
@@ -37,7 +41,11 @@ public class Lobby {
     }
 
 
-
+    /**
+     * checks if entered name is an allowed nickname
+     * @param nickname name entered by the player
+     * @return true if name entered is ok
+     */
     public boolean validateNickname(String nickname){
         for(String player: waitingPlayers){
             if(player.equals(nickname))
@@ -54,6 +62,11 @@ public class Lobby {
         waitingPlayers.add(nickname);
     }
 
+    /**
+     * checks if player's nickname is in the saved game's players list
+     * @param nickname nickname of the player who is reloading the game
+     * @return the player if was in the saved game's players list
+     */
     public Player checkPersistencyPlayer(String nickname){
         if(persistencyPlayers==null){
             System.out.print("Error with loading players from persistency.");
@@ -68,8 +81,6 @@ public class Lobby {
             }
         }
         return null;
-
-
     }
 
     public Player addPlayingPlayer(String nickname){
@@ -112,6 +123,10 @@ public class Lobby {
         return true;
     }
 
+    /**
+     * checks if game can be saved and eventually writes it on persistency file
+     * @return true if game is successfully saved
+     */
     public boolean persistencySaveGame(){
         if(this.game == null){
             return false;
@@ -136,11 +151,17 @@ public class Lobby {
 
     }
 
+    /**
+     * sets number of players of the lobby checking if the number is 2 or 3
+     * @param numPlayers number of players who enters the lobby
+     * @return true if number of players is successfully set
+     */
     public boolean setNumPlayers(Integer numPlayers) {
         if(numPlayers == null){
             return false;
         }
-
+//        if(this.numPlayers!=null)
+//            return false;
         if(2<=numPlayers && numPlayers<=3) {
             this.numPlayers = numPlayers;
             return true;
@@ -161,6 +182,10 @@ public class Lobby {
         this.controller = new Controller(game);
     }
 
+    /**
+     * starts a game checking if has been interrupted before and eventually reload it from persistency file
+     * @param isPersistencyAvailable true if the game was interrupted before and can be reloaded
+     */
     public void startGame(boolean isPersistencyAvailable) {
         //                for (Player player : playingPlayers) {
 //                    System.out.println(player.getNickName());
@@ -185,9 +210,15 @@ public class Lobby {
         return game!=null;
     }
 
+    /**
+     * add event listeners to a remoteView
+     * @param remoteView remote view of a single player
+     */
     public void addRemoteView(RemoteView remoteView) {
+//        playingPlayers.add(player);
         remoteView.addEventListener(GameViewEventListener.class, controller);
         controller.addEventListener(ControllerResponseListener.class, remoteView);
+//        remoteViews.add(remoteView);
         game.addEventListener(ModelEventListener.class, remoteView);
     }
 

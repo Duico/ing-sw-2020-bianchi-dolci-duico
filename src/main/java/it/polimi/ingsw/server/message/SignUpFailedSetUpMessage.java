@@ -2,6 +2,9 @@ package it.polimi.ingsw.server.message;
 
 import it.polimi.ingsw.client.SetUpMessageVisitor;
 
+/**
+ * Represent message sent from server to client when sign up has failed
+ */
 public class SignUpFailedSetUpMessage extends SetUpMessage {
 
     private Reason reason;

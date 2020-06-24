@@ -3,6 +3,10 @@ package it.polimi.ingsw.server.message;
 import it.polimi.ingsw.client.SetUpMessageVisitor;
 import it.polimi.ingsw.model.Player;
 
+/**
+ * Represent message sent from server to client when connection has already been established
+ * and lobby has already been created
+ */
 public class InitSetUpMessage extends SetUpMessage {
 
     private SignUpParameter response;

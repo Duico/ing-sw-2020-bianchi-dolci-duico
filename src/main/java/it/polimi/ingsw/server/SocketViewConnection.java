@@ -64,7 +64,6 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     }
 
 
-
     private void close() {
         closeConnection();
         server.clientCloseConnection(this);
@@ -77,6 +76,10 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
         server.removeFromGameConnectionList(this);
     }
 
+    /**
+     * creates a thread and reads from input stream
+     * @param socketIn input stream of socket
+     */
     public Thread asyncReadFromSocket(final ObjectInputStream socketIn){
         Thread t = new Thread(() -> {
             try {
@@ -104,9 +107,9 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     }
 
 
-
-
-
+    /**
+     * sends ping message to client and restarts ping timer
+     */
     public void startPingTimer() {
         Timer timer = new Timer();
         TimeOutCheckerInterface timeOutChecker = () -> {

@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 
 public class Server {
     private Lobby lobby;
+    //    private Game game;
     private ServerSocket serverSocket;
     private ExecutorService executor = Executors.newFixedThreadPool(100);
     private Map<ViewConnection,String> waitingConnection = new LinkedHashMap<>();
@@ -27,27 +28,30 @@ public class Server {
         System.out.println("Listening on 0.0.0.0:"+serverSocket.getLocalPort());
     }
 
+    /**
+     * closes a client connection, removing it from list of connections and from waiting list
+     * @param c view connection of the client
+     */
     public synchronized void clientCloseConnection(ViewConnection c) {
         boolean isFirstConnection = c == getFirstConnection();
-            if (isFirstConnection || (waitingConnection.containsKey(c) && hasGameStarted)) {
-                    waitingConnectionRemove(c);
-                    connections.remove(c);
-
-                    for (ViewConnection connection : connections) {
-                        connection.send(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
-                    }
-                    connections.clear();
-                    waitingConnection.clear();
-                    lobby.persistencySaveGame();
-                    lobby.clearGame();
-                    this.lobby = null;
-                    System.out.println("game, lobby set to null");
-                    hasGameStarted = false;
-            } else {
-                    waitingConnectionRemove(c);
-                    connections.remove(c);
-
+        if (isFirstConnection || (waitingConnection.containsKey(c) && hasGameStarted)) {
+            waitingConnectionRemove(c);
+            connections.remove(c);
+            for (ViewConnection connection : connections) {
+                connection.send(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION));
             }
+            connections.clear();
+            waitingConnection.clear();
+            lobby.persistencySaveGame();
+            lobby.clearGame();
+            this.lobby = null;
+            System.out.println("game, lobby set to null");
+            hasGameStarted = false;
+        } else {
+
+            waitingConnectionRemove(c);
+            connections.remove(c);
+        }
 
 
     }
@@ -57,42 +61,49 @@ public class Server {
         waitingConnection.remove(c);
     }
 
-
+    /**
+     * starts game for all players connected to server and in the waiting list
+     */
     public synchronized void createNewGame(){
 
-                System.out.println("Players waiting: "+waitingConnection.size());
-                Integer numPlayers = lobby.getNumPlayers();
+        System.out.println("Players waiting: "+waitingConnection.size());
+        Integer numPlayers = lobby.getNumPlayers();
 
-                ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
-                ViewConnection firstConnection = getFirstConnection();
+        ArrayList<ViewConnection> viewConnections = new ArrayList<>(waitingConnection.keySet());
+        ViewConnection firstConnection = getFirstConnection();
 
-                hasGameStarted = true;
-                lobby.newController();
-                if(!initPlayerOfConnection(firstConnection)){
-                    return;
-                }
-                numPlayers--;
+        hasGameStarted = true;
+        lobby.newController();
+        //add firstConnection player
+        if(!initPlayerOfConnection(firstConnection)){
+            return;
+        }
+        numPlayers--;
 
-                //add all BUT firstConnection player
-                for (ViewConnection viewConnection : viewConnections) {
-                    if(numPlayers>0){
-                        if(viewConnection != firstConnection){
-                            if(!initPlayerOfConnection(viewConnection)){
-                                return;
-                            }
-                            numPlayers--;
-                        }
-                    }else if(viewConnection != firstConnection){
-                        waitingConnectionRemove(viewConnection);
-                        connections.remove(viewConnection);
-                        viewConnection.send(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS));
-
+        //add all BUT firstConnection player
+        for (ViewConnection viewConnection : viewConnections) {
+            if(numPlayers>0){
+                if(viewConnection != firstConnection){
+                    if(!initPlayerOfConnection(viewConnection)){
+                        return;
                     }
+                    numPlayers--;
                 }
-                lobby.startGame(isPersistencyAvailable);
+            }else if(viewConnection != firstConnection){
+                waitingConnectionRemove(viewConnection);
+                connections.remove(viewConnection);
+                viewConnection.send(new ConnectionMessage(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS));
+            }
+        }
+        lobby.startGame(isPersistencyAvailable);
 
     }
 
+    /**
+     * picks player from waiting connection list and sets up his remote view
+     * @param connection player view connection
+     * @return true if player is successfully signed up
+     */
     private boolean initPlayerOfConnection(ViewConnection connection){
         String playerName = waitingConnection.get(connection);
         Player player;
@@ -102,7 +113,6 @@ public class Server {
                 notifyPersistencyFail(connection);
                 return false;
             }
-
         }else{
             player = lobby.addPlayingPlayer(playerName);
             if(player == null){
@@ -119,14 +129,18 @@ public class Server {
         lobby.addRemoteView(remoteView);
     }
 
+    /**
+     * closes connection to the client
+     * @param connection view connection of the client
+     */
     private void notifyPersistencyFail(ViewConnection connection){
-        //emit persistency fail event
-        //close all connections
         connection.send(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME_PERSISTENCY));
-        //TEMP >
         clientCloseConnection(connection);
     }
 
+    /**
+     * creates sockets to allow client connections
+     */
     public void run(){
         hasGameStarted = false;
         while(true){
@@ -145,8 +159,12 @@ public class Server {
         }
     }
 
+    /**
+     * sends set up message to client
+     * @param socketConnection socket connection of client
+     */
     public void initMessageClient(SocketViewConnection socketConnection){
-        if( lobby==null) {
+        if(/*lobby.getNumPlayers()==0*/ lobby==null) {
             createNewLobby();
         }
         if(socketConnection == getFirstConnection()){
@@ -156,6 +174,13 @@ public class Server {
         }
     }
 
+    /**
+     * manages player's sign up checking entered nickname and if persistency is available
+     * @param nickName nickname of the player
+     * @param numPlayers number of players in the lobby
+     * @param wantsPersistency true if the player is trying to load a game from disk
+     * @param connection socket connection of the client
+     */
     public void checkUpRegistration(String nickName, Integer numPlayers, boolean wantsPersistency, SocketViewConnection connection){
         if(lobby == null){
             System.out.println("NULL lobby!!!");
@@ -173,15 +198,15 @@ public class Server {
             }
             if (connection == getFirstConnection()) {
 
-                    if(!isPersistencyAvailable || !wantsPersistency){
-                        lobby.clearGame();
-                        isPersistencyAvailable = false;
-                        if (numPlayers == null || !lobby.setNumPlayers(numPlayers)) {
-                            connection.send(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
-                            return;
-                        }
-
+                if(!isPersistencyAvailable || !wantsPersistency){
+                    lobby.clearGame();
+                    isPersistencyAvailable = false;
+                    if (numPlayers == null || !lobby.setNumPlayers(numPlayers)) {
+                        connection.send(new SignUpFailedSetUpMessage(SetUpType.SIGN_UP, SignUpFailedSetUpMessage.Reason.INVALID_NUMPLAYERS));
+                        return;
                     }
+
+                }
 
             }
             lobby.addWaitingPlayer(nickName);
@@ -206,6 +231,10 @@ public class Server {
         return connections.get(0);
     }
 
+    /**
+     * creates new lobby and eventually loads game from disk
+     * @return true if lobby is successfully created
+     */
     public synchronized boolean createNewLobby() {
         if(this.lobby==null){
             System.out.println("Opening a new Lobby");
@@ -217,7 +246,10 @@ public class Server {
         }
     }
 
-
+    /**
+     * removes client's connection from waiting list and list of connections
+     * @param c view connection related to a client
+     */
     public void removeFromGameConnectionList(ViewConnection c) {
         waitingConnectionRemove(c);
         connections.remove(c);
