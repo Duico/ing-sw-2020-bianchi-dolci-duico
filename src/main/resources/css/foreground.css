@@ -10,6 +10,7 @@
     -fx-padding: 8px 20px;
     -fx-text-alignment: justify;
     -fx-alignment: center;
+    -fx-wrap-text: true;
 }
 
 {

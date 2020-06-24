@@ -31,6 +31,7 @@ Pane{
 #loginPane{
  -fx-pref-width: 299px;
  -fx-pref-height: 232px;
+ -fx-alignment: top-center;
 }
 
 
@@ -45,7 +46,7 @@ Pane{
  -fx-font-weight: bolder;
  -fx-border-radius: 4px;
  -fx-pref-width: 180px;
- -fx-translate-y: 30px;
+ -fx-translate-y: 12px;
 }
 
 .enter_button:hover{
@@ -55,7 +56,6 @@ Pane{
  -fx-font-weight: bolder;
  -fx-border-radius: 4px;
  -fx-pref-width: 180px;
- -fx-translate-y: 30px;
 }
 
 .title{

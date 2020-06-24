@@ -17,14 +17,20 @@
 }
 
 .left_vbox{
-    -fx-padding: 12px 22px 12px 20px
-;
+    -fx-padding: 20px 22px 12px 20px;
     -fx-effect: innershadow( gaussian, rgba( 255, 255, 255, 0.5 ), 10, 0, -10, -5);
-
+}
+.left_vbox_tiny{
+    -fx-padding: 10px 22px 12px 20px;
 }
 
 .player_box{
     -fx-alignment: center;
+    -fx-scale-shape: true;
+    -fx-translate-y: 0px;
+}
+.left_vbox_tiny .player_box{
+    -fx-translate-y: -26px;
 }
 .player_box Label{
     -fx-font-family: "Georgia", serif;
@@ -50,14 +56,24 @@
     -fx-min-width: 140px;
     -fx-alignment: center;
 }
+.left_vbox_tiny .player_box VBox{
+    -fx-min-height: 20px;
+    -fx-background-position: 0px 0px;
+}
+.left_vbox_tiny .player_box Label{
+    -fx-translate-y: -6px;
+}
 .player_box ImageView{
     -fx-smooth: true;
     /*
     -fx-fit-to-width: 168;
     -fx-fit-to-height: 282;
      */
-
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 6, 0, 0, 0);
+}
+.left_vbox_tiny .player_box Imageview{
+    -fx-max-width: 50px;
+    -fx-max-height: 84px;
 }
 
 .trigliph{

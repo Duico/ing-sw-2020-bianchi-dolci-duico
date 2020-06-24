@@ -4,9 +4,7 @@ import it.polimi.ingsw.model.Player;
 
 import java.io.Serializable;
 
-//import it.polimi.ingsw.view.event.ViewEventEmitter;
-
-public abstract class View extends ViewEventVisitor implements  Serializable {
+public abstract class View extends ViewEventVisitor implements BoardListener, Serializable {
     private Player player;
 
     public View(Player player) {

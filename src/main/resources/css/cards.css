@@ -16,7 +16,6 @@
 #firstPlayerChoiceBox{
     -fx-pref-height: 34;
     -fx-pref-width: 226;
-    -fx-translate-y: -10px;
 }
 
 #playerBox{
