@@ -5,6 +5,9 @@ import it.polimi.ingsw.event.EventEmitter;
 import it.polimi.ingsw.event.EventHandler;
 import it.polimi.ingsw.view.event.*;
 
+/**
+ * Class that allows a client to launch any kind of game event from his view using a single function
+ */
 public class ViewEventVisitor extends EventEmitter {
 
     public void emitEvent(MoveViewEvent evt){

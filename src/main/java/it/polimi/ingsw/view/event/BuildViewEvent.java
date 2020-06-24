@@ -2,13 +2,13 @@
 package it.polimi.ingsw.view.event;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
-import it.polimi.ingsw.model.event.BuildWorkerModelEvent;
-import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.ViewEventVisitor;
 
 import java.io.Serializable;
 
-
+/**
+ * Represent message sent from client view to server when the player tries to build from a position to another
+ */
 public class BuildViewEvent extends WorkerViewEvent implements Serializable {
     private Position destinationPosition;
     private boolean isDome;

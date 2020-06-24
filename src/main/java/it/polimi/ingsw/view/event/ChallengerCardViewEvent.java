@@ -5,6 +5,9 @@ import it.polimi.ingsw.view.ViewEventVisitor;
 
 import java.util.List;
 
+/**
+ * Represent message sent from client view to server when challenger player chooses Cards from deck
+ */
 public class ChallengerCardViewEvent extends GameViewEvent{
     List<String> cardNamesList;
     public ChallengerCardViewEvent(Player player, List<String> cardNamesList) {

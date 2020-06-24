@@ -6,6 +6,11 @@ import it.polimi.ingsw.model.event.*;
 import it.polimi.ingsw.server.ViewConnection;
 import it.polimi.ingsw.view.event.*;
 
+/**
+ * Represent single client view which is listener of controller responses and model events
+ * and is able to send messages
+ *
+ */
 public class RemoteView extends View implements ViewEventListener, ModelEventListener, ControllerResponseListener {
 
     private ViewConnection viewConnection;
@@ -17,20 +22,8 @@ public class RemoteView extends View implements ViewEventListener, ModelEventLis
         viewConnection.addObserver(this);
     }
 
-    /*public String getNickName(){
-        return player.getNickName();
-    }*/
 
-    /*public Player getPlayer(){
-        return player;
-    }*/
 
-    public void sendMessage(String message){
-        //sendMessage(message)
-    }
-    public void sendMessage(Object message){
-        viewConnection.send(message);
-    }
 
     @Override
     public void sendMessage(ModelEvent modelEvent){

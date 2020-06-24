@@ -2,9 +2,12 @@ package it.polimi.ingsw.view.event;
 
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Position;
-import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.ViewEventVisitor;
 
+/**
+ * Represent message sent from client view to server when a player tries to move one of his workers from a position
+ * to another
+ */
 public class MoveViewEvent extends WorkerViewEvent {
     private Position destinationPosition;
 
