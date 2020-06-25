@@ -219,7 +219,8 @@ public class MainController implements GuiEventEmitter {
         isBuildDome = false;
 //        disableButtons(false, false, !isAllowedToMove, !isAllowedToBuild);
         disableButtons(isRequiredToMove||isRequiredToBuild, false, !isAllowedToMove, !isAllowedToBuild);
-        Platform.runLater(this::refreshButtons);
+        //LAST MINUTE EDIT: TODO test
+        //        Platform.runLater(this::refreshButtons);
     }
 
     public void disableButtons(boolean endTurnButtonDisabled, boolean undoButtonDisabled, boolean moveButtonDisabled, boolean buildButtonDisabled){
@@ -966,23 +967,22 @@ public class MainController implements GuiEventEmitter {
 
     public void displayPlayers(List<Player> players){
         Platform.runLater(()->{
-            vbPlayers.getChildren().clear();
-            if(players==null){
-                return;
-            }
-            for(Player player:players){
-                System.out.println(player.getNickName()+" "+player.getCard().getName());
-                VBox username = new VBox();
-                username.getChildren().add(new Label(player.getNickName()));
-                ImageView cardImage = cardImage(player.getCard().getName());
-                VBox addPlayer = new VBox(5);
-                Pane playerPane = new Pane();
-                addPlayer.getStyleClass().add("player_box");
-                addPlayer.getChildren().addAll(username, cardImage);
-                playerPane.getChildren().add(addPlayer);
-                vbPlayers.getChildren().add(playerPane);
-            }
-            resizePlayers();
+                vbPlayers.getChildren().clear();
+                if (players == null) {
+                    return;
+                }
+                for (Player player : players) {
+                    VBox username = new VBox();
+                    username.getChildren().add(new Label(player.getNickName()));
+                    ImageView cardImage = cardImage(player.getCard().getName());
+                    VBox addPlayer = new VBox(5);
+                    Pane playerPane = new Pane();
+                    addPlayer.getStyleClass().add("player_box");
+                    addPlayer.getChildren().addAll(username, cardImage);
+                    playerPane.getChildren().add(addPlayer);
+                    vbPlayers.getChildren().add(playerPane);
+                }
+                resizePlayers();
         });
     }
 

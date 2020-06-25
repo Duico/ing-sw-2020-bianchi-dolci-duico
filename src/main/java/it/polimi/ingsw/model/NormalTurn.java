@@ -322,12 +322,13 @@ public class NormalTurn extends Turn {
     }
 
     /**
-     * Checks if the chosen worker can move in any cell in the current operation, respecting all constraints imposed by cards
+     * Checks if the chosen worker can move in any (adjacent) cell in the current operation, respecting all constraints imposed by cards
      * @param currentPosition Position of the worker of currentPlayer you want to check
      * @return True if an adjacent cell exists where the player can move in the current operation
      */
     protected boolean canMove(Board board, Position currentPosition) {
-        Player currentPlayer = this.getCurrentPlayer();
+        if(!isAllowedToMove())
+            return false;
 
         int currentY = currentPosition.getY();
         for(int dy= -1; dy<=1; dy++) {
@@ -357,11 +358,14 @@ public class NormalTurn extends Turn {
         return false;
     }
     /**
-     * Checks if the chosen worker can build in any cell in the current operation, respecting all constraints imposed by cards
+     * Checks if the chosen worker can build in any (adjacent) cell in the current operation, respecting all constraints imposed by cards
      * @param currentPosition Position of the worker of currentPlayer you want to check
      * @return True if an adjacent cell exists where the player can build in the current operation
      */
     protected boolean canBuild(Board board, Position currentPosition){
+        if(!isAllowedToBuild())
+            return false;
+
         int currentY = currentPosition.getY();
         for(int dy= -1; dy<=1; dy++) {
             int positionY=currentY+dy;

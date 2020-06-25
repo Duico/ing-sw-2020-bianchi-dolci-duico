@@ -238,7 +238,7 @@ public class Game extends ModelEventEmitter implements Serializable{
         turn = new NormalTurn(nextPlayer, previousTurnCard, blockNextPlayer);
         ModelEvent evt = new NewTurnModelEvent(nextPlayer, TurnPhase.NORMAL, null);
         emitEvent(evt);
-        checkHasLost();
+        checkHasLost(false);
 
     }
 
@@ -508,9 +508,10 @@ public class Game extends ModelEventEmitter implements Serializable{
      * @return true if current player has lost the game
      */
     public boolean checkHasLost(){
-
-        if(hasLost()){
-
+        return checkHasLost(turn.isUndoAvailable);
+    }
+    public boolean checkHasLost(boolean canUndo){
+        if(hasLost(canUndo)){
             //notify view
             Player currentPlayer = turn.getCurrentPlayer();
             for(int i=0; i<numWorkers; i++){
@@ -556,20 +557,31 @@ public class Game extends ModelEventEmitter implements Serializable{
      *
      * @return True if loose condition occurred on current turn
      */
-    private boolean hasLost(){
+    private boolean hasLost(boolean canUndo){
         if(!isAnyPlayersWorkerNotPlaced()) {
-            if (!turn.isUndoAvailable) {
-                return turn.isLoseCondition(board);
+            if (!canUndo) {
+              return turn.isLoseCondition(board);
             } else {
-                if(turn.isLoseCondition(board)) {
-                    return true;
-                }
                 return false;
             }
         }else{
             return false;
         }
     }
+//    private boolean hasLost(){
+//        if(!isAnyPlayersWorkerNotPlaced()) {
+////            if (!turn.isUndoAvailable) {
+//                return turn.isLoseCondition(board);
+////            } else {
+////                if(turn.isLoseCondition(board)) {
+////                    return true;
+////                }
+////                return false;
+////            }
+//        }else{
+//            return false;
+//        }
+//    }
 
     public boolean isUndoAvailable(){
         return turn.isUndoAvailable;
@@ -646,7 +658,7 @@ public class Game extends ModelEventEmitter implements Serializable{
                     System.out.print("Revoking undo after turn has been reset");
                 }
                 undoTurn.isUndoAvailable = false;
-                checkHasLost();
+                checkHasLost(false);
         }, 5, TimeUnit.SECONDS);
     }
 

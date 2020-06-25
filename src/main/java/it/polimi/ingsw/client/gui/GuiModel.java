@@ -173,7 +173,7 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         setTurnPhase(turnPhase);
         if(turnPhase.equals(TurnPhase.PLACE_WORKERS) || turnPhase.equals(TurnPhase.NORMAL)){
             if(players !=null) {
-                mainController.displayPlayers(players);
+                mainController.displayPlayers(new ArrayList<>(players));
             }
             requireButtonUpdate();
             mainController.clearStartPosition();
@@ -194,12 +194,12 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
             mainController.removeWorker(playerDefeat.getWorkerPosition(i), playerDefeat.getColor());
         }
 
-        for(int i=0;i<players.size();i++){
-            if(players.get(i).equalsUuid(playerDefeat))
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).equalsUuid(playerDefeat))
                 players.remove(players.get(i));
         }
 
-        mainController.displayPlayers(players);
+//        mainController.displayPlayers(players);
 
     }
 
@@ -309,7 +309,7 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         if(!(turnPhase.equals(TurnPhase.PLACE_WORKERS)||turnPhase.equals(TurnPhase.NORMAL))) {
             throw new RuntimeException("Trying to resume from an invalid game... quitting");
         }
-        mainController.displayPlayers(players);
+        mainController.displayPlayers(new ArrayList<>(players));
         requireButtonUpdate();
         undoOnTheBoard();
         if(myPlayer.equalsUuid(currentPlayer)){

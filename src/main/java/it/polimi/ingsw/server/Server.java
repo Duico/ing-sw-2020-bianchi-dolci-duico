@@ -152,7 +152,7 @@ public class Server {
                 executor.submit(socketConnection);
                 initMessageClient(socketConnection);
             } catch(StreamCorruptedException e){
-                System.out.print("Connection attempt from unknown service");
+                System.out.println("Connection attempt from unknown service");
             } catch (IOException e) {
                 System.out.println("Connection Error!");
             }
