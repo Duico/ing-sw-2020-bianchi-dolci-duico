@@ -10,10 +10,10 @@ public interface BuildStrategy extends Serializable {
 
     /**
      *
-     * @param grid Main grid of the game
      * @param startPosition The position where the worker is located at the moment
      * @param destinationPosition The position which the worker wants to build on
      * @param isDome Defines if the worker wants to build a dome
+     * @param board
      * @return
      */
     boolean isValidBuild(Position startPosition, Position destinationPosition, Boolean isDome, Board board);
