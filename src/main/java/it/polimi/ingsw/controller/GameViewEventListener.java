@@ -4,6 +4,9 @@ import it.polimi.ingsw.view.event.*;
 
 import java.util.EventListener;
 
+/**
+ * listener interface of all kind of events received from view
+ */
 public interface GameViewEventListener extends EventListener {
      void move(MoveViewEvent e);
      void build(BuildViewEvent e);

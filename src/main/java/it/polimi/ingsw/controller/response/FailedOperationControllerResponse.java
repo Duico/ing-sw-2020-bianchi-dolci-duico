@@ -4,6 +4,10 @@ import it.polimi.ingsw.client.ControllerResponseVisitor;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.view.event.WorkerViewEvent;
 
+/**
+ * defines special kind of response sent from controller to view when an operation failed
+ * with a related reason
+ */
 public class FailedOperationControllerResponse extends ControllerResponse {
     private Operation operation;
     private Reason reason;
@@ -18,6 +22,9 @@ public class FailedOperationControllerResponse extends ControllerResponse {
         return operation;
     }
 
+    /**
+     * defines particular reased that explains why a certain kind of operation failed
+     */
     public enum Reason{
         NOT_ALLOWED,
         BLOCKED_BY_OPPONENT,

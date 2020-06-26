@@ -48,6 +48,10 @@ public class Worker implements Cloneable, Serializable {
         return builds.size();
     }
 
+    /**
+     * @return position where the worker is currently located at
+     * @throws WorkerPositionNotSetException
+     */
     public Position getCurrentPosition() throws WorkerPositionNotSetException{
         if(this.moves.size() == 0){
             throw new WorkerPositionNotSetException();
@@ -98,6 +102,9 @@ public class Worker implements Cloneable, Serializable {
     }
 
 
+    /**
+     * @return last operation done by the worker
+     */
     public Operation getLastOperation() {
         if(operations.size()>0)
             return operations.get(operations.size()-1);

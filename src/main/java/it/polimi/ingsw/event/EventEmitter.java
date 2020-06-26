@@ -3,6 +3,9 @@ package it.polimi.ingsw.event;
 import javax.swing.event.EventListenerList;
 import java.util.EventListener;
 
+/**
+ * abstract class used to emit events
+ */
 public abstract class EventEmitter {
     protected EventListenerList listenerList = new EventListenerList();
 

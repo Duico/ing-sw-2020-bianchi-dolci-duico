@@ -132,20 +132,11 @@ public class NormalTurn extends Turn {
     public boolean getPreviousBlockNextPlayer(){
         return previousBlockNextPlayer;
     }
-    //public Card getPreviousBlockCard(){return previousBlockCard;}
+
     public Optional<Integer> getCurrentWorkerId(){
         return this.currentWorkerId;
     }
 
-    //TODO delete: used only in tests
-//    public boolean checkCurrentWorker(int workerId){
-//        return  isSetCurrentWorker() && (currentWorkerId == workerId );
-//    }
-
-    /*@Override
-    public boolean checkCurrentWorker(Position workerPosition){
-        return workerPosition != null && workerPosition == currentPlayer.getWorkerPosition(currentWorkerId);
-    }*/
 
 
     /**

@@ -3,12 +3,11 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.controller.response.*;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.view.RemoteView;
 import it.polimi.ingsw.view.event.*;
 
-import java.util.List;
-
-
+/**
+ * main controlle class which controls any kind of operation requested by view
+ */
 public class Controller extends ControllerResponseEmitter implements GameViewEventListener {
 
     private Game game; //refer to our model
@@ -22,6 +21,10 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
         System.out.println("Generic event from view");
     }
 
+    /**
+     * sends controller response to view containing informations about current turn
+     * @param message message received from client
+     */
     public void requiredTurnInfo(InfoViewEvent message) {
         //needed to avoid the wrong player receiving currentPlayer's answer
         if (checkIsWrongPlayer(message)) {
@@ -34,18 +37,14 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
         boolean isUndoAvailable = game.isUndoAvailable();
         ControllerResponse response = new TurnInfoControllerResponse(message, isRequiredToMove, isRequiredToBuild, isAllowedToMove, isAllowedToBuild, isUndoAvailable);
         emitEvent(response);
-        //Player player = view.getPlayer();
-        //IMPLEMENT IF NEEDED
-        // send REQUIRED info about the player
-        // like:
-        // Required/Allowed Operations (ONLY THESE if a flag is set)
-        // turn Phase, workers to place
-        // undoAvailable
-        // etc
     }
 
+    /**
+     * checks if current player is allowed to end his turn, eventually sends controller response
+     * and udates game switching to next turn
+     * @param message end turn event received from client
+     */
     public void endTurn(EndTurnViewEvent message) {
-//        System.out.println("Il player è " + message.getPlayer());
         if (checkIsWrongPlayer(message)) {
             return;
         }
@@ -74,6 +73,11 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
         game.nextTurn();
     }
 
+    /**
+     * checks if list of chosen cards received from view event is correct, sends controller response and
+     * eventually updates game switching to next turn
+     * @param message message received from client containing list of chosen cards
+     */
     public void challengerCards(ChallengerCardViewEvent message) {
         if (checkIsWrongPlayer(message)) {
             return;
@@ -88,6 +92,11 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
         }
     }
 
+    /**
+     * checks if chosen card received from view event is correct, sends controller response and
+     * eventually updates game switching to next turn
+     * @param message message received from client containing chosen card
+     */
     public void setPlayerCard(CardViewEvent message) {
         String cardName = message.getCardName();
         if (checkIsWrongPlayer(message)) {
@@ -100,6 +109,11 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
         game.nextTurn();
     }
 
+    /**
+     * checks if chosen first player received from view event is correct, sends controller response and
+     * eventually updates game switching to normal turn
+     * @param message message received from client containing first player chosen
+     */
     public void setFirstPlayer(FirstPlayerViewEvent message) {
         if (checkIsWrongPlayer(message)) {
             return;
@@ -126,6 +140,11 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
         }
     }
 
+    /**
+     * checks if move event received from view event is correct, sends controller response and
+     * eventually updates main board
+     * @param message message received from client containing a move operation
+     */
     public void move(MoveViewEvent message) {
         Position workerPosition = message.getWorkerPosition();
 
@@ -163,6 +182,11 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
 
     }
 
+    /**
+     * checks if place worker event received from view event is correct, sends controller response and
+     * eventually updates main board
+     * @param message message received from client containing place position of a worker
+     */
     public void place(PlaceViewEvent message) {
         if (checkIsWrongPlayer(message)) {
             return;
@@ -185,7 +209,11 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
         }
     }
 
-
+    /**
+     * checks if build event received from view event is correct, sends controller response and
+     * eventually updates main board
+     * @param message message received from client containing a build operation
+     */
     public void build(BuildViewEvent message) {
         Position workerPosition = message.getWorkerPosition();
 
@@ -220,6 +248,11 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
 
     }
 
+    /**
+     * checks if undo event received from view event is correct, sends controller response and
+     * eventually updates main board
+     * @param message message received from client containing an undo operation
+     */
     public void undo(UndoViewEvent message) {
         if (checkIsWrongPlayer(message)) {
             ControllerResponse response = new NotCurrentPlayerControllerResponse(message);
@@ -234,6 +267,10 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
         }
     }
 
+    /**
+     * checks if a player which is not current player is trying to do an operation, then sends controller response
+     * @param message message received from client generic operation
+     */
     private boolean checkIsWrongPlayer(ViewEvent message) {
         Player viewPlayer = message.getPlayer();
         if (game.getCurrentPlayer().getUuid().equals(viewPlayer.getUuid())) {
@@ -249,6 +286,12 @@ public class Controller extends ControllerResponseEmitter implements GameViewEve
         return game.getCurrentPlayer().isChallenger();
     }
 
+    /**
+     * checks if tried operation is allowed in current game's turnphase
+     * @param message generic message received from client's view
+     * @param turnPhase turn phase which allows operation tried by a player
+     * @return true if operation tried is not allowed in current turnphase
+     */
     private boolean checkIsWrongTurnPhase(ViewEvent message, TurnPhase turnPhase) {
         if (game.getTurnPhase() != turnPhase) {
             ControllerResponse response = new IllegalTurnPhaseControllerResponse(message, TurnPhase.NORMAL);

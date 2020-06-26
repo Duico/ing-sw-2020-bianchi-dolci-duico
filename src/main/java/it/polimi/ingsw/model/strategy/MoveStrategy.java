@@ -8,7 +8,7 @@ import java.io.Serializable;
 public interface MoveStrategy extends Serializable {
 
     /**
-     *
+     * defines if a movement from start to destination position is a valid movement
      * @param startPosition position where a worker is currently located
      * @param destPosition position where a worker is moving to
      * @param board main Board of the game

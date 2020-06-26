@@ -2,6 +2,10 @@ package it.polimi.ingsw.controller.response;
 import it.polimi.ingsw.client.ControllerResponseVisitor;
 import it.polimi.ingsw.view.event.ViewEvent;
 
+/**
+ * special response sent from controller to view which contains informations about current turn state
+ * used in GUIapp to update game buttons
+ */
 public class TurnInfoControllerResponse extends ControllerResponse {
     private boolean isRequiredToMove;
     private boolean isRequiredToBuild;

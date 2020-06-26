@@ -5,6 +5,10 @@ import it.polimi.ingsw.client.ControllerResponseVisitor;
 import it.polimi.ingsw.model.Operation;
 import it.polimi.ingsw.view.event.ViewEvent;
 
+/**
+ * defines special kind of response sent from controller to view when tries to end his turn before doing
+ * a required operation
+ */
 public class RequiredOperationControllerResponse extends ControllerResponse {
     private Operation operation;
 
