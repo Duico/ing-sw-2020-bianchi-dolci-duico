@@ -10,20 +10,18 @@ import it.polimi.ingsw.server.message.ConnectionMessage;
 import it.polimi.ingsw.server.message.SetUpMessage;
 import it.polimi.ingsw.view.ViewEventListener;
 
+/**
+ * Class which contains the visitor for model, controllerResponse, setUpMessage and clientConnection event
+ */
 public class CliMessageVisitor implements MessageVisitor {
 
     protected CliModelEventVisitor modelEventVisitor;
     protected CliControllerResponseVisitor controllerResponseVisitor;
     protected CliSetUpMessageVisitor setUpMessageVisitor;
     protected CliClientConnectionEventVisitor clientConnectionEventVisitor;
-    /*public GuiMessageVisitor(ModelEventVisitor modelEventVisitor, ControllerResponseVisitor controllerResponseVisitor, SetUpMessageVisitor setUpMessageVisitor, ClientConnectionEventVisitor clientConnectionEventVisitor){
-        this.modelEventVisitor = modelEventVisitor;
-        this.controllerResponseVisitor = controllerResponseVisitor;
-        this.setUpMessageVisitor = setUpMessageVisitor;
-        this.clientConnectionEventVisitor = clientConnectionEventVisitor;
-    }*/
+
     public CliMessageVisitor(Cli cli, CliModel cliModel){
-        //Cli property could be replaced by an event listener
+
         this.modelEventVisitor = new CliModelEventVisitor(cli, cliModel);
         this.controllerResponseVisitor = new CliControllerResponseVisitor(cli, cliModel);
         this.setUpMessageVisitor = new CliSetUpMessageVisitor(cli, cliModel);
@@ -56,6 +54,10 @@ public class CliMessageVisitor implements MessageVisitor {
         evt.accept(clientConnectionEventVisitor);
     }
 
+    /**
+     * Funtcion which add to the visitors a ViewEventListener
+     * @param listener
+     */
     @Override
     public void addViewEventListener(ViewEventListener listener){
         setUpMessageVisitor.addEventListener(ViewEventListener.class, listener);
@@ -63,6 +65,10 @@ public class CliMessageVisitor implements MessageVisitor {
         modelEventVisitor.addEventListener(ViewEventListener.class, listener);
     }
 
+    /**
+     * Funtcion which add to the visitors a SignUpListener
+     * @param listener
+     */
     public void addSignUpListener(SignUpListener listener){
         setUpMessageVisitor.addEventListener(SignUpListener.class, listener);
         controllerResponseVisitor.addEventListener(SignUpListener.class, listener);
@@ -74,18 +80,4 @@ public class CliMessageVisitor implements MessageVisitor {
 
     }
 
-    /*@Override
-    public void handleEvent(ModelEvent evt) {
-        visit(evt);
-    }
-
-    @Override
-    public void handleEvent(ControllerResponse evt) {
-        visit(evt);
-    }
-
-    @Override
-    public void handleEvent(SetUpMessage evt) {
-        visit(evt);
-    }*/
 }

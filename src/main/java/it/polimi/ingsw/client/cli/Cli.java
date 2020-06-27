@@ -4,27 +4,22 @@ import it.polimi.ingsw.client.event.ClientConnectionEvent;
 import it.polimi.ingsw.server.message.ConnectionMessage;
 
 import java.io.*;
-import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
-    //boolean hasPrintedTurnMessage = false;
-//    InputStream in;
-//    Scanner stdin;
+/**
+ * Class which prints messages and request input commands
+ */
+public class Cli implements Runnable {
+
     final PrintStream out;
     private Integer BPcellWidth = 2;
     private boolean isAwaitingInput;
-    //final CliInputHandler inputHandler = new CliInputHandler();
     final CliInputHandler inputHandler;
     private final String ANSI_CLS = "\u001b[2J";
-
-    //    private Queue<CliRunnable> cliRunnableQueue = new LinkedBlockingQueue<>();
     private final ExecutorService inputRequestsPool = Executors.newCachedThreadPool();
 
-    // StringWriter infoString = new StringWriter();
-    // PrintWriter infoOut = new PrintWriter(infoString);
     PrintStream infoOut;
 
     public Cli() {
@@ -41,17 +36,23 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
 
     public void clear() {
         System.out.print(ANSI_CLS);
-        //System.out.flush();
+
     }
 
     public Integer getBPcellWidth() {
         return BPcellWidth;
     }
 
+    /**
+     * Function which increases the display width of a cell
+     */
     public void increaseBPcellWidth() {
         BPcellWidth = Math.min(10, Math.max(0, ++BPcellWidth));
     }
 
+    /**
+     * Function which decreases the display width of a cell
+     */
     public void decreaseBPcellWidth() {
         BPcellWidth = Math.min(10, Math.max(0, --BPcellWidth));
     }
@@ -64,13 +65,7 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
         isAwaitingInput = awaitingInput;
     }
 
-    //    protected void execInputRequest(CliLambda lambda){
-//        //passing this to the runnable
-//        executorPool.submit( () -> {
-//            lambda.execute(this);
-//        });
-//
-//    }
+
     protected void execAsyncInputRequest(CliRunnable cliRunnable) {
         //passing this to the runnable
         inputRequestsPool.submit(() -> {
@@ -113,22 +108,6 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
         }
     }
 
-//    protected void handleInput(LineConsumer lambda){
-//            new Thread( () -> {
-//                synchronized (inputHandler) {
-//                    inputHandler.clearReadLines();
-//                    String line;
-//                    while ((line = inputHandler.pollReadLines()) == null) {
-//                        try {
-//                            inputHandler.wait();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                    lambda.consumeLine(line);
-//                }
-//            });
-//    }
 
     protected String pollLine() throws InterruptedException {
         synchronized (inputHandler) {
@@ -140,18 +119,19 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
         }
     }
 
+    /**
+     * Function who clear all the messages to print
+     */
     public void clearReadLines() {
         inputHandler.clearReadLines();
     }
 
 
     public void println(Object o) {
-        //?? in a separate thread??
         out.println(o);
     }
 
     public void print(Object o) {
-        //?? in a separate thread??
         out.print(o);
     }
 
@@ -160,6 +140,15 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
         sb.printOut(out);
     }
 
+    /**
+     * Function which display all the information about a normal turn
+     * It prints the board, the name of the players, a lists of commands
+     * and info messages
+     * @param bp
+     * @param myTurn
+     * @param infoMessage
+     * @param endGame
+     */
     public void printAll(BoardPrinter bp, boolean myTurn, String infoMessage, boolean endGame) {
         clear();
         bp.setCellWidth(getBPcellWidth());
@@ -173,9 +162,13 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
     public void printClientConnectionEvent(ConnectionMessage evt) {
 
         System.err.print(evt.getType().toString());
-        //inputHandler.shutdown();
     }
 
+
+    /**
+     * Function which based on the ClientConnectionEvent.Reason, prints a message
+     * @param evt
+     */
     public void printClientConnectionEvent(ClientConnectionEvent evt) {
 
         if (evt.getReason().equals(ClientConnectionEvent.Reason.ERROR_ON_THE_SOCKET)) {
@@ -192,6 +185,5 @@ public class Cli implements /*ClientConnectionEventListener,*/ Runnable {
             System.err.print("socket exception....");
         }
 
-        //inputHandler.shutdown();
     }
 }

@@ -5,6 +5,9 @@ import it.polimi.ingsw.client.ControllerResponseVisitor;
 import it.polimi.ingsw.controller.response.*;
 import it.polimi.ingsw.model.Operation;
 
+/**
+ * Class that implements the ControllerResponseVisitor
+ */
 public class CliControllerResponseVisitor extends ClientEventEmitter implements ControllerResponseVisitor {
     private Cli cli;
     private final CliModel cliModel;
@@ -13,9 +16,13 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
         this.cliModel = cliModel;
     }
 
+    /**
+     * Function which after a FailedOperationControllerResponse, based on FailedOperationControllerResponse.Reason
+     * prints all the information about the current turn with an info messages
+     * @param r
+     */
     @Override
     public void visit(FailedOperationControllerResponse r) {
-        //cli.println(Color.YELLOW_BOLD.escape("Failed operation"));
         if(r.getOperation().equals(Operation.PLACE)){
             if(r.getReason().equals(FailedOperationControllerResponse.Reason.NOT_FEASIBLE)){
                printAll(CliText.WORKERS_ALREADY_PLACE.toString());
@@ -45,32 +52,63 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
         }
     }
 
+    /**
+     * Function which after a FailedUndoControllerResponse, prints all the information about the current turn
+     * with an info message (undo not available)
+     * @param r
+     */
     @Override
     public void visit(FailedUndoControllerResponse r) {
         printAll(CliText.UNDO_NOT_AVAILABLE.toString());
     }
 
+    /**
+     * Function which after a IllegalCardNameControllerResponse,
+     * prints a message (illegal card name)
+     * @param r
+     */
     @Override
     public void visit(IllegalCardNameControllerResponse r) {
         cli.println(Color.YELLOW_BOLD.escape("illegal card name"));
     }
 
+    /**
+     * Function which after a IllegalCardNamesListControllerResponse,
+     * prints a message (illegal list of cards)
+     * @param r
+     */
     @Override
     public void visit(IllegalCardNamesListControllerResponse r) {
         cli.println(Color.YELLOW_BOLD.escape("illegal list of cards"));
 
     }
 
+    /**
+     * Function which after a IllegalFirstPlayerControllerResponse,
+     * prints a message (illegal first player)
+     * @param r
+     */
     @Override
     public void visit(IllegalFirstPlayerControllerResponse r) {
         cli.println(Color.YELLOW_BOLD.escape("illegal first player"));
     }
 
+    /**
+     * Function which after a IllegalTurnPhaseControllerResponse,
+     * prints all the informations about the current turn with an info message (illegal turn phase)
+     * @param r
+     */
     @Override
     public void visit(IllegalTurnPhaseControllerResponse r) {
         printAll(CliText.ILLEGAL_TURN_PHASE.toString());
     }
 
+
+    /**
+     * Function which after a RequiredOperationControllerResponse, based on the type of operation
+     * prints all the informations about the current turn with an info message (the type of operation required)
+     * @param r
+     */
     @Override
     public void visit(RequiredOperationControllerResponse r) {
         if(r.getRequiredOperation().equals(Operation.MOVE)){
@@ -83,6 +121,11 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
 
     }
 
+    /**
+     * Function which after a NotCurrentPlayerControllerResponse
+     * prints all the informations about the current turn with an info message (not current player)
+     * @param r
+     */
     @Override
     public void visit(NotCurrentPlayerControllerResponse r) {
         printAll(CliText.NOT_CURRENT_PLAYER.toString());
@@ -90,11 +133,7 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
 
     @Override
     public void visit(SuccessControllerResponse r) {
-//        if(cliModel.getTurnPhase().equals(TurnPhase.CHOSE_CARDS)) {
-//            cli.println(System.lineSeparator() + CliText.SUCCESSFUL_OPERATION.toString());
-//        }else{
-////            printAll(CliText.SUCCESSFUL_OPERATION.toString());
-//        }
+
     }
 
     @Override
@@ -111,12 +150,17 @@ public class CliControllerResponseVisitor extends ClientEventEmitter implements 
     private void printAll(String infoMessage){
         printAll(cliModel.isMyTurn(), infoMessage);
     }
+
+    /**
+     * Function which set LastInfoMessage in cliModel and prints all the informations about
+     * the current turn
+     * @param myTurn
+     * @param infoMessage
+     */
     private void printAll(boolean myTurn, String infoMessage) {
-//        return () -> {
         cliModel.setLastInfoMessage(infoMessage);
         BoardPrinter bp = cliModel.createBoardPrinter();
         cli.printAll(bp, myTurn, infoMessage, false);
-        //command is read by another thread
-//        };
+
     }
 }

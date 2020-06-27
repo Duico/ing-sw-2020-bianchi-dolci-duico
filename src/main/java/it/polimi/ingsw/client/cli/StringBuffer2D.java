@@ -81,12 +81,12 @@ public class StringBuffer2D {
         }
     }
 
-    //todo move downwards hierarchy
+
     private StringBuffer getRowSafe(int i){
         StringBuffer row;
         while(rows.size() <= i || (row = rows.get(i)) == null){
             row = new StringBuffer();
-            //row = new StringBuffer(" ".repeat(initWidth));
+
             rows.add(row);
         }
         return row;
@@ -99,11 +99,7 @@ public class StringBuffer2D {
         return true;
     }
 
-//    public void printOut(){
-//        for(StringBuffer row : rows){
-//            System.out.println(row);
-//        }
-//    }
+
     public void printOut(PrintStream out){
         for(StringBuffer row: rows){
             out.println(row);

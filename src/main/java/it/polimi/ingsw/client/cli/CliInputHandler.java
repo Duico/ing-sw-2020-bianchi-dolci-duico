@@ -15,7 +15,7 @@ public class CliInputHandler extends ClientEventEmitter implements Runnable{
     public void run(){
         while (true) {
                 Scanner stdin = new Scanner(System.in);
-                //while (stdin.hasNextLine()) {
+
                 try {
                     readLines.add(stdin.nextLine());
                 }catch(NoSuchElementException e){
@@ -24,8 +24,7 @@ public class CliInputHandler extends ClientEventEmitter implements Runnable{
             synchronized (this) {
                 this.notify();
             }
-//                    System.err.println("readLines.size() = "+readLines.size());
-                //}
+
         }
     }
     public String pollReadLines(){
@@ -40,8 +39,7 @@ public class CliInputHandler extends ClientEventEmitter implements Runnable{
     }
 
     protected void shutdown() {
-//        inputRequestsPool.shutdown();
-//        inputRequestsPool.shutdownNow();
+
         System.exit(0);
     }
 }

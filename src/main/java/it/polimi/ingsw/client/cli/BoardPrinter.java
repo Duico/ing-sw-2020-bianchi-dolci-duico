@@ -123,47 +123,7 @@ public class BoardPrinter {
         return sb;
     }
 
-//    private StringBuffer2D printBoardRow(int y) throws PositionOutOfBoundsException{
-//        //row first lines
-////        for(int i=0; i<cellWidth-1 && i<2; i++) {
-////            printEmptyBoardLine();
-////        }
-//        //worker
-//        for(int x=0;x<board.getWidth();++x){
-//            String lineOut = "| ";
-//            Position position = new Position(x,y);
-//            BoardCell cell = board.getBoardCell(position);
-//            ViewPlayer workerPlayer =  getPlayerFromWorkersMap(position);
-//
-//            lineOut += " " + " ".repeat(cellWidth);
-//            lineOut += displayWorker(workerPlayer);
-//            lineOut += " " + " ".repeat(cellWidth);
-//            //lineOut += displayCell(cell.getLevel(), cell.hasDome());
-//            //lineOut += " ";
-//            System.out.print(lineOut+" ");
-//        }
-//        System.out.println("|");
-//        //level
-//        for(int x=0;x<board.getWidth();++x){
-//            String lineOut = "| ";
-//            Position position = new Position(x,y);
-//            BoardCell cell = board.getBoardCell(position);
-//            ViewPlayer workerPlayer =  getPlayerFromWorkersMap(position);
-//
-//            //lineOut += displayWorker(workerPlayer);
-//            lineOut += " "+" ".repeat(cellWidth);
-//            lineOut += displayLevel(cell.getLevel(), cell.hasDome());
-//            lineOut += " ".repeat(cellWidth);
-//            System.out.print(lineOut+" ");
-//        }
-//        System.out.println("|");
-//        //row first lines
-//        for(int i=0; i<cellWidth-2 && i<1; i++) {
-//            printEmptyBoardLine();
-//        }
-//        //row bottom border
-//        printDashBoardLine(false);
-//    }
+
 
     public StringBuffer2D displayCell(Position position){
         StringBuffer2D sb = new StringBuffer2D();
@@ -350,10 +310,7 @@ public class BoardPrinter {
     }
 
     Player getPlayerFromWorkersMap(Position position){
-        //if(workersMapOK == false){
-//            generateWorkersMap();
-//            workersMapOK = true;
-        //}
+
         return workersMap.get(position);
     }
 

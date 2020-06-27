@@ -1,8 +1,10 @@
 package it.polimi.ingsw.client.cli;
 
-import java.util.List;
 import java.util.Random;
 
+/**
+ * enum which contains all the responses messages which the cli displays
+ */
 public enum CliText {
     ASK_NAME("Insert your nickname:"),
     ASK_NUMPLAYERS("Insert number of players:"),
@@ -22,7 +24,6 @@ public enum CliText {
     OK_CHALLCARD1(Color.YELLOW.escape("%s, nice pick.")),
     OK_CHALLCARD2(Color.YELLOW.escape("%s, good choice.")),
     OK_CHALLCARD3(Color.YELLOW.escape("Oh, %s... well chosen.")),
-    //BAD_CHALLCARD(Color.RED.escape("Invalid card name, chose from %s:")),
     ASK_CARD("Chose one of the cards selected by the Challenger %s:"),
     BAD_CARD(Color.RED.escape("Invalid card name, chose one of %s:")),
     SET_CARD_OTHER(Color.YELLOW.escape("Card %s set for player %s.")),

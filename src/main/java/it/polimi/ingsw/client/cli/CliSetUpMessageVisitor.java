@@ -5,6 +5,9 @@ import it.polimi.ingsw.client.SetUpMessageVisitor;
 import it.polimi.ingsw.client.message.*;
 import it.polimi.ingsw.server.message.*;
 
+/**
+ * Class which implements the SetUpMessageVisitor
+ */
 public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpMessageVisitor {
     private final Cli cli;
     private final CliModel cliModel;
@@ -16,6 +19,11 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
         this.cliModel = cliModel;
     }
 
+    /**
+     * Function which after a SignUpFailedSetUpMessage, based on SignUpFailedSetUpMessage.Reason
+     * prints a message from the CliText enum
+     * @param message
+     */
     @Override
     public void visit(SignUpFailedSetUpMessage message) {
         if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME)) {
@@ -32,6 +40,12 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
         }
     }
 
+
+    /**
+     * Function which after a InitSetUpMessage, based on InitSetUpMessage.SignUpParameter
+     * prints a message or requests an input
+     * @param message
+     */
     @Override
     public void visit(InitSetUpMessage message) {
         if((askNumPlayers = message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME)) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.NICKNAME)) {
@@ -40,7 +54,7 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
         }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT)){
             cli.println(CliText.CORRECT_SIGNUP_WAIT);
         }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING)) {
-//            boolean playerHasToWait = message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT);
+
             cliModel.setMyPlayer(message.getPlayer());
             cli.println(CliText.CORRECT_SIGNUP_LAST);
         }
@@ -49,14 +63,7 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
 
     @Override
     public void visit(ConnectionMessage connectionMessage) {
-        /*if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
-            //cli.printClientConnectionEvent(connectionMessage);
-            cli.print(System.lineSeparator() + Color.RED_UNDERLINED.escape("Game over, player disconnected..."));
-            cli.shutdown();
-        }else if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
-            cli.print(System.lineSeparator() + Color.RED_UNDERLINED.escape("You have been kicked from the game, because there were too many players."));
-            cli.shutdown();
-        }*/
+
     }
 
     private CliRunnable askSetUpInfo(boolean askNumPlayers, boolean askPersistency) {
@@ -77,9 +84,7 @@ public class CliSetUpMessageVisitor extends ClientEventEmitter implements SetUpM
             }else{
                 emitSignUp(new SignUpMessage(playerName));
             }
-//            }catch (InterruptedException e){
-//                return;
-//            }
+
         };
     }
     private String promptName() throws InterruptedException {

@@ -2,6 +2,9 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.model.PlayerColor;
 
+/**
+ * enum which contains all the type of color that cli displays
+ */
 public enum Color {
     //Normal
     RED("\u001B[0;31m"),
@@ -48,6 +51,12 @@ public enum Color {
         return escape+message+RESET;
     }
 
+    /**
+     * function which for a player color return the color for the display
+     * @param playerColor
+     * @param bold
+     * @return
+     */
     public static Color fromPlayerColor(PlayerColor playerColor, boolean bold){
         switch(playerColor){
             case BLUE:

@@ -2,12 +2,11 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.Optional;
-
-import javax.swing.*;
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.*;
-import java.util.stream.Collectors;
+
+/**
+ * Class which implement a thin model for the Cli
+ */
 
 public class CliModel {
     private boolean isHost = false;
@@ -16,25 +15,18 @@ public class CliModel {
     private Player currentPlayer;
     protected List<Player> players;
     private boolean endGame = false;
-
     protected boolean isTurnOK;
     private List<String> cards;
-
-
     private List<String> cardDeck;
     private Board board;
     private TurnPhase turnPhase;
     protected BoardPrinter bp;
 
-    //advanced functionality
     Map<Position, Player> workersMap = new HashMap<Position, Player>();
     boolean workersMapOK = false;
     private String lastInfoMessage;
 
-    /*
-      All ask functions HAVE to be moved to another class
 
-     */
     public CliModel(){
         board = new Board();
         players = new ArrayList<Player>();
@@ -65,6 +57,11 @@ public class CliModel {
         this.board = board;
     }
 
+    /**
+     * Function that after the arrive of an event with the list of the players updated from the server,
+     * update in local the player
+     * @param player
+     */
     public void updatePlayer(Player player) {
         if(players == null){
             return;
@@ -78,11 +75,20 @@ public class CliModel {
         }
     }
 
+    /**
+     * Function that place a worker in the local board
+     * @param placePosition
+     */
     public void placeWorker(Position placePosition){
         Worker newWorker = new Worker();
         board.setWorker(newWorker, placePosition);
     }
 
+    /**
+     * Function that is called after a player defeat from the game
+     * This function remove the player from the local list of the players
+     * @param player
+     */
     public void removePlayer(Player player){
         for(int i=0;i<players.size();i++){
             if(player.equalsUuid(players.get(i))) {
@@ -92,6 +98,15 @@ public class CliModel {
         }
     }
 
+    /**
+     * This function move the worker and update the worker position.
+     * It is called after the arrive of the event that confirm the movement on the server.
+     * @param startPosition
+     * @param destPosition
+     * @param pushPosition
+     * @param playerEvent
+     * @return
+     */
     public boolean moveWorker(Position startPosition, Position destPosition, Position pushPosition, Player playerEvent){
         for (Player player : players) {
             Optional<Integer> workerId = player.getWorkerId(startPosition);
@@ -100,7 +115,7 @@ public class CliModel {
             }else{
                 player.setWorkerPosition(workerId.get(), destPosition);
             }
-            //player.setWorkerPosition(workerId.get(), destPosition);
+
 
         }
         if(pushPosition!=null) {
@@ -108,8 +123,7 @@ public class CliModel {
                 if (!player.equalsUuid(playerEvent)) {
                     Optional<Integer> workerId = player.getWorkerId(destPosition);
                     if (!workerId.isPresent() || workerId.get() == null) {
-                        //System.out.println("Entro qui nel false worker ID");
-                        //return false;
+
                     }else{
                         player.setWorkerPosition(workerId.get(), pushPosition);
                     }
@@ -120,19 +134,31 @@ public class CliModel {
         return false;
     }
 
+    /**
+     * This function update the local board after a movement
+     * It is called after the arrive of the event that confirm the movement on the server.
+     * @param startPosition
+     * @param destPosition
+     * @param pushPosition
+     */
     public void moveBoard(Position startPosition, Position destPosition, Position pushPosition){
         board.putWorkers(startPosition, destPosition, pushPosition);
     }
 
-
+    /**
+     * This function update the local board after a building
+     * It is called after the arrive of the event that confirm the building on the server.
+     * @param workerPosition
+     * @param buildPosition
+     * @param isDome
+     * @return true
+     */
     public boolean buildWorker(Position workerPosition, Position buildPosition, boolean isDome){
-        //board .build() is too complex for the Client
         board.build(workerPosition, buildPosition, isDome);
         return true;
     }
+
     public BoardPrinter createBoardPrinter(){
-        //TODO
-        //move generateWorkersMap
         generateWorkersMap();
         return bp = new BoardPrinter(board, players, workersMap);
     }
@@ -172,43 +198,17 @@ public class CliModel {
     public int getNumPlayers(){
         return players.size();
     }
+
     public Integer getBoardWidth(){
         if(board == null) return null;
         return board.getWidth();
     }
+
     public Integer getBoardHeight(){
         if(board == null) return null;
         return board.getHeight();
     }
 
-    private void testSetUp() {
-        List<Player> playerList = new ArrayList<>();
-        String[] playerNames = {"Pippo", "Pluto", "Topolino"};
-
-//            Position[][] workersPositions = {
-//                    {new Position(1, 1), new Position(2, 3)},
-//                    {new Position(2, 0), new Position(3, 0)},
-//                    {new Position(4, 4), new Position(3, 3)},
-//            };
-//            for(int i = 0; i<3; i++) {
-//                ViewPlayer player = new ViewPlayer(playerNames[i], PlayerColor.values()[i]);
-//                Worker worker1 = new Worker();
-//                worker1.addMove(workersPositions[i][0]);
-//                Worker worker2 = new Worker();
-//                worker2.addMove(workersPositions[i][1]);
-//                player.addWorker(worker1);
-//                player.addWorker(worker2);
-//                playerList.add(player);
-//            }
-            board = new Board(5,5);
-            players = playerList;
-//            return new BoardPrinter(newBoard, playerList);
-//        }catch(PositionOutOfBoundsException e){
-//
-//        }
-
-
-    }
 
     public void setPlayersIfNotSet(List<Player> players) {
         if(players != null) {
@@ -222,9 +222,7 @@ public class CliModel {
             return false;
         }else{
 
-            //playerReference.setCardName(cardName);
             playerReference.setCard(card);
-            //System.out.println(playerReference.getNickName() + " " + playerReference.getCard().getName());
             return true;
         }
     }
