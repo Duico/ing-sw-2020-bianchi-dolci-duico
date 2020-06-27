@@ -30,7 +30,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
      * This function updates the cliModel parameters after a building and prints all the information about the current turn
      * The BuildWorkerModelEvent contains startPosition, destinationPosition and isDome
      * for
-     * @param evt
      */
     @Override
     public void visit(BuildWorkerModelEvent evt) {
@@ -44,7 +43,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
     /**
      * This function updates the cliModel parameters after a movement and prints all the information about the current turn
      * The MoveWorkerModelEvent contains startPosition, destinationPosition and pushPosition
-     * @param evt
      */
     @Override
     public void visit(MoveWorkerModelEvent evt) {
@@ -59,7 +57,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     /**
      * This function updates the cliModel paramters after a PlaceWorkerEvent and prints all the information about the current turn
-     * @param evt
      */
     @Override
     public void visit(PlaceWorkerModelEvent evt) {
@@ -72,7 +69,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
     /**
      * This function update the cliModel paramters( card and cardDeck )
      * after a ChosenCardModelEvent and prints all the information about the current turn
-     * @param evt
      */
     @Override
     public void visit(ChosenCardsModelEvent evt) {
@@ -97,7 +93,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
     /**
      * Function which set the CliModel parameters (Board and Players) after a FullInfoModelEvent which
      * contains board and players from the server
-     * @param evt
      */
     @Override
     public void visit(FullInfoModelEvent evt) {
@@ -107,7 +102,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     /**
      * Function which updates cliModel parameters (players, currentPlayer and turnPhase) and and prints all the information about the current turn
-     * @param evt
      */
     @Override
     public void visit(NewTurnModelEvent evt) {
@@ -127,7 +121,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
     /**
      * Function which after a PersistencyEvent, set all the game paramters of the cliModel
      * prints all the informations about the current turn
-     * @param evt
      */
     @Override
     public void visit(PersistencyEvent evt) {
@@ -144,7 +137,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
     /**
      * Function which after a PlayerDefeatModelEvent, remove the player who lose from the local list of player in cliModel
      * setEndGame in cliModel. Prints all the informations about the current turn
-     * @param evt
      */
     @Override
     public void visit(PlayerDefeatModelEvent evt) {
@@ -163,7 +155,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
     /**
      * Function which after a winModelEvent set the endGame in CliModel
      * prints all the information about the victory of the player
-     * @param evt
      */
     @Override
     public void visit(WinModelEvent evt) {
@@ -180,7 +171,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
     /**
      * Function which after a SetCardModelEvent, update the player card in cliModel and print
      * all the informations about the current choice of card
-     * @param evt
      */
     @Override
     public void visit(SetCardModelEvent evt) {
@@ -201,7 +191,6 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
     /**
      * Function which after an UndoModelEvent updates players and board parameters in cliModel
      * prints all the informations about the current turn
-     * @param evt
      */
     @Override
     public void visit(UndoModelEvent evt) {
@@ -219,7 +208,7 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
     /**
      * Function that based on the value of myTurn decide the way to print information on cli
-     * @param myTurn
+     * @param myTurn True if the current turn is of the user's own player
      */
     protected void nextOperation(boolean myTurn) {
         String turnText = myTurn?CliText.YOUR_TURN.toString():CliText.WAIT_TURN.toString(cliModel.getCurrentPlayer().getNickName());
@@ -261,6 +250,10 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
         }
     }
 
+    /**
+     * Provide a Runnable to ask the player name
+     * @return CliRunnable to be executed
+     */
     protected CliRunnable askFirstPlayer() {
         return () -> {
             Player player;
@@ -269,6 +262,12 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
 
         };
     }
+
+    /**
+     * Provide a Runnable to ask a single Card via cli
+     * @param chosenCards List of Cards to chose from
+     * @return CliRunnable to be executed
+     */
     protected CliRunnable askCard(List<String> chosenCards){
         return () -> {
             String cardName;
@@ -278,6 +277,11 @@ public class CliModelEventVisitor extends ClientEventEmitter implements ModelEve
             emitViewEvent(new CardViewEvent(cardName));
         };
     }
+    /**
+     * Provide a Runnable to ask challenger's cards via cli
+     * @param cardDeck List of all cards in the card deck
+     * @return CliRunnable to be executed
+     */
     protected CliRunnable askChallCards(List<String> cardDeck){
         return () -> {
             List<String> challCards = null;

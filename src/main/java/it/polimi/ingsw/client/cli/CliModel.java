@@ -76,7 +76,7 @@ public class CliModel {
     }
 
     /**
-     * Function that place a worker in the local board
+     * Function that places a worker in the local board
      * @param placePosition
      */
     public void placeWorker(Position placePosition){
