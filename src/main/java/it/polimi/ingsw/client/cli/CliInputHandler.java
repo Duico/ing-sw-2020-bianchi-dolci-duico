@@ -7,10 +7,17 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Handler class for the cli input, line by line
+ */
 public class CliInputHandler extends ClientEventEmitter implements Runnable{
     private Queue<String> readLines = new LinkedBlockingQueue<>();
     public CliInputHandler(){
     }
+
+    /**
+     * Executes the input collection from stdin, enqueuing lines to readLines
+     */
     @Override
     public void run(){
         while (true) {
@@ -27,19 +34,23 @@ public class CliInputHandler extends ClientEventEmitter implements Runnable{
 
         }
     }
+
+    /**
+     * Polls readLines
+     * @return the first non consumed line inserted into readLines
+     */
     public String pollReadLines(){
         synchronized (this) {
             return readLines.poll();
         }
     }
+
+    /**
+     * Empty readLines. Useful after a new input request.
+     */
     public void clearReadLines(){
         synchronized (this) {
             readLines.clear();
         }
-    }
-
-    protected void shutdown() {
-
-        System.exit(0);
     }
 }

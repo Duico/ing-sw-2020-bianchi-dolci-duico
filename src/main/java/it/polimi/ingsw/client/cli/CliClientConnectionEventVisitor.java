@@ -20,7 +20,7 @@ public class CliClientConnectionEventVisitor implements ClientConnectionEventVis
     /**
      * Function which after a ClientConnectionEvent, based on ClientConnectionEvent.Reason
      * prints a message
-     * @param evt
+     * @param evt event to be visited
      */
     @Override
     public void visit(ClientConnectionEvent evt) {

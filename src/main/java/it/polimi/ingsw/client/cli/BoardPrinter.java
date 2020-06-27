@@ -4,6 +4,10 @@ import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 
 import java.util.*;
 
+/**
+ * Generates StringBuffer2D's to print game elements to the cli.
+ * It can also glue multiple StringBuffer2D's into the full content to be displayed in the cli.
+ */
 public class BoardPrinter {
 
     private final List<Player> players;
@@ -12,6 +16,12 @@ public class BoardPrinter {
     private int cellWidth = 2;
     private final int maxWidth = 320;
 
+    /**
+     *
+     * @param board The game board to be printed
+     * @param players List of players currently in the game
+     * @param workersMap Map of the players in every position
+     */
     public BoardPrinter(Board board, List<Player> players, Map<Position, Player> workersMap){
         this.board = board;
         this.players = players;
@@ -22,6 +32,10 @@ public class BoardPrinter {
         return cellWidth;
     }
 
+    /**
+     * Set cellWidth after constraining to the required range
+     * @param cellWidth the desired cellWidth to be checked and set
+     */
     public void setCellWidth(int cellWidth) {
         this.cellWidth = Math.min( 10, Math.max(0, cellWidth));
     }
@@ -35,7 +49,11 @@ public class BoardPrinter {
         return c >=65  && c < 91 ? c-65 : null;
     }
 
-    public StringBuffer2D makeLettersHeader(){
+    /**
+     * Make a StringBuffer2D containing the letters to be displayed above the board
+     * @return the StringBuffer2D containing the letters to be displayed above the board
+     */
+    private StringBuffer2D makeLettersHeader(){
         int actualWidth = getActualWidth();
         StringBuffer2D sb = new StringBuffer2D();
         //letters
@@ -46,7 +64,13 @@ public class BoardPrinter {
         }
         return sb;
     }
-    public StringBuffer2D makeNumberLegend(int number){
+
+    /**
+     * Make a StringBuffer2D for a single number to be displayed on the left of the board as a legend
+     * @param number Maximum number
+     * @return the StringBuffer2D with a single number inside
+     */
+    private StringBuffer2D makeNumberLegend(int number){
         StringBuffer2D sb = new StringBuffer2D();
         //empty first lines
         for(int i=0; i<cellWidth-1 && i<2; i++) {
@@ -75,14 +99,14 @@ public class BoardPrinter {
     private String makeDashBoardLine(){
         return makeDashBoardLine(false);
     }
-    private StringBuffer2D printDashBoardLine(boolean isTopLine){
-        StringBuffer2D sb = new StringBuffer2D();
-        for(int y=0;y<board.getWidth();++y){
-            sb.appendRow(0, isTopLine?" ":"|"+"_".repeat(getActualWidth()));
-        }
-        sb.appendRow(0,"|");
-        return sb;
-    }
+//    private StringBuffer2D printDashBoardLine(boolean isTopLine){
+//        StringBuffer2D sb = new StringBuffer2D();
+//        for(int y=0;y<board.getWidth();++y){
+//            sb.appendRow(0, isTopLine?" ":"|"+"_".repeat(getActualWidth()));
+//        }
+//        sb.appendRow(0,"|");
+//        return sb;
+//    }
 
     private int getActualWidth(){
         return getActualWidth(false);
@@ -95,6 +119,10 @@ public class BoardPrinter {
         return Math.max(0, Math.min(cellWidth-1, 2)) + 2 + Math.max(0, Math.min(cellWidth-2, 1)) +1;
     }
 
+    /**
+     * Generates a StringBuffer2D containing the board with headers, including all information relative to buildings and workers
+     * @return the StringBuffer2D of the board
+     */
     public StringBuffer2D printBoard(){
         StringBuffer2D sb = new StringBuffer2D();
         StringBuffer2D lettersHeader = makeLettersHeader();
@@ -123,8 +151,11 @@ public class BoardPrinter {
         return sb;
     }
 
-
-
+    /**
+     * Generates a StringBuffer2D of a single cell of the board
+     * @param position Position of the cell to draw from the board field
+     * @return StringBuffer2D displaying the contents of cell at position
+     */
     public StringBuffer2D displayCell(Position position){
         StringBuffer2D sb = new StringBuffer2D();
         //empty first lines
@@ -226,6 +257,10 @@ public class BoardPrinter {
 //        return "W";
     }
 
+    /**
+     * Generate a StringBuffer2D containing the players' nicknames and card names
+     * @return StringBuffer2D of the players's nicknames and card names
+     */
     public StringBuffer2D printPlayers(){
         StringBuffer2D sb = new StringBuffer2D();
         int playerWidth = 15;
@@ -253,7 +288,10 @@ public class BoardPrinter {
         }
         return result;
     }
-
+    /**
+     * Generate a StringBuffer2D containing the players' nicknames and card names
+     * @return StringBuffer2D of the players's nicknames and card names
+     */
     public StringBuffer2D printHelp(boolean showDescription){
         final int commandWidth = 19;
         StringBuffer2D cmd = new StringBuffer2D();
@@ -293,6 +331,11 @@ public class BoardPrinter {
             return description;
         }
     }
+    /**
+     * Generate a StringBuffer2D combining board, players and help, which gives an complete view of the game to the player
+     * @param infoMessage a message to give additional information, to be displayed under the help box
+     * @return the StringBuffer2D combining board, players and help
+     */
     public StringBuffer2D printAll(String infoMessage) {
         StringBuffer2D boardSB = printBoard();
         //HARDCODED 20

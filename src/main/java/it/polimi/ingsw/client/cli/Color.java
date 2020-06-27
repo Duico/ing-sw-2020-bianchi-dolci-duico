@@ -3,7 +3,7 @@ package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.model.PlayerColor;
 
 /**
- * enum which contains all the type of color that cli displays
+ * enum which contains some colors for the cli
  */
 public enum Color {
     //Normal

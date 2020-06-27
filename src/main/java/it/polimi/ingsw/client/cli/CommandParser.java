@@ -4,11 +4,24 @@ import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 import it.polimi.ingsw.view.event.*;
 
+/**
+ * Parser class for the commands typed in the cli
+ */
 public class CommandParser {
     CliModel cliModel;
+
+    /**
+     * @param cliModel the cliModel to be read to parse the commands
+     */
     public CommandParser(CliModel cliModel) {
         this.cliModel = cliModel;
     }
+
+    /**
+     * Transforms a cli command into the corresponding ViewEvent
+     * @param cmd the command typed by the user
+     * @return the ViewEvent corresponding to the command typed, null if the command doesn't exist or has format errors
+     */
     public ViewEvent parseEvent(String cmd){
         cmd = cmd.toLowerCase();
         String[] words = cmd.split( "\\s{1,3}");
