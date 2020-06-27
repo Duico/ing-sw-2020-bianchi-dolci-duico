@@ -22,6 +22,10 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     static final int maxRetries = 10;
     private boolean active = true;
 
+    /**
+     * @param socket socket for the connection
+     * @param server server
+     */
     public SocketViewConnection(Socket socket, Server server)  {
         this.socket = socket;
         this.server = server;
@@ -147,7 +151,6 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
             out.close();
             in.close();
         } catch (IOException | NoSuchElementException | InterruptedException e) {
-            //TODO change text
             System.err.println("Error! " + e.getMessage());
         } finally{
             close();

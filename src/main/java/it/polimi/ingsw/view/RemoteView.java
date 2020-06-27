@@ -16,6 +16,10 @@ public class RemoteView extends View implements ViewEventListener, ModelEventLis
     private ViewConnection viewConnection;
 
 
+    /**
+     * @param player
+     * @param c ViewConnection of the player
+     */
     public RemoteView(Player player, ViewConnection c) {
         super(player);
         this.viewConnection = c;

@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 
 public class Server {
     private Lobby lobby;
-    //    private Game game;
     private ServerSocket serverSocket;
     private ExecutorService executor = Executors.newFixedThreadPool(100);
     private Map<ViewConnection,String> waitingConnection = new LinkedHashMap<>();
@@ -23,6 +22,10 @@ public class Server {
     private boolean hasGameStarted = false;
     private boolean isPersistencyAvailable;
 
+    /**
+     * @param port port for the connection
+     * @throws IOException
+     */
     public Server(Integer port) throws IOException {
         this.serverSocket = new ServerSocket(port);
         System.out.println("Listening on 0.0.0.0:"+serverSocket.getLocalPort());

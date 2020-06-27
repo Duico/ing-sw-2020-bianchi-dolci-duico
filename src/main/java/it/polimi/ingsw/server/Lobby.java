@@ -83,6 +83,11 @@ public class Lobby {
         return null;
     }
 
+    /**
+     * add a new player in the game
+     * @param nickname the nickname of the player
+     * @return player
+     */
     public Player addPlayingPlayer(String nickname){
         Player newPlayer = new Player(nickname);
         playingPlayers.add(newPlayer);
@@ -90,6 +95,10 @@ public class Lobby {
         return newPlayer;
     }
 
+    /**
+     * remove a player from the waitingPlayers list
+     * @param nickname the nickname of the player
+     */
     public void removePlayerByName(String nickname){
         waitingPlayers.removeIf(player -> player.equals(nickname));
     }
@@ -146,7 +155,6 @@ public class Lobby {
 
 
     public Integer getNumPlayers(){
-        //if(numPlayers>=2 && numPlayers<=3){
         return numPlayers;
 
     }
@@ -160,8 +168,7 @@ public class Lobby {
         if(numPlayers == null){
             return false;
         }
-//        if(this.numPlayers!=null)
-//            return false;
+
         if(2<=numPlayers && numPlayers<=3) {
             this.numPlayers = numPlayers;
             return true;
@@ -170,11 +177,17 @@ public class Lobby {
     }
 
 
+    /**
+     * Create a new game and a list of players
+     */
     public void newGame() {
         this.game = new Game();
         playingPlayers = new ArrayList<>();
     }
 
+    /**
+     * create a new controller for the game
+     */
     public void newController(){
         if(game==null){
             newGame();
@@ -187,9 +200,7 @@ public class Lobby {
      * @param isPersistencyAvailable true if the game was interrupted before and can be reloaded
      */
     public void startGame(boolean isPersistencyAvailable) {
-        //                for (Player player : playingPlayers) {
-//                    System.out.println(player.getNickName());
-//                }
+
         if(isPersistencyAvailable){
             System.out.print("Resuming game.");
             //no need for playingPlayers here
@@ -201,6 +212,9 @@ public class Lobby {
         }
     }
 
+    /**
+     * set the game and the persistencyPlayers to null
+     */
     public void clearGame() {
         this.game = null;
         persistencyPlayers = null;
@@ -215,10 +229,8 @@ public class Lobby {
      * @param remoteView remote view of a single player
      */
     public void addRemoteView(RemoteView remoteView) {
-//        playingPlayers.add(player);
         remoteView.addEventListener(GameViewEventListener.class, controller);
         controller.addEventListener(ControllerResponseListener.class, remoteView);
-//        remoteViews.add(remoteView);
         game.addEventListener(ModelEventListener.class, remoteView);
     }
 
