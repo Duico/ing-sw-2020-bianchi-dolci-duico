@@ -1,27 +1,32 @@
 package it.polimi.ingsw.model;
 
-        import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
+import it.polimi.ingsw.model.exception.WorkerPositionNotSetException;
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.UUID;
 
-        import java.io.Serializable;
-        import java.util.Objects;
-        import java.util.UUID;
-
+/**
+ * Single player of the game
+ */
 
 public class Player implements Serializable, Cloneable {
     private final String nickName;
     private final UUID uuid;
-    private Card card; //FIX add final when tests are over
-    //private String cardName;
+    private Card card;
     private FixedArray<Worker> workers;
     private boolean isChallenger;
     private PlayerColor color;
 
 
+    /**
+     *
+     * @param nickName nickname of the player
+     */
     public Player(String nickName) {
         this.uuid = UUID.randomUUID();
         this.nickName = nickName;
         this.isChallenger = false;//
-        //this.initWorkers(numWorkers);
+
     }
 
 
@@ -48,24 +53,42 @@ public class Player implements Serializable, Cloneable {
         if(card!=null){
             return card.getName();
         }else{
-            //TODO DA RIVEDERE SE  E' CORRETTO
+
             return null;
         }
     }
 
-
+    /**
+     * Create the array that contains the workers of the player
+     * @param numWorkers number of workers
+     */
     public void initWorkers(int numWorkers){
         workers = new FixedArray<>(numWorkers);
     }
 
+    /**
+     * return the number of movements of a worker
+     * @param worker id of the worker
+     * @return number of movements
+     */
     public int getNumMovesWorker(int worker) {
         return workers.get(worker).getNumMoves();
     }
 
+    /**
+     * return the last operation of a worker
+     * @param worker id of a worker
+     * @return last operation
+     */
     public Operation getLastOperationWorker(int worker) {
         return workers.get(worker).getLastOperation();
     }
 
+    /**
+     * return the number of buildings of a worker
+     * @param worker id of the worker
+     * @return number of buildings
+     */
     public int getNumBuildsWorker(int worker) {
         return workers.get(worker).getNumBuilds();
     }
@@ -96,14 +119,28 @@ public class Player implements Serializable, Cloneable {
         }
     }
 
+    /**
+     * return if a worker is set in the array of workers
+     * @param i index of the array
+     * @return true if the worker is set, false in the other case
+     */
     public boolean isWorkerSet(int i) {
         return (workers.get(i) != null);
     }
 
+    /**
+     * add a worker in the array of player workers
+     * @param newWorker worker to add
+     * @return id of the worker
+     */
     public Optional<Integer> addWorker(Worker newWorker) {
         return workers.add(newWorker);
     }
 
+    /**
+     *
+     * @return true if there are any worker not placed, false in the other case
+     */
     public boolean isAnyWorkerNotPlaced() {
         return (workersToPlace() > 0);
     }
@@ -119,6 +156,9 @@ public class Player implements Serializable, Cloneable {
         return color;
     }
 
+    /**
+     * reset all the workers contained in the array of player workers
+     */
     public void resetAllWorkers() {
         for (int i = 0; i < getNumWorkers(); i++) {
             if (!isWorkerSet(i))
@@ -166,6 +206,11 @@ public class Player implements Serializable, Cloneable {
         return eq;
     }
 
+    /**
+     *
+     * @param player
+     * @return true if player has the same Uuid, false in the other case
+     */
     public boolean equalsUuid(Player player){
         if (this == player) return true;
         return Objects.equals(getUuid(), player.getUuid());
@@ -182,6 +227,11 @@ public class Player implements Serializable, Cloneable {
     }
 
 
+    /**
+     *
+     * @param workerPosition position of the worker
+     * @return Integer id of the worker, Optional.Empty if no worker is contained in workerPosition
+     */
     public Optional<Integer> getWorkerId(Position workerPosition) {
         for(int i=0; i<workers.size(); i++){
             Worker worker = workers.get(i);

@@ -6,7 +6,7 @@ import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
 
 /**
- * defines a generic game Turn
+ * defines the abstract generic game Turn
  */
 public abstract class Turn implements Serializable {
     final Player currentPlayer;
@@ -14,6 +14,11 @@ public abstract class Turn implements Serializable {
     final private TurnPhase phase;
     protected transient ScheduledFuture<?> undoTimer;
 
+    /**
+     *
+     * @param turnPhase current turn phase
+     * @param currentPlayer current player
+     */
     public Turn(TurnPhase turnPhase, Player currentPlayer){
         this.phase = turnPhase;
         this.currentPlayer = currentPlayer;

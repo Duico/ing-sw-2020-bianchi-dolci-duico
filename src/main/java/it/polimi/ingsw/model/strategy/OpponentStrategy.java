@@ -15,6 +15,13 @@ public interface OpponentStrategy extends Serializable {
      */
     boolean isValidPush(Position startPosition, Position destPosition, boolean isOwnWorker, Board board);
 
+    /**
+     * return the push position based on the start and the destination position
+     * @param startPosition start position of the movement
+     * @param destPosition destination position of the movement
+     * @return push position
+     * @throws InvalidPushCell
+     */
     Position destinationPosition(Position startPosition, Position destPosition) throws InvalidPushCell;
 
 

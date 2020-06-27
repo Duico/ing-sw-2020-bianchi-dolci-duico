@@ -22,6 +22,11 @@ public enum Level {
         return this.ord;
     }
 
+    /**
+     * Return a level from an int
+     * @param i
+     * @return level BoardCell level
+     */
     public static Level fromIntToLevel(int i){
         if(i==0)
             return Level.EMPTY;

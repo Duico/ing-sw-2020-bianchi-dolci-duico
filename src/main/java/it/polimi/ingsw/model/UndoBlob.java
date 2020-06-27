@@ -16,6 +16,12 @@ public class UndoBlob{
     private Board outputBoard;
     private List<Player> outputPlayers;
 
+    /**
+     *
+     * @param turn turn that you want to save
+     * @param board board that you want to save
+     * @param players list of player that you want to save
+     */
     public UndoBlob(Turn turn, Board board, List<Player> players){
         inputTurn = turn;
         inputBoard = board;
@@ -101,12 +107,14 @@ public class UndoBlob{
         }
         return outputTurn;
     }
+
     public Board getBoard(){
         if(outputTurn==null){
             readBlob();
         }
         return outputBoard;
     }
+
     public List<Player> getPlayers(){
         if(outputTurn==null){
             readBlob();

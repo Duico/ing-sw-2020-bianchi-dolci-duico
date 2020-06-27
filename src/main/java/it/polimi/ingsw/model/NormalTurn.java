@@ -13,11 +13,16 @@ import it.polimi.ingsw.model.strategy.WinStrategy;
 public class NormalTurn extends Turn {
     private Optional<Integer> currentWorkerId;
     private Card previousTurnCard;
-    //private Card previousBlockCard;
     private boolean blockNextPlayer;
     private boolean previousBlockNextPlayer;
 
-    public NormalTurn(Player currentPlayer, Card previousTurnCard, /*Card previousBlockCard,*/ boolean previousBlockNextPlayer){
+    /**
+     *
+     * @param currentPlayer current player of the turn
+     * @param previousTurnCard card of the previous turn
+     * @param previousBlockNextPlayer true if the previous player was blocked, false in the other case
+     */
+    public NormalTurn(Player currentPlayer, Card previousTurnCard, boolean previousBlockNextPlayer){
         super(TurnPhase.NORMAL, currentPlayer);
         this.currentWorkerId = Optional.empty();
         this.blockNextPlayer = false;

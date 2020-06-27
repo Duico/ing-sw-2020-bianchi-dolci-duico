@@ -8,11 +8,11 @@ import java.io.Serializable;
 
 public interface WinStrategy extends Serializable {
     /**
-     *
+     * check if the movement is a winning move
      * @param startPosition The position where the worker is located at the moment
      * @param destinationPosition The position which the worker wants to move at
-     * @param grid Main grid of the Game
-     * @return
+     * @param board board of the Game
+     * @return true if is a winning move, false in the other case
      */
     boolean isWinningMove(Position startPosition, Position destinationPosition, Board board);
 

@@ -25,9 +25,7 @@ import java.util.Objects;
 public class CardDeck implements Serializable {
     private ArrayList<Card> cardDeck;
 
-//    public CardDeck() throws IOException, SAXException, ParserConfigurationException, ReadConfigurationXMLException {
-//        this("./card-config.xml");
-//    }
+
     public CardDeck(File file) throws ReadConfigurationXMLException, ParserConfigurationException, SAXException, IOException {
         cardDeck = new ArrayList<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -38,9 +36,7 @@ public class CardDeck implements Serializable {
     public CardDeck(String pathname) throws IOException, SAXException, ParserConfigurationException, ReadConfigurationXMLException{
         this(new File(pathname));
     }
-//    public CardDeck(URL resource) throws IOException, ReadConfigurationXMLException, ParserConfigurationException, SAXException {
-//        this(resource.getFile());
-//    }
+
 
     public CardDeck(InputStream resourceAsStream) throws ParserConfigurationException, IOException, SAXException, ReadConfigurationXMLException {
         cardDeck = new ArrayList<>();
@@ -81,7 +77,7 @@ public class CardDeck implements Serializable {
                 }
             }
         }
-        if(cardDeck.size() < 3){ //FIX too vague
+        if(cardDeck.size() < 3){
             throw new ReadConfigurationXMLException();
         }
     }
@@ -89,6 +85,11 @@ public class CardDeck implements Serializable {
     public Card getCard(int i) {
         return cardDeck.get(i);
     }
+
+    /**
+     * return the names of the cards contained in card deck
+     * @return list of string
+     */
     public List<String> getCardNames(){
         ArrayList<String> cardNames  = new ArrayList<String>();
         for(Card card: cardDeck){

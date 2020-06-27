@@ -1,6 +1,9 @@
 package it.polimi.ingsw.model;
 import java.util.Random;
 
+/**
+ * color of a player in a game
+ */
 public enum PlayerColor {
     YELLOW,
     BLUE,

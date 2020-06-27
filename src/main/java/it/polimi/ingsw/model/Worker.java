@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * Single worker assigned to a player
+ * Class for a single worker assigned to a player
  */
 public class Worker implements Cloneable, Serializable {
 
-    private ArrayList<Position> moves; // initial positoin here
-    private ArrayList<Position> builds; //initial position here
+    private ArrayList<Position> moves; // initial position here
+    private ArrayList<Position> builds;
     private ArrayList<Operation> operations;
 
     public Worker(){
@@ -22,7 +22,7 @@ public class Worker implements Cloneable, Serializable {
     }
 
     /**
-     * reset current position, movement e building lists
+     * reset current position, movement and building lists
      */
     public void reset(){
         Position currentPosition = null;
@@ -72,13 +72,20 @@ public class Worker implements Cloneable, Serializable {
     }
 
 
-
+    /**
+     * Add a movement in the list of movements
+     * @param position position where the worker has moved
+     */
     public void addMove(Position position) {
         moves.add(position);
         operations.add(Operation.MOVE);
 
     }
 
+    /**
+     * Add a building in the list of buildings
+     * @param position the worker has built
+     */
     public void addBuild(Position position){
         builds.add(position);
         operations.add(Operation.BUILD);

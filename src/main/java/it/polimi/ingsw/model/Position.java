@@ -15,6 +15,12 @@ public class Position implements Serializable, Cloneable{
     static int width = 5;
     static int height = 5;
 
+    /**
+     *
+     * @param x coordinate x of the position
+     * @param y coordinate y of the position
+     * @throws PositionOutOfBoundsException
+     */
     public Position(int x, int y) throws PositionOutOfBoundsException {
         if( x < 0 || y < 0 || x >= width || y >= height ) throw new PositionOutOfBoundsException();
         this.x = x;

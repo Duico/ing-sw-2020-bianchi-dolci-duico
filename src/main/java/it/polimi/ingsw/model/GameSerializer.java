@@ -16,21 +16,7 @@ public class GameSerializer {
         this.filename = filename;
     }
 
-//    /**
-//     * Serialize game Game to filename
-//     */
-//    public void saveGame(Game game){
-//        GameSerializer serializer = new GameSerializer(filename);
-//        serializer.writeGame(game);
-//    }
-//
-//    /**
-//     * Return deserialized Game
-//     */
-//    public Game loadGame(){
-//        GameSerializer serializer =  new GameSerializer(filename);
-//        return (Game) serializer.readGame();
-//    }
+
 
     private ObjectOutputStream initOutputStream() throws IOException {
         FileOutputStream outputFile = new FileOutputStream(this.filename);
@@ -102,7 +88,7 @@ public class GameSerializer {
                 }
             }
         }
-        //FIX set static attributes
+
         Position.height = 5;
         Position.width = 5;
         return inputGame;
