@@ -25,6 +25,7 @@ public class SceneManager implements SceneEventListener {
 
     public SceneManager(Stage stage){
         this.stage = stage;
+        stage.setTitle("Santorini");
     }
 
     /**
@@ -86,6 +87,7 @@ public class SceneManager implements SceneEventListener {
      * @param controller controller class of fxml file
      */
     public void showFXMLScene(URL resource, Object controller){
+
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setController(controller);
         fxmlLoader.setLocation(resource);
@@ -100,7 +102,6 @@ public class SceneManager implements SceneEventListener {
         Scene scene = new Scene(login);
         stage.setResizable(false);
         stage.setScene(scene);
-
         stage.sizeToScene();
 
         stage.show();

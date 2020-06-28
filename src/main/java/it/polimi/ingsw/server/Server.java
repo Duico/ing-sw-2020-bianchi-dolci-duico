@@ -48,7 +48,7 @@ public class Server {
             lobby.persistencySaveGame();
             lobby.clearGame();
             this.lobby = null;
-            System.out.println("game, lobby set to null");
+            System.out.println("Clearing game and lobby.");
             hasGameStarted = false;
         } else {
 
