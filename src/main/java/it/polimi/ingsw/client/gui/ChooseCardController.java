@@ -86,7 +86,7 @@ public class ChooseCardController implements GuiEventEmitter {
 
     /**
      * initialize Hbox containing card images which has to be chosen by players
-     * @param requiredNumCards >1 when challenger player has to choose 2 or 3 cards from cardDeck
+     * @param requiredNumCards number of cards that challenger player has to choose
      */
     public void askNumCards(Integer requiredNumCards){
         if(requiredNumCards>1){

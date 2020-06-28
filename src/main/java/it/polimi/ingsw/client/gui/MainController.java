@@ -278,7 +278,7 @@ public class MainController implements GuiEventEmitter {
     }
 
     /**
-     * sets start position to null -> there are no workers selected
+     * sets start position to null; there are no workers selected
      */
     public void clearStartPosition() {
         Platform.runLater( () -> {

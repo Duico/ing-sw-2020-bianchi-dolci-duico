@@ -63,7 +63,6 @@ public class Game extends ModelEventEmitter implements Serializable{
      * Start this Game with chosen nicknames for the players
      * @param players Array of the players, in display order
      * @param useCards  True if the game will be using cards
-     * @return
      */
     public void startGame(List<Player> players, boolean useCards) {
         this.active = true;
