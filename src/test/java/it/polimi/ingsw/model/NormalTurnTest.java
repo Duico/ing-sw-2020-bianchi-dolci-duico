@@ -430,8 +430,8 @@ class NormalTurnTest {
     void canBuild() throws PositionOutOfBoundsException, WorkerPositionNotSetException {
         setPlayer1DefaultCard();
         setWorkerOnTheBoard();
-        assertTrue(turn.canBuild(board, worker1.getCurrentPosition()));
-        assertTrue(turn.canBuild(board, worker2.getCurrentPosition()));
+        assertFalse(turn.canBuild(board, worker1.getCurrentPosition()));
+        assertFalse(turn.canBuild(board, worker2.getCurrentPosition()));
     }
 
     @Test
