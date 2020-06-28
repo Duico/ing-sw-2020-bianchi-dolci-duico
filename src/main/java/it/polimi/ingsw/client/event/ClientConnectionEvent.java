@@ -2,10 +2,11 @@ package it.polimi.ingsw.client.event;
 
 import it.polimi.ingsw.client.ClientConnectionEventVisitor;
 import it.polimi.ingsw.client.MessageVisitor;
-import it.polimi.ingsw.client.SetUpMessageVisitor;
-import it.polimi.ingsw.client.cli.StringBuffer2D;
 import it.polimi.ingsw.event.Message;
 
+/**
+ * event sent locally to notify about errors or changes occurred in the client connection
+ */
 public class ClientConnectionEvent extends Message {
     private Reason reason;
     public ClientConnectionEvent(Reason reason){

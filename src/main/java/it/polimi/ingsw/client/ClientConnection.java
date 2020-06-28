@@ -1,19 +1,27 @@
 package it.polimi.ingsw.client;
 
-import java.io.*;
-import java.net.Socket;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import it.polimi.ingsw.client.event.ClientConnectionEvent;
 import it.polimi.ingsw.client.message.SignUpListener;
 import it.polimi.ingsw.client.message.SignUpMessage;
 import it.polimi.ingsw.event.Message;
-import it.polimi.ingsw.server.message.*;
+import it.polimi.ingsw.server.message.ConnectionMessage;
+import it.polimi.ingsw.server.message.GameMessage;
 import it.polimi.ingsw.view.ViewEventListener;
-import it.polimi.ingsw.view.event.*;
+import it.polimi.ingsw.view.event.ViewEvent;
 
+import java.io.*;
+import java.net.Socket;
+import java.util.Queue;
+import java.util.Timer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+
+/**
+ * represent client connection to the socket with desired ip and port
+ * allows client to send messages to server and to receive responses
+ * encapsulates a socket
+ */
 public class ClientConnection extends ClientConnectionEventEmitter implements ViewEventListener, SignUpListener /*, Runnable*/ {
 
     private Socket socket;
@@ -45,6 +53,9 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         this.active = active;
     }
 
+    /**
+     * closes connection to server
+     */
     public synchronized void closeConnection() {
         try {
             active = false;
@@ -59,6 +70,10 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
     }
 
 
+    /**
+     * allows client to send messages to server
+     * @param message message sent
+     */
     private void send(final Object message){
         synchronized (toSend) {
             toSend.add(message);
@@ -85,6 +100,9 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         }
     }
 
+    /**
+     * creates socket and activates connection setting timeout
+     */
     public void run() {
         try {
 
@@ -107,7 +125,9 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         }
     }
 
-
+    /**
+     * starts 20 seconds timer for pong message when ping message is received
+     */
     private void startTimerPing() {
         java.util.Timer timer = new Timer();
         int delta = 2000;
@@ -135,6 +155,10 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         send(evt);
     }
 
+
+    /**
+     * runnable class which reads messages from an ObjectInputStream and enqueues them to ClientConnection.GameMessages
+     */
     private class ObjectInputRunnable implements Runnable{
         private final ObjectInputStream socketIn;
         public ObjectInputRunnable(ObjectInputStream socketIn){
@@ -166,9 +190,6 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
 
 
                         }
-                        //TODO remove
-                    } else if (message instanceof String) {
-                        System.err.println(message);
                     } else {
                         throw new IllegalArgumentException(message.getClass().toString());
                     }
@@ -187,7 +208,9 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         }
     }
 
-
+    /**
+     * runnable class which writes messages to an ObjectOutputStream coming from ClientConnection.toSend
+     */
     private class ObjectOutputRunnable implements Runnable{
         private final ObjectOutputStream socketOut;
         public ObjectOutputRunnable(ObjectOutputStream socketOut){
@@ -213,7 +236,7 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
                 } catch (IOException e) {
                     new ClientConnectionEvent(ClientConnectionEvent.Reason.IO_EXCEPTION).accept(gameMessageVisitor);
                 } catch (InterruptedException e) {
-                    //QUANDO C'E' DISCONNESSIONE PLAYER ENTRA QUA
+                    //when player gets disconnected
                 }finally {
                         try {
                             socketOut.close();
@@ -230,6 +253,9 @@ public class ClientConnection extends ClientConnectionEventEmitter implements Vi
         }
     }
 
+    /**
+     * runnable class which submits received messages to the visitor
+     */
     private class ClientMessageReader implements Runnable{
         public ClientMessageReader(){}
         @Override
