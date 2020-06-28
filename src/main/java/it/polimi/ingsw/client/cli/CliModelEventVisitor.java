@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Class which implemets the ModelEventVisitor for the Cli
+ * Class which implements the ModelEventVisitor for the Cli
  */
 public class CliModelEventVisitor extends ClientEventEmitter implements ModelEventVisitor {
     private Cli cli;
