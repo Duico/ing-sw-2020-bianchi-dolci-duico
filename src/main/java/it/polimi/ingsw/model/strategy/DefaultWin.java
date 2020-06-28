@@ -15,7 +15,7 @@ public class DefaultWin implements WinStrategy {
         try{
             BoardCell startCell = board.getBoardCell(startPosition);
             BoardCell destinationCell = board.getBoardCell(destinationPosition);
-            if(startCell.getLevel().getOrd() == 2 && destinationCell.getLevel().getOrd() == 3 && !destinationCell.hasDome() && destinationCell.getWorker() == null) //FIX should not check if move is valid, only if it is winning*/
+            if(startCell.getLevel().getOrd() == 2 && destinationCell.getLevel().getOrd() == 3 && !destinationCell.hasDome() && destinationCell.getWorker() == null)
                 return true;
             else
                 return false;
