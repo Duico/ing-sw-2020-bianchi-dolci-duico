@@ -189,6 +189,7 @@ public abstract class Turn implements Serializable {
     /**
      * @param board main board of the game
      * @param placePosition position where a worker is placed
+     * @return worker id
      */
     protected Optional<Integer> boardPlace(Board board, Position placePosition){return Optional.empty();};
 

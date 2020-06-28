@@ -1,16 +1,18 @@
 package it.polimi.ingsw.model.strategy;
 
 import it.polimi.ingsw.model.Board;
-import it.polimi.ingsw.model.BoardCell;
 import it.polimi.ingsw.model.Position;
 import it.polimi.ingsw.model.exception.InvalidPushCell;
-import it.polimi.ingsw.model.exception.PositionOutOfBoundsException;
 
 import java.io.Serializable;
 
 public interface OpponentStrategy extends Serializable {
     /**
-     *Check whether cell is empty or is occupied by a worker who can be pushed
+     * Check whether cell is empty or is occupied by a worker who can be pushed
+     * @param startPosition position of the worker who's going to be pushed
+     * @param destPosition destination position of push
+     * @param isOwnWorker true if selected worker is one of current player's workers
+     * @param board main board of the game
      * @return False if cell is occupied by a worker who cannot be pushed away, True if empty or if opponent can be pushed
      */
     boolean isValidPush(Position startPosition, Position destPosition, boolean isOwnWorker, Board board);
@@ -20,7 +22,7 @@ public interface OpponentStrategy extends Serializable {
      * @param startPosition start position of the movement
      * @param destPosition destination position of the movement
      * @return push position
-     * @throws InvalidPushCell
+     * @throws InvalidPushCell thrown if push cell is not valid
      */
     Position destinationPosition(Position startPosition, Position destPosition) throws InvalidPushCell;
 

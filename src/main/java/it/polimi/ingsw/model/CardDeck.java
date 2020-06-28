@@ -114,7 +114,7 @@ public class CardDeck implements Serializable {
     /**
      * searches for a certain Card in CardDeck
      * @param name card name needed to get Card object
-     * @return
+     * @return Card object related to card name
      */
     public Card getCardByName(String name){
         int i;

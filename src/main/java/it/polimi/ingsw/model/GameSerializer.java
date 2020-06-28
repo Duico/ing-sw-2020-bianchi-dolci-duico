@@ -59,8 +59,8 @@ public class GameSerializer {
     /**
      * reads from file and loads the Game
      * @return Game object
-     * @throws FileNotFoundException
-     * @throws InvalidClassException
+     * @throws FileNotFoundException thrown if file is not found
+     * @throws InvalidClassException thrown when serialization detects problems with a class
      */
     public Game readGame() throws FileNotFoundException, InvalidClassException{
         ObjectInputStream in = null;
@@ -68,12 +68,9 @@ public class GameSerializer {
         try {
             in = initInputStream();
             inputGame = (Game) in.readObject();
-            //undoBlob is transient
-            //we need to regenerate it on reload from persistency
             if(inputGame==null)
                 return null;
 
-//          game.undoBlob is not serializable
             inputGame.regenerateUndo();
         }catch (InvalidClassException | FileNotFoundException e){
             throw e;

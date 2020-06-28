@@ -43,7 +43,7 @@ public enum Level {
     /**
      * used by Gui controller to set exact Z coordinate in GuiModel
      * @param level BoardCell level
-     * @return
+     * @return building height related to level
      */
     public static BuildingHeight fromLevelToBuildingHeight(Level level){
         if(level.equals(Level.EMPTY))

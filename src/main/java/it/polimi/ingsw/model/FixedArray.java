@@ -1,9 +1,7 @@
 package it.polimi.ingsw.model;
 
 import java.io.Serializable;
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -58,7 +56,7 @@ public class FixedArray<T> implements Serializable {
      * Sets to elem the element at index
      * @param index Index of the element that will be affected
      * @param elem  Element that will be set in place of the previous one
-     * @return
+     * @return array with element set
      */
     public T set(int index, T elem){
         if(index>=0 && index<size){

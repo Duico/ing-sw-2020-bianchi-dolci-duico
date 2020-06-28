@@ -50,7 +50,7 @@ public class Worker implements Cloneable, Serializable {
 
     /**
      * @return position where the worker is currently located at
-     * @throws WorkerPositionNotSetException
+     * @throws WorkerPositionNotSetException thrown when current worker position is not set
      */
     public Position getCurrentPosition() throws WorkerPositionNotSetException{
         if(this.moves.size() == 0){

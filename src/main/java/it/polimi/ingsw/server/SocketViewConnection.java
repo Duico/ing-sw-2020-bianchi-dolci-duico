@@ -83,6 +83,7 @@ public class SocketViewConnection extends ViewEventObservable implements ViewCon
     /**
      * creates a thread and reads from input stream
      * @param socketIn input stream of socket
+     * @return thread created
      */
     public Thread asyncReadFromSocket(final ObjectInputStream socketIn){
         Thread t = new Thread(() -> {

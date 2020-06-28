@@ -25,6 +25,7 @@ public class Card implements Serializable {
      * @param winStrategy Name of the strategy for winning
      * @param blockStrategy Name of the strategy for blocking next player's movement
      * @param opponentStrategy Name of the strategy for opponents that occupy the desired cell
+     * @throws StrategyNameNotFound thrown if strategy name read is not correct
      */
     public Card (String name, String moveStrategy, String buildStrategy, String winStrategy, String blockStrategy, String opponentStrategy) throws StrategyNameNotFound {
         this.name=name;

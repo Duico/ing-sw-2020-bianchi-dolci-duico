@@ -154,7 +154,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     /**
      * sets Card to current player
      * @param nameCard name related to Card
-     * @return
+     * @return true if card is successfully set
      */
     public boolean setPlayerCard(String nameCard){
         if(turn.getCurrentPlayer().getCard()==null) {
@@ -222,7 +222,7 @@ public class Game extends ModelEventEmitter implements Serializable{
     }
 
     /**
-     * moves on to the next Turn
+     * moves on to the next Turn switching current player
      */
     public void nextTurn(){
         Player nextPlayer = this.getNextPlayer();
@@ -231,7 +231,7 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     /**
      * updates next Turn based on current TurnPhase
-     * @param nextPlayer
+     * @param nextPlayer next turn's player
      */
     private void nextTurn(Player nextPlayer) { //notify view in every case
         TurnPhase phase = turn.getPhase();
@@ -285,7 +285,7 @@ public class Game extends ModelEventEmitter implements Serializable{
 
     /**
      * set first player of the game, chosen from the challenger player
-     * @param player
+     * @param player first player of the game
      * @return True if first player is correctly set
      */
     public boolean firstTurn(Player player) {

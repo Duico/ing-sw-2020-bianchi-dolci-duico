@@ -106,7 +106,7 @@ public class Board implements Cloneable, Serializable {
      * sets the worker got from parameter to the destination position BoardCell
      * @param worker worker to set
      * @param destPosition position where the worker is set
-     * @return
+     * @return true if worker is successfully set
      */
     public boolean setWorker(Worker worker, Position destPosition){
         if( this.getBoardCellReference(destPosition).getWorker() == null){
@@ -121,7 +121,7 @@ public class Board implements Cloneable, Serializable {
     /**
      * deletes Worker reference from the BoardCell corresponding to the position got from parameter
      * @param position worker position
-     * @return
+     * @return true if worker is successfully removed
      */
     public boolean removeWorker(Position position){
         if( this.getBoardCellReference(position).getWorker() != null ){
