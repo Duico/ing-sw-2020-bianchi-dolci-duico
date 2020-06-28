@@ -1,14 +1,11 @@
 package it.polimi.ingsw.client.gui;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.BooleanPropertyBase;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.css.PseudoClass;
 import javafx.scene.image.ImageView;
 
-
+/**
+ * class used to set css to card images in choose card game phase
+ */
 public class CardImageView extends ImageView {
     private static PseudoClass SELECTED_PSEUDOCLASS = PseudoClass.getPseudoClass("selected");
 
@@ -25,9 +22,7 @@ public class CardImageView extends ImageView {
         pseudoClassStateChanged(SELECTED_PSEUDOCLASS, isSelected);
     }
 
-//    public void setHover(boolean isHover){
-//        pseudoClassStateChanged(HOVER_PSEUDOCLASS, isHover);
-//    }
+
 
 
 }

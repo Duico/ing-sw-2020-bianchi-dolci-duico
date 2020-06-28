@@ -1,8 +1,11 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.client.ClientEventEmitter;
 import it.polimi.ingsw.model.event.*;
 
+/**
+ * class that allows to do different operations using a single method which can handle all
+ * different types of model events
+ */
 public interface ModelEventVisitor /*extends ClientEventEmitter*/ {
     /** Defines behavior in case of a BuildWorkerModelEvent
      * @param evt BuildWorkderModelEvent to be visited

@@ -1,5 +1,8 @@
 package it.polimi.ingsw.client.gui;
 
+/**
+ * defines special kind of event related to GUI used to change scene
+ */
 public class SceneEvent {
     private SceneType sceneType;
     public SceneEvent(SceneType type){

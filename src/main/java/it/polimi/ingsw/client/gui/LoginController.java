@@ -9,6 +9,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+/**
+ * controller class of login scene
+ */
 public class LoginController implements GuiEventEmitter {
 
     public GuiEventListener listener;
@@ -32,9 +35,6 @@ public class LoginController implements GuiEventEmitter {
 
 
 
-//    public void setMessage(String message){
-//        this.message.setText(message);
-//    }
 
 
 
@@ -52,11 +52,15 @@ public class LoginController implements GuiEventEmitter {
         choiceBox.setVisible(set);
     }
 
+    /**
+     * updates login scene setting visible or invisible items to client
+     * @param askNumPlayers true if current player has to choose number of players
+     * @param askPersistency true if current player can choose to load a game
+     */
     public void askSetUpInfo(boolean askNumPlayers, boolean askPersistency){
         Platform.runLater(()->{
             loginPane.setVisible(true);
             if(askNumPlayers){
-//                setMessage("Select number of players:");
                 persistencyVbox.setVisible(true);
                 if (askPersistency) {
                     persistencyVbox.setDisable(false);
@@ -68,11 +72,17 @@ public class LoginController implements GuiEventEmitter {
         });
     }
 
+    /**
+     * shows waiting message
+     */
     public void correctSignUp(){
         loginPane.setVisible(false);
         waitLabel.setVisible(true);
     }
 
+    /**
+     * fills choice box with number of players allowed
+     */
     public void initChoiceBox(){
         String twoPlayers="2 PLAYERS";
         String threePlayers="3 PLAYERS";
@@ -80,6 +90,10 @@ public class LoginController implements GuiEventEmitter {
         choiceBox.setValue(twoPlayers);
     }
 
+    /**
+     * checks chosen number of player from choicee box
+     * @return number of players chosen
+     */
     private Integer getNumPlayers(){
         if(choiceBox.getValue()!=null){
             if(choiceBox.getValue().equals("2 PLAYERS")){
@@ -95,6 +109,11 @@ public class LoginController implements GuiEventEmitter {
 
     }
 
+    /**
+     * checks if username is allowed checking if all fields are filled then emits login view event
+     * @param actionEvent
+     * @throws Exception
+     */
     public void startGame(ActionEvent actionEvent) throws Exception {
         String username = textfield.getText().trim();
         boolean checkUsername = username.matches("^[A-Za-z0-9\\-_]{3,32}\\s*$");
@@ -119,6 +138,10 @@ public class LoginController implements GuiEventEmitter {
         }
     }
 
+    /**
+     * shows message on alert message box
+     * @param message message to show
+     */
     public void alert(String message){
         Platform.runLater(()->{
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -127,10 +150,20 @@ public class LoginController implements GuiEventEmitter {
         });
     }
 
-
+    /**
+     * emits login view event
+     * @param username username chosen by player
+     * @param numPlayers number of players chosen
+     * @param persistency true if player has chosen to load a game from disk
+     */
     private void emitLogin(String username, Integer numPlayers, boolean persistency){
         listener.onLogin(username, numPlayers, persistency);
     }
+
+    /**
+     * emits login view event
+     * @param username username chosen by player
+     */
     private void emitLogin(String username){
         listener.onLogin(username, null, false);
     }

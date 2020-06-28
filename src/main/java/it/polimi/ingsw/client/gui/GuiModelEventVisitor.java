@@ -9,6 +9,10 @@ import it.polimi.ingsw.model.event.*;
 
 import java.util.List;
 
+/**
+ * class which manages all Model Events received from server updating GUI current scene
+ * we need only a single method to handle different types of model events
+ */
 public class GuiModelEventVisitor implements ModelEventVisitor {
     private final GuiModel guiModel;
     private final SceneEventEmitter sceneEventEmitter;
@@ -18,21 +22,31 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         this.sceneEventEmitter = sceneEventEmitter;
     }
 
+    /**
+     * builds 3d block on game board
+     * @param evt model event received
+     */
     @Override
     public void visit(BuildWorkerModelEvent evt) {
-//        System.out.println("correctBuild");
         guiModel.buildOnTheBoard(evt.getStartPosition(), evt.getDestinationPosition(), evt.isDome());
         guiModel.requireButtonUpdate();
 
     }
 
+    /**
+     * applies movement on game scene
+     * @param evt model event received
+     */
     @Override
     public void visit(MoveWorkerModelEvent evt) {
-//        System.out.println("correct move");
         guiModel.moveOnTheBoard(evt.getStartPosition(), evt.getDestinationPosition(), evt.getPushPosition());
         guiModel.requireButtonUpdate();
     }
 
+    /**
+     * applies worker placement on game scene
+     * @param evt model event received
+     */
     @Override
     public void visit(PlaceWorkerModelEvent evt) {
         Player player = evt.getPlayer();
@@ -41,6 +55,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         guiModel.requireButtonUpdate();
     }
 
+    /**
+     * loads chosen cards images to choose card scene
+     * @param evt model event received
+     */
     @Override
     public void visit(ChosenCardsModelEvent evt) {
         List<String> cardDeck = evt.getCardDeck();
@@ -64,6 +82,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
 
     }
 
+    /**
+     * updates gui model and eventually changes scene if needed
+     * @param evt model event received
+     */
     @Override
     public void visit(NewTurnModelEvent evt) {
         TurnPhase turnPhase = evt.getTurnPhase();
@@ -74,6 +96,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         guiModel.newTurn(turnPhase);
     }
 
+    /**
+     * applies persistency reloading game scene
+     * @param evt model event received
+     */
     @Override
     public void visit(PersistencyEvent evt) {
         System.out.print("Resuming game");
@@ -85,6 +111,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         guiModel.resumeGame();
     }
 
+    /**
+     * changes scene based on current turnphase
+     * @param turnPhase model event received
+     */
     private void changeScene(TurnPhase turnPhase){
         if(turnPhase.equals(TurnPhase.CHOSE_CARDS)){
             sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CHOSE_CARDS));
@@ -93,6 +123,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         }
     }
 
+    /**
+     * launches end game condition for player defeated
+     * @param evt model event received
+     */
     @Override
     public void visit(PlayerDefeatModelEvent evt) {
         Player playerDefeat = evt.getPlayer();
@@ -106,6 +140,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         guiModel.playerDefeat(playerDefeat);
     }
 
+    /**
+     * launches win condition for winner player and ends the game
+     * @param evt model event received
+     */
     @Override
     public void visit(WinModelEvent evt) {
         Player winner = evt.getPlayer();
@@ -118,6 +156,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         }
     }
 
+    /**
+     * set card to a player on gui model
+     * @param evt model event received
+     */
     @Override
     public void visit(SetCardModelEvent evt) {
         Player player = evt.getPlayer();
@@ -125,6 +167,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         guiModel.setCard(player, card);
     }
 
+    /**
+     * apply undo operation to 3D game scene
+     * @param evt model event received
+     */
     @Override
     public void visit(UndoModelEvent evt) {
         guiModel.setPlayers(evt.getPlayers());
@@ -135,6 +181,10 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
     }
 
 
+    /**
+     * updates choose card scene loading card images
+     * @param cards cards to be shown
+     */
     private void printChooseCard(List<String> cards){
 
 
@@ -156,11 +206,4 @@ public class GuiModelEventVisitor implements ModelEventVisitor {
         }
     }
 
-//    public void alert(String message){
-//        Platform.runLater(()->{
-//            Alert alert = new Alert(Alert.AlertType.WARNING);
-//            alert.setHeaderText(message);
-//            alert.showAndWait();
-//        });
-//    }
 }

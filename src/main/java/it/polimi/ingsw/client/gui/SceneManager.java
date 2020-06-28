@@ -1,9 +1,5 @@
 package it.polimi.ingsw.client.gui;
 
-import it.polimi.ingsw.client.ClientConnection;
-import it.polimi.ingsw.client.MessageVisitor;
-import it.polimi.ingsw.client.message.SignUpListener;
-import it.polimi.ingsw.view.ViewEventListener;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -15,6 +11,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * class that handles scenes switch loading fxml's or other scenes
+ */
 public class SceneManager implements SceneEventListener {
     private final Stage stage;
     //private final ClientConnection clientConnection;
@@ -23,13 +22,18 @@ public class SceneManager implements SceneEventListener {
     private LoginController loginController;
     private ChooseCardController chooseCardController;
     private MainController mainController;
-    //private EndController endController;
 
     public SceneManager(Stage stage){
         this.stage = stage;
-        //this.clientConnection = clientConnection;
     }
 
+    /**
+     * sets all game controller classes and launches login scene at the beginning
+     * @param loginController login controller class
+     * @param chooseCardController choose card controller class
+     * @param mainController main game controller class
+     * @return emitter of scene event's
+     */
     public SceneEventEmitter startGame(LoginController loginController, ChooseCardController chooseCardController, MainController mainController){
         this.loginController = loginController;
         this.chooseCardController = chooseCardController;
@@ -56,34 +60,31 @@ public class SceneManager implements SceneEventListener {
     }
 
 
-    /*private void setConnectionListener(GuiMessageVisitor guiMessageVisitor){
-        clientConnection.addEventListener(MessageListener.class, guiMessageVisitor);
-    }*/
-
+    /**
+     * load game scene related to a scene type
+     * @param sceneType scene type of scene to load
+     */
     private void loadScene(SceneEvent.SceneType sceneType) {
         if(sceneType.equals(SceneEvent.SceneType.LOGIN)){
-//            Platform.runLater( () -> {
                 showFXMLScene(getClass().getResource("/fxml/login.fxml"), loginController);
-//            });
 
         }else if(sceneType.equals(SceneEvent.SceneType.CHOSE_CARDS)){
-//            Platform.runLater( () -> {
                 showFXMLScene(getClass().getResource("/fxml/chooseCard.fxml"), chooseCardController);
-//                    });
 
         }else if(sceneType.equals(SceneEvent.SceneType.MAIN)){
-//            Platform.runLater(()->{
                 showMainScene(mainController);
-//            });
 
         }else if(sceneType.equals(SceneEvent.SceneType.CONNECTION_CLOSED)){
-//            showFXMLScene();
             showFXMLScene(getClass().getResource("/fxml/endGame.fxml"), loginController);
         }
     }
 
 
-
+    /**
+     * loads fxml file from url and creates scene with it setting related controller class
+     * @param resource url of fxml file
+     * @param controller controller class of fxml file
+     */
     public void showFXMLScene(URL resource, Object controller){
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setController(controller);
@@ -97,8 +98,7 @@ public class SceneManager implements SceneEventListener {
         }
 
         Scene scene = new Scene(login);
-//        stage.setResizable(false);
-        stage.setResizable(true);
+        stage.setResizable(false);
         stage.setScene(scene);
 
         stage.sizeToScene();
@@ -107,9 +107,11 @@ public class SceneManager implements SceneEventListener {
 
     }
 
+    /**
+     * loads final game scene
+     * @param mainController final game controller class
+     */
     public void showMainScene(MainController mainController){
-//        for(int i = 0; i< GuiModel.getInstance().getNumPlayers(); i++)
-//            GuiModel.getInstance().addCard(chosenCardsChallenger.get(i));
         stage.setResizable(true);
         stage.setScene(mainController.gameScene());
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();

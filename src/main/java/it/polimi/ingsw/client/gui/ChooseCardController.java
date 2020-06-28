@@ -2,30 +2,27 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.gui.event.GuiEventEmitter;
 import it.polimi.ingsw.client.gui.event.GuiEventListener;
-import it.polimi.ingsw.model.Card;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * main controller class of choose card scene
+ */
 public class ChooseCardController implements GuiEventEmitter {
 
     private GuiEventListener listener;
@@ -33,15 +30,10 @@ public class ChooseCardController implements GuiEventEmitter {
     @FXML
     public Label header;
 
-//    public ImageView buttonImage;
 
-//    public Button startButton;
 
     public HBox cards;
-//
-//    public Label chooseText;
-//
-//    public Label choosePlayerLabel;
+
 
     public ChoiceBox firstPlayerChoiceBox;
 
@@ -81,8 +73,10 @@ public class ChooseCardController implements GuiEventEmitter {
         return this.cardDeck;
     }
 
+    /**
+     * fills first player choice box with player names
+     */
     public void initChoiceBox(){
-//        System.out.println("init choice box");
             firstPlayerChoiceBox.setItems(FXCollections.observableArrayList(opponents));
     }
 
@@ -90,6 +84,10 @@ public class ChooseCardController implements GuiEventEmitter {
         this.opponents=opponents;
     }
 
+    /**
+     * initialize Hbox containing card images which has to be chosen by players
+     * @param requiredNumCards >1 when challenger player has to choose 2 or 3 cards from cardDeck
+     */
     public void askNumCards(Integer requiredNumCards){
         if(requiredNumCards>1){
             initGrid(cardDeck);
@@ -98,6 +96,11 @@ public class ChooseCardController implements GuiEventEmitter {
         }
     }
 
+    /**
+     * fills Hbox with card images
+     * @param cards contatins all cards in deck if is challenger player
+     *              contains challenger's chosen cards if is not challenger player
+     */
     public void initGrid(List<String> cards){
         for(int i=0;i<cards.size();i++){
             CardImageView image = new CardImageView("textures/"+cards.get(i)+".png");
@@ -107,13 +110,16 @@ public class ChooseCardController implements GuiEventEmitter {
         }
     }
 
-
+    /**
+     * add event on card images which can be selected or de-selected by clicking on them
+     * @param node card image view
+     * @param name name of the card
+     */
     private void addEventCard(CardImageView node, String name){
         node.setOnMousePressed(event->{
 
             if(chosenCards.contains(name))
             {
-                System.out.println("remove"+name);
                 chosenCards.remove(name);
                     node.setIsSelected(false);
             }else{
@@ -121,23 +127,27 @@ public class ChooseCardController implements GuiEventEmitter {
                 {
                     System.out.println("add"+name);
                     chosenCards.add(name);
-                    //ADD TEXT TO CHOSEN CARD
-//                    node.getStyleClass().addAll("card_selected");
                     node.setIsSelected(true);
                 }
             }
 
-//            chooseText.setText("Your choice is: "+chosenCard+"!");
         });
     }
 
+    /**
+     * loads choose card scene
+     * @return
+     * @throws IOException
+     */
     public Scene chooseCardScene() throws IOException {
         Parent page = FXMLLoader.load(getClass().getResource("/fxml/chooseCard.fxml"));
         Scene scene = new Scene(page);
         return scene;
     }
 
-    //challenger
+    /**
+     * updates scene setting to invisible cards box and showing wain message
+     */
     public void waitChooseCards(){
         Platform.runLater(()->{
             cardsBox.setVisible(false);
@@ -146,7 +156,10 @@ public class ChooseCardController implements GuiEventEmitter {
         });
     }
 
-    //challenger
+    /**
+     * updates scene setting to visible first player choice box only to challenger player
+     * @param usernames
+     */
     public void showChooseFirstPlayer(List<String> usernames){
         setOpponents(usernames);
         Platform.runLater(()->{
@@ -156,6 +169,10 @@ public class ChooseCardController implements GuiEventEmitter {
         });
     }
 
+    /**
+     * upadtes scene setting to visible cards box
+     * @param cardDeck
+     */
     public void loadCards(List<String> cardDeck) {
         Platform.runLater(()->{
             waitBox.setVisible(false);
@@ -171,10 +188,17 @@ public class ChooseCardController implements GuiEventEmitter {
         });
     }
 
+    /**
+     * send cards button event
+     * @param actionEvent
+     */
     public void sendCards(ActionEvent actionEvent){
         checkValidStart();
     }
 
+    /**
+     * checks player has chosen cards/card correctly and then emits event
+     */
     private void checkValidStart(){
         if(isChallenger){
             if(chosenCards.size()==requiredNumCards)
@@ -190,8 +214,10 @@ public class ChooseCardController implements GuiEventEmitter {
     }
 
 
-
-
+    /**
+     * shows alert message box
+     * @param message message in alert box
+     */
     public void alert(String message){
         Platform.runLater(()->{
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -200,6 +226,9 @@ public class ChooseCardController implements GuiEventEmitter {
         });
     }
 
+    /**
+     * @return player's name chosen as first player
+     */
     private String getFirstPlayer(){
         Object choiceBoxValue =  firstPlayerChoiceBox.getValue();
         if(choiceBoxValue != null){
@@ -209,18 +238,30 @@ public class ChooseCardController implements GuiEventEmitter {
         }
     }
 
+    /**
+     * emits first player view event
+     */
     public void sendFirstPlayer(ActionEvent actionEvent) {
         emitFirstPlayer(getFirstPlayer());
     }
 
+    /**
+     * emits view event containing card chosen by player
+     */
     private void emitChosenCard(String chosenCard){
         listener.onChooseCard(chosenCard);
     }
 
+    /**
+     * emits view event containing list of cards chosen by challenger player
+     */
     private void emitChallengerCards(List<String> challengerCards){
         listener.onChallengeCards(challengerCards);
     }
 
+    /**
+     * emits first player view event
+     */
     private void emitFirstPlayer(String firstPlayer){
         listener.onFirstPlayer(firstPlayer);
     }

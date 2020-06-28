@@ -36,7 +36,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-
+/**
+ * main controller class of game scene
+ */
 public class MainController implements GuiEventEmitter {
 
     private GuiEventListener listener;
@@ -59,6 +61,9 @@ public class MainController implements GuiEventEmitter {
     private Label messageBox = new Label();
     private FadeTransition messageBoxFade;
 
+    /**
+     * udpdated every time a worker is selected by clicking on it
+     */
     private Position startPosition;
     private double onClickXCoord,onClickYCoord;
     private double newOnClickXCoord,newOnClickYCoord;
@@ -67,12 +72,16 @@ public class MainController implements GuiEventEmitter {
     private VBox vbButtons=new VBox(28);
     private Pane trigliph = new Pane();
 
-
+    /**
+     * updated by game buttons
+     */
     private Operation currentOperation;
-    private boolean isBuildDome;
+
     /**
      * If true, the next build attempt will be a dome
      */
+    private boolean isBuildDome;
+
     private final CoordinateMap map = new CoordinateMap(boardSize, baseZ);
     private Map<Position, Node> workersMap = new LinkedHashMap<>();
     private Node startPositionIndicator = null;
@@ -82,8 +91,6 @@ public class MainController implements GuiEventEmitter {
     public boolean isActive() {
         return active;
     }
-
-
 
     public enum Operation {
         MOVE,
@@ -97,6 +104,10 @@ public class MainController implements GuiEventEmitter {
         isBuildDome = false;
     }
 
+    /**
+     * updates message shown in message box
+     * @param message message to show
+     */
     public void setMessage(String message){
         Platform.runLater(()->{
             messageBox.setText(message);
@@ -107,7 +118,9 @@ public class MainController implements GuiEventEmitter {
         });
     }
 
-    //TODO css
+    /**
+     * style game message box
+     */
     private void initMessageBox(){
         messageBoxFade = new FadeTransition(Duration.millis(4000), messageBox);
         messageBoxFade.setDelay(Duration.seconds(4));
@@ -118,6 +131,9 @@ public class MainController implements GuiEventEmitter {
         messageBox.setFont(new Font("Arial", 20));
     }
 
+    /**
+     * @return true if a worker has already been selected
+     */
     private boolean isSelectedWorker(){
         return startPosition!=null;
     }
@@ -133,37 +149,21 @@ public class MainController implements GuiEventEmitter {
         return currentOperation!=null;
     }
 
-
-
-//    public void updateOperationButtons(boolean isAllowedToMove, boolean isAllowedToBuild){
-//        if(isAllowedToMove)
-//        {
-//            moveButton.setGraphic(buttonImage("/textures/move.png"));
-//            moveButton.setMouseTransparent(false);
-//        }
-//        else
-//        {
-//            moveButton.setGraphic(buttonImage("/textures/notmove.png"));
-//            moveButton.setMouseTransparent(true);
-//        }
-//        if(isAllowedToBuild)
-//        {
-//            buildButton.setGraphic(buttonImage("/textures/build.png"));
-//            buildButton.setMouseTransparent(false);
-//        }
-//        else
-//        {
-//            moveButton.setGraphic(buttonImage("/textures/notbuild.png"));
-//            moveButton.setMouseTransparent(true);
-//        }
-//    }
-
+    /**
+     * add click events on end turn button
+     * @param node end turn button
+     */
     public void addOnClickEventEndTurnButton(Node node){
         node.setOnMouseClicked(event->{
             System.out.println("Emit endturn");
             emitEndTurn();
         });
     }
+
+    /**
+     * add click events on undo button
+     * @param node undo button
+     */
     public void addOnClickEventUndoButton(Node node){
         System.out.println("Emit undo");
         node.setOnMouseClicked(event->{
@@ -171,6 +171,10 @@ public class MainController implements GuiEventEmitter {
         });
     }
 
+    /**
+     * add click events on move button
+     * @param node move button
+     */
     public void addOnClickEventMoveButton(Node node){
         node.setOnMouseClicked(event->{
             if(!isOperationSet() || !currentOperation.equals(Operation.MOVE))
@@ -181,6 +185,10 @@ public class MainController implements GuiEventEmitter {
         });
     }
 
+    /**
+     * add click events on build button
+     * @param node build button
+     */
     public void addOnClickEventBuildButton(Node node){
         node.setOnMouseClicked(event->{
             if(!isOperationSet() || !currentOperation.equals(Operation.BUILD)){
@@ -192,6 +200,9 @@ public class MainController implements GuiEventEmitter {
         });
     }
 
+    /**
+     * refreshes game buttons loading css style
+     */
     public void refreshButtons(){
         moveButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), currentOperation!=null && currentOperation.equals(Operation.MOVE));
         buildButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), currentOperation!=null && currentOperation.equals(Operation.BUILD));
@@ -199,14 +210,16 @@ public class MainController implements GuiEventEmitter {
         buildButton.getStyleClass().add(isBuildDome?"buildDome_button":"build_button");
     }
 
+    /**
+     * updates game buttons disabling operations that player can't do
+     * @param isMyTurn true if it is current player's turn
+     * @param turnPhase current turn phase
+     * @param isAllowedToMove true if current player's worker is allowed to move
+     * @param isAllowedToBuild true if current player's worker is allowed to build
+     * @param isRequiredToMove true if current player's worker is required to move
+     * @param isRequiredToBuild true if current player's worker is required to build
+     */
     public void updateButtons(boolean isMyTurn, TurnPhase turnPhase, boolean isAllowedToMove, boolean isAllowedToBuild, boolean isRequiredToMove, boolean isRequiredToBuild){
-//        if(!isMyTurn){
-//            disableAllButtons();
-//            return;
-//        }
-        System.out.println("Updating buttons: "+"isAllowedToMove: "+isAllowedToMove
-                +" isAllowedToBuild: "+isAllowedToBuild+" isRequiredToMove: "+isRequiredToMove
-                +" isRequiredToBuild: "+isRequiredToBuild);
         if(turnPhase.equals(TurnPhase.PLACE_WORKERS)){
             currentOperation = Operation.PLACE_WORKER;
         }else if(isAllowedToMove){
@@ -217,14 +230,18 @@ public class MainController implements GuiEventEmitter {
             currentOperation = null;
         }
         isBuildDome = false;
-//        disableButtons(false, false, !isAllowedToMove, !isAllowedToBuild);
+
         disableButtons(isRequiredToMove||isRequiredToBuild, false, !isAllowedToMove, !isAllowedToBuild);
-        //LAST MINUTE EDIT: TODO test
-        //        Platform.runLater(this::refreshButtons);
     }
 
+    /**
+     * disables game buttons
+     * @param endTurnButtonDisabled true if end turn button has to be disabled
+     * @param undoButtonDisabled true if undo button has to be disabled
+     * @param moveButtonDisabled true if move button has to be disabled
+     * @param buildButtonDisabled true if build button has to be disabled
+     */
     public void disableButtons(boolean endTurnButtonDisabled, boolean undoButtonDisabled, boolean moveButtonDisabled, boolean buildButtonDisabled){
-        //subScene.setMouseTransparent(true);
         Platform.runLater(()-> {
             refreshButtons();
             setDisabledButton(endTurnButton, endTurnButtonDisabled);
@@ -233,25 +250,46 @@ public class MainController implements GuiEventEmitter {
             setDisabledButton(buildButton, buildButtonDisabled);
         });
     }
+
+    /**
+     * changes style to disable buttons
+     * @param button button to change
+     * @param disabled true if button is currently disabled
+     */
     private void setDisabledButton(Button button, boolean disabled){
         button.setOpacity(disabled?0.5:1);
         button.setMouseTransparent(disabled);
     }
+
+    /**
+     * disable all game buttons and resets current operation
+     */
     public void disableAllButtons(){
         currentOperation = null;
         disableButtons(true, true, true, true);
     }
+
+    /**
+     * disables all game buttons and removes click events from game scene
+     */
     public void endGame() {
         subScene.setMouseTransparent(true);
         disableAllButtons();
     }
 
+    /**
+     * sets start position to null -> there are no workers selected
+     */
     public void clearStartPosition() {
         Platform.runLater( () -> {
             setStartPosition(null);
         });
     }
 
+    /**
+     * updates start position of operation and apply graphic on click position
+     * @param position start position of new operation
+     */
     private void setStartPosition(Position position) {
         if(position!=null && !isMyWorker(position)){
             return;
@@ -266,12 +304,20 @@ public class MainController implements GuiEventEmitter {
     }
 
 
+    /**
+     * applies hover indicator graphic
+     * @param position position where cursor is currently located at
+     */
     private void showCellHoverIndicator(Position position){
         if(hoverPosition==null || !hoverPosition.equals(position)){
             setHoverPosition(position);
         }
     }
 
+    /**
+     * set hover position based on cursor position
+     * @param position position of cursor
+     */
     private void setHoverPosition(Position position){
         hoverPosition = position;
 
@@ -283,6 +329,11 @@ public class MainController implements GuiEventEmitter {
         drawIndicator(hoverPosition, hoverPositionIndicator);
     }
 
+    /**
+     * draws hover graphic effect on cursor position
+     * @param position hover position
+     * @param indicator hover glow 3d object
+     */
     private void drawIndicator(Position position, Node indicator) {
         if (position == null){
             indicator.setVisible(false);
@@ -294,20 +345,27 @@ public class MainController implements GuiEventEmitter {
         }
     }
 
+    /**
+     * removes all 3d objects from 3d board
+     */
     public void clearBoard(){
             myWorkers.getChildren().clear();
             opponentWorkers.getChildren().clear();
             buildings.getChildren().clear();
-//        workers.getChildren().removeAll();
             workersMap.clear();
             map.clearHeight();
 
     }
 
+    /**
+     * draws buildings block for every level reached in current boardcell
+     * @param position current position of boardcell
+     * @param level level of boardcell
+     * @param isDome true if a dome has to be drawn
+     */
     public void drawBoardCell(Position position, Level level, boolean isDome){
         int i;
         for(i=0;i<=level.getOrd();i++){
-//            System.out.print("drawBoardCell "+position.getX()+" "+position.getY()+" level "+Level.fromIntToLevel(i));
             makeBlockBuild(position, Level.fromIntToLevel(i));
         }
         if(isDome)
@@ -318,30 +376,25 @@ public class MainController implements GuiEventEmitter {
     }
 
 
-
+    /**
+     * creates and imports all 3D objects for game scene, putting all of them into root element
+     */
     private void create3DScene() {
-//        initBoard();
         Box closeSea = new Box(72, 72, 0.4);
         closeSea.setRotate(-45);
         PhongMaterial seaTexture = new PhongMaterial();
         seaTexture.setDiffuseMap(new Image("/textures/sea.png"));
         closeSea.setMaterial(seaTexture);
-//        Cube distantSea = new Cube(10000, 10000, 0.4, new Color(59.0/255, 191.0/255, 241.0/255, 1));
         Group sea = new Group();
         sea.getChildren().addAll(closeSea);
         sea.getTransforms().add(new Translate(0, 0, 3.5));
-
-        //this.board must refer to this one
         Cube board = new Cube(boardSize, boardSize, 0.001, Color.WHITE, "/textures/walls_crop.png");
         board.getTransforms().add(new Translate(0, 0, 1));
         addOnClickEventBoard(board);
-//        String outerWallUrl = "models/outerwall.obj";
+
         String cliffUrl = "/models/Cliff.obj";
         String islandUrl = "/models/Islands.obj";
         String innerWallsUrl = "/models/InnerWalls.obj";
-//        Group outerWall = loadModel(getClass().getResource(outerWallUrl), "sample/textures/cliff.png");
-//        outerWall.getTransforms().addAll(new Rotate(+90, Rotate.X_AXIS), new Translate(0, 1.4, 0), new Scale(1.1, 1.2, 1.1));
-
         Group cliff = loadModel(getClass().getResource(cliffUrl), "/textures/cliff.png");
         cliff.getTransforms().addAll(new Rotate(+90, Rotate.X_AXIS), new Translate(-0.03, 3.02, 0.05), new Scale(9.3, 8, 9.3));
         Group islands = loadModel(getClass().getResource(islandUrl), "/textures/islands.png");
@@ -361,10 +414,13 @@ public class MainController implements GuiEventEmitter {
 
         workers.getChildren().addAll(myWorkers, opponentWorkers);
         root.getChildren().addAll(board, cliff, islands, innerWalls, sea, workers, buildings, lightGroup);
-
-
     }
 
+    /**
+     * allows player to change angle or perspective of 3D gui by typing on keyboard
+     * @param scene current scene
+     * @param camera camera set on scene
+     */
     private void addSubSceneCameraEvents(Scene scene, PerspectiveCamera camera){
         scene.addEventHandler(KeyEvent.KEY_PRESSED, event-> {
             Transform toSceneTransform = camera.getLocalToSceneTransform();
@@ -412,11 +468,6 @@ public class MainController implements GuiEventEmitter {
                     try{
                         Point3D sceneZero = toSceneTransform.inverseTransform(Point3D.ZERO);
                         Point3D xAxis = new Point3D(1,0,0);
-                        //Point3D verticalAxis = localTransform.inverseDeltaTransform(xAxis); //X axis
-                        //System.out.println(verticalAxis);
-
-                        //Point3D minusY = localTransform.deltaTransform(new Point3D(0,-1,0));
-                        //System.out.println(minusY);
 
                         //ANGLE
                         Point3D camPosition = toSceneTransform.transform(new Point3D(0,0,0));
@@ -424,7 +475,6 @@ public class MainController implements GuiEventEmitter {
                         double angle = Point3D.ZERO.angle(camPosition, camXYProjection);
 
                         if(angle<2*deltaAngle){
-                            //return;
                             break;
                         }
                         double pitchCoeff = Math.tan( Math.toRadians(45-Math.abs(45-angle)));
@@ -439,13 +489,7 @@ public class MainController implements GuiEventEmitter {
                     try{
                         Point3D sceneZero = toSceneTransform.inverseTransform(Point3D.ZERO);
                         Point3D xAxis = new Point3D(1,0,0);
-                        //Point3D verticalAxis = localTransform.inverseDeltaTransform(xAxis); //X axis
-                        //System.out.println(verticalAxis);
 
-                        //Point3D minusY = localTransform.deltaTransform(new Point3D(0,-1,0));
-
-
-                        //rotate by a variable amount dependent on 1/tan()
                         //ANGLE
                         Point3D camPosition = toSceneTransform.transform(new Point3D(0,0,0));
                         Point3D camXYProjection = new Point3D(camPosition.getX(), camPosition.getY(), 0);
@@ -470,8 +514,12 @@ public class MainController implements GuiEventEmitter {
     }
 
 
-
-
+    /**
+     * searches for position related to X and Y coordinates in coordinate map
+     * @param x click X coordinate
+     * @param y click Y coordinate
+     * @return position related to click coordinates
+     */
     private Position getClickPosition(double x, double y) {
         for(int i=0;i<5;i++){
             for(int j=0;j<5;j++) {
@@ -488,6 +536,12 @@ public class MainController implements GuiEventEmitter {
         return null;
     }
 
+    /**
+     * draws 3d worker on selected position on board
+     * @param position place position
+     * @param isMyWorker true if it's current player's worker
+     * @param color current player's color
+     */
     public void placeWorker(Position position, boolean isMyWorker, PlayerColor color){
         Platform.runLater(()->{
             Group worker = Models.fromColor(color);
@@ -502,6 +556,11 @@ public class MainController implements GuiEventEmitter {
         });
     }
 
+    /**
+     * removes 3d worker from scene
+     * @param position worker position
+     * @param color current player's color
+     */
     public void removeWorker(Position position, PlayerColor color){
         Platform.runLater(()->{
             Node removeWorker = workersMap.get(position);
@@ -513,31 +572,19 @@ public class MainController implements GuiEventEmitter {
         });
     }
 
-    private void buildPlatform(Point3D pos){
-        Color transparentKhaki = new Color(Color.DARKKHAKI.getRed(), Color.DARKKHAKI.getGreen(), Color.DARKKHAKI.getBlue(), 0);
-        Cube platform = new Cube(3,3,0.001, transparentKhaki);
-        platform.getTransforms().add(new Translate(pos.getX(), pos.getY(), pos.getZ()+1));
-        buildings.getChildren().add(platform);
-    }
-
-    //previously was boolean return type
-//    public boolean makeBuild(Position position, Level level){
-//       Platform.runLater(()->{
-//           Point3D pos = map.getCoordinate(position);
-//
-//           Group model = Models.fromLevel(level);
-//           if(model == null)
-//               return false;
-//
-//           model.getTransforms().addAll(new Translate(pos.getX(),pos.getY(),pos.getZ()+1), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3,0.3,0.3));
-//           addOnClickEventBuilding(model);
-//           buildings.getChildren().add(model);
-//
-//           buildPlatform(pos);
-//       });
-//        return true;
+//    private void buildPlatform(Point3D pos){
+//        Color transparentKhaki = new Color(Color.DARKKHAKI.getRed(), Color.DARKKHAKI.getGreen(), Color.DARKKHAKI.getBlue(), 0);
+//        Cube platform = new Cube(3,3,0.001, transparentKhaki);
+//        platform.getTransforms().add(new Translate(pos.getX(), pos.getY(), pos.getZ()+1));
+//        buildings.getChildren().add(platform);
 //    }
 
+    /**
+     * draws a building on 3d board in a certain position
+     * @param position build position
+     * @param level board cell building level
+     * @param isDome true if a dome has to be built
+     */
     public void makeBuild(Position position, Level level, boolean isDome){
         if(isDome){
             makeDomeBuild(position);
@@ -546,6 +593,12 @@ public class MainController implements GuiEventEmitter {
         }
     }
 
+    /**
+     * draws building (not dome) on a certain position on board, adds on click events on it and updates coordinate map
+     * based on height reached by the block
+     * @param position position relate to 3d board
+     * @param level current level of boarcell related to position
+     */
     private void makeBlockBuild(Position position, Level level){
         if(level == null || level.equals(Level.EMPTY)){
             return;
@@ -555,35 +608,30 @@ public class MainController implements GuiEventEmitter {
             double height= pos.getZ();
             System.out.println(height);
             Group model = Models.fromLevel(level);
-//            if(model == null)
-//                return false;
-
             model.getTransforms().addAll(new Translate(pos.getX(),pos.getY(),height+1), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3,0.3,0.3));
             addOnClickEventBuilding(model);
-            ///
             map.setHeight(position, Level.fromLevelToBuildingHeight(level));
-            ///
             buildings.getChildren().add(model);
-//            if(level.equals(Level.BASE)) {
-//                buildPlatform(pos);
-//            }
         });
 
     }
 
+    /**
+     * draws dome building on top of all blocks at the boardcell related to position
+     * @param position position on 3d board
+     */
     private void makeDomeBuild(Position position){
         Platform.runLater(()-> {
             Point3D pos = map.getCoordinate(position);
             Group dome = Models.DOME.getModel();
             dome.getTransforms().addAll(new Translate(pos.getX(), pos.getY(), pos.getZ() + 0.86), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3, 0.3, 0.3));
-//        addOnClickEventBuilding(dome);
-//            if (level0) {
-//                buildPlatform(pos);
-//            }
             buildings.getChildren().add(dome);
         });
     }
 
+    /**
+     * enum class used to import 3d objects and put texture on them by using URL
+     */
     public enum Models{
         BASE("/models/Base.obj","/textures/base.png"),
         MID("/models/Middle.obj","/textures/middle.png"),
@@ -605,6 +653,12 @@ public class MainController implements GuiEventEmitter {
         public Group getModel() {
             return loadModel(getClass().getResource(baseUrl), diffuseUrl);
         }
+
+        /**
+         * import block building 3d object related to a certain building level
+         * @param level current boardcell level
+         * @return block building 3d object
+         */
         public static Group fromLevel(Level level){
             Group model = null;
             switch (level){
@@ -621,6 +675,11 @@ public class MainController implements GuiEventEmitter {
             return model;
         }
 
+        /**
+         * import worker 3d object related to player color in game
+         * @param color current player's color
+         * @return coloured worker 3d object
+         */
         public static Group fromColor(PlayerColor color){
             if(color.equals(PlayerColor.BLUE))
                 return Models.BLUE_WORKER.getModel();
@@ -633,11 +692,21 @@ public class MainController implements GuiEventEmitter {
         }
     }
 
+    /**
+     * checks in workers map if worker just clicked is one of current player's workers
+     * @param position click position where a 3d worker is located
+     * @return true if worker just clicked is one of current player's workers
+     */
     private boolean isMyWorker(Position position){
         Node worker = workersMap.get(position);
         return myWorkers.getChildren().contains(worker);
     }
 
+    /**
+     * checks if a worker has already been selected and emits move or build view event based on
+     * which operation is currently selected
+     * @param destinationPosition destination position of selected operation
+     */
     private void handleCellClickEvent(Position destinationPosition){
         if (isSelectedWorker() && !isMyWorker(destinationPosition)) {
            if(currentOperation!=null){
@@ -648,15 +717,18 @@ public class MainController implements GuiEventEmitter {
                }
            }
         } else {
-            //set start position
             setStartPosition(destinationPosition);
         }
     }
 
-
+    /**
+     * adds on click event on 3d building block object just created
+     * allows it to update start position if there's not a selected worker or to set destination
+     * position in order to launch events
+     * @param node 3d building block object just created
+     */
     private void addOnClickEventBuilding(Node node){
         node.setOnMousePressed(e-> {
-            System.out.println(e.getSource());
             newOnClickXCoord = node.getBoundsInParent().getCenterX();
             newOnClickYCoord = node.getBoundsInParent().getCenterY();
             Position destinationPosition = getClickPosition(newOnClickXCoord,newOnClickYCoord);
@@ -665,16 +737,17 @@ public class MainController implements GuiEventEmitter {
         addHoverIndicator(node, pr -> getClickPosition(node.getBoundsInParent().getCenterX(), node.getBoundsInParent().getCenterY()));
     }
 
+    /**
+     * adds on click event on 3d game Board object, allows it to place worker on board at PlaceWorker turn phase
+     * or update start position in a normal turn if there are no worker's selected
+     * @param node 3d board object
+     */
     private void addOnClickEventBoard(Node node) {
         node.setOnMousePressed(e -> {
-            System.out.println(e.getSource());
             PickResult pr = e.getPickResult();
             Position destinationPosition = getClickPosition(pr.getIntersectedPoint().getX(), pr.getIntersectedPoint().getY());
-            //The position should be taken from an apposite map and not from the intersectedPoint
-
            if(currentOperation!=null){
                if (currentOperation.equals(Operation.PLACE_WORKER)) {
-                   System.out.println(destinationPosition.getX()+" "+destinationPosition.getY());
                    emitPlaceWorker(destinationPosition);
                }else{
                    handleCellClickEvent(destinationPosition);
@@ -684,6 +757,11 @@ public class MainController implements GuiEventEmitter {
         addHoverIndicator(node, pr -> getClickPosition(pr.getIntersectedPoint().getX(), pr.getIntersectedPoint().getY()));
     }
 
+    /**
+     * adds event to 3d object which shows hover indicator graphic in a certain position on 3d board
+     * @param node 3d object to set hover indicator on
+     * @param pickResultConsumer coordinates on 3d board related to where the cursor is currently located
+     */
     private void addHoverIndicator(Node node, Function<PickResult, Position> pickResultConsumer){
         node.setOnMouseMoved(e -> {
             PickResult pr = e.getPickResult();
@@ -696,22 +774,31 @@ public class MainController implements GuiEventEmitter {
     }
 
 
+    /**
+     * adds on click event to 3d worker on baord, allows it to set start position or do other operations
+     * @param node 3d worker just created
+     * @param isMyWorker true if clicked worker one of current player's worker
+     */
     private void addOnClickEventWorker(Node node, boolean isMyWorker){
             node.setOnMousePressed(e->{
-                System.out.println(e.getSource());
                 onClickXCoord = node.getBoundsInParent().getCenterX();
                 onClickYCoord = node.getBoundsInParent().getCenterY();
                 Position workerPosition = getClickPosition(onClickXCoord, onClickYCoord);
                 if(isSelectedWorker() || isMyWorker){
                     handleCellClickEvent(workerPosition);
                 }else{
-//                    setMessage("Not your worker");
                     setMessage("You can't move the opponent's workers.");
                 }
             });
             addHoverIndicator(node, pr -> getClickPosition(node.getBoundsInParent().getCenterX(), node.getBoundsInParent().getCenterY()));
     }
 
+    /**
+     * updates workers map when a 3d worker is moved on the board, changing his position on map
+     * @param startPosition position where a worker is located
+     * @param destinationPosition destination position of worker's move
+     * @param pushPosition position where a worker located in destination position is pushed to
+     */
     private void updateWorkersMap(Position startPosition, Position destinationPosition, Position pushPosition){
         Node worker1 = workersMap.get(startPosition);
         Node worker2 = workersMap.get(destinationPosition);
@@ -723,6 +810,12 @@ public class MainController implements GuiEventEmitter {
         workersMap.put(destinationPosition, worker1);
     }
 
+    /**
+     * translates 3d worker object by coordinates got from transform
+     * @param node 3d worker object to translate
+     * @param start starting point of translation
+     * @param dest destination point of translation
+     */
     private void translateWorker(Node node, Point3D start, Point3D dest)  {
         try{
             Transform localTransform = node.getLocalToSceneTransform();
@@ -734,27 +827,25 @@ public class MainController implements GuiEventEmitter {
         }
     }
 
+    /**
+     * moves 3d worker on board handling possible push movements of other 3d workers on different position
+     * @param startPosition start position on movement
+     * @param destinationPosition destination position of movement
+     * @param pushPosition position where a worker located in destination position is pushed to
+     */
     public void moveWorker(Position startPosition, Position destinationPosition, Position pushPosition){
         Node tmpWorker = workersMap.get(startPosition);
         boolean isMyWorker = myWorkers.getChildren().contains(tmpWorker);
         Node pushedWorker = workersMap.get(destinationPosition);
         updateWorkersMap(startPosition, destinationPosition, pushPosition);
-        //for seamless multiple operations
         if(isMyWorker){
             setStartPosition(destinationPosition);
         }
         Platform.runLater(()-> {
-
-//                    }
                     if (tmpWorker == null) {
                         return;
                     }
-//            double dx = tmpWorker.getBoundsInParent().getCenterX()-dest.getCenterX();
-//            double dy = tmpWorker.getBoundsInParent().getCenterY()-dest.getCenterY();
-//            double dz = tmpWorker.getBoundsInParent().getCenterZ()-dest.getCenterZ();
-
                     Point3D destCenter1 = map.getCoordinate(destinationPosition);
-//                    double height = map.getHeight(destinationPosition.getX(), destinationPosition.getY());
                     Bounds startBounds1 = tmpWorker.getBoundsInParent();
                     Point3D startCenter1 = new Point3D(startBounds1.getCenterX(), startBounds1.getCenterY(), startBounds1.getCenterZ());
                     translateWorker(tmpWorker, startCenter1, destCenter1);
@@ -766,64 +857,44 @@ public class MainController implements GuiEventEmitter {
                         Point3D startCenter2 = new Point3D(startBounds2.getCenterX(), startBounds2.getCenterY(), startBounds2.getCenterZ());
                         translateWorker(pushedWorker, startCenter2, destCenter2);
                     }
-
                 });
-
     }
 
+    /**
+     * moves 3d worker on board from his current position to another
+     * @param startPosition position where a 3d worker is currently located
+     * @param destinationPosition position where 3d worker is moving to
+     */
     public void moveWorker(Position startPosition, Position destinationPosition){
         moveWorker(startPosition, destinationPosition, null);
     }
 
-    public void build(Position start, Position destination, boolean isDome, Level level){
-        if(isDome){
-            makeDomeBuild(destination);
-        }else{
-            makeBlockBuild(destination, level);
-        }
 
-
-
-//        if(destGuiCell.getLevel().equals(Dimension.EMPTY))
-//        {
-//            if(isDome)
-//                buildDome(destination, true);
-//            else
-//                buildBase(destination);
+//    public void build(Position start, Position destination, boolean isDome, Level level){
+//        if(isDome){
+//            makeDomeBuild(destination);
+//        }else{
+//            makeBlockBuild(destination, level);
 //        }
-//        else if(destGuiCell.getLevel().equals(Dimension.BASE))
-//        {
-//            if(isDome)
-//            {
-//                board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
-//                buildDome(destination, false);
-//            }
-//            else {
-//                    board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
-//                    buildMiddle(destination);
-//                }
-//            }
-//        else if(destGuiCell.getLevel().equals(Dimension.MID))
-//        {
-//            if(isDome)
-//            {
-//                board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
-//                buildDome(destination, false);
-//            }
-//            else {
-//                board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
-//                buildTop(destination);
-//            }
-//        }
-//        else {
-//            board[destination.getX()][destination.getY()].getLastBuilding().setMouseTransparent(true);
-//            buildDome(destination, false);
-//        }
-    }
+//    }
 
+    /**
+     * loads 3d object and applies texture on it
+     * @param url url related to 3d object to import
+     * @param diffuseTexture url related to texture to apply
+     * @return 3d object imported with texture applied on
+     */
     private static Group loadModel(URL url, String diffuseTexture){
         return loadModel(url, null, diffuseTexture);
     }
+
+    /**
+     * loads 3d object, sets his color and applies texture on it
+     * @param url url related to 3d object to import
+     * @param color color to set on 3d object
+     * @param diffuseTexture  url related to texture to apply
+     * @return 3d object imported with texture applied on
+     */
     private static Group loadModel(URL url, Color color, String diffuseTexture){
         Group modelRoot = new Group();
         ObjModelImporter importer = new ObjModelImporter();
@@ -847,8 +918,9 @@ public class MainController implements GuiEventEmitter {
     }
 
 
-
-
+    /**
+     * class used to generate 3d cubes with different size, color or texture
+     */
     private class Cube extends Box {
         public Cube(double dx, double dy, double dz, Color color, String diffuseTexture){
             super(dx,dy,dz);
@@ -870,7 +942,12 @@ public class MainController implements GuiEventEmitter {
     }
 
 
-
+    /**
+     * creates full game scene having on his left side all player's nicknames with related Card image,
+     * on right side game buttons to selected current operation
+     * and game Subscene on center containing 3d scene with all 3d imported objects put in the right position
+     * @return full game scene
+     */
     public Scene gameScene(){
         final int TRIGLIPH_HEIGHT = 40;
         create3DScene();
@@ -885,8 +962,6 @@ public class MainController implements GuiEventEmitter {
 
         BorderPane background = new BorderPane();
 
-//        vbButtons.setHgap(28);
-//        vbButtons.setPrefRows(4);
         initGameButtons();
         vbButtons.getChildren().addAll(endTurnButton,undoButton, moveButton, buildButton);
 
@@ -923,32 +998,34 @@ public class MainController implements GuiEventEmitter {
         subScene.widthProperty().bind(background.widthProperty().subtract(vbPlayers.widthProperty()).subtract(vbButtons.widthProperty()));
 
         addSubSceneCameraEvents(scene,camera);
-//        operation = Operation.PLACE_WORKER;
         active = true;
         return scene;
     }
 
+    /**
+     * resizes username labels and card images when window is resized
+     */
     private void resizePlayers(){
         int numPlayers = vbPlayers.getChildren().size();
         if(numPlayers > 2 && subScene.getHeight()< 680){
-//                vbPlayers.getStyleClass().remove();
             vbPlayers.getChildren().forEach( child -> {
                 child.setScaleY(.75);
                 child.setScaleX(.75);
             });
             vbPlayers.getStyleClass().add("left_vbox_tiny");
-//                vbPlayers.getStyleClass().remove("left_vbox_big");
         }else{
             vbPlayers.getChildren().forEach( child -> {
                 child.setScaleY(1);
                 child.setScaleX(1);
             });
             vbPlayers.getStyleClass().remove("left_vbox_tiny");
-//                vbPlayers.getStyleClass().add("left_vbox_big");
 
         }
     }
 
+    /**
+     * sizes game buttons adding them css style and on click events
+     */
     private void initGameButtons(){
         undoButton.setPrefSize(80,80);
         undoButton.getStyleClass().addAll("undo_button","santorini_button");
@@ -965,6 +1042,10 @@ public class MainController implements GuiEventEmitter {
     }
 
 
+    /**
+     * shows player's usernames with related card image on left side of game scene
+     * @param players list of players in the game
+     */
     public void displayPlayers(List<Player> players){
         Platform.runLater(()->{
                 vbPlayers.getChildren().clear();
@@ -987,6 +1068,11 @@ public class MainController implements GuiEventEmitter {
     }
 
 
+    /**
+     * sizes image for player's card
+     * @param name url of card image
+     * @return player's card image
+     */
     private ImageView cardImage(String name){
         ImageView imageView = new ImageView("/textures/"+name+".png");
         imageView.setFitHeight(168);
@@ -994,32 +1080,43 @@ public class MainController implements GuiEventEmitter {
         return imageView;
     }
 
-    private ImageView buttonImage(String name){
-        ImageView imageView = new ImageView(name);
-        imageView.setFitHeight(80);
-        imageView.setFitWidth(80);
-        return imageView;
-    }
-
+    /**
+     * emits move event to gui model
+     * @param startPosition start position of movement
+     * @param destinationPosition destination position of movement
+     */
     public void emitMove(Position startPosition, Position destinationPosition){
-        System.out.println(startPosition.getX()+" "+startPosition.getY());
-        System.out.println(destinationPosition.getX()+" "+destinationPosition.getY());
         listener.onMove(startPosition, destinationPosition);
     }
+
+    /**
+     * emits build event to gui model
+     * @param workerPosition position where a worker is located
+     * @param buildPosition position where a worker il building at
+     * @param isDome true if the worker is building a dome
+     */
     public void emitBuild(Position workerPosition, Position buildPosition, boolean isDome){
-        System.out.println(workerPosition.getX()+" "+workerPosition.getY());
-        System.out.println(buildPosition.getX()+" "+buildPosition.getY());
         listener.onBuild(workerPosition, buildPosition, isDome);
     }
 
+    /**
+     * emits undo event to gui model
+     */
     private void emitUndo() {
         listener.onUndo();
     }
 
+    /**
+     * emits end turn event to gui model
+     */
     public void emitEndTurn(){
         listener.onEndTurn();
     }
 
+    /**
+     * emits place worker event to gui model
+     * @param position position where a worker is going to be placed
+     */
     public void emitPlaceWorker(Position position){
         listener.onPlaceWorker(position);
     }

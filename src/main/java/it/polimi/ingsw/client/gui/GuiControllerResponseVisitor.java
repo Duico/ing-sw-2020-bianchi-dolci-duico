@@ -6,12 +6,20 @@ import it.polimi.ingsw.model.Operation;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
+/**
+ * class which manages messages shown to client's view when a ControllerResponse is received
+ * we need only a single method to handle different types of responses
+ */
 public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
     private final GuiModel guiModel;
     public GuiControllerResponseVisitor(GuiModel guiModel) {
         this.guiModel = guiModel;
     }
 
+    /**
+     * shows messages to client's view when an operation fails
+     * @param r controller response
+     */
     @Override
     public void visit(FailedOperationControllerResponse r) {
         guiModel.failedOperation();
@@ -44,6 +52,10 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
         }
     }
 
+    /**
+     * shows messages to client's view when an undo operation fails
+     * @param r controller response
+     */
     @Override
     public void visit(FailedUndoControllerResponse r) {
         guiModel.setMessage("You're not allowed to undo anymore.");
@@ -69,6 +81,10 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
 
     }
 
+    /**
+     * shows messages to client's view when an operation is required before ending current turn
+     * @param r controller response
+     */
     @Override
     public void visit(RequiredOperationControllerResponse r) {
         if(r.getRequiredOperation().equals(Operation.MOVE)){
@@ -81,6 +97,10 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
     }
 
 
+    /**
+     * shows messages to client's view when it's not his turn
+     * @param r controller response
+     */
     @Override
     public void visit(NotCurrentPlayerControllerResponse r) {
         guiModel.setMessage("This is not your turn, wait...");
@@ -97,6 +117,10 @@ public class GuiControllerResponseVisitor implements ControllerResponseVisitor {
 
     }
 
+    /**
+     * shows alert message box to client's view
+     * @param message message to show
+     */
     public void alert(String message){
         Platform.runLater(()->{
             Alert alert = new Alert(Alert.AlertType.WARNING);

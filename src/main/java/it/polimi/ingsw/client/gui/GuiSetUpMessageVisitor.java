@@ -5,6 +5,10 @@ import it.polimi.ingsw.server.message.ConnectionMessage;
 import it.polimi.ingsw.server.message.InitSetUpMessage;
 import it.polimi.ingsw.server.message.SignUpFailedSetUpMessage;
 
+/**
+ * class which manages all set up messages received from server updating GUI current scene
+ * we need only a single method to handle different types of set up messages
+ */
 public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
     private final SceneEventEmitter sceneEventEmitter;
     private final GuiModel guiModel;
@@ -15,6 +19,10 @@ public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
     }
 
 
+    /**
+     * handles different reasons why sign up failed showing different messages on alert message box
+     * @param message sign up message received
+     */
     @Override
     public void visit(SignUpFailedSetUpMessage message) {
             if(message.getReason().equals(SignUpFailedSetUpMessage.Reason.INVALID_NICKNAME)) {
@@ -28,6 +36,11 @@ public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
             }
     }
 
+    /**
+     * updates login scene in a different way for first player connected to lobby and others
+     * then updates scene if login was successfull
+     * @param message set up message received
+     */
     @Override
     public void visit(InitSetUpMessage message) {
             if((message.getResponse().equals(InitSetUpMessage.SignUpParameter.STARTGAME)) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.NICKNAME)) {
@@ -36,7 +49,7 @@ public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
                 guiModel.askSetUpInfo(askNumPlayers, isAskPersistency);
             }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING)) {
                 boolean starting=message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING);
-                System.out.println("correct sign up");
+//                System.out.println("correct sign up");
                 if(starting) {
                     guiModel.setMyPlayer(message.getPlayer());
                 }else {
@@ -47,13 +60,7 @@ public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
 
     @Override
     public void visit(ConnectionMessage connectionMessage) {
-            /*if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION)){
-                sceneEventEmitter.emitEvent(new SceneEvent(SceneEvent.SceneType.CONNECTION_CLOSED));
-                //sceneEventEmitter closeWindow
-            }else if(connectionMessage.getType().equals(ConnectionMessage.Type.DISCONNECTION_TOO_MANY_PLAYERS)){
-                alert("You have been kicked from the game, because there are too many players.");
-                //sceneEventEmitter closeWindow
-            }*/
+
     }
 
     private void alert(String message){

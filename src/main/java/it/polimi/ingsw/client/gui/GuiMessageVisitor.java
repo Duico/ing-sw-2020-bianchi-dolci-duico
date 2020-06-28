@@ -10,7 +10,9 @@ import it.polimi.ingsw.server.message.ConnectionMessage;
 import it.polimi.ingsw.server.message.SetUpMessage;
 import it.polimi.ingsw.view.ViewEventListener;
 
-
+/**
+ * class which has reference to all gui visitors and is created before the first GUI scene is launched
+ */
 public class GuiMessageVisitor implements MessageVisitor {
 
     protected GuiModelEventVisitor modelEventVisitor;
@@ -42,7 +44,7 @@ public class GuiMessageVisitor implements MessageVisitor {
 
     @Override
     public void visit(ConnectionMessage evt){
-        //evt.accept(setUpMessageVisitor);
+
     }
 
     @Override
@@ -63,8 +65,3 @@ public class GuiMessageVisitor implements MessageVisitor {
         evt.accept(this);
     }
 }
-/*public class GuiMessageVisitor extends MessageVisitor {
-    public GuiMessageVisitor(GuiModelEventVisitor guiModelEventVisitor, GuiControllerResponseVisitor guiControllerResponseVisitor, GuiSetUpMessageVisitor guiSetUpMessageVisitor, GuiClientConnectionEventVisitor guiClientConnectionEventVisitor) {
-        super(guiModelEventVisitor, guiControllerResponseVisitor, guiSetUpMessageVisitor, guiClientConnectionEventVisitor);
-    }
-}*/

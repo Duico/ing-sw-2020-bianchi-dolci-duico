@@ -14,6 +14,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class which manages GUI behaviour calling methods from MainController, ChooseCardController and LoginController,
+ * and launches view events
+ */
 public class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     private SceneEvent.SceneType sceneType;
@@ -42,9 +46,14 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     }
 
+    /**
+     * shows message into a message box in game scene
+     * @param message message shown in Gui message box
+     */
     public void setMessage(String message){
         mainController.setMessage(message);
     }
+
 
     public void setCard(Player evtPlayer, Card evtCard){
         for(Player player:players)
@@ -63,15 +72,26 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         return currentPlayer.equalsUuid(myPlayer);
     }
 
+    /**
+     * checks if is current player's turn and asks informations about turn at server
+     * in order to update game buttons
+     */
     public void requireButtonUpdate(){
         if(isMyTurn()) {
-            System.out.println("Require Button Update");
             emitViewEvent(new InfoViewEvent());
         }else{
             mainController.disableAllButtons();
         }
     }
 
+    /**
+     * updates game buttons based on allowed/required to move/build properties
+     * in order to allow or not player to do movements or buildings
+     * @param isAllowedToMove true if current player is allowed to move at the moment
+     * @param isAllowedToBuild true if current player is allowed to build at the moment
+     * @param isRequiredToMove true if current player is required to move at the moment
+     * @param isRequiredToBuild true if current player is required to build at the moment
+     */
     public void setButtonInfo(boolean isAllowedToMove, boolean isAllowedToBuild, boolean isRequiredToMove, boolean isRequiredToBuild){
         this.isAllowedToMove = isAllowedToMove;
         this.isAllowedToBuild = isAllowedToBuild;
@@ -80,11 +100,16 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         mainController.updateButtons(isMyTurn(), turnPhase, isAllowedToMove, isAllowedToBuild, isRequiredToMove, isRequiredToBuild);
     }
 
-    private void clearButtonInfo(boolean isPlaceWorkers) {
-        isAllowedToMove = isAllowedToBuild = !isPlaceWorkers;
-        isRequiredToMove = isRequiredToBuild = false;
-    }
+//    private void clearButtonInfo(boolean isPlaceWorkers) {
+////        isAllowedToMove = isAllowedToBuild = !isPlaceWorkers;
+////        isRequiredToMove = isRequiredToBuild = false;
+////    }
 
+    /**
+     * puts 3D worker related to a player on a Gui BoardCell
+     * @param position position where worker is placed
+     * @param player player which places his worker
+     */
     public void placeWorker(Position position, Player player){
         board.setWorker(new Worker(), position);
         if(player.equalsUuid(myPlayer))
@@ -92,6 +117,7 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         else
             mainController.placeWorker(position,false, player.getColor());
     }
+
 
     public void setCardDeck(List<String> cardDeck){
         chooseCardController.setCardDeck(cardDeck);
@@ -109,6 +135,9 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         chooseCardController.showChooseFirstPlayer(getUsernames());
     }
 
+    /**
+     * @return list of usernames related to any player in the game
+     */
     private List<String> getUsernames(){
         List<String> usernames= new ArrayList<>();
         for(Player player:players){
@@ -122,9 +151,7 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         chooseCardController.setIsChallenger(isChallenger);
     }
 
-//    public void initChosenCardsChallenger(List<String> cards){
-//        chooseCardController.initChosenCardsChallenger(cards);
-//    }
+
 
     public void setWaitLabelVisible(boolean isVisible){
         chooseCardController.waitLabel.setVisible(isVisible);
@@ -134,9 +161,6 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         chooseCardController.loadCards(cards);
     }
 
-//    public void setAskNumPlayers(boolean askNumPlayers){
-//        this.askNumPlayers = askNumPlayers;
-//    }
 
     public Player getMyPlayer() {
         return myPlayer;
@@ -169,6 +193,10 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         this.turnPhase = turnPhase;
     }
 
+    /**
+     * updates buttons and message Box on Game scene at every new turn
+     * @param turnPhase current game's turn phase
+     */
     public void newTurn(TurnPhase turnPhase){
         setTurnPhase(turnPhase);
         if(turnPhase.equals(TurnPhase.PLACE_WORKERS) || turnPhase.equals(TurnPhase.NORMAL)){
@@ -187,6 +215,11 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         }
     }
 
+    /**
+     * removes all workers of a player from GUI board when looses the game
+     * and updates left side of game scene deleting his name and card image
+     * @param playerDefeat
+     */
     public void playerDefeat(Player playerDefeat){
 
         for(int i=0;i<playerDefeat.getNumWorkers();i++) {
@@ -199,10 +232,12 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
                 players.remove(players.get(i));
         }
 
-//        mainController.displayPlayers(players);
 
     }
 
+    /**
+     * sets current operation on main Controller related to turnphase
+     */
     public void setDefaultOperation() {
         if (turnPhase.equals(TurnPhase.PLACE_WORKERS)) {
             mainController.setOperation(MainController.Operation.PLACE_WORKER);
@@ -211,13 +246,7 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         }
     }
 
-//    private boolean checkDistance(Position start, Position destination){
-//        int dx = start.getX()-destination.getX();
-//        int dy = start.getY()-destination.getY();
-//        if(dx<=1 && dx>=-1 && dy<=1 && dy>=-1)
-//            return true;
-//        return false;
-//    }
+
 
 
     public LoginController getLoginController() {
@@ -258,21 +287,18 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         loginController.correctSignUp();
     }
 
-//    public boolean isSetLoginController(){
-//        return loginController !=null;
-//    }
-//    public boolean isSetChosecardController(){
-//        return chooseCardController !=null;
-//    }
-//    public boolean isSetMainController(){
-//        return mainController !=null;
-//    }
 
     public void endGameCondition(){
         this.endGame=true;
         mainController.endGame();
     }
 
+    /**
+     *  moves 3D workers on Gui Board
+     * @param startPosition position where a worker is located at
+     * @param destPosition position where a worker is moving to
+     * @param pushPosition position where the worker already located at destination position is pushed to
+     */
     public void moveOnTheBoard(Position startPosition, Position destPosition, Position pushPosition){
         if(pushPosition!=null && board.getBoardCell(destPosition).getWorker()!=null)
             mainController.moveWorker(startPosition, destPosition, pushPosition);
@@ -283,28 +309,44 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     }
 
+
+    /**
+     * adds a 3D building on destPosition on Gui Board
+     * @param workerPosition position where a worker is located
+     * @param destPosition build position
+     * @param isDome true if the worker is building a dome
+     */
     public void buildOnTheBoard(Position workerPosition, Position destPosition, boolean isDome){
         board.build(workerPosition, destPosition, isDome);
         Level level = board.getBoardCell(destPosition).getLevel();
-        System.out.println(level);
-        System.out.println(isDome);
         mainController.makeBuild(destPosition, level, isDome);
     }
 
+    /**
+     * removes all 3D workers and buildings from Gui Board and then replaces them all again as they were before
+     * last operation done
+     */
     public void undoOnTheBoard(){
         Platform.runLater( () -> {
             mainController.clearBoard();
             placeAllBuildings();
             placeAllWorkers();
-//        mainController.updateOperationButtons(true, true);
         });
     }
+
+    /**
+     * updates startPosition of main Controller at every new turn
+     */
     public void failedOperation() {
         if(turnPhase.equals(TurnPhase.PLACE_WORKERS) || turnPhase.equals(TurnPhase.NORMAL)){
             mainController.clearStartPosition();
         }
     }
 
+    /**
+     * method that invoke persistency, launching game scene at his last state before being closed
+     * caused to a player disconnection
+     */
     public void resumeGame() {
         if(!(turnPhase.equals(TurnPhase.PLACE_WORKERS)||turnPhase.equals(TurnPhase.NORMAL))) {
             throw new RuntimeException("Trying to resume from an invalid game... quitting");
@@ -321,10 +363,13 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
 
     }
 
-    //TODO create Class workersMap
+
+    /**
+     * method called for undo event or persistency
+     * places all 3D workers on 3D board
+     * @return true if workers are successfully placed
+     */
     private boolean placeAllWorkers(){
-        //TO call above
-        //mainController.clearBoard();
         int count = 0;
         for(Player player: players){
             boolean isMyPlayer = player.equalsUuid(myPlayer);
@@ -340,6 +385,11 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         else return false;
     }
 
+    /**
+     * method called for undo event or persistency
+     * places all buildings on 3D board
+     * @return true if buildings are successfully placed
+     */
     private boolean placeAllBuildings(){
         for(int y=0; y<board.getHeight(); y++){
             for(int x=0; x<board.getWidth(); x++){
@@ -357,6 +407,10 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         return true;
     }
 
+    /**
+     * shows alert message on current scene
+     * @param message message to show
+     */
     public void alert(String message){
         Platform.runLater(()->{
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -373,26 +427,49 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         this.sceneType = sceneType;
     }
 
+    /**
+     * emits move event to server
+     * @param startPosition start position of movement
+     * @param destPosition destination position of movement
+     */
     @Override
     public void onMove(Position startPosition, Position destPosition) {
         emitViewEvent(new MoveViewEvent(startPosition, destPosition));
     }
 
+    /**
+     * emits build event to server
+     * @param workerPosition position where a worker is located at
+     * @param buildPosition position where a worker is building at
+     * @param isDome true if worker is building a dome
+     */
     @Override
     public void onBuild(Position workerPosition, Position buildPosition, boolean isDome) {
         emitViewEvent(new BuildViewEvent(workerPosition, buildPosition, isDome));
     }
 
+    /**
+     * emits undo event to server
+     */
     @Override
     public void onUndo(){
         emitViewEvent(new UndoViewEvent());
     }
 
+    /**
+     * emits end turn event to server
+     */
     @Override
     public void onEndTurn() {
         emitViewEvent(new EndTurnViewEvent());
     }
 
+    /**
+     * emits sign un event to server
+     * @param username player's entered username
+     * @param numPlayers number of players selected
+     * @param persistency true if player wants to load a game from disk
+     */
     @Override
     public void onLogin(String username, Integer numPlayers, boolean persistency) {
         if(askNumPlayers && numPlayers==null){
@@ -401,16 +478,28 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         emitSignUp(new SignUpMessage(username, numPlayers, persistency));
     }
 
+    /**
+     * emits choose card event to server
+     * @param chosenCard name of chosen card
+     */
     @Override
     public void onChooseCard(String chosenCard) {
         emitViewEvent(new CardViewEvent(chosenCard));
     }
 
+    /**
+     * emits challenger card event to server
+     * @param challengerCards list of cards chosen by challenger player
+     */
     @Override
     public void onChallengeCards(List<String> challengerCards) {
         emitViewEvent(new ChallengerCardViewEvent(challengerCards));
     }
 
+    /**
+     * emits first player event to server
+     * @param firstPlayer name of first player chosen
+     */
     @Override
     public void onFirstPlayer(String firstPlayer) {
         for(Player player:players){
@@ -419,6 +508,10 @@ public class GuiModel extends ClientEventEmitter implements GuiEventListener {
         }
     }
 
+    /**
+     * emits place worker event to server
+     * @param position position where the player wants to place his worker
+     */
     @Override
     public void onPlaceWorker(Position position) {
         emitViewEvent(new PlaceViewEvent(position));

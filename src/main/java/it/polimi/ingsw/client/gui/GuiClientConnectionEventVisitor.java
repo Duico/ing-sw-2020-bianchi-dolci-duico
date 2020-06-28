@@ -3,6 +3,9 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.ClientConnectionEventVisitor;
 import it.polimi.ingsw.client.event.ClientConnectionEvent;
 
+/**
+ * class which manages messages shown to client's view when a ClientConnection event is received
+ */
 public class GuiClientConnectionEventVisitor implements ClientConnectionEventVisitor {
     private final GuiModel guiModel;
     private final SceneEventEmitter sceneEventEmitter;
@@ -11,10 +14,15 @@ public class GuiClientConnectionEventVisitor implements ClientConnectionEventVis
         this.sceneEventEmitter = sceneEventEmitter;
     }
 
+    /**
+     * shows alert message to client's view when errors with connection are received
+     * launched disconnection scene when disconnection occurs
+     * @param evt
+     */
     @Override
     public void visit(ClientConnectionEvent evt) {
         if(evt.getReason().equals(ClientConnectionEvent.Reason.ERROR_ON_THE_SOCKET)){
-            guiModel.alert("Errore nella connessione con il server.");
+            guiModel.alert("Couldn't connect to server.");
         }else if(evt.getReason().equals(ClientConnectionEvent.Reason.DISCONNECTION_TOO_MANY_PLAYERS)) {
             guiModel.alert("You have been kicked from the game, because there are too many players.");
         }

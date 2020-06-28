@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.Position;
 import java.util.EventListener;
 import java.util.List;
 
+/**
+ * listener class of gui events
+ */
 public interface GuiEventListener extends EventListener {
     void onMove(Position startPosition, Position destPosition);
     void onBuild(Position workerPosition, Position buildPosition, boolean isDome);
