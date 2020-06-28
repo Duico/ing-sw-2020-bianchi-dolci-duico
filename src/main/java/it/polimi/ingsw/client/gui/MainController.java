@@ -155,7 +155,6 @@ public class MainController implements GuiEventEmitter {
      */
     public void addOnClickEventEndTurnButton(Node node){
         node.setOnMouseClicked(event->{
-            System.out.println("Emit endturn");
             emitEndTurn();
         });
     }
@@ -165,7 +164,6 @@ public class MainController implements GuiEventEmitter {
      * @param node undo button
      */
     public void addOnClickEventUndoButton(Node node){
-        System.out.println("Emit undo");
         node.setOnMouseClicked(event->{
             emitUndo();
         });
@@ -606,7 +604,6 @@ public class MainController implements GuiEventEmitter {
         Platform.runLater(()->{
             Point3D pos = map.getCoordinate(position);
             double height= pos.getZ();
-            System.out.println(height);
             Group model = Models.fromLevel(level);
             model.getTransforms().addAll(new Translate(pos.getX(),pos.getY(),height+1), new Rotate(+90, Rotate.X_AXIS), new Scale(0.3,0.3,0.3));
             addOnClickEventBuilding(model);

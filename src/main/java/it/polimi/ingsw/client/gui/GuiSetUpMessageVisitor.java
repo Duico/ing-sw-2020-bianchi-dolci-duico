@@ -49,7 +49,6 @@ public class GuiSetUpMessageVisitor implements SetUpMessageVisitor {
                 guiModel.askSetUpInfo(askNumPlayers, isAskPersistency);
             }else if(message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_WAIT) || message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING)) {
                 boolean starting=message.getResponse().equals(InitSetUpMessage.SignUpParameter.CORRECT_SIGNUP_STARTING);
-//                System.out.println("correct sign up");
                 if(starting) {
                     guiModel.setMyPlayer(message.getPlayer());
                 }else {

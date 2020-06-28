@@ -125,7 +125,6 @@ public class ChooseCardController implements GuiEventEmitter {
             }else{
                 if(chosenCards.size()<requiredNumCards)
                 {
-                    System.out.println("add"+name);
                     chosenCards.add(name);
                     node.setIsSelected(true);
                 }
