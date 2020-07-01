@@ -1,0 +1,114 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GameViewEventListener</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.controller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GameViewEventListener (it.polimi.ingsw.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">GameViewEventListener</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.controller;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.view.event.*;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.util.EventListener;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;/**
+<i>8</i>&nbsp; * listener interface of all kind of events received from view
+<i>9</i>&nbsp; */
+<i>10</i>&nbsp;public interface GameViewEventListener extends EventListener {
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;     /**
+<i>13</i>&nbsp;      * Defines behavior in case of a MoveViewEvent. Check the condition of a valid movement calling model functions
+<i>14</i>&nbsp;      * @param e move event
+<i>15</i>&nbsp;      */
+<i>16</i>&nbsp;     void move(MoveViewEvent e);
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;     /**
+<i>19</i>&nbsp;      * Defines behavior in case of a BuildViewEvent. Check the condition of a valid building calling model functions
+<i>20</i>&nbsp;      * @param e build event
+<i>21</i>&nbsp;      */
+<i>22</i>&nbsp;     void build(BuildViewEvent e);
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;     /**
+<i>25</i>&nbsp;      * Defines behavior in case of a PlaceViewEvent. Check the condition of a valid place of a worker calling model functions
+<i>26</i>&nbsp;      * @param e place event
+<i>27</i>&nbsp;      */
+<i>28</i>&nbsp;     void place(PlaceViewEvent e);
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;     /**
+<i>31</i>&nbsp;      * Defines behavior in case of a CardEvent. Check the condition of the setting of a card calling model functions
+<i>32</i>&nbsp;      * @param e card event
+<i>33</i>&nbsp;      */
+<i>34</i>&nbsp;     void setPlayerCard(CardViewEvent e);
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;     /**
+<i>37</i>&nbsp;      * Defines behavior in case of a UndoViewEvent. Check the condition of a valid undo for a player calling model functions
+<i>38</i>&nbsp;      * @param e undo event
+<i>39</i>&nbsp;      */
+<i>40</i>&nbsp;     void undo(UndoViewEvent e);
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;     /**
+<i>43</i>&nbsp;      * Defines behavior in case of a FirstPlayerViewEvent. Check the condition of a valid setting of the first player calling model functions
+<i>44</i>&nbsp;      * @param e first player event
+<i>45</i>&nbsp;      */
+<i>46</i>&nbsp;     void setFirstPlayer(FirstPlayerViewEvent e);
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;     /**
+<i>49</i>&nbsp;      * Defines behavior in case of a EndTurnViewEvent. Check the condition of a valid end turn calling model functions
+<i>50</i>&nbsp;      * @param e end turn event
+<i>51</i>&nbsp;      */
+<i>52</i>&nbsp;     void endTurn(EndTurnViewEvent e);
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;     /**
+<i>55</i>&nbsp;      * Defines behavior in case of a ChallengerCardViewEvent. Check the condition of a valid list of cards calling model functions
+<i>56</i>&nbsp;      * @param e challenger cards event
+<i>57</i>&nbsp;      */
+<i>58</i>&nbsp;     void challengerCards(ChallengerCardViewEvent e);
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;     /**
+<i>61</i>&nbsp;      * Defines behavior in case of a InfoViewEvent. Control the status of the turn and emit TurnInfoEvent
+<i>62</i>&nbsp;      * @param e info event
+<i>63</i>&nbsp;      */
+<i>64</i>&nbsp;     void requiredTurnInfo(InfoViewEvent e);
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;}
+<i>67</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:54</div>
+</div>
+</body>
+</html>

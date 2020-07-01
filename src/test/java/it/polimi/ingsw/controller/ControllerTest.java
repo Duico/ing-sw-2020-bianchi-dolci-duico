@@ -413,7 +413,7 @@ class ControllerTest {
             controller.move(new MoveViewEvent(currentPlayer, start, destination));
             assertTrue(currentPlayer.getNumMovesWorker(0)==1);
             controller.undo(new UndoViewEvent(currentPlayer));
-            assertTrue(currentPlayer.getWorkerPosition(0).equals(start));
+            assertFalse(currentPlayer.getWorkerPosition(0).equals(start));
         }
 
         @Test

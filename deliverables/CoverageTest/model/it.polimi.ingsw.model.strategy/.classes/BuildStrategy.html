@@ -1,0 +1,127 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BuildStrategy</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model.strategy</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BuildStrategy (it.polimi.ingsw.model.strategy)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BuildStrategy</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model.strategy;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.model.Board;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.Operation;
+<i>5</i>&nbsp;import it.polimi.ingsw.model.Position;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.io.Serializable;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;public interface BuildStrategy extends Serializable {
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;    /**
+<i>12</i>&nbsp;     *
+<i>13</i>&nbsp;     * @param startPosition The position where the worker is located at the moment
+<i>14</i>&nbsp;     * @param destinationPosition The position which the worker wants to build on
+<i>15</i>&nbsp;     * @param isDome Defines if the worker wants to build a dome
+<i>16</i>&nbsp;     * @param board board of the game
+<i>17</i>&nbsp;     * @return true if is a valid building, false in the other case
+<i>18</i>&nbsp;     */
+<i>19</i>&nbsp;    boolean isValidBuild(Position startPosition, Position destinationPosition, Boolean isDome, Board board);
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    /**
+<i>22</i>&nbsp;     *
+<i>23</i>&nbsp;     * @param numMoves How many times a worker has already moved in the considered Turn
+<i>24</i>&nbsp;     * @param numBuilds How many times a worker has already built in the considered Turn
+<i>25</i>&nbsp;     * @param lastOperation Last operation of a worker (can only be &#39;Build&#39; or &#39;Move&#39;)
+<i>26</i>&nbsp;     * @return true if is allowed to build, false in the other case
+<i>27</i>&nbsp;     */
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    default boolean isAllowedToBuild(int numMoves, int numBuilds, Operation lastOperation){
+<b class="fc"><i>30</i>&nbsp;        return (numBuilds == 0 &amp;&amp; numMoves &gt;= 1);</b>
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    /**
+<i>35</i>&nbsp;     *
+<i>36</i>&nbsp;     * @param numMoves How many times a worker has already moved in the considered Turn
+<i>37</i>&nbsp;     * @param numBuilds How many times a worker has already built in the considered Turn
+<i>38</i>&nbsp;     * @param lastOperation Last operation of a worker (can only be &#39;Build&#39; or &#39;Move&#39;)
+<i>39</i>&nbsp;     * @return true if is required to build
+<i>40</i>&nbsp;     */
+<i>41</i>&nbsp;    default boolean isRequiredToBuild(int numMoves, int numBuilds, Operation lastOperation){
+<b class="fc"><i>42</i>&nbsp;        return numBuilds == 0;</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:53</div>
+</div>
+</body>
+</html>

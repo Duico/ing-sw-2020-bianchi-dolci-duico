@@ -1,0 +1,66 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WinStrategy</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model.strategy</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WinStrategy (it.polimi.ingsw.model.strategy)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">WinStrategy</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model.strategy;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.model.Board;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.BoardCell;
+<i>5</i>&nbsp;import it.polimi.ingsw.model.Position;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.io.Serializable;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;public interface WinStrategy extends Serializable {
+<i>10</i>&nbsp;    /**
+<i>11</i>&nbsp;     * check if the movement is a winning move
+<i>12</i>&nbsp;     * @param startPosition The position where the worker is located at the moment
+<i>13</i>&nbsp;     * @param destinationPosition The position which the worker wants to move at
+<i>14</i>&nbsp;     * @param board board of the Game
+<i>15</i>&nbsp;     * @return true if is a winning move, false in the other case
+<i>16</i>&nbsp;     */
+<i>17</i>&nbsp;    boolean isWinningMove(Position startPosition, Position destinationPosition, Board board);
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:53</div>
+</div>
+</body>
+</html>

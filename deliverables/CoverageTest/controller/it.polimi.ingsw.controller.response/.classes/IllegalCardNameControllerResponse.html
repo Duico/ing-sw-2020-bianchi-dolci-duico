@@ -1,0 +1,105 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: IllegalCardNameControllerResponse</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.controller.response</a> ]
+</div>
+
+<h1>Coverage Summary for Class: IllegalCardNameControllerResponse (it.polimi.ingsw.controller.response)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IllegalCardNameControllerResponse</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;
+<i>2</i>&nbsp;package it.polimi.ingsw.controller.response;
+<i>3</i>&nbsp;
+<i>4</i>&nbsp;import it.polimi.ingsw.client.ControllerResponseVisitor;
+<i>5</i>&nbsp;import it.polimi.ingsw.view.event.CardViewEvent;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.util.List;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;/**
+<i>10</i>&nbsp; * defines special kind of response sent from controller to view when illegal card has been chosen
+<i>11</i>&nbsp; */
+<i>12</i>&nbsp;public class IllegalCardNameControllerResponse extends ControllerResponse {
+<i>13</i>&nbsp;    private List&lt;String&gt; expectedCardNames;
+<i>14</i>&nbsp;    public IllegalCardNameControllerResponse(CardViewEvent message, List&lt;String&gt; expectedCardNames) {
+<b class="nc"><i>15</i>&nbsp;        super(message);</b>
+<b class="nc"><i>16</i>&nbsp;    }</b>
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    public void accept(ControllerResponseVisitor visitor){
+<b class="nc"><i>19</i>&nbsp;        visitor.visit(this);</b>
+<b class="nc"><i>20</i>&nbsp;    }</b>
+<i>21</i>&nbsp;}
+<i>22</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:54</div>
+</div>
+</body>
+</html>

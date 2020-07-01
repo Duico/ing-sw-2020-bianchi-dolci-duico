@@ -1,0 +1,130 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MoveStrategy</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model.strategy</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MoveStrategy (it.polimi.ingsw.model.strategy)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MoveStrategy</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model.strategy;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.model.Board;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.Position;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;import java.io.Serializable;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;public interface MoveStrategy extends Serializable {
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;    /**
+<i>11</i>&nbsp;     * defines if a movement from start to destination position is a valid movement
+<i>12</i>&nbsp;     * @param startPosition position where a worker is currently located
+<i>13</i>&nbsp;     * @param destPosition position where a worker is moving to
+<i>14</i>&nbsp;     * @param board main Board of the game
+<i>15</i>&nbsp;     * @return true if a movement from start to destination position can be done
+<i>16</i>&nbsp;     */
+<i>17</i>&nbsp;    boolean isValidMove(Position startPosition, Position destPosition, Board board);
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    /**
+<i>20</i>&nbsp;     * defines if a worker is allowed to move
+<i>21</i>&nbsp;     * @param numMoves number of moves already done by current worker
+<i>22</i>&nbsp;     * @param numBuilds number of buildings already done by current worker
+<i>23</i>&nbsp;     * @return true if worker is allowed to move
+<i>24</i>&nbsp;     */
+<i>25</i>&nbsp;    default boolean isAllowedToMove(int numMoves, int numBuilds){
+<b class="fc"><i>26</i>&nbsp;        if(numMoves != 0 /*&amp;&amp; numBuilds==0*/){</b>
+<b class="fc"><i>27</i>&nbsp;            return false;</b>
+<i>28</i>&nbsp;        }else{
+<b class="fc"><i>29</i>&nbsp;            return true;</b>
+<i>30</i>&nbsp;        }
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    /**
+<i>34</i>&nbsp;     * defines if a worker is allowed to build
+<i>35</i>&nbsp;     * @param numMoves number of moves already done by current worker
+<i>36</i>&nbsp;     * @return true if worker is allowed to build
+<i>37</i>&nbsp;     */
+<i>38</i>&nbsp;    default boolean isRequiredToMove(int numMoves){
+<b class="fc"><i>39</i>&nbsp;        if(numMoves != 0){</b>
+<b class="fc"><i>40</i>&nbsp;            return false;</b>
+<i>41</i>&nbsp;        }else{
+<b class="fc"><i>42</i>&nbsp;            return true;</b>
+<i>43</i>&nbsp;        }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:53</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BuildWorkerModelEvent</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model.event</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BuildWorkerModelEvent (it.polimi.ingsw.model.event)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BuildWorkerModelEvent</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/ 8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model.event;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.client.ModelEventVisitor;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.Player;
+<i>5</i>&nbsp;import it.polimi.ingsw.model.Position;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;/**
+<i>8</i>&nbsp; * Represent event launched from Model when a worker builds on the board
+<i>9</i>&nbsp; */
+<i>10</i>&nbsp;public class BuildWorkerModelEvent extends WorkerModelEvent {
+<i>11</i>&nbsp;    private Position destinationPosition;
+<i>12</i>&nbsp;    private boolean isDome;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;    /**
+<i>15</i>&nbsp;     * @param player player who has built
+<i>16</i>&nbsp;     * @param startPosition position where player&#39;s worker is currently located
+<i>17</i>&nbsp;     * @param destinationPosition building position
+<i>18</i>&nbsp;     * @param isDome True if player has built a dome in destination position
+<i>19</i>&nbsp;     */
+<i>20</i>&nbsp;    public BuildWorkerModelEvent(Player player, Position startPosition, Position destinationPosition, boolean isDome) {
+<b class="fc"><i>21</i>&nbsp;        super(player, startPosition);</b>
+<b class="fc"><i>22</i>&nbsp;        this.destinationPosition = destinationPosition;</b>
+<b class="fc"><i>23</i>&nbsp;        this.isDome=isDome;</b>
+<b class="fc"><i>24</i>&nbsp;    }</b>
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public Position getDestinationPosition() {
+<b class="nc"><i>27</i>&nbsp;        return destinationPosition;</b>
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    public boolean isDome() {
+<b class="nc"><i>31</i>&nbsp;        return isDome;</b>
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    @Override
+<i>35</i>&nbsp;    public void accept(ModelEventVisitor visitor){
+<b class="nc"><i>36</i>&nbsp;        visitor.visit(this);</b>
+<b class="nc"><i>37</i>&nbsp;    }</b>
+<i>38</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:53</div>
+</div>
+</body>
+</html>

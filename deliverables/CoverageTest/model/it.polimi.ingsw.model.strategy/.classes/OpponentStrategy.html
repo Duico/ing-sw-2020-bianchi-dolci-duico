@@ -1,0 +1,77 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: OpponentStrategy</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model.strategy</a> ]
+</div>
+
+<h1>Coverage Summary for Class: OpponentStrategy (it.polimi.ingsw.model.strategy)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">OpponentStrategy</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model.strategy;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.model.Board;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.Position;
+<i>5</i>&nbsp;import it.polimi.ingsw.model.exception.InvalidPushCell;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.io.Serializable;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;public interface OpponentStrategy extends Serializable {
+<i>10</i>&nbsp;    /**
+<i>11</i>&nbsp;     * Check whether cell is empty or is occupied by a worker who can be pushed
+<i>12</i>&nbsp;     * @param startPosition position of the worker who&#39;s going to be pushed
+<i>13</i>&nbsp;     * @param destPosition destination position of push
+<i>14</i>&nbsp;     * @param isOwnWorker true if selected worker is one of current player&#39;s workers
+<i>15</i>&nbsp;     * @param board main board of the game
+<i>16</i>&nbsp;     * @return False if cell is occupied by a worker who cannot be pushed away, True if empty or if opponent can be pushed
+<i>17</i>&nbsp;     */
+<i>18</i>&nbsp;    boolean isValidPush(Position startPosition, Position destPosition, boolean isOwnWorker, Board board);
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    /**
+<i>21</i>&nbsp;     * return the push position based on the start and the destination position
+<i>22</i>&nbsp;     * @param startPosition start position of the movement
+<i>23</i>&nbsp;     * @param destPosition destination position of the movement
+<i>24</i>&nbsp;     * @return push position
+<i>25</i>&nbsp;     * @throws InvalidPushCell thrown if push cell is not valid
+<i>26</i>&nbsp;     */
+<i>27</i>&nbsp;    Position destinationPosition(Position startPosition, Position destPosition) throws InvalidPushCell;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:53</div>
+</div>
+</body>
+</html>

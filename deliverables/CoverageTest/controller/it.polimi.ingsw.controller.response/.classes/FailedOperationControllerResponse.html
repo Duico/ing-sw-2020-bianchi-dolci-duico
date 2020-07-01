@@ -1,0 +1,153 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: FailedOperationControllerResponse</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.controller.response</a> ]
+</div>
+
+<h1>Coverage Summary for Class: FailedOperationControllerResponse (it.polimi.ingsw.controller.response)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FailedOperationControllerResponse</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/ 8)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FailedOperationControllerResponse$Reason</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71,4%
+  </span>
+  <span class="absValue">
+    (10/ 14)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.controller.response;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.client.ControllerResponseVisitor;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.Operation;
+<i>5</i>&nbsp;import it.polimi.ingsw.view.event.WorkerViewEvent;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;/**
+<i>8</i>&nbsp; * defines special kind of response sent from controller to view when an operation failed
+<i>9</i>&nbsp; * with a related reason
+<i>10</i>&nbsp; */
+<i>11</i>&nbsp;public class FailedOperationControllerResponse extends ControllerResponse {
+<i>12</i>&nbsp;    private Operation operation;
+<i>13</i>&nbsp;    private Reason reason;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;    public FailedOperationControllerResponse(WorkerViewEvent message, Operation failedOperation, Reason reason) {
+<b class="fc"><i>16</i>&nbsp;        super(message);</b>
+<b class="fc"><i>17</i>&nbsp;        this.operation = failedOperation;</b>
+<b class="fc"><i>18</i>&nbsp;        this.reason = reason;</b>
+<b class="fc"><i>19</i>&nbsp;    }</b>
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    public Operation getOperation() {
+<b class="nc"><i>22</i>&nbsp;        return operation;</b>
+<i>23</i>&nbsp;    }
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    /**
+<i>26</i>&nbsp;     * defines particular reased that explains why a certain kind of operation failed
+<i>27</i>&nbsp;     */
+<b class="fc"><i>28</i>&nbsp;    public enum Reason{</b>
+<b class="fc"><i>29</i>&nbsp;        NOT_ALLOWED,</b>
+<b class="fc"><i>30</i>&nbsp;        BLOCKED_BY_OPPONENT,</b>
+<b class="fc"><i>31</i>&nbsp;        NOT_FEASIBLE,</b>
+<b class="fc"><i>32</i>&nbsp;        NOT_CURRENT_WORKER,</b>
+<b class="fc"><i>33</i>&nbsp;        DESTINATION_NOT_EMPTY;</b>
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    public Reason getReason(){
+<b class="nc"><i>37</i>&nbsp;        return reason;</b>
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public void accept(ControllerResponseVisitor visitor){
+<b class="nc"><i>41</i>&nbsp;        visitor.visit(this);</b>
+<b class="nc"><i>42</i>&nbsp;    }</b>
+<i>43</i>&nbsp;}
+<i>44</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:54</div>
+</div>
+</body>
+</html>

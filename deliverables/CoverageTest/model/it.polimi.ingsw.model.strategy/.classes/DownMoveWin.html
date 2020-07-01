@@ -1,0 +1,114 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DownMoveWin</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model.strategy</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DownMoveWin (it.polimi.ingsw.model.strategy)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DownMoveWin</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81,8%
+  </span>
+  <span class="absValue">
+    (9/ 11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model.strategy;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.model.Board;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.BoardCell;
+<i>5</i>&nbsp;import it.polimi.ingsw.model.Position;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;/**
+<i>8</i>&nbsp; * Class that implements the strategy that allows a Player to win the game if a worker moves down two or more levels
+<i>9</i>&nbsp; */
+<i>10</i>&nbsp;
+<b class="fc"><i>11</i>&nbsp;public class DownMoveWin implements WinStrategy {</b>
+<i>12</i>&nbsp;    @Override
+<i>13</i>&nbsp;    public boolean isWinningMove(Position startPosition, Position destinationPosition, Board board){
+<i>14</i>&nbsp;        try{
+<b class="fc"><i>15</i>&nbsp;            BoardCell startCell = board.getBoardCell(startPosition);</b>
+<b class="fc"><i>16</i>&nbsp;            BoardCell destinationCell = board.getBoardCell(destinationPosition);</b>
+<b class="fc"><i>17</i>&nbsp;            WinStrategy defaultWin = new DefaultWin();</b>
+<b class="fc"><i>18</i>&nbsp;            if(startCell.getLevel().getOrd() == 2  &amp;&amp; destinationCell.getLevel().getOrd() == 0)</b>
+<b class="fc"><i>19</i>&nbsp;                return true;</b>
+<b class="fc"><i>20</i>&nbsp;            if(startCell.getLevel().getOrd() == 3 &amp;&amp; (destinationCell.getLevel().getOrd() == 0 || destinationCell.getLevel().getOrd() == 1))</b>
+<b class="fc"><i>21</i>&nbsp;                return true;</b>
+<i>22</i>&nbsp;            else
+<b class="fc"><i>23</i>&nbsp;                return defaultWin.isWinningMove(startPosition,destinationPosition,board);</b>
+<i>24</i>&nbsp;        }
+<b class="nc"><i>25</i>&nbsp;        catch (NullPointerException e){</b>
+<b class="nc"><i>26</i>&nbsp;            throw new NullPointerException();</b>
+<i>27</i>&nbsp;        }
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:53</div>
+</div>
+</body>
+</html>

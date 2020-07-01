@@ -1,0 +1,252 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Board</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Board (it.polimi.ingsw.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Board</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (9/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84,5%
+  </span>
+  <span class="absValue">
+    (60/ 71)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.io.Serializable;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;/**
+<i>6</i>&nbsp; * Represent the  Board of the game where player can place, move or build with their workers
+<i>7</i>&nbsp; */
+<i>8</i>&nbsp;public class Board implements Cloneable, Serializable {
+<i>9</i>&nbsp;    private BoardCell[][] grid;
+<i>10</i>&nbsp;    private final int width;
+<i>11</i>&nbsp;    private final int height;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;    public Board() { //decide if throws exception or not
+<b class="fc"><i>14</i>&nbsp;        this(Position.width, Position.height);</b>
+<b class="fc"><i>15</i>&nbsp;    }</b>
+<b class="fc"><i>16</i>&nbsp;    public Board(int width, int height){</b>
+<b class="fc"><i>17</i>&nbsp;        this.width = width;</b>
+<b class="fc"><i>18</i>&nbsp;        this.height = height;</b>
+<b class="fc"><i>19</i>&nbsp;        grid = new BoardCell[width][height];</b>
+<b class="fc"><i>20</i>&nbsp;        for(int i=0;i&lt;height;i++){</b>
+<b class="fc"><i>21</i>&nbsp;            for(int j=0; j&lt;width; j++){</b>
+<b class="fc"><i>22</i>&nbsp;                grid[i][j]= new BoardCell();</b>
+<i>23</i>&nbsp;            }
+<i>24</i>&nbsp;        }
+<b class="fc"><i>25</i>&nbsp;    }</b>
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    public int getWidth() {
+<b class="nc"><i>28</i>&nbsp;        return width;</b>
+<i>29</i>&nbsp;    }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public int getHeight() {
+<b class="nc"><i>32</i>&nbsp;        return height;</b>
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    /**
+<i>36</i>&nbsp;     * increment level in the destination position BoardCell it is not a dome build
+<i>37</i>&nbsp;     * if it is a dome build sets the boolean attribute that specifies if a dome is built in the destination position BoardCell
+<i>38</i>&nbsp;     * @param startPosition position where the worker is located
+<i>39</i>&nbsp;     * @param destinationPosition build position
+<i>40</i>&nbsp;     * @param isDome specifies whether or not the player is building a dome
+<i>41</i>&nbsp;     */
+<i>42</i>&nbsp;    public void build(Position startPosition, Position destinationPosition, boolean isDome) {
+<b class="fc"><i>43</i>&nbsp;        Worker worker = this.getBoardCellReference(startPosition).getWorker();</b>
+<b class="fc"><i>44</i>&nbsp;        if(worker == null){</b>
+<b class="fc"><i>45</i>&nbsp;            throw new NullPointerException(&quot;Worker not set inside BoardCell in startPosition&quot;);</b>
+<i>46</i>&nbsp;        }
+<b class="fc"><i>47</i>&nbsp;        if(isDome){</b>
+<b class="fc"><i>48</i>&nbsp;            getBoardCellReference(destinationPosition).setDome(true);</b>
+<i>49</i>&nbsp;        }else{
+<b class="fc"><i>50</i>&nbsp;            int previousLevel = getBoardCellReference(destinationPosition).getLevel().getOrd();</b>
+<b class="fc"><i>51</i>&nbsp;            getBoardCellReference(destinationPosition).setLevel(Level.values()[previousLevel+1]);</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;        }
+<b class="fc"><i>54</i>&nbsp;        worker.addBuild(destinationPosition);</b>
+<b class="fc"><i>55</i>&nbsp;    }</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public BoardCell getBoardCell(Position position) {
+<b class="fc"><i>58</i>&nbsp;            BoardCell cell = getBoardCellReference(position).clone();</b>
+<b class="fc"><i>59</i>&nbsp;            return cell;</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * return the BoardCell corresponding to the Position got from parameter
+<i>64</i>&nbsp;     * @param position used to get related BoardCell reference
+<i>65</i>&nbsp;     * @return
+<i>66</i>&nbsp;     * @throws NullPointerException
+<i>67</i>&nbsp;     * @throws IndexOutOfBoundsException
+<i>68</i>&nbsp;     */
+<i>69</i>&nbsp;    private BoardCell getBoardCellReference(Position position) throws NullPointerException,IndexOutOfBoundsException{
+<i>70</i>&nbsp;        try{
+<b class="fc"><i>71</i>&nbsp;            return grid[position.getX()][position.getY()];</b>
+<b class="nc"><i>72</i>&nbsp;        }catch(NullPointerException |IndexOutOfBoundsException e){</b>
+<b class="nc"><i>73</i>&nbsp;            throw e;</b>
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     * removes the worker situated in the start position BoardCell and puts it in the
+<i>79</i>&nbsp;     * destination position BoardCell
+<i>80</i>&nbsp;     * updates the List containing the current worker&#39;s moves
+<i>81</i>&nbsp;     * @param startPosition position where the worker is located
+<i>82</i>&nbsp;     * @param destinationPosition position where the worker is moving
+<i>83</i>&nbsp;     * @param pushDestPosition position where the worker located in destination position BoardCell is moving
+<i>84</i>&nbsp;     */
+<i>85</i>&nbsp;    public void putWorkers(Position startPosition, Position destinationPosition, Position pushDestPosition){
+<b class="fc"><i>86</i>&nbsp;        BoardCell startBoardCell = getBoardCellReference(startPosition);</b>
+<b class="fc"><i>87</i>&nbsp;        Worker startWorker = startBoardCell.getWorker();</b>
+<b class="fc"><i>88</i>&nbsp;        if(startWorker == null){</b>
+<b class="nc"><i>89</i>&nbsp;            throw new NullPointerException(&quot;Worker not set inside BoardCell in startPosition&quot;);</b>
+<i>90</i>&nbsp;        }
+<b class="fc"><i>91</i>&nbsp;        BoardCell destinationCell = getBoardCellReference(destinationPosition);</b>
+<b class="fc"><i>92</i>&nbsp;        startBoardCell.setWorker(null);</b>
+<b class="fc"><i>93</i>&nbsp;        if(pushDestPosition != null) {</b>
+<b class="fc"><i>94</i>&nbsp;            Worker destinationWorker = destinationCell.getWorker();</b>
+<b class="fc"><i>95</i>&nbsp;            if(destinationWorker != null){</b>
+<b class="fc"><i>96</i>&nbsp;                BoardCell pushDestBoardCell = getBoardCellReference(pushDestPosition);</b>
+<b class="fc"><i>97</i>&nbsp;                pushDestBoardCell.setWorker(destinationWorker);</b>
+<b class="fc"><i>98</i>&nbsp;                destinationWorker.addMove(pushDestPosition);</b>
+<i>99</i>&nbsp;            }
+<i>100</i>&nbsp;        }
+<b class="fc"><i>101</i>&nbsp;        destinationCell.setWorker(startWorker);</b>
+<b class="fc"><i>102</i>&nbsp;        startWorker.addMove(destinationPosition);</b>
+<b class="fc"><i>103</i>&nbsp;    }</b>
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    /**
+<i>106</i>&nbsp;     * sets the worker got from parameter to the destination position BoardCell
+<i>107</i>&nbsp;     * @param worker worker to set
+<i>108</i>&nbsp;     * @param destPosition position where the worker is set
+<i>109</i>&nbsp;     * @return true if worker is successfully set
+<i>110</i>&nbsp;     */
+<i>111</i>&nbsp;    public boolean setWorker(Worker worker, Position destPosition){
+<b class="fc"><i>112</i>&nbsp;        if( this.getBoardCellReference(destPosition).getWorker() == null){</b>
+<b class="fc"><i>113</i>&nbsp;            this.getBoardCellReference(destPosition).setWorker(worker);</b>
+<b class="fc"><i>114</i>&nbsp;            this.getBoardCellReference(destPosition).getWorker().addMove(destPosition);</b>
+<b class="fc"><i>115</i>&nbsp;            return true;</b>
+<i>116</i>&nbsp;        }else{
+<b class="fc"><i>117</i>&nbsp;            return false;</b>
+<i>118</i>&nbsp;        }
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    /**
+<i>122</i>&nbsp;     * deletes Worker reference from the BoardCell corresponding to the position got from parameter
+<i>123</i>&nbsp;     * @param position worker position
+<i>124</i>&nbsp;     * @return true if worker is successfully removed
+<i>125</i>&nbsp;     */
+<i>126</i>&nbsp;    public boolean removeWorker(Position position){
+<b class="nc"><i>127</i>&nbsp;        if( this.getBoardCellReference(position).getWorker() != null ){</b>
+<b class="nc"><i>128</i>&nbsp;            this.getBoardCellReference(position).setWorker(null);</b>
+<b class="nc"><i>129</i>&nbsp;            return true;</b>
+<i>130</i>&nbsp;        }
+<b class="nc"><i>131</i>&nbsp;        return false;</b>
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    @Override
+<i>135</i>&nbsp;    protected Board clone() {
+<b class="fc"><i>136</i>&nbsp;        int width = Position.width;</b>
+<b class="fc"><i>137</i>&nbsp;        int height = Position.height;</b>
+<b class="fc"><i>138</i>&nbsp;        Board board = null;</b>
+<b class="fc"><i>139</i>&nbsp;        BoardCell[][] newGrid = new BoardCell[width][height];</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;        //DEEP cloning for each BoardCell in grid
+<b class="fc"><i>142</i>&nbsp;        for(int i=0; i&lt;height; i++){</b>
+<b class="fc"><i>143</i>&nbsp;            for(int j=0; j&lt;width; j++){</b>
+<b class="fc"><i>144</i>&nbsp;                newGrid[i][j] = this.grid[i][j].clone();</b>
+<i>145</i>&nbsp;            }
+<i>146</i>&nbsp;        }
+<i>147</i>&nbsp;        try {
+<b class="fc"><i>148</i>&nbsp;            board = (Board) super.clone();</b>
+<b class="fc"><i>149</i>&nbsp;            board.grid = newGrid;</b>
+<b class="nc"><i>150</i>&nbsp;        }catch (CloneNotSupportedException e){</b>
+<b class="nc"><i>151</i>&nbsp;            throw new RuntimeException(&quot;Clone not supported in Board&quot;);</b>
+<b class="fc"><i>152</i>&nbsp;        }</b>
+<b class="fc"><i>153</i>&nbsp;        return board;</b>
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    @Override
+<i>157</i>&nbsp;    public boolean equals(Object o) {
+<b class="fc"><i>158</i>&nbsp;        if (this == o) return true;</b>
+<b class="fc"><i>159</i>&nbsp;        if (o == null || getClass() != o.getClass()) return false;</b>
+<b class="fc"><i>160</i>&nbsp;        Board board = (Board) o;</b>
+<b class="fc"><i>161</i>&nbsp;        boolean eq = true;</b>
+<b class="fc"><i>162</i>&nbsp;        for(int i=0;i&lt;Position.width;i++){</b>
+<b class="fc"><i>163</i>&nbsp;            for(int j=0; j&lt;Position.height; j++){</b>
+<b class="fc"><i>164</i>&nbsp;                eq = eq &amp;&amp; grid[i][j].equals(board.grid[i][j]);</b>
+<i>165</i>&nbsp;            }
+<i>166</i>&nbsp;        }
+<b class="fc"><i>167</i>&nbsp;        return eq;</b>
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:53</div>
+</div>
+</body>
+</html>

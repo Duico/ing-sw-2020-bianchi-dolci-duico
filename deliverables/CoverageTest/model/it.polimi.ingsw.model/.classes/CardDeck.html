@@ -1,0 +1,226 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CardDeck</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CardDeck (it.polimi.ingsw.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CardDeck</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85,7%
+  </span>
+  <span class="absValue">
+    (48/ 56)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.model.exception.ReadConfigurationXMLException;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.exception.StrategyNameNotFound;
+<i>5</i>&nbsp;import org.w3c.dom.Document;
+<i>6</i>&nbsp;import org.w3c.dom.Element;
+<i>7</i>&nbsp;import org.w3c.dom.Node;
+<i>8</i>&nbsp;import org.w3c.dom.NodeList;
+<i>9</i>&nbsp;import org.xml.sax.SAXException;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;import javax.xml.parsers.DocumentBuilder;
+<i>12</i>&nbsp;import javax.xml.parsers.DocumentBuilderFactory;
+<i>13</i>&nbsp;import javax.xml.parsers.ParserConfigurationException;
+<i>14</i>&nbsp;import java.io.File;
+<i>15</i>&nbsp;import java.io.IOException;
+<i>16</i>&nbsp;import java.io.InputStream;
+<i>17</i>&nbsp;import java.io.Serializable;
+<i>18</i>&nbsp;import java.util.ArrayList;
+<i>19</i>&nbsp;import java.util.List;
+<i>20</i>&nbsp;import java.util.Objects;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;/**
+<i>23</i>&nbsp; * Represent list of all the Cards that can be chosen by players
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;public class CardDeck implements Serializable {
+<i>26</i>&nbsp;    private ArrayList&lt;Card&gt; cardDeck;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;
+<b class="fc"><i>29</i>&nbsp;    public CardDeck(File file) throws ReadConfigurationXMLException, ParserConfigurationException, SAXException, IOException {</b>
+<b class="fc"><i>30</i>&nbsp;        cardDeck = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>31</i>&nbsp;        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();</b>
+<b class="fc"><i>32</i>&nbsp;        DocumentBuilder builder = factory.newDocumentBuilder();</b>
+<b class="fc"><i>33</i>&nbsp;        Document document = builder.parse(file);</b>
+<b class="fc"><i>34</i>&nbsp;        readConfigurationXML(document);</b>
+<b class="fc"><i>35</i>&nbsp;    }</b>
+<i>36</i>&nbsp;    public CardDeck(String pathname) throws IOException, SAXException, ParserConfigurationException, ReadConfigurationXMLException{
+<b class="fc"><i>37</i>&nbsp;        this(new File(pathname));</b>
+<b class="fc"><i>38</i>&nbsp;    }</b>
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;
+<b class="nc"><i>41</i>&nbsp;    public CardDeck(InputStream resourceAsStream) throws ParserConfigurationException, IOException, SAXException, ReadConfigurationXMLException {</b>
+<b class="nc"><i>42</i>&nbsp;        cardDeck = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>43</i>&nbsp;        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();</b>
+<b class="nc"><i>44</i>&nbsp;        DocumentBuilder builder = factory.newDocumentBuilder();</b>
+<b class="nc"><i>45</i>&nbsp;        Document document = builder.parse(resourceAsStream);</b>
+<b class="nc"><i>46</i>&nbsp;        readConfigurationXML(document);</b>
+<b class="nc"><i>47</i>&nbsp;    }</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /**
+<i>50</i>&nbsp;     * read all rows from XML configuration card, creates a Card with each of them setting strategies using tag names
+<i>51</i>&nbsp;     * and add all Cards created to CardDeck
+<i>52</i>&nbsp;     * @param document contains XML configuration file
+<i>53</i>&nbsp;     * @throws ReadConfigurationXMLException
+<i>54</i>&nbsp;     */
+<i>55</i>&nbsp;    private void readConfigurationXML(Document document) throws ReadConfigurationXMLException {
+<b class="fc"><i>56</i>&nbsp;        document.getDocumentElement().normalize();</b>
+<b class="fc"><i>57</i>&nbsp;        NodeList nList = document.getElementsByTagName(&quot;card&quot;);</b>
+<i>58</i>&nbsp;
+<b class="fc"><i>59</i>&nbsp;        for (int temp = 0; temp &lt; nList.getLength(); temp++)</b>
+<i>60</i>&nbsp;        {
+<b class="fc"><i>61</i>&nbsp;            Node node = nList.item(temp);</b>
+<b class="fc"><i>62</i>&nbsp;            if (node.getNodeType() == Node.ELEMENT_NODE)</b>
+<i>63</i>&nbsp;            {
+<b class="fc"><i>64</i>&nbsp;                Element eElement = (Element) node;</b>
+<b class="fc"><i>65</i>&nbsp;                String name = getPropertyName(eElement, &quot;name&quot;);</b>
+<b class="fc"><i>66</i>&nbsp;                String moveStrategy = getPropertyName(eElement, &quot;moveStrategy&quot;);</b>
+<b class="fc"><i>67</i>&nbsp;                String buildStrategy = getPropertyName(eElement, &quot;buildStrategy&quot;);</b>
+<b class="fc"><i>68</i>&nbsp;                String winStrategy = getPropertyName(eElement,&quot;winStrategy&quot;);</b>
+<b class="fc"><i>69</i>&nbsp;                String blockStrategy = getPropertyName(eElement, &quot;blockStrategy&quot;);</b>
+<b class="fc"><i>70</i>&nbsp;                String opponentStrategy = getPropertyName(eElement,&quot;opponentStrategy&quot;);</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;                try {
+<b class="fc"><i>73</i>&nbsp;                    cardDeck.add(new Card(name, moveStrategy, buildStrategy, winStrategy, blockStrategy, opponentStrategy));</b>
+<b class="fc"><i>74</i>&nbsp;                }catch (StrategyNameNotFound e){</b>
+<b class="fc"><i>75</i>&nbsp;                    System.err.println(&quot;Strategy name not found. Check your XML file.&quot;);</b>
+<b class="fc"><i>76</i>&nbsp;                    e.printStackTrace();</b>
+<b class="fc"><i>77</i>&nbsp;                }</b>
+<i>78</i>&nbsp;            }
+<i>79</i>&nbsp;        }
+<b class="fc"><i>80</i>&nbsp;        if(cardDeck.size() &lt; 3){</b>
+<b class="fc"><i>81</i>&nbsp;            throw new ReadConfigurationXMLException();</b>
+<i>82</i>&nbsp;        }
+<b class="fc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public Card getCard(int i) {
+<b class="fc"><i>86</i>&nbsp;        return cardDeck.get(i);</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /**
+<i>90</i>&nbsp;     * return the names of the cards contained in card deck
+<i>91</i>&nbsp;     * @return list of string
+<i>92</i>&nbsp;     */
+<i>93</i>&nbsp;    public List&lt;String&gt; getCardNames(){
+<b class="fc"><i>94</i>&nbsp;        ArrayList&lt;String&gt; cardNames  = new ArrayList&lt;String&gt;();</b>
+<b class="fc"><i>95</i>&nbsp;        for(Card card: cardDeck){</b>
+<b class="fc"><i>96</i>&nbsp;            cardNames.add(card.getName());</b>
+<b class="fc"><i>97</i>&nbsp;        }</b>
+<b class="fc"><i>98</i>&nbsp;        return cardNames;</b>
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    /**
+<i>102</i>&nbsp;     * checks all Cards from CardDeck looking for one with a certain name
+<i>103</i>&nbsp;     * @param name card name
+<i>104</i>&nbsp;     * @return true if correlation between parameter and a Card name is found
+<i>105</i>&nbsp;     */
+<i>106</i>&nbsp;    public boolean existsCardByName(String name){
+<b class="fc"><i>107</i>&nbsp;        for(int i=0; i&lt;cardDeck.size();i++){</b>
+<b class="fc"><i>108</i>&nbsp;            if(name.equals(cardDeck.get(i).getName()))</b>
+<b class="fc"><i>109</i>&nbsp;                return true;</b>
+<i>110</i>&nbsp;        }
+<b class="fc"><i>111</i>&nbsp;        return false;</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    /**
+<i>115</i>&nbsp;     * searches for a certain Card in CardDeck
+<i>116</i>&nbsp;     * @param name card name needed to get Card object
+<i>117</i>&nbsp;     * @return Card object related to card name
+<i>118</i>&nbsp;     */
+<i>119</i>&nbsp;    public Card getCardByName(String name){
+<i>120</i>&nbsp;        int i;
+<b class="fc"><i>121</i>&nbsp;        for(i=0; i&lt;cardDeck.size();i++){</b>
+<b class="fc"><i>122</i>&nbsp;            if(name.equals(cardDeck.get(i).getName()))</b>
+<b class="fc"><i>123</i>&nbsp;                return cardDeck.get(i);</b>
+<i>124</i>&nbsp;                //break;
+<i>125</i>&nbsp;        }
+<b class="nc"><i>126</i>&nbsp;        return null;</b>
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;    private String getPropertyName(Element node, String tagName){
+<b class="fc"><i>130</i>&nbsp;        Node leaf = node.getElementsByTagName(tagName).item(0);</b>
+<b class="fc"><i>131</i>&nbsp;        return (leaf != null)? leaf.getTextContent():&quot;Default&quot;;</b>
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    @Override
+<i>135</i>&nbsp;    public boolean equals(Object o) {
+<b class="fc"><i>136</i>&nbsp;        if (this == o) return true;</b>
+<b class="fc"><i>137</i>&nbsp;        if (o == null || getClass() != o.getClass()) return false;</b>
+<b class="fc"><i>138</i>&nbsp;        CardDeck cardDeck1 = (CardDeck) o;</b>
+<b class="fc"><i>139</i>&nbsp;        return Objects.equals(cardDeck, cardDeck1.cardDeck);</b>
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;    
+<i>142</i>&nbsp;}
+<i>143</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:53</div>
+</div>
+</body>
+</html>

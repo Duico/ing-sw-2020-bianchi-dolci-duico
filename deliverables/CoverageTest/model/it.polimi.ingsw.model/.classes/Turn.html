@@ -1,0 +1,356 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Turn</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Turn (it.polimi.ingsw.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Turn</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96,8%
+  </span>
+  <span class="absValue">
+    (30/ 31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94,1%
+  </span>
+  <span class="absValue">
+    (48/ 51)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.io.Serializable;
+<i>4</i>&nbsp;import java.util.Objects;
+<i>5</i>&nbsp;import java.util.UUID;
+<i>6</i>&nbsp;import java.util.concurrent.ScheduledFuture;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;/**
+<i>9</i>&nbsp; * defines the abstract generic game Turn
+<i>10</i>&nbsp; */
+<i>11</i>&nbsp;public abstract class Turn implements Serializable {
+<i>12</i>&nbsp;    final Player currentPlayer;
+<b class="fc"><i>13</i>&nbsp;    protected boolean isUndoAvailable = false; // false when deserializing for undo</b>
+<i>14</i>&nbsp;    final private TurnPhase phase;
+<i>15</i>&nbsp;    protected transient ScheduledFuture&lt;?&gt; undoTimer;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    /**
+<i>18</i>&nbsp;     *
+<i>19</i>&nbsp;     * @param turnPhase current turn phase
+<i>20</i>&nbsp;     * @param currentPlayer current player
+<i>21</i>&nbsp;     */
+<b class="fc"><i>22</i>&nbsp;    public Turn(TurnPhase turnPhase, Player currentPlayer){</b>
+<b class="fc"><i>23</i>&nbsp;        this.phase = turnPhase;</b>
+<b class="fc"><i>24</i>&nbsp;        this.currentPlayer = currentPlayer;</b>
+<i>25</i>&nbsp;
+<b class="fc"><i>26</i>&nbsp;    }</b>
+<i>27</i>&nbsp;    public TurnPhase getPhase(){
+<b class="fc"><i>28</i>&nbsp;        return this.phase;</b>
+<i>29</i>&nbsp;    }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    /**
+<i>32</i>&nbsp;     * property got from MoveStrategy which specifies if a worker is allowed to move at a certain moment
+<i>33</i>&nbsp;     * @return true if current player&#39;s worker is allowed to move at the moment
+<i>34</i>&nbsp;     */
+<i>35</i>&nbsp;    public boolean isAllowedToMove(){
+<b class="fc"><i>36</i>&nbsp;        return false;</b>
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    /**
+<i>40</i>&nbsp;     * property got from MoveStrategy which specifies if a worker is allowed to move at a certain moment
+<i>41</i>&nbsp;     * @param workerPosition position where a worker is currently located
+<i>42</i>&nbsp;     * @return true if the worker located in workerPosition is allowed to move at the moment
+<i>43</i>&nbsp;     */
+<i>44</i>&nbsp;    public boolean isAllowedToMove(Position workerPosition){
+<b class="fc"><i>45</i>&nbsp;        return false;</b>
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    /**
+<i>49</i>&nbsp;     * property got from MoveStrategy which specifies if a worker is required to move at a certain moment
+<i>50</i>&nbsp;     * @return true if current player&#39;s worker is required to move at the moment
+<i>51</i>&nbsp;     */
+<i>52</i>&nbsp;    public boolean isRequiredToMove(){
+<b class="fc"><i>53</i>&nbsp;        return false;</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    /**
+<i>57</i>&nbsp;     * property got from MoveStrategy which specifies if a worker is required to move at a certain moment
+<i>58</i>&nbsp;     * @param workerPosition position where a worker is currently located
+<i>59</i>&nbsp;     * @return true if the worker located in workerPosition is required to move at the moment
+<i>60</i>&nbsp;     */
+<i>61</i>&nbsp;    public boolean isRequiredToMove(Position workerPosition){
+<b class="fc"><i>62</i>&nbsp;        return false;</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    /**
+<i>66</i>&nbsp;     * property got from BuildStrategy which specifies if a worker is required to build at a certain moment
+<i>67</i>&nbsp;     * @return true if current player&#39;s worker is required to build at the moment
+<i>68</i>&nbsp;     */
+<i>69</i>&nbsp;    public boolean isRequiredToBuild(){
+<b class="fc"><i>70</i>&nbsp;        return false;</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    /**
+<i>74</i>&nbsp;     * property got from BuildStrategy which specifies if a worker is required to build at a certain moment
+<i>75</i>&nbsp;     * @param workerPosition position where a worker is currently located
+<i>76</i>&nbsp;     * @return true if the worker located in workerPosition is required to build at the moment
+<i>77</i>&nbsp;     */
+<i>78</i>&nbsp;    public boolean isRequiredToBuild(Position workerPosition){
+<b class="fc"><i>79</i>&nbsp;        return false;</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     * property got from BuildStrategy which specifies if a worker is allowed to build at a certain moment
+<i>84</i>&nbsp;     * @return true if current player&#39;s worker is allowed to build at the moment
+<i>85</i>&nbsp;     */
+<i>86</i>&nbsp;    public boolean isAllowedToBuild(){
+<b class="fc"><i>87</i>&nbsp;        return false;</b>
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    /**
+<i>91</i>&nbsp;     * property got from BuildStrategy which specifies if a worker is allowed to build at a certain moment
+<i>92</i>&nbsp;     * @param workerPosition position where a worker is currently located
+<i>93</i>&nbsp;     * @return true if the worker located in workerPosition is allowed to build at the moment
+<i>94</i>&nbsp;     */
+<i>95</i>&nbsp;    public boolean isAllowedToBuild(Position workerPosition){
+<b class="fc"><i>96</i>&nbsp;        return false;</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    /**
+<i>100</i>&nbsp;     * @param board main board of the game
+<i>101</i>&nbsp;     * @param workerPosition position where a worker is currently located
+<i>102</i>&nbsp;     * @return true if worker in workerPosition can build at the moment
+<i>103</i>&nbsp;     */
+<i>104</i>&nbsp;    protected boolean canBuild(Board board, Position workerPosition){
+<b class="fc"><i>105</i>&nbsp;        return false;</b>
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    /**
+<i>109</i>&nbsp;     * @param board main board of the game
+<i>110</i>&nbsp;     * @param workerPosition position where a worker is currently located
+<i>111</i>&nbsp;     * @return true if worker in workerPosition can move at the moment
+<i>112</i>&nbsp;     */
+<i>113</i>&nbsp;    protected boolean canMove(Board board, Position workerPosition){
+<b class="fc"><i>114</i>&nbsp;        return false;</b>
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    /**
+<i>118</i>&nbsp;     * @return true if current player hasn&#39;t placed all his workers yet
+<i>119</i>&nbsp;     */
+<i>120</i>&nbsp;    public boolean isAnyWorkerNotPlaced(){
+<b class="fc"><i>121</i>&nbsp;        return currentPlayer.isAnyWorkerNotPlaced();</b>
+<i>122</i>&nbsp;    }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    /**
+<i>125</i>&nbsp;     * checks if a move from start position to destination position is feasible
+<i>126</i>&nbsp;     * @param board main board of the game
+<i>127</i>&nbsp;     * @param startPosition position where a worker is located
+<i>128</i>&nbsp;     * @param destinationPosition position where a worker is moving to
+<i>129</i>&nbsp;     * @return true if a movement is feasible from start to destinaition position
+<i>130</i>&nbsp;     */
+<i>131</i>&nbsp;    public boolean isFeasibleMove(Board board, Position startPosition, Position destinationPosition){
+<b class="fc"><i>132</i>&nbsp;        return false;</b>
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    /**
+<i>136</i>&nbsp;     * checks if a build from start position to destination position is feasible
+<i>137</i>&nbsp;     * @param board main board of the game
+<i>138</i>&nbsp;     * @param startPosition position where a worker is located
+<i>139</i>&nbsp;     * @param destinationPosition position where a worker is building at
+<i>140</i>&nbsp;     * @param isDome true if worker is building a dome
+<i>141</i>&nbsp;     * @return true if a building at destination position is feasible
+<i>142</i>&nbsp;     */
+<i>143</i>&nbsp;    public boolean isFeasibleBuild(Board board, Position startPosition, Position destinationPosition, boolean isDome){
+<b class="fc"><i>144</i>&nbsp;        return false;</b>
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    /**
+<i>148</i>&nbsp;     * @param board main board of the game
+<i>149</i>&nbsp;     * @param startPosition position where a worker is located
+<i>150</i>&nbsp;     * @param destinationPosition position where worker located in start position is moving to
+<i>151</i>&nbsp;     * @return true if a movement from start to destination position is blocked
+<i>152</i>&nbsp;     */
+<i>153</i>&nbsp;    public boolean isBlockedMove(Board board, Position startPosition, Position destinationPosition) {
+<b class="fc"><i>154</i>&nbsp;        return false;</b>
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    /**
+<i>158</i>&nbsp;     * @return true if previus player&#39;s movement blocks current player
+<i>159</i>&nbsp;     */
+<i>160</i>&nbsp;    public boolean getPreviousBlockNextPlayer(){
+<b class="fc"><i>161</i>&nbsp;        return false;</b>
+<i>162</i>&nbsp;    }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    /**
+<i>165</i>&nbsp;     * @return true if current player&#39;s movement blocks next player
+<i>166</i>&nbsp;     */
+<i>167</i>&nbsp;    public boolean getBlockNextPlayer(){
+<b class="fc"><i>168</i>&nbsp;        return false;</b>
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    /**
+<i>172</i>&nbsp;     * @param board main board of the game
+<i>173</i>&nbsp;     * @param startPosition position where a worker is located
+<i>174</i>&nbsp;     * @param destinationPosition position where the worker located in start position is moving to
+<i>175</i>&nbsp;     * @return position where the worker currently located in destination position is going to be pushed
+<i>176</i>&nbsp;     */
+<i>177</i>&nbsp;    protected Position boardMove(Board board, Position startPosition, Position destinationPosition){
+<b class="fc"><i>178</i>&nbsp;        return null;</b>
+<i>179</i>&nbsp;    };
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    /**
+<i>182</i>&nbsp;     * @param board main board of the game
+<i>183</i>&nbsp;     * @param startPosition position where a worker is located
+<i>184</i>&nbsp;     * @param destinationPosition position where the worker located at start position is building at
+<i>185</i>&nbsp;     * @param isDome true if the worker is building a dome
+<i>186</i>&nbsp;     */
+<b class="fc"><i>187</i>&nbsp;    protected void boardBuild(Board board, Position startPosition, Position destinationPosition, boolean isDome){};</b>
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    /**
+<i>190</i>&nbsp;     * @param board main board of the game
+<i>191</i>&nbsp;     * @param placePosition position where a worker is placed
+<i>192</i>&nbsp;     * @return worker id
+<i>193</i>&nbsp;     */
+<b class="nc"><i>194</i>&nbsp;    protected Optional&lt;Integer&gt; boardPlace(Board board, Position placePosition){return Optional.empty();};</b>
+<i>195</i>&nbsp;
+<b class="fc"><i>196</i>&nbsp;    public Card getPreviousTurnCard(){return null;}</b>
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    public boolean isCurrentPlayerUUID(UUID playerId){
+<b class="fc"><i>199</i>&nbsp;        return currentPlayer.getUuid() == playerId;</b>
+<i>200</i>&nbsp;    }
+<i>201</i>&nbsp;    protected Player getCurrentPlayer() {
+<b class="fc"><i>202</i>&nbsp;        return currentPlayer;</b>
+<i>203</i>&nbsp;    }
+<i>204</i>&nbsp;    public boolean isSetCurrentWorker(){
+<b class="fc"><i>205</i>&nbsp;        return false;</b>
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;    public boolean isBlockNextPlayer() {
+<b class="fc"><i>208</i>&nbsp;        return false;</b>
+<i>209</i>&nbsp;    }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    /**
+<i>212</i>&nbsp;     * checks if a movement from start to destination position is a winning move
+<i>213</i>&nbsp;     * @param board main board of the game
+<i>214</i>&nbsp;     * @param startPosition position where a worker is located
+<i>215</i>&nbsp;     * @param destinationPosition position where the worker located at start position is moving to
+<i>216</i>&nbsp;     * @return true if a movement from start to destination position is a winning move
+<i>217</i>&nbsp;     */
+<i>218</i>&nbsp;    public boolean isWinningMove(Board board, Position startPosition, Position destinationPosition){
+<b class="fc"><i>219</i>&nbsp;       return false;</b>
+<i>220</i>&nbsp;    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    /**
+<i>223</i>&nbsp;     * checks if worker placed in workerPosition is current player&#39;s current worker
+<i>224</i>&nbsp;     * @param workerPosition position where a worker is located
+<i>225</i>&nbsp;     * @return true if worker located at workerPosition is current player&#39;s current worker
+<i>226</i>&nbsp;     */
+<i>227</i>&nbsp;    public boolean checkCurrentWorker(Position workerPosition){
+<b class="fc"><i>228</i>&nbsp;        return false;</b>
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    /**
+<i>232</i>&nbsp;     * checks all workers on the board in order to establish if there&#39;s a loose condition on a player
+<i>233</i>&nbsp;     * @param board main board of the game
+<i>234</i>&nbsp;     * @return true if a player has all his workers blocked and has lost the game
+<i>235</i>&nbsp;     */
+<i>236</i>&nbsp;    boolean isLoseCondition(Board board) {
+<b class="fc"><i>237</i>&nbsp;        return false;</b>
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    /**
+<i>241</i>&nbsp;     * checks if a worker is required to move or build but can&#39;t do neither of them
+<i>242</i>&nbsp;     * @param board main board of the game
+<i>243</i>&nbsp;     * @param workerPosition position where a worker is located
+<i>244</i>&nbsp;     * @return true worker is in a situation where can&#39;t move neither build
+<i>245</i>&nbsp;     */
+<i>246</i>&nbsp;    boolean cannotMakeRequiredOperation(Board board, Position workerPosition){
+<b class="fc"><i>247</i>&nbsp;        boolean isRequiredToMove = isRequiredToMove(workerPosition);</b>
+<b class="fc"><i>248</i>&nbsp;        boolean isRequiredToBuild = isRequiredToBuild(workerPosition);</b>
+<i>249</i>&nbsp;
+<b class="fc"><i>250</i>&nbsp;        if(isRequiredToBuild &amp;&amp; isRequiredToMove){</b>
+<b class="fc"><i>251</i>&nbsp;            if(!canBuild(board, workerPosition) &amp;&amp; !canMove(board, workerPosition))</b>
+<b class="nc"><i>252</i>&nbsp;                return true;</b>
+<b class="fc"><i>253</i>&nbsp;        }else if(isRequiredToBuild){</b>
+<b class="fc"><i>254</i>&nbsp;            if(!canBuild(board, workerPosition))</b>
+<b class="nc"><i>255</i>&nbsp;                return true;</b>
+<b class="fc"><i>256</i>&nbsp;        }else if(isRequiredToMove){//should be impossible</b>
+<b class="fc"><i>257</i>&nbsp;            if(!canMove(board, workerPosition))</b>
+<b class="fc"><i>258</i>&nbsp;                return true;</b>
+<i>259</i>&nbsp;        }
+<b class="fc"><i>260</i>&nbsp;        return false;</b>
+<i>261</i>&nbsp;    }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    @Override
+<i>264</i>&nbsp;    public boolean equals(Object o) {
+<b class="fc"><i>265</i>&nbsp;        if (this == o) return true;</b>
+<b class="fc"><i>266</i>&nbsp;        if (o == null || getClass() != o.getClass()) return false;</b>
+<b class="fc"><i>267</i>&nbsp;        Turn turn = (Turn) o;</b>
+<b class="fc"><i>268</i>&nbsp;        return /*isUndoAvailable == turn.isUndoAvailable &amp;&amp;*/</b>
+<b class="fc"><i>269</i>&nbsp;                Objects.equals(getCurrentPlayer(), turn.getCurrentPlayer()) &amp;&amp;</b>
+<b class="fc"><i>270</i>&nbsp;                getPhase() == turn.getPhase();</b>
+<i>271</i>&nbsp;    }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-01 09:53</div>
+</div>
+</body>
+</html>
